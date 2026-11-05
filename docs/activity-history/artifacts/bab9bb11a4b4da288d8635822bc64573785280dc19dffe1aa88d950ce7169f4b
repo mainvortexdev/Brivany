@@ -1,0 +1,28 @@
+{
+  "scope": "everyday_desktop_and_selected_advanced",
+  "windows_commands": 190,
+  "shortcuts": 231,
+  "migration": {
+    "previous_items": 5034,
+    "active_items": 467,
+    "removed": 4580,
+    "approved_preserved": 36,
+    "history": "<local-path>\\.local\\terminal\\checklist\\scope-before-20261101-051113-443cbfb8.json",
+    "authorization": "User removed server/enterprise commands; desktop commands and shortcuts only."
+  },
+  "state": {
+    "counts": {
+      "approved": 36,
+      "pending": 431
+    },
+    "next": {
+      "position": 37,
+      "id": "windows.ps.microsoft.powershell.utility.get-filehash",
+      "state": "pending",
+      "receipt": null,
+      "review": null
+    },
+    "registry_edits_allowed": false,
+    "review_required_before_next": true
+  }
+}

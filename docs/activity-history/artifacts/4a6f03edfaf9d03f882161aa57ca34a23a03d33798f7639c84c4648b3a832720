@@ -1,0 +1,24 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/computer-browser-real/page-controls-probe.json",
+  "original_sha256": "55d3e59a3189684da2c2147c0afa5f4c675d784d06a4a647f79529464827fc7c",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "browser_background_network_unknown": true
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": 0,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/spotify-audio-controls/native-audio.json",
+  "original_sha256": "b5acb0388225dfdc9edd7fb307ee4214d5d23f1ad2fce900bd8b123608277929",
+  "new_test_execution": false,
+  "reported_result": "pending",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "initial_playing": false,
+    "screen_audio_capture": false,
+    "direct_command_accepted": true
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

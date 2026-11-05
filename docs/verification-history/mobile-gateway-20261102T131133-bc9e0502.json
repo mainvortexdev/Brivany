@@ -1,0 +1,17 @@
+{
+  "suite": "mobile-gateway",
+  "started_at": "2026-11-02T13:11:33.197999+00:00",
+  "finished_at": "2026-11-02T13:11:41.030098+00:00",
+  "duration_seconds": 7.832099,
+  "command": [
+    "node",
+    "--test",
+    "workers/mobile-gateway/test/gateway.test.mjs",
+    "workers/mobile-gateway/test/accounts.test.mjs",
+    "workers/mobile-gateway/test/account-chat.test.mjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"event\":\"account_chat_failure\",\"stage\":\"account_command\",\"error_type\":\"Error\",\"upstream_status\":null}\n{\"event\":\"account_chat_failure\",\"stage\":\"provider_stream\",\"error_type\":\"Error\",\"upstream_status\":null}\n✔ chat and live transcription use the same account-scoped command router (49.1292ms)\n✔ ordinary conversation never creates a computer task (1.6823ms)\n✔ a model cannot guess a computer that the user did not select (2.0809ms)\n✔ unrecognized or simultaneous tool calls never execute (4.7573ms)\n✔ partial arguments are accumulated but a truncated provider stream is not executable (0.8277ms)\n✔ explicit offline or unknown choices cannot become a different online computer (0.9271ms)\n✔ passwords and session secrets are not stored in plaintext; wrong passwords are rejected (826.573ms)\n✔ one connected desktop is selected by default and delivery is idempotent (777.3801ms)\n✔ chat and voice both ask for a computer when there are several (1032.0008ms)\n✔ offline computers never receive a command and a different account cannot authenticate (1269.9467ms)\n✔ only the target desktop can report a result; mobile cannot fabricate success (1048.4436ms)\n✔ revocation expires the session and closes its host socket (800.3856ms)\n✔ lost acknowledgements become uncertain without an automatic second delivery (777.2558ms)\n✔ expired command contents are purged after 24 hours and sessions after 30 days (492.0723ms)\n✔ pending computer choices belong to their own conversation (535.7955ms)\n✔ auth hashes fixed-size inputs and never returns the credential (53.5849ms)\n✔ health is passive; config is authenticated and does not claim remote tools (7.8652ms)\n✔ query tokens and browser origins are rejected, auth rate limit uses a hash (3.2974ms)\n✔ chat bounds roles, total history and request bytes before opening a provider (7.3536ms)\n✔ chat fixed provider and server persona stream UTF8 SSE into NDJSON (4.2306ms)\n✔ chat recognizes DONE without waiting for HTTP EOF and cancels provider body (5.1988ms)\n✔ provider payloads and tool calls are never forwarded as errors or actions (2.7671ms)\n✔ speech sends only text plus server voice to Cartesia, returns aligned PCM (2.1637ms)\n✔ speech bounds input and fails on incomplete PCM rather than inventing a sample (4.0068ms)\n✔ cancel downstream chat aborts upstream request and cancels remaining body (2.8516ms)\n✔ ASR handshake is server-owned; raw provider credentials cannot reach client (2.7678ms)\n✔ ASR rejects malformed frames and floods; no PCM is sent before readiness (0.9537ms)\n✔ ASR rejects malicious start options before provider access, Stop cancels setup (0.5594ms)\n✔ ASR maximum lifetime is fifteen minutes and finish sends endStream (0.5196ms)\n✔ Muse sanitization ignores additive fields and refuses oversized provider messages (0.3254ms)\nℹ tests 30\nℹ suites 0\nℹ pass 30\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 7720.8153\n"
+}

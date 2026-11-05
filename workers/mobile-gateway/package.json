@@ -1,0 +1,12 @@
+{
+  "name": "brivany-mobile-gateway",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check src/index.mjs",
+    "dev": "wrangler dev --config wrangler.jsonc --local --port 8789",
+    "dry-run": "wrangler deploy --config wrangler.jsonc --dry-run --outdir dist"
+  },
+  "devDependencies": { "wrangler": "4.156.0" }
+}

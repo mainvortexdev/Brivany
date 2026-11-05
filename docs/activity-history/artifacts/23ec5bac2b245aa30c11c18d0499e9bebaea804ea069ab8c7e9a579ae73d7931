@@ -1,0 +1,18 @@
+{
+  "suite": "translation-stop-device",
+  "started_at": "2026-11-03T23:15:37.534535+00:00",
+  "finished_at": "2026-11-03T23:15:38.987647+00:00",
+  "duration_seconds": 1.453112,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_translation_stop_device"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"passed\": true, \"scope\": \"actual_Windows_output_with_zero_PCM_and_stalled_provider_substitute\", \"provider_requests\": 0, \"microphone\": false, \"user_audio_captured\": false, \"audibility_tested\": false, \"stop_ms\": 0.0, \"inactive\": true, \"mixer_closed\": true, \"driver_closed\": true, \"queued_ms\": {\"original\": 0.0, \"translation\": 0.0}, \"provider_still_blocked\": true}\r\n"
+}

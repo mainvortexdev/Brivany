@@ -1,0 +1,59 @@
+# Voz provisional cuando falta evidencia de timbre
+
+4 de noviembre de 2026. El ensayo real
+`tmp/selected-video/inline-sync-1793811652292.json` expuso otra entrada a la
+asignación por tono: una pieza de 880 ms, clasificada como contenido desconocido,
+recibió categoría femenina no provisional aunque no había inferencia de timbre.
+La revisión posterior también encontró este camino en una pieza de 400 ms no
+incluida en el tramo completado. El ensayo no demuestra el género real de cada
+persona; sí demuestra que se comunicó certeza sin la evidencia requerida.
+
+La protección anterior dependía de que el resultado llevara la marca del modelo
+local. Las piezas desconocidas no ejecutan ese modelo, por lo que el aviso de
+incertidumbre faltaba y el tono agudo podía convertirse en una voz femenina
+considerada estable. El mismo riesgo existía si la inferencia local seguía
+pendiente al alcanzar su plazo.
+
+Ahora cada solicitud automática dentro de la pestaña exige evidencia de timbre
+independientemente del origen o existencia del consejo. Si no existe una
+asignación previa fiable ni una inferencia válida, la voz de catálogo se marca
+provisional. El tono sigue disponible como registro vocal. No se presenta una
+categoría de catálogo como identidad humana. Se conservan los estilos previos
+fiables de un grupo y la selección manual explícita.
+
+Los grupos acústicos ya diferenciados reciben una asignación estable de la
+paleta también cuando su categoría es provisional. Esto evita reducir dos
+grupos conocidos a un único Daniel. La paleta actual tiene dos variantes por
+estilo; esta corrección no promete ocho voces de catálogo únicas. Las piezas
+sin grupo no heredan la identidad del hablante anterior. La selección heredada
+de la ruta nativa conserva su comportamiento.
+
+Regresiones locales, sin inferencia pagada:
+
+- El recorrido ASR → MT → TTS sustituido reproduce piezas desconocidas de
+  400 y 880 ms con tono agudo; la petición TTS y la señal de doblaje quedan
+  provisionales y esas piezas no entrenan grupos ni ejecutan el modelo de voz.
+- Un modelo retenido más allá del plazo permite producir voz provisional sin
+  transformar su ausencia en una asignación femenina por tono.
+- Un prefijo preparado sin consejo de timbre conserva el estado provisional.
+- Las comprobaciones de selección cubren consejo ausente, vacío, débil y
+  fallido; preservan una asignación fiable previa, prioridad manual y estabilidad
+  de dos grupos A/B/A con voces distintas.
+
+`tools.verify` registró:
+
+- `docs/verification-history/sync-relay-20261104T170537-11cfbb22.json`: 76 pruebas
+  aprobadas; incluye además la nueva observabilidad del banco integrada por la
+  tarea principal.
+- `docs/verification-history/river-translation-20261104T170537-5d2305ab.json`: 62 pruebas
+  aprobadas. Se conservan en el informe avisos de cierre del servidor Muse local
+  y de conexión HTTP abortada durante cancelaciones; no fallaron las aserciones.
+
+Las pruebas nuevas usan transportes sustituidos y cero llamadas a APIs externas
+de traducción. No acreditan que el modelo identifique correctamente a todos los
+hablantes del video real ni cierran los fallos de latencia. El ensayo que motivó
+el cambio completó 12,460 s, con seis voces y señal medida; siguió fallando por
+retraso máximo de 8,341333 s y crecimiento de 4,053333 s. Primera señal a 9,479 s.
+Se observaron una conexión Muse, diez intentos MT, nueve solicitudes TTS y siete
+etapas de prosodia. El importe monetario es desconocido y no hubo escucha física
+confirmada. Esa evidencia anterior no se modifica para aparentar la corrección.

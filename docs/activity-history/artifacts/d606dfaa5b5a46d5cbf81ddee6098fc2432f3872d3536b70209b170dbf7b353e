@@ -1,0 +1,52 @@
+{
+  "checked_at": "2026-10-29T21:40:06.590097+00:00",
+  "checks": [
+    {
+      "path": "/connections",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/spaces",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/app",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/sous",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/chat-requests.js",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/spatial-presentation.js",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/spatial-assistant.js",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/api/spatial/assistant/status",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/api/integrations/chat/requests",
+      "http_status": 200,
+      "nonempty": true
+    }
+  ],
+  "external_calls": 0,
+  "scope": "Local HTTP availability only. No provider inference, microphone, account action or GPU job triggered."
+}

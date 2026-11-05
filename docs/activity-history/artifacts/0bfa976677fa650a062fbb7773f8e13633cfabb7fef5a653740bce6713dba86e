@@ -1,0 +1,40 @@
+{
+  "purpose": "Check documented timed-lyrics alternatives for current observed song; no lyrics, title or IDs saved.",
+  "requests": [
+    {
+      "provider": "Karalyr",
+      "code": 308,
+      "keys": [
+        "redirect",
+        "status"
+      ],
+      "synced": false,
+      "line_count": 0,
+      "duration_difference": -1275.92,
+      "title_match": false,
+      "artist_shape": "NoneType"
+    },
+    {
+      "provider": "SyncLRC",
+      "code": 200,
+      "keys": [
+        "lyrics",
+        "type",
+        "id",
+        "track",
+        "artist",
+        "album",
+        "duration",
+        "instrumental"
+      ],
+      "synced": false,
+      "line_count": 0,
+      "duration_difference": 0.08,
+      "title_match": true,
+      "artist_shape": "str"
+    }
+  ],
+  "provider_requests": 2,
+  "spotify_reads": 1,
+  "cost": "No paid model inference; monetary cost not measured."
+}

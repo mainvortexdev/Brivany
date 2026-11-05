@@ -1,0 +1,68 @@
+'use strict';
+const {chromium}=require(process.env.BRIVANY_PLAYWRIGHT_PATH || 'playwright');
+const assert=require('node:assert/strict'),crypto=require('node:crypto'),fs=require('node:fs'),path=require('node:path');
+const base=process.env.BRIVANY_TEST_URL,capture=process.env.BRIVANY_INGEST_CAPTURE,job=process.env.BRIVANY_INGEST_JOB,scene=process.env.BRIVANY_INGEST_SCENE;
+const assetHash=process.env.BRIVANY_INGEST_ASSET_SHA256,artifacts=path.resolve(__dirname,'../tmp/ingest-ui');
+const sha=raw=>crypto.createHash('sha256').update(raw).digest('hex');
+(async()=>{
+  const browser=await chromium.launch({headless:true,channel:process.env.BRIVANY_BROWSER_CHANNEL || 'msedge',args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+  try{
+    const context=await browser.newContext({viewport:{width:1440,height:1000},serviceWorkers:'block',acceptDownloads:true}),page=await context.newPage(),external=[],errors=[],checks=[],requests=[];
+    await context.route('**/*',route=>{if(new URL(route.request().url()).origin!==base){external.push(route.request().url());return route.abort();}return route.continue();});
+    page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>requests.push({url:request.url(),method:request.method()}));
+    await page.goto(base+'/spaces?space='+capture);await page.waitForFunction(()=>document.querySelector('#capture-panel').dataset.complete==='true');
+    assert.equal(requests.filter(item=>item.url.endsWith('/results')).length,0);
+    assert.notEqual(await page.locator('#spatial-canvas').getAttribute('data-ready'),'true');
+    await page.locator('#reconstruction-results summary').click();
+    const resultsResponse=page.waitForResponse(response=>response.url().endsWith('/results'));
+    await page.locator('#reconstruction-results > button').click();const listed=await (await resultsResponse).json();
+    await page.getByRole('button',{name:'Añadir al visor →',exact:true}).waitFor();
+    assert.equal(listed.items.length,1);assert.equal(listed.items[0].job_id,job);assert.equal(listed.items[0].imported,false);
+    assert.equal(listed.items[0].eligible_for_import,true);assert.equal(listed.review_revalidation_required,true);
+    assert.match(await page.locator('#reconstruction-results').textContent(),/escala y fidelidad sin verificar/);
+    checks.push('capture opens without automatic result queries or GPU work; explicit consultation reads the saved completed receipt');
+    fs.mkdirSync(artifacts,{recursive:true});await page.screenshot({path:path.join(artifacts,'result-1440.png'),fullPage:true});
+    const importResponse=page.waitForResponse(response=>response.url().endsWith('/dispatch/'+job+'/import'));
+    await page.getByRole('button',{name:'Añadir al visor →',exact:true}).click();const imported=await (await importResponse).json();
+    assert.equal(imported.import.provider_invoked,false);assert.equal(imported.import.duplicate,false);
+    assert.equal(imported.import.geometry_fidelity_verified,false);assert.equal(imported.scene.scene.origin,'capture_reconstruction');
+    await page.waitForFunction(()=>document.querySelector('#spatial-canvas').dataset.ready==='true');
+    assert.equal(new URL(page.url()).searchParams.get('space'),scene);
+    assert.equal(await page.locator('.object-button').count(),1);assert.ok(Number(await page.locator('#spatial-canvas').getAttribute('data-draw-calls'))>0);
+    assert.match(await page.locator('#detail-origin').textContent(),/Reconstrucción por revisar/);
+    assert.match(await page.locator('.space-item[data-space-id="'+scene+'"] small').textContent(),/Reconstrucción · por revisar/);
+    assert.match(await page.locator('#scene-limitations').textContent(),/único objeto/);
+    checks.push('explicit import publishes a real library entry and GLB rendered in WebGL while keeping single-object scope and unverified fidelity');
+    const payload=await (await page.request.get(base+'/api/spatial/scenes/'+scene)).json(),asset=payload.asset_urls['reconstructed-object'];
+    assert.ok(asset.includes('signature='));const raw=await page.request.get(base+asset);assert.equal(raw.status(),200);assert.equal(sha(await raw.body()),assetHash);
+    assert.equal((await page.request.get(base+asset.split('?')[0])).status(),403);
+    checks.push('viewer uses the exact saved GLB through a signed local URL; the unsigned media request is denied');
+    await page.locator('.object-button[data-object-id="object-1"]').click();
+    await page.locator('#position-x').fill('0.4');await page.locator('#apply-position').click();
+    await page.waitForFunction(()=>document.querySelector('#save-state').textContent==='Guardado localmente' && document.querySelector('#position-x').value==='0.4');
+    const edited=await (await page.request.get(base+'/api/spatial/scenes/'+scene)).json();assert.equal(edited.revision,2);assert.equal(edited.scene.objects[0].transform.position[0],.4);
+    await page.locator('.space-item[data-space-id="'+capture+'"]').click();await page.waitForFunction(()=>document.querySelector('#capture-panel').dataset.complete==='true' && !document.querySelector('#capture-panel').hidden);
+    if(!await page.locator('#reconstruction-results').evaluate(node=>node.open))await page.locator('#reconstruction-results summary').click();
+    await page.locator('#reconstruction-results > button').click();await page.getByRole('button',{name:'Abrir objeto ↗',exact:true}).waitFor();
+    const duplicateResponse=page.waitForResponse(response=>response.url().endsWith('/dispatch/'+job+'/import'));
+    await page.getByRole('button',{name:'Abrir objeto ↗',exact:true}).click();const duplicate=await (await duplicateResponse).json();assert.equal(duplicate.import.duplicate,true);
+    await page.waitForFunction(()=>document.querySelector('#spatial-canvas').dataset.ready==='true');
+    await page.locator('.object-button[data-object-id="object-1"]').click();assert.equal(Number(await page.locator('#position-x').inputValue()),.4);
+    const reopened=await (await page.request.get(base+'/api/spatial/scenes/'+scene)).json();assert.equal(reopened.revision,2);
+    checks.push('editing persists revision two; reopening through the same receipt preserves edits and does not create another scene');
+    await page.locator('#scene-details').evaluate(node=>node.open=true);
+    assert.equal(await page.locator('#export-space').isDisabled(),false);
+    const [download]=await Promise.all([page.waitForEvent('download'),page.locator('#export-space').click()]);
+    const downloaded=fs.readFileSync(await download.path());assert.equal(downloaded.subarray(0,2).toString(),'PK');assert.ok(downloaded.length>500);
+    checks.push('the published and edited scene exports as an actual ZIP using its local signed endpoint');
+    await page.screenshot({path:path.join(artifacts,'object-1440.png'),fullPage:true});
+    await page.setViewportSize({width:390,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
+    await page.screenshot({path:path.join(artifacts,'object-390.png'),fullPage:true});
+    assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
+    assert.equal(requests.filter(item=>item.method==='POST' && item.url.endsWith('/import')).length,2);
+    const report={status:'passed',scope:'Actual local browser, HTTP, SQLite, generated GLB, WebGL and ZIP; Modal SDK substituted in the fixture.',checks,
+      external_calls:0,gpu_inference:false,real_reconstruction_verified:false,geometry_fidelity_verified:false,metric_scale_verified:false,physical_realism_verified:false,physical_devices_tested:false,
+      screenshots:['tmp/ingest-ui/result-1440.png','tmp/ingest-ui/object-1440.png','tmp/ingest-ui/object-390.png']};
+    fs.writeFileSync(path.join(artifacts,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));await context.close();
+  }finally{await browser.close();}
+})().catch(error=>{console.error(error.stack);process.exitCode=1;});

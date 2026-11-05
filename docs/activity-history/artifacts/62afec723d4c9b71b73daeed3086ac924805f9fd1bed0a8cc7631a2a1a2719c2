@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-translation",
+  "started_at": "2026-11-02T02:05:56.796746+00:00",
+  "finished_at": "2026-11-02T02:05:58.512324+00:00",
+  "duration_seconds": 1.715578,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_work_translation"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "...FF....\r\n======================================================================\r\nFAIL: test_scheduler_stall_must_not_replay_four_frames_as_an_instant_burst (tests.test_work_translation.PacingTests.test_scheduler_stall_must_not_replay_four_frames_as_an_instant_burst) (flow_pause=False)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_work_translation.py\", line 129, in test_scheduler_stall_must_not_replay_four_frames_as_an_instant_burst\r\n    self.assertEqual(rejected,[],f'Legitimate capture violates the realtime gate: {arrivals}')\r\nAssertionError: Lists differ: [4, 5, 6, 7, 8] != []\r\n\r\nFirst list contains 5 additional elements.\r\nFirst extra element 0:\r\n4\r\n\r\n- [4, 5, 6, 7, 8]\r\n+ [] : Legitimate capture violates the realtime gate: [10.0, 10.36, 10.36, 10.36, 10.36, 10.4, 10.48, 10.56, 10.64]\r\n\r\n======================================================================\r\nFAIL: test_scheduler_stall_must_not_replay_four_frames_as_an_instant_burst (tests.test_work_translation.PacingTests.test_scheduler_stall_must_not_replay_four_frames_as_an_instant_burst) (flow_pause=True)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_work_translation.py\", line 129, in test_scheduler_stall_must_not_replay_four_frames_as_an_instant_burst\r\n    self.assertEqual(rejected,[],f'Legitimate capture violates the realtime gate: {arrivals}')\r\nAssertionError: Lists differ: [4, 5, 6, 7, 8] != []\r\n\r\nFirst list contains 5 additional elements.\r\nFirst extra element 0:\r\n4\r\n\r\n- [4, 5, 6, 7, 8]\r\n+ [] : Legitimate capture violates the realtime gate: [10.0, 10.36, 10.36, 10.36, 10.36, 10.4, 10.48, 10.56, 10.64]\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.617s\r\n\r\nFAILED (failures=2)\r\n"
+}

@@ -1,0 +1,56 @@
+# Verificación visual del banco y arranque nativo observado · 064
+
+4 de noviembre de 2026. Esta continuación conserva las limitaciones
+registradas antes del [ensayo real 062](traduccion-auditiva-fases-reales-062.md).
+La revisión posterior comprobó su presentación en el navegador integrado y
+el estado público de una nueva instancia nativa. No inició otra traducción.
+
+## Presentación de las fases
+
+Se inspeccionaron el árbol de accesibilidad y una captura del banco 49204.
+La interfaz mostró la preparación completa **12,06 s**, recepción **7,02 s**,
+ASR **2,59 s**, clasificación **0,02 s**, timbre **1,97 s** y prosodia
+**2,34 s**. Son redondeos de las métricas guardadas en el ensayo, no otras
+mediciones de latencia. El texto aclara que timbre y prosodia se ejecutan
+simultáneamente y que sus duraciones no se suman.
+
+En el ancho observado de 443 px no hubo solapamiento de esos elementos; la
+tabla dispuso de desplazamiento horizontal. Esta revisión acredita esa
+presentación y ese ancho, no todas las resoluciones ni accesibilidad exhaustiva.
+La captura temporal `tmp/selected-video/bank-prefix-phases-062.png` permanece
+local y **no se adjunta a la bitácora**. La evidencia registrada conserva sólo
+las cantidades y la nota de observación, sin fotogramas originales del video.
+
+La comprobación visual no recalifica el ensayo 062: continúa rechazado por
+retraso y sin atribución humana o escucha física verificadas. Tampoco inicia
+otra sesión de proveedores para mostrar los resultados ya existentes.
+
+## Nueva instancia nativa, sin recarga forzada
+
+Se comprobó que el proceso anterior 8744 ya no existía y que el puerto normal
+48217 estaba libre. Se inició el launcher oficial con `--island`, que creó
+el proceso 5620 y su hijo 21976. El relay ocupó 48217 y la interfaz HTTP local
+quedó en 58536. No se detuvo por la fuerza la instancia anterior ni se recargó
+la extensión instalada.
+
+La lectura pública de `/api/desktop/runtime` mostró una extensión emparejada,
+Work conectado, cero sesiones de traducción activas, cero prefijos en caché y
+sin último fallo informado. Es evidencia de arranque y enlace en ese momento.
+Un puerto abierto o un emparejamiento no prueban que se haya cargado el módulo
+de captura ni que se produzca doblaje en el perfil personal.
+
+Una activación posterior mediante el launcher oficial sin `--island` trajo
+la ventana Brivany 12782798. Su árbol de accesibilidad expuso el botón
+«Abrir Melodi WorkSpace», índice 46 de aquella lectura. Dos intentos de clic
+de control por accesibilidad fallaron por la caché de referencias del control;
+una captura de la ventana nativa agotó su plazo. No se declara que el panel
+se abriera a partir de esas acciones ni que ese fallo del control demuestre
+un defecto de la lógica de traducción.
+
+No se inició captura o doblaje nuevo en el perfil personal. La comprobación
+del recorrido Work → extensión → audio sigue pendiente. Las solicitudes aquí
+descritas fueron controles locales, lecturas del estado público y presentación
+de resultados existentes, sin nuevas solicitudes de inferencia de traducción.
+No se contó todo el tráfico incidental del ordenador. La evidencia numérica
+está en `tmp/selected-video/visual-and-native-state-064.json`; no incluye
+credenciales, transcripciones, audio ni capturas del video.

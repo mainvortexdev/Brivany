@@ -1,0 +1,46 @@
+{
+  "type": "retrospective_real_trial_buffer_review",
+  "source_report": "inline-sync-1793809294737.json",
+  "source_video_id": "sr_iLGKNsxU",
+  "actual_capture_anchor_ms": 305736,
+  "completed_cues": 2,
+  "completed_relative_source_end_ms": 3751.111,
+  "completed_absolute_source_end_ms": 309487.111,
+  "first_signal_from_activation_ms": 7435,
+  "first_signal_from_capture_ms": 6257,
+  "maximum_media_lag_seconds": 6.437333,
+  "maximum_lag_growth_seconds": 0.464,
+  "onset_sync_errors_ms": [
+    -12,
+    -2
+  ],
+  "voice_rates": [
+    1.065088631350458,
+    1.147059034385852
+  ],
+  "original_fallback_seconds": 0,
+  "source_interrupted": false,
+  "decoder_error_observed": false,
+  "published_cues_missing_within_completed_span": 0,
+  "active_voice_truncation_observed": false,
+  "gap_recovery_execution_verified": false,
+  "gap_recovery_limit": "Both cue recovered_gap flags are false. Final media position3.722667 precedes the first gap in the final recorded ranges at4.735-5.039. The report does not preserve every earlier range or recovery action.",
+  "speaker_match_verified": false,
+  "physical_listening_verified": false,
+  "observed_trial_consumption": {
+    "muse_live_session_acks": 1,
+    "muse_live_input_started": 1,
+    "direct_meta_mt_attempts": 4,
+    "meta_caption_prefetch_attempts": 1,
+    "cartesia_tts_requests": 2,
+    "meta_prosody_attempts": 3,
+    "prefix_preparations": 0,
+    "billing_amount": null,
+    "remote_gpu_seconds": null,
+    "all_network_requests_counted": false
+  },
+  "new_provider_inferences_for_this_review": 0,
+  "original_media_attached": false,
+  "transcripts_attached": false,
+  "scope": "Short completed span only; does not validate long continuity, actual gap recovery, timbre correspondence or the full product."
+}

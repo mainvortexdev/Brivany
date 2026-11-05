@@ -1,0 +1,25 @@
+{
+  "checked_at": "2026-10-30T13:03:56.016769+00:00",
+  "purpose": "Verify two catalog voice identities without speech synthesis.",
+  "external_calls": 2,
+  "inference_calls": 0,
+  "monetary_cost": null,
+  "results": [
+    {
+      "id": "47c38ca4-5f35-497b-b1a3-415245fb35e1",
+      "name": "Daniel",
+      "gender": "masculine",
+      "status": "active",
+      "language": "en",
+      "http_status": 200
+    },
+    {
+      "id": "db6b0ed5-d5d3-463d-ae85-518a07d3c2b4",
+      "name": "Skylar",
+      "gender": "feminine",
+      "status": "active",
+      "language": "en",
+      "http_status": 200
+    }
+  ]
+}

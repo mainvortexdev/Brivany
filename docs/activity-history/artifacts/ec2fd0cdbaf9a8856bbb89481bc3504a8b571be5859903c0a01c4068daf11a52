@@ -1,0 +1,99 @@
+{
+  "status": "passed",
+  "native_windows": "real",
+  "screen_capture": false,
+  "audio_capture": false,
+  "inference_calls": 0,
+  "spotify": "substituted",
+  "background_network_consumption_known": false,
+  "baseline_work_area": {
+    "left": 0,
+    "top": 40,
+    "right": 1280,
+    "bottom": 994
+  },
+  "reserved_bar": {
+    "left": 0,
+    "top": 40,
+    "right": 1280,
+    "bottom": 80
+  },
+  "maximized_fixture_visible_bounds": {
+    "left": 0,
+    "top": 80,
+    "right": 1280,
+    "bottom": 994
+  },
+  "newly_maximized_fixture_bounds": {
+    "left": 0,
+    "top": 80,
+    "right": 1280,
+    "bottom": 994
+  },
+  "last_anchor_check": {
+    "expected": {
+      "width": 620,
+      "height": 232,
+      "clip_left": 52,
+      "host_width": 680,
+      "revision": 6
+    },
+    "css": {
+      "left": 52,
+      "width": 620
+    },
+    "host_now": "music-player",
+    "ui": {
+      "status": "",
+      "panel": "Música",
+      "api": [
+        "spotify_playback",
+        "spotify_status"
+      ]
+    }
+  },
+  "anchored_panels": [
+    {
+      "anchor": 8,
+      "host": {
+        "left": 0,
+        "top": 86,
+        "right": 680,
+        "bottom": 490
+      },
+      "content_left": 8,
+      "content_width": 620
+    },
+    {
+      "anchor": 1272,
+      "host": {
+        "left": 600,
+        "top": 86,
+        "right": 1280,
+        "bottom": 490
+      },
+      "content_left": 52,
+      "content_width": 620
+    }
+  ],
+  "appbar_reserved": true,
+  "maximized_existing_fixture_below_bar": true,
+  "newly_maximized_fixture_below_bar": true,
+  "popup_does_not_change_work_area": true,
+  "bar_visible_with_chat": true,
+  "taskbar_hidden_verified": true,
+  "native_opacity_verified": true,
+  "work_area_restored": true,
+  "checks": [
+    "full-width native Windows AppBar",
+    "existing and newly maximized owned fixtures respect reserved work area",
+    "floating panel overlays without reserving extra space",
+    "collapse hides panel and preserves strip",
+    "bar remains with the main chat",
+    "auxiliary windows have no taskbar entries",
+    "opaque native bar and panel; left and right cursor anchoring",
+    "exit restores baseline desktop work area",
+    "no capture or inference"
+  ],
+  "cleanup_work_area_restored": true
+}

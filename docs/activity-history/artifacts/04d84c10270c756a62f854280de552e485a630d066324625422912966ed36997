@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "domains": [
+    {
+      "hostname": "brivany.example",
+      "service": "brivany-site",
+      "environment": "production",
+      "id": "2bb488543a4e45d49f5b11b3e982a3f7cdea3cf8"
+    }
+  ],
+  "deployed_version": "9e0c388a-759a-426d-abb9-be79dde2ad08",
+  "website_purpose": "temporary preparation page; official site not developed yet"
+}

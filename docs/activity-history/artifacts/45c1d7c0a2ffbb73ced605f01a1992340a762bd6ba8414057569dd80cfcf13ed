@@ -1,0 +1,110 @@
+# Melodi WorkSpace · negro opaco, herramientas y música
+
+La [revisión compacta vigente](melodi-workspace-compacto.md) sustituye los paneles
+anchos, los ojos detrás de botones y la configuración técnica visible de Spotify
+descritos abajo. Esta página conserva el alcance del hito anterior.
+
+30 de octubre de 2026, America/La_Paz. Esta revisión sustituye el aspecto de
+[la primera barra WorkSpace](melodi-workspace.md). Conserva sus dos ventanas
+nativas y la reserva AppBar de 40 píxeles lógicos en Windows.
+
+La barra y el panel usan negro opaco, sin logos, eslóganes, tarjetas, acceso de
+volver al chat ni secciones de Voz/Tareas. Las herramientas se distribuyen por
+la barra; en anchos reducidos quedan también accesibles desde Más. Captura,
+traducción, espacios, human-skills, práctica, video, Edits, Sous, conexiones,
+bitácora, servicios y ajustes abren sus recorridos existentes. Se mantienen los
+motores de voz live y agentes del chat, aunque ya no tengan tarjetas aquí.
+
+El panel se ancla a la posición horizontal de aproximación del cursor, con
+márgenes y región nativa coincidentes a izquierda y derecha. No reserva más
+escritorio. Se mantienen la intención de apertura de 160 ms, la demora de salida
+de 1200 ms, la cancelación al reentrar y el cierre por Escape. El teclado y el
+selector nativo de letras mantienen abierto el panel durante su interacción.
+
+Los ojos recorren horizontalmente la barra en una capa inferior a los botones
+opacos. Las miradas al cursor duran unos tres segundos y son ocasionales. Su
+dirección se calcula desde la posición actual del rostro. Tras 20 segundos sin
+interacción observada, con el panel cerrado y sin trabajo/live/captura activos,
+se detiene el recorrido y aparecen párpados de reposo con respiración suave.
+Movimiento reducido conserva el estado visual y desactiva el movimiento.
+No se guardan coordenadas ni recorridos del puntero.
+
+## Spotify
+
+Música incorpora configuración, vinculación externa, estado de reproducción,
+pausa/reanudación, anterior/siguiente, búsqueda temporal, volumen, aleatorio,
+repetición y selección de dispositivo Spotify Connect. No crea un nuevo
+dispositivo de audio: controla los dispositivos disponibles de la cuenta.
+Los controles respetan restricciones y disponibilidad observadas en Spotify.
+
+Para vincular, crear/abrir una aplicación en el Dashboard de Spotify, registrar
+`http://127.0.0.1/spotify/callback`, guardar su Client ID público y pulsar
+Vincular Spotify. También puede configurarse `BRIVANY_SPOTIFY_CLIENT_ID`.
+El botón Cambiar Client ID permite corregir la configuración sin editar archivos.
+La autorización usa PKCE S256, estado de un solo uso con caducidad y puerto
+loopback dinámico. No necesita Client Secret. El usuario inicia sesión en su
+navegador; Brivany no recibe ni solicita su contraseña.
+
+El propietario necesita Premium en modo desarrollo y las cuentas deben estar
+permitidas por la aplicación; el control de reproducción está sujeto a Premium
+y a la disponibilidad del dispositivo. Referencias oficiales:
+[PKCE](https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow),
+[redirect loopback y puertos dinámicos](https://developer.spotify.com/documentation/web-api/concepts/redirect_uri),
+[modo desarrollo](https://developer.spotify.com/documentation/web-api/concepts/quota-modes),
+[estado del reproductor](https://developer.spotify.com/documentation/web-api/reference/get-information-about-the-users-current-playback),
+[transferencia](https://developer.spotify.com/documentation/web-api/reference/transfer-a-users-playback).
+
+Los tokens permanecen en el proceso nativo y se guardan protegidos con DPAPI del
+usuario en Windows. En sistemas sin ese protector, la sesión es solo de memoria;
+no se crea un archivo de tokens en texto plano. Desvincular elimina la copia
+local; no equivale a revocar permisos en la cuenta Spotify. No se reutilizaron
+credenciales de Cognira ni se incluyeron secretos en evidencias.
+
+El reproductor consulta la API solo con la cuenta vinculada y Música abierto;
+usa caché de estado/dispositivos y espera tras respuestas 429. Las operaciones
+no se reintentan automáticamente, para evitar duplicar saltos o transferencias.
+La aceptación de un control no se presenta como prueba de reproducción efectiva.
+
+La [referencia pública de Spotify](https://developer.spotify.com/documentation/web-api/reference/)
+no documenta un endpoint público de letras. La vista de letra permite importar
+LRC sincronizado o TXT del usuario, conservado en memoria durante esta sesión,
+y abrir la canción en Spotify. No extrae letras con cookies ni endpoints privados.
+Los textos se muestran como datos; una canción que cambia durante la selección
+no recibe por error la letra anterior. La sincronización interpola el progreso
+observado; no se ha medido su precisión con reproducción física.
+
+## Verificación y límites
+
+- `spotify`: ocho pruebas locales de PKCE, estado/caducidad/reemplazo/cancelación,
+  persistencia sustituida, renovación, caché, controles/dispositivos restringidos,
+  rate limit sin reintentos, letras y rechazo de asociación a otra canción.
+  No acceden a Spotify ni reproducen música.
+- `work`: 26 pruebas de PCM/consentimiento y ciclo de vida, anclajes en pantallas
+  pequeñas/con desplazamiento, opacidad, mirada relativa al rostro y AppBar.
+- `island-ui`: Edge headless con puente y Spotify sustituidos. Comprueba barra
+  negra, elementos retirados, proximidad/demora, reposo, mirada ocasional,
+  movimiento reducido, vinculación, controles, cambio de dispositivo y letra.
+  Cinco tamaños entre 680 × 404 y 280 × 240; controles y márgenes, incluida la
+  propuesta de traducción y el reproductor conectado en el menor tamaño.
+  Capturas sintéticas en `tmp/workspace-premium-ui/`.
+- `desktop`: 21 pruebas de regresión. `work-events-ui`: chat live, Edits,
+  capacidades, esperas y captura/traducción con servicios sustituidos.
+- `tmp/workspace-premium-native/report.json`: ventanas Windows/WebView2 reales
+  propias. Alfa 255 en barra/panel, anclaje izquierdo/derecho coincidente con CSS,
+  reserva de una sola franja, maximización respetada, exclusión de barra de tareas
+  y recuperación del área de trabajo al cerrar. La barra anterior estaba activa:
+  el ensayo aislado pasó de y=40 a y=80 y restauró y=40. No capturó pantalla/audio
+  ni pidió inferencia; consumo de red de fondo del runtime desconocido.
+
+Se conservaron los informes fallidos y sus correcciones: expectativas antiguas
+de Voz/Tareas, recortes en tamaño pequeño, una mirada repetida demasiado pronto
+y una conversión de codificación durante la edición. Los informes finales
+registrados verifican los recorridos corregidos. El reinicio de desarrollo
+confirmó retirada explícita de la AppBar propia antes de detener el proceso y
+nueva reserva única de 40 px. Detener un proceso a la fuerza por sí solo no
+acredita liberar una AppBar; no se sustituyó el área global de trabajo.
+
+Spotify está implementado pero **no vinculado ni ensayado con una cuenta real**.
+Las pruebas no acreditan reproducción física, audio live simultáneo, precisión
+musical de letras ni reserva nativa equivalente en macOS/Linux. Los informes y
+esta revisión se incorporan a la bitácora con snapshots, sin originales del usuario.

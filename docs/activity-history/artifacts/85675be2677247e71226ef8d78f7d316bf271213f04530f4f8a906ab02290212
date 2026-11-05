@@ -1,0 +1,177 @@
+{
+  "status": "failed",
+  "checks": {
+    "multi_track_queue": {
+      "passed": true,
+      "queued_distinct": 20
+    },
+    "pause": {
+      "passed": true,
+      "confirmed_ms": 157
+    },
+    "resume": {
+      "passed": true,
+      "confirmed_ms": 312
+    },
+    "next": {
+      "passed": true,
+      "confirmed_ms": 469
+    },
+    "previous": {
+      "passed": true,
+      "confirmed_ms": 172
+    },
+    "seek": {
+      "passed": true,
+      "confirmed_ms": 172
+    },
+    "volume": {
+      "passed": true,
+      "confirmed_ms": 0
+    },
+    "shuffle_on": {
+      "passed": true,
+      "confirmed_ms": 1375
+    },
+    "shuffle_off": {
+      "passed": true,
+      "confirmed_ms": 906
+    },
+    "repeat_context": {
+      "passed": true,
+      "confirmed_ms": 1656
+    },
+    "repeat_track": {
+      "passed": true,
+      "confirmed_ms": 1063
+    },
+    "repeat_off": {
+      "passed": true,
+      "confirmed_ms": 797
+    }
+  },
+  "screen_audio_capture": false,
+  "cost": "No paid inference; API/SDK/CDN cost not measured.",
+  "checking": "repeat_off",
+  "error": "No se confirmó el control en el estado real.",
+  "failure_snapshot": {
+    "playing": true,
+    "progress_ms": 213523,
+    "duration_ms": 214227,
+    "volume": 35,
+    "shuffle": false,
+    "repeat": "off"
+  },
+  "failure_health": {
+    "available": true,
+    "muted": false,
+    "document_audio": false,
+    "visible": true
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/v1/me/player",
+      "code": 204,
+      "ms": 235
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/currently-playing",
+      "code": 204,
+      "ms": 156
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 187
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/recently-played",
+      "code": 200,
+      "ms": 313
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/tracks",
+      "code": 200,
+      "ms": 719
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 188
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 187
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player",
+      "code": 204,
+      "ms": 469
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 172
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/play",
+      "code": 204,
+      "ms": 297
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/shuffle",
+      "code": 200,
+      "ms": 609
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/shuffle",
+      "code": 200,
+      "ms": 750
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/repeat",
+      "code": 200,
+      "ms": 906
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/repeat",
+      "code": 200,
+      "ms": 453
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/repeat",
+      "code": 200,
+      "ms": 484
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/shuffle",
+      "code": 200,
+      "ms": 828
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/repeat",
+      "code": 200,
+      "ms": 547
+    }
+  ],
+  "known_native_api_calls": 17,
+  "sdk_network_calls": "not measured"
+}

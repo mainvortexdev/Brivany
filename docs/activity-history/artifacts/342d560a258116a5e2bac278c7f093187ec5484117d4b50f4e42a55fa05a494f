@@ -1,0 +1,31 @@
+{
+  "type": "retrospective sanitized provider-shape probes",
+  "provider_requests": 3,
+  "billing_usd": null,
+  "original_conversation_saved": false,
+  "cases": [
+    {
+      "result": "completed",
+      "search_items": 3,
+      "final_answer_has_citations": true
+    },
+    {
+      "result": "http_400",
+      "attempted_tool_choice": "required",
+      "supported": false
+    },
+    {
+      "result": "incomplete",
+      "search_items": 3,
+      "last_message_citations": 0,
+      "max_output_tokens": 2400
+    }
+  ],
+  "account_transport_probe": {
+    "report": "tmp/meta-weather-account-real.json",
+    "transport_passed": true,
+    "local_date_validation": "failed_after_manual_review",
+    "reason": "The answer used the UTC day rather than Las Terrenas local day.",
+    "superseded_by": "tmp/meta-weather-local-date-real.json"
+  }
+}

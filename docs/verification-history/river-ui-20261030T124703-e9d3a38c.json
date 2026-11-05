@@ -1,0 +1,18 @@
+{
+  "suite": "river-ui",
+  "started_at": "2026-10-30T12:47:03.486293+00:00",
+  "finished_at": "2026-10-30T12:47:08.137330+00:00",
+  "duration_seconds": 4.651037,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_river_ui"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"checks\": [\r\n    \"exactly three controls\",\r\n    \"manual link loads without capture or autoplay\",\r\n    \"Spanish English French selection\",\r\n    \"real AudioWorklet sends 80 ms frames through loopback Muse, Groq SSE and Cartesia WS\",\r\n    \"French tokens reach captions\",\r\n    \"stop pauses source and releases capture\",\r\n    \"daily reservation displayed\",\r\n    \"known 403 blocks paid pipeline\",\r\n    \"desktop and 390px mobile fit\"\r\n  ],\r\n  \"external_calls\": 0,\r\n  \"paid_inference\": false,\r\n  \"real_youtube_verified\": false,\r\n  \"physical_output_verified\": false,\r\n  \"translation_quality_verified\": false,\r\n  \"errors\": []\r\n}\r\n\r\nTraceback (most recent call last):\r\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\r\n  File \"<frozen runpy>\", line 88, in _run_code\r\n  File \"<local-path>\\tools\\check_river_ui.py\", line 37, in <module>\r\n    if __name__=='__main__':main()\r\n                            ^^^^^^\r\n  File \"<local-path>\\tools\\check_river_ui.py\", line 31, in main\r\n    raise AssertionError('Expected one bounded streaming session and released output.')\r\nAssertionError: Expected one bounded streaming session and released output.\r\n"
+}

@@ -1,0 +1,18 @@
+{
+  "suite": "workspace-chat-native",
+  "started_at": "2026-11-04T01:13:42.506165+00:00",
+  "finished_at": "2026-11-04T01:13:54.953954+00:00",
+  "duration_seconds": 12.447789,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_workspace_native"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"type\": \"actual_owned_WebView2_windows_with_synthetic_conversation\", \"passed\": false, \"external_calls\": 0, \"microphone_used\": false, \"OS_input_sent\": false, \"appbar_reserved_by_test\": false, \"phase\": \"voice_canvas\", \"auditory_native_one_click_and_stop_without_navigation\": true, \"translation_stress_cycles\": 12, \"bounded_native_script_responses\": true, \"native_surfaces_rgba\": {\"form\": [255, 0, 0, 0], \"webview\": [255, 0, 0, 0]}, \"selector_fade_cycles\": 3, \"selector_full_region_before_show\": true, \"reduced_motion_entry_immediate\": true, \"music_initial_geometry\": [720, 232], \"music_library_initial_geometry\": [720, 404], \"music_connection_rendered_before_show\": true, \"chat_compact_then_grows_with_messages\": true, \"error\": \"AssertionError()\", \"traceback\": \"Traceback (most recent call last):\\n  File \\\"<local-path>\\\\tools\\\\check_workspace_native.py\\\", line 259, in test\\n    assert bridge._voice_window.evaluate_js(\\\"(()=>{const c=document.querySelector('#voice-wave');return c.width>0&&c.height>0&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some(n=>n>0)})()\\\")\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\nAssertionError\\n\"}\r\n"
+}

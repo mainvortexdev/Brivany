@@ -1,0 +1,24 @@
+{
+  "suite": "sync-relay",
+  "started_at": "2026-11-04T16:12:54.558486+00:00",
+  "finished_at": "2026-11-04T16:13:32.161193+00:00",
+  "duration_seconds": 37.602707,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_sync_relay",
+    "tests.test_prefix_translation",
+    "tests.test_inline_clauses",
+    "tests.test_dubbing_timing",
+    "tests.test_inline_timbre_pipeline",
+    "tests.test_dubbing_delivery_pipeline"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".......INFO: Created TensorFlow Lite XNNPACK delegate for CPU.\n.......................................................\r\n----------------------------------------------------------------------\r\nRan 62 tests in 36.236s\r\n\r\nOK\r\n"
+}

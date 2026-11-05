@@ -1,0 +1,15 @@
+{
+  "suite": "computer-files",
+  "started_at": "2026-11-01T20:31:35.665270+00:00",
+  "finished_at": "2026-11-01T20:31:36.784136+00:00",
+  "duration_seconds": 1.118866,
+  "command": [
+    "node",
+    "--test",
+    "tests/file-approval.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ generic Save, autosaving editors and self-approval cannot bypass the file gate (9.0055ms)\n✔ preparation does not delete; one-use commit uses trash with no unlink fallback (48.9556ms)\n✔ expired, changed or redirected files are never committed (66.3807ms)\n✔ replace needs an existing destination and preserves its old bytes (177.0736ms)\n✔ move uses a new destination; changed targets and extra fields are rejected (50.8881ms)\n✔ trash failure keeps original; cancellation before commit consumes ticket (29.7663ms)\n✔ system, hard-linked, hidden, executable and outside-scope files are excluded (64.9811ms)\nℹ tests 7\nℹ suites 0\nℹ pass 7\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 800.2682\n"
+}

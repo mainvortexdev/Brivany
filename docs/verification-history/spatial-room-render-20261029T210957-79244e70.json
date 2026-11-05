@@ -1,0 +1,18 @@
+{
+  "suite": "spatial-room-render",
+  "started_at": "2026-10-29T21:09:57.910519+00:00",
+  "finished_at": "2026-10-29T21:10:07.470291+00:00",
+  "duration_seconds": 9.559772,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_spatial_room"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"checks\": [\r\n    \"Actual GLB positions/normals/vertex colors/triangles load in existing WebGL viewer.\",\r\n    \"Synthetic source is labeled demonstration and retains relative scale.\",\r\n    \"Selection and desktop/mobile layouts remain functional.\"\r\n  ],\r\n  \"external_calls\": 0,\r\n  \"model_executed\": false,\r\n  \"gpu_inference\": false,\r\n  \"room_reconstruction_verified\": false,\r\n  \"physical_devices_tested\": false\r\n}\r\n\r\n"
+}

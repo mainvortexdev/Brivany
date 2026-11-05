@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "scope": "real browser getUserMedia, production PCM worklet and one Meta Muse ASR session",
+  "physical_microphone_used": false,
+  "input": "own offline synthetic fixture",
+  "audio_or_transcript_in_report": false,
+  "billing_usd": null,
+  "ready_seconds": 1.346,
+  "asr_sessions": 1,
+  "finish_seconds": 0.194,
+  "error": "",
+  "words_recognized": [
+    "prueba",
+    "mensaje",
+    "enviar"
+  ],
+  "finals": 3,
+  "level_updates": 142,
+  "peak": 1,
+  "released": true
+}

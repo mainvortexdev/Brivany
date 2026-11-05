@@ -1,0 +1,454 @@
+{
+  "type": "retrospective_real_31_second_gate_and_early_publication_audit",
+  "reviewed_at": "2026-11-04T19:38:29.715092+00:00",
+  "trial_reports": {
+    "069": "tmp/selected-video/inline-sync-1793820975568.json",
+    "065": "tmp/selected-video/inline-sync-1793819856033.json"
+  },
+  "terminal_bank_report": "tmp/selected-video/lab-consumption-49207-069.json",
+  "started_at": "2026-11-04T19:35:16.496446+00:00",
+  "finished_at": "2026-11-04T19:36:15.608843+00:00",
+  "new_provider_requests_during_review": 0,
+  "accepted": false,
+  "same_31_second_and_8_3_1_gates": true,
+  "isolated_causal_effect_proven": false,
+  "trial069": {
+    "passed": false,
+    "completed_voices_with_signal": 15,
+    "completed_catalog_categories": {
+      "masculine": 5,
+      "feminine": 10
+    },
+    "completed_provisional_catalog_categories": {
+      "masculine": 3,
+      "feminine": 1
+    },
+    "sync_error_ms_range": [
+      -7,
+      8
+    ],
+    "required_source_end_ms": 31000,
+    "completed_source_end_ms": 31380,
+    "activation_to_first_signal_ms": 4723,
+    "media_lag": {
+      "initial_seconds": 4.288,
+      "maximum_seconds": 8.167024000000001,
+      "final_seconds": 8.165333,
+      "maximum_growth_seconds": 3.879024000000001
+    },
+    "continuity_quality": {
+      "maximum_nonsong_fallback_seconds": 1,
+      "maximum_allowed_lag_seconds": 8,
+      "maximum_observed_lag_seconds": 8.167024000000001,
+      "maximum_allowed_lag_growth_seconds": 3,
+      "maximum_observed_lag_growth_seconds": 3.879024000000001,
+      "observed_nonsong_fallback_seconds": 0,
+      "verified_source_end_ms": 31380,
+      "unplayed_published_cues": 0,
+      "missing_intervals": [],
+      "passed": false
+    },
+    "production_audio_diagnostics": {
+      "signaled_voices": 15,
+      "recorder_gap_recoveries": 0,
+      "completed_voice_count": 15,
+      "completed_voices_with_signal": 15,
+      "first_signal_after_capture_ms": 4480.70000000298
+    },
+    "timing_quality_counts": [
+      {
+        "quality": "asr_turn",
+        "published": 4,
+        "signaled": 4,
+        "completed": 4
+      },
+      {
+        "quality": "asr_partial_estimate",
+        "published": 13,
+        "signaled": 11,
+        "completed": 11
+      }
+    ],
+    "source_interrupted": false,
+    "decoder_error_observed": false,
+    "original_fallback": {
+      "observed_seconds": 0,
+      "classified_song_seconds": 0,
+      "other_seconds": 0,
+      "intervals": []
+    },
+    "third_prefix_voice": {
+      "source_start_seconds": 4.38,
+      "source_end_seconds": 6.54,
+      "source_word_count": 10,
+      "synthesized_lexical_word_count": 12,
+      "tts_speed_guidance": 1.5,
+      "pcm_seconds": 4.16,
+      "playback_rate": 1.18,
+      "actual_wall_seconds": 3.5118999999910594,
+      "wall_overrun_seconds": 1.3518999999910593,
+      "request_to_last_chunk_ms": 891,
+      "last_chunk_to_done_ms": 0
+    },
+    "consecutive_cue_pairs": [
+      {
+        "prior_source_start_seconds": 0,
+        "next_source_start_seconds": 2.62,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0
+      },
+      {
+        "prior_source_start_seconds": 2.62,
+        "next_source_start_seconds": 4.38,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 2.220446049250313e-16
+      },
+      {
+        "prior_source_start_seconds": 4.38,
+        "next_source_start_seconds": 7.06,
+        "voice_positive_overrun_seconds": 1.3518999999910593,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0
+      },
+      {
+        "prior_source_start_seconds": 7.06,
+        "next_source_start_seconds": 8.5,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.7989999999999995
+      },
+      {
+        "prior_source_start_seconds": 8.5,
+        "next_source_start_seconds": 10.922,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.0739999999999994
+      },
+      {
+        "prior_source_start_seconds": 10.922,
+        "next_source_start_seconds": 13.3286,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0
+      },
+      {
+        "prior_source_start_seconds": 13.3286,
+        "next_source_start_seconds": 15.649618,
+        "voice_positive_overrun_seconds": 0.4577819999970192,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.6132000000029803
+      },
+      {
+        "prior_source_start_seconds": 15.649618,
+        "next_source_start_seconds": 17.989873,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0
+      },
+      {
+        "prior_source_start_seconds": 17.989873,
+        "next_source_start_seconds": 19.3,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.0008729999999985694
+      },
+      {
+        "prior_source_start_seconds": 19.3,
+        "next_source_start_seconds": 21.442,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.004000000000000448
+      },
+      {
+        "prior_source_start_seconds": 21.442,
+        "next_source_start_seconds": 23.494,
+        "voice_positive_overrun_seconds": 0.7115999999940401,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.02240000000596032
+      },
+      {
+        "prior_source_start_seconds": 23.494,
+        "next_source_start_seconds": 25.668200000000002,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0
+      },
+      {
+        "prior_source_start_seconds": 25.668200000000002,
+        "next_source_start_seconds": 27.709229,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.007971000000001727
+      },
+      {
+        "prior_source_start_seconds": 27.709229,
+        "next_source_start_seconds": 29.63641,
+        "voice_positive_overrun_seconds": 0.09861899999701906,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.024200000002979838
+      }
+    ],
+    "sum_voice_positive_overrun_seconds_for_consecutive_pairs": 2.6199009999791376,
+    "sum_positive_wait_seconds_for_consecutive_pairs": 1.5456440000119203
+  },
+  "trial065": {
+    "passed": false,
+    "completed_voices_with_signal": 16,
+    "completed_catalog_categories": {
+      "feminine": 8,
+      "masculine": 8
+    },
+    "completed_provisional_catalog_categories": {
+      "masculine": 4,
+      "feminine": 1
+    },
+    "sync_error_ms_range": [
+      -20,
+      8
+    ],
+    "required_source_end_ms": 31000,
+    "completed_source_end_ms": 31460,
+    "activation_to_first_signal_ms": 4934,
+    "media_lag": {
+      "initial_seconds": 4.533333,
+      "maximum_seconds": 10.949332999999996,
+      "final_seconds": 10.922666999999997,
+      "maximum_growth_seconds": 6.415999999999996
+    },
+    "continuity_quality": {
+      "maximum_nonsong_fallback_seconds": 1,
+      "maximum_allowed_lag_seconds": 8,
+      "maximum_observed_lag_seconds": 10.949332999999996,
+      "maximum_allowed_lag_growth_seconds": 3,
+      "maximum_observed_lag_growth_seconds": 6.415999999999996,
+      "observed_nonsong_fallback_seconds": 0,
+      "verified_source_end_ms": 31460,
+      "unplayed_published_cues": 0,
+      "missing_intervals": [],
+      "passed": false
+    },
+    "production_audio_diagnostics": {
+      "signaled_voices": 16,
+      "recorder_gap_recoveries": 0,
+      "completed_voice_count": 16,
+      "completed_voices_with_signal": 16,
+      "first_signal_after_capture_ms": 4800.70000000298
+    },
+    "timing_quality_counts": [
+      {
+        "quality": "asr_turn",
+        "published": 6,
+        "signaled": 6,
+        "completed": 6
+      },
+      {
+        "quality": "asr_partial_estimate",
+        "published": 13,
+        "signaled": 10,
+        "completed": 10
+      }
+    ],
+    "source_interrupted": false,
+    "decoder_error_observed": false,
+    "original_fallback": {
+      "observed_seconds": 0,
+      "classified_song_seconds": 0,
+      "other_seconds": 0,
+      "intervals": []
+    },
+    "third_prefix_voice": {
+      "source_start_seconds": 4.22,
+      "source_end_seconds": 6.54,
+      "source_word_count": 8,
+      "synthesized_lexical_word_count": 9,
+      "tts_speed_guidance": 1.293,
+      "pcm_seconds": 4.08,
+      "playback_rate": 1.18,
+      "actual_wall_seconds": 3.4335999999940396,
+      "wall_overrun_seconds": 1.1135999999940394,
+      "request_to_last_chunk_ms": null,
+      "last_chunk_to_done_ms": null
+    },
+    "consecutive_cue_pairs": [
+      {
+        "prior_source_start_seconds": 0.06,
+        "next_source_start_seconds": 2.7,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0
+      },
+      {
+        "prior_source_start_seconds": 2.7,
+        "next_source_start_seconds": 4.22,
+        "voice_positive_overrun_seconds": 0.005899999991059612,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 1.3861000000089407
+      },
+      {
+        "prior_source_start_seconds": 4.22,
+        "next_source_start_seconds": 7.06,
+        "voice_positive_overrun_seconds": 1.1135999999940394,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0
+      },
+      {
+        "prior_source_start_seconds": 7.06,
+        "next_source_start_seconds": 8.58,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.01599999999999957
+      },
+      {
+        "prior_source_start_seconds": 8.58,
+        "next_source_start_seconds": 10.18,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0
+      },
+      {
+        "prior_source_start_seconds": 10.18,
+        "next_source_start_seconds": 10.26,
+        "voice_positive_overrun_seconds": 0.7262000000029801,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.026799999997019763
+      },
+      {
+        "prior_source_start_seconds": 10.26,
+        "next_source_start_seconds": 12.794,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 1.560999999999999
+      },
+      {
+        "prior_source_start_seconds": 12.794,
+        "next_source_start_seconds": 14.9542,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.01880000000000015
+      },
+      {
+        "prior_source_start_seconds": 14.9542,
+        "next_source_start_seconds": 16.832825,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.0073750000000003535
+      },
+      {
+        "prior_source_start_seconds": 16.832825,
+        "next_source_start_seconds": 19.14,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0
+      },
+      {
+        "prior_source_start_seconds": 19.14,
+        "next_source_start_seconds": 21.18,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.009000000000000785
+      },
+      {
+        "prior_source_start_seconds": 21.18,
+        "next_source_start_seconds": 23.193333,
+        "voice_positive_overrun_seconds": 0.8876670000000004,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.014000000000000234
+      },
+      {
+        "prior_source_start_seconds": 23.193333,
+        "next_source_start_seconds": 25.496364,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0
+      },
+      {
+        "prior_source_start_seconds": 25.496364,
+        "next_source_start_seconds": 27.579008,
+        "voice_positive_overrun_seconds": 0,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0
+      },
+      {
+        "prior_source_start_seconds": 27.579008,
+        "next_source_start_seconds": 29.601547999999998,
+        "voice_positive_overrun_seconds": 0.34466000000298447,
+        "positive_wait_after_longer_of_voice_or_source_seconds": 0.002799999997019853
+      }
+    ],
+    "sum_voice_positive_overrun_seconds_for_consecutive_pairs": 3.078026999991064,
+    "sum_positive_wait_seconds_for_consecutive_pairs": 3.0418750000029804
+  },
+  "prefix069": {
+    "duration_ms": 7000,
+    "resume_from_ms": 7000,
+    "position_ms": 13,
+    "preparation_metrics": {
+      "content_gate_ms": 46,
+      "asr_ms": 3750,
+      "turn_classification_ms": 16,
+      "prosody_ms": 2703,
+      "local_timbre_ms": 1750,
+      "postprocess_ms": 2719,
+      "total_ms": 6515,
+      "capture_receive_ms": 7000
+    },
+    "pcm_sent_ms": 7040,
+    "elapsed_ms": 13551,
+    "turns": [
+      {
+        "start_ms": 0,
+        "end_ms": 2460,
+        "content": "speech"
+      },
+      {
+        "start_ms": 2620,
+        "end_ms": 4060,
+        "content": "speech"
+      },
+      {
+        "start_ms": 4380,
+        "end_ms": 6540,
+        "content": "speech"
+      }
+    ],
+    "error_code": null,
+    "prepared_before_activation": true,
+    "original_unchanged": true,
+    "video_seconds_before_activation": 13.571291,
+    "attached": true,
+    "activation_position_ms": 13,
+    "capture_anchor_ms": 13,
+    "used_duration_ms": 7000,
+    "live_asr_start_ms": 7000,
+    "exact_boundary": true,
+    "replay_overlap_ms": 0,
+    "repeated_cue_starts": 0,
+    "observed_prefix_cues": 3,
+    "observed_live_cues": 12,
+    "completed_live_cues": 12,
+    "required_live_cues": 4,
+    "completed_live_source_end_ms": 31380,
+    "required_live_source_end_ms": 31000,
+    "prepared_speech_played": true,
+    "songs_skipped": 0,
+    "prepared_songs": 0,
+    "songs_without_dub": null,
+    "verified": true
+  },
+  "decrease_from_065_maximum_lag_seconds": 2.7823089999999944,
+  "decrease_from_065_maximum_growth_seconds": 2.536975999999995,
+  "cue_ready_events": 17,
+  "published_ahead_events": 1,
+  "observed_early_publication": {
+    "segment_index": 9,
+    "source_start_ms": 17989.873,
+    "source_end_ms": 19220,
+    "later_source_published_at_ms": 21739,
+    "earlier_source_published_at_ms": 22837,
+    "publication_difference_ms": 1098,
+    "next_mt_started_at_ms": 22710,
+    "previous_source_synthesis_done_at_ms": 22833,
+    "actual_browser_playback_source_order_preserved": true,
+    "audible_latency_improvement_equated_to_publication_difference": false
+  },
+  "synthesis_completions": 17,
+  "max_request_to_last_chunk_ms": 891,
+  "max_last_chunk_to_done_ms": 16,
+  "observed_consumption": {
+    "pipeline_ready_events_observed": 1,
+    "muse_live_input_started": 1,
+    "muse_live_session_acks_observed": 1,
+    "prefix_mt_attempts_observed": 3,
+    "live_mt_attempts_observed": 15,
+    "prefix_tts_requests_observed": 3,
+    "live_tts_requests_observed": 14,
+    "live_prosody_stages_started": 5,
+    "billing_amount": null,
+    "relay_sessions_started": 1,
+    "prefix_preparations_started": 1,
+    "prefix_muse_batch_attempts": 1,
+    "prefix_meta_prosody_attempts": 2,
+    "live_meta_prosody_attempts": 5,
+    "meta_caption_prefetch_attempts": 1
+  },
+  "billing_amount": null,
+  "remote_gpu_seconds": null,
+  "human_speaker_match_verified": false,
+  "physical_listening_verified": false,
+  "installed_personal_path_verified": false,
+  "full_video_verified": false
+}

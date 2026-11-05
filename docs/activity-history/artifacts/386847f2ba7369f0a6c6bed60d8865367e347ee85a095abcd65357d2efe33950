@@ -1,0 +1,30 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/workspace-chat-ui/account-query-native-report.json",
+  "original_sha256": "94dada0f7c62952a1c0dd60460ced48ec8ef64738dcba77db038681c9a648c42",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "passed": true,
+    "microphone_used": false,
+    "OS_input_sent": false,
+    "appbar_reserved_by_test": false,
+    "real_account_result_delivered": true,
+    "old_fixed_phrase_absent": true,
+    "conversation_saved": false
+  },
+  "reported_measurements": {
+    "external_calls": 3,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

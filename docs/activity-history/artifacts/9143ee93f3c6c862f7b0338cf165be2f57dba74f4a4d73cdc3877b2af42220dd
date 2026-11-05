@@ -1,0 +1,18 @@
+{
+  "suite": "workspace-chat-native",
+  "started_at": "2026-11-02T01:42:12.012323+00:00",
+  "finished_at": "2026-11-02T01:42:23.868596+00:00",
+  "duration_seconds": 11.856273,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_workspace_native"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"type\": \"actual_owned_WebView2_windows_with_synthetic_conversation\", \"passed\": false, \"external_calls\": 0, \"microphone_used\": false, \"OS_input_sent\": false, \"appbar_reserved_by_test\": false, \"phase\": \"native_auditory_start\", \"error\": \"AssertionError()\", \"traceback\": \"Traceback (most recent call last):\\n  File \\\"<local-path>\\\\tools\\\\check_workspace_native.py\\\", line 75, in test\\n    assert not translation_fixture.status()['active']\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\nAssertionError\\n\"}\r\n"
+}

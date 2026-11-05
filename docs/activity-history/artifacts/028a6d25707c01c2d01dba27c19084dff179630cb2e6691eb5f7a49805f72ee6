@@ -1,0 +1,486 @@
+"""Servidor local: práctica, Muse en directo y voz Melodi, sin guardar audio."""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import sqlite3
+import tempfile
+import threading
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from urllib.parse import urlsplit, unquote, parse_qs
+
+from pydantic import ValidationError
+
+from packages.providers.meta import MetaProviderError, propose_guidance, provider_status
+from packages.providers.live_voice import MuseBridge, VoiceError, PCM_TYPE, open_melodi, voice_status
+from packages.providers.conversation import ConversationRequest, stream_reply
+from services.h1.practice import PracticeRequest, SKILL_ID, SKILL_TITLE, inspect_practice, meta_context
+from services.h1.human_skills import HumanSkillService, SkillServiceError, MAX_VIDEO_BYTES
+from services.activity import ActivityStore, ActivityError
+from packages.providers.palabra import PalabraBridge as TranslationBridge, dubbing_status
+from packages.providers.eleven_dubbing import ElevenBridge, dubbing_status as eleven_status
+from packages.providers.modular_dubbing import ModularBridge, modular_status
+from packages.providers.gemini_dubbing import GeminiBridge, gemini_status
+from packages.providers.dubbing import TranslationBridge as OpenAITranslationBridge, dubbing_status as openai_translation_status
+
+ROOT = Path(__file__).resolve().parents[2]
+MAX_BODY_BYTES = 65536
+META_LOCK = threading.Lock()
+VOICE_LOCK = threading.Lock()
+CONFIG_LOCK = threading.Lock()
+CHAT_LOCK = threading.Lock()
+HUMAN_SERVICE_LOCK = threading.Lock()
+STATIC = {"/": ("index.html", "text/html; charset=utf-8"),
+          "/index.html": ("index.html", "text/html; charset=utf-8"),
+          "/app": ("studio.html", "text/html; charset=utf-8"),
+          "/app/": ("studio.html", "text/html; charset=utf-8"),
+          "/practice": ("practice.html", "text/html; charset=utf-8"),
+          "/human-skills": ("human-skills.html", "text/html; charset=utf-8"),
+          "/human-skills/": ("human-skills.html", "text/html; charset=utf-8"),
+          "/activity": ("activity.html", "text/html; charset=utf-8"),
+          "/activity/": ("activity.html", "text/html; charset=utf-8"),
+          "/dubbing": ("dubbing.html", "text/html; charset=utf-8"),
+          "/dubbing/": ("dubbing.html", "text/html; charset=utf-8"),
+          "/styles.css": ("styles.css", "text/css; charset=utf-8"),
+          "/app.js": ("app.js", "text/javascript; charset=utf-8")}
+for filename in ("studio.js", "context-engine.js", "voice-engine.js", "live-voice.js", "pcm-capture.js", "human-skills.js", "activity.js", "dubbing.js", "dub-capture.js", "dub-timing.js", "sw.js"):
+    STATIC["/" + filename] = (filename, "text/javascript; charset=utf-8")
+for filename in ("studio.css", "landing.css", "palette.css", "human-skills.css", "activity.css", "dubbing.css"):
+    STATIC["/" + filename] = (filename, "text/css; charset=utf-8")
+STATIC.update({"/manifest.webmanifest": ("manifest.webmanifest", "application/manifest+json"),
+               "/icon.svg": ("icon.svg", "image/svg+xml"),
+               "/icon-192.png": ("icon-192.png", "image/png"),
+               "/icon-512.png": ("icon-512.png", "image/png")})
+
+
+def load_local_config(path: Path = ROOT / ".env") -> None:
+    """Lee solo claves conocidas; no ejecuta expansión ni reemplaza el entorno."""
+    allowed = {"BRIVANY_META_API_KEY", "BRIVANY_META_MODEL", "BRIVANY_META_BASE_URL",
+               "BRIVANY_MUSE_API_KEY", "BRIVANY_CLOUDFLARE_ACCOUNT_ID", "BRIVANY_CLOUDFLARE_API_TOKEN",
+               "BRIVANY_CLOUDFLARE_USE_WRANGLER", "BRIVANY_HUMAN_SKILLS_MODEL", "BRIVANY_OPENAI_API_KEY", "BRIVANY_PALABRA_API_KEY",
+               "BRIVANY_ELEVENLABS_API_KEY", "BRIVANY_ELEVENLABS_VOICE_ID", "BRIVANY_GEMINI_API_KEY"}
+    if not path.exists():
+        return
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
+        if not line.strip() or line.lstrip().startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key, value = key.strip(), value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+            value = value[1:-1]
+        if key in allowed and value:
+            os.environ.setdefault(key, value)
+
+
+def save_meta_key(key, path=None):
+    save_local_secret(key, "BRIVANY_META_API_KEY", path)
+
+
+def save_dubbing_key(key, path=None):
+    save_local_secret(key, "BRIVANY_PALABRA_API_KEY", path)
+
+
+def save_eleven_key(key, path=None):
+    save_local_secret(key, "BRIVANY_ELEVENLABS_API_KEY", path)
+
+
+def save_gemini_key(key, path=None):
+    save_local_secret(key, "BRIVANY_GEMINI_API_KEY", path)
+
+
+def save_openai_key(key, path=None):
+    save_local_secret(key, "BRIVANY_OPENAI_API_KEY", path)
+
+
+def save_local_secret(key, variable, path=None):
+    """Persist one credential locally without returning, logging, or interpolating it."""
+    if not isinstance(key, str) or not re.fullmatch(r"[A-Za-z0-9._~+/=|:\-]{20,2048}", key):
+        raise ValueError("invalid_key")
+    path = path or ROOT / ".env"
+    with CONFIG_LOCK:
+        text = path.read_text(encoding="utf-8-sig") if path.exists() else ""
+        lines = [line for line in text.splitlines() if line.split("=", 1)[0].strip() != variable]
+        lines.append(variable + "=" + key)
+        temporary = None
+        try:
+            with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
+                                             prefix=".env.", suffix=".tmp", delete=False) as output:
+                temporary = Path(output.name)
+                output.write("\n".join(lines) + "\n")
+            os.replace(temporary, path)
+        finally:
+            if temporary and temporary.exists():
+                temporary.unlink()
+        os.environ[variable] = key
+
+
+class Handler(BaseHTTPRequestHandler):
+    server_version = "BrivanyH1"
+
+    def setup(self):
+        super().setup()
+        self.connection.settimeout(30)
+
+    def log_message(self, *_args):
+        # No registra transcripciones, URLs, errores del proveedor ni credenciales.
+        pass
+
+    def send_headers(self, status, content_type, length=None, chunked=False):
+        self.send_response(status)
+        self.send_header("Content-Type", content_type)
+        if length is not None:
+            self.send_header("Content-Length", str(length))
+        if chunked:
+            self.send_header("Transfer-Encoding", "chunked")
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("Referrer-Policy", "no-referrer")
+        self.send_header("Permissions-Policy", "camera=(self), microphone=(self)")
+        bridge = getattr(self.server, "voice_bridge", None)
+        websocket = f" ws://127.0.0.1:{bridge.port}" if bridge else ""
+        dubbing = getattr(self.server, "translation_bridge", None)
+        if dubbing: websocket += f" ws://127.0.0.1:{dubbing.port}"
+        eleven = getattr(self.server, "eleven_bridge", None)
+        if eleven: websocket += f" ws://127.0.0.1:{eleven.port}"
+        modular = getattr(self.server, "modular_bridge", None)
+        if modular: websocket += f" ws://127.0.0.1:{modular.port}"
+        gemini = getattr(self.server, "gemini_bridge", None)
+        if gemini: websocket += f" ws://127.0.0.1:{gemini.port}"
+        openai = getattr(self.server, "openai_translation_bridge", None)
+        if openai: websocket += f" ws://127.0.0.1:{openai.port}"
+        self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'" + websocket + "; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
+        self.end_headers()
+
+    def send_bytes(self, status, payload: bytes, content_type: str):
+        self.send_headers(status, content_type, len(payload))
+        try:
+            self.wfile.write(payload)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
+
+    def send_json(self, status, data):
+        self.send_bytes(status, json.dumps(data, ensure_ascii=False, allow_nan=False).encode("utf-8"), "application/json; charset=utf-8")
+
+    def error(self, status, code, message):
+        self.send_json(status, {"error": {"code": code, "message": message}})
+
+    def local_request(self):
+        port = self.server.server_port
+        hosts = {f"127.0.0.1:{port}", f"localhost:{port}"}
+        if self.headers.get("Host") not in hosts:
+            self.error(403, "invalid_host", "Este prototipo solo acepta su dirección local.")
+            return False
+        origin = self.headers.get("Origin")
+        if origin is not None and origin not in {f"http://{host}" for host in hosts}:
+            self.error(403, "invalid_origin", "Abre la práctica desde su dirección local.")
+            return False
+        return True
+
+    def do_GET(self):
+        if not self.local_request():
+            return
+        route = urlsplit(self.path).path
+        if route == "/api/activity" or route.startswith("/api/activity/"):
+            self.activity_get(route)
+        elif route == "/api/dubbing/status":
+            provider = parse_qs(urlsplit(self.path).query).get("provider", ["palabra"])[0]
+            if provider not in {"palabra", "elevenlabs", "meta", "gemini", "openai"}:
+                self.error(422, "dubbing_provider", "Elige un proveedor de doblaje disponible.")
+                return
+            status_function, bridge_name = {
+                "palabra": (dubbing_status, "translation_bridge"),
+                "elevenlabs": (eleven_status, "eleven_bridge"),
+                "meta": (modular_status, "modular_bridge"),
+                "gemini": (gemini_status, "gemini_bridge"),
+                "openai": (openai_translation_status, "openai_translation_bridge"),
+            }[provider]
+            status = status_function()
+            status["target_audible_delay_ms"] = 500
+            status["audible_delay_verified"] = False
+            status["physical_playback_measured"] = False
+            bridge = getattr(self.server, bridge_name, None)
+            status["websocket_url"] = f"ws://127.0.0.1:{bridge.port}/dub" if bridge else None
+            status["available"] = status["configured"] and bridge is not None and (provider != "elevenlabs" or status["voice_configured"])
+            self.send_json(200, status)
+        elif route == "/api/human-skills" or route.startswith("/api/human-skills/"):
+            try:
+                service = self.human_skill_service()
+                parts = route.removeprefix("/api/human-skills").strip("/").split("/")
+                if parts == [""]: self.send_json(200, service.library())
+                elif len(parts) == 2 and parts[0] == "jobs": self.send_json(200, {"job": service.job(parts[1])})
+                elif len(parts) == 1: self.send_json(200, {"skill": service.get(parts[0])})
+                else: self.error(404, "not_found", "Recurso no disponible.")
+            except SkillServiceError as exc: self.error(exc.status, exc.code, str(exc))
+        elif route == "/api/status":
+            live = voice_status()
+            bridge = getattr(self.server, "voice_bridge", None)
+            live["websocket_url"] = f"ws://127.0.0.1:{bridge.port}/live" if bridge else None
+            live["asr"]["available"] = live["asr"]["configured"] and bridge is not None
+            self.send_json(200, {"provider": provider_status(),
+                                 "skill": {"title": SKILL_TITLE, "id": SKILL_ID, "status": "draft"},
+                                 "media_policy": "explicit-live-provider-consent", "voice": live})
+        elif route in STATIC:
+            name, content_type = STATIC[route]
+            self.send_bytes(200, (ROOT / "web" / name).read_bytes(), content_type)
+        else:
+            self.error(404, "not_found", "Recurso no disponible.")
+
+    def activity_get(self, route):
+        try:
+            store = getattr(self.server, "activity_store", None) or ActivityStore()
+            if route == "/api/activity":
+                query = parse_qs(urlsplit(self.path).query)
+                before = int(query["before"][0]) if "before" in query else None
+                if before is not None and before <= 0: raise ActivityError("Página inválida.")
+                self.send_json(200, store.listing(before=before))
+                return
+            match = re.fullmatch(r"/api/activity/([0-9a-f-]{36})/evidence/([0-7])", route)
+            if not match: raise ActivityError("Recurso no disponible.")
+            data, item = store.read_evidence(match[1], int(match[2]))
+            content_type = "image/png" if item["label"].endswith(".png") else "text/plain; charset=utf-8"
+            self.send_bytes(200, data, content_type)
+        except (ActivityError, ValueError):
+            self.error(404, "activity_unavailable", "Registro o evidencia no disponible; comprueba su integridad.")
+        except (OSError, sqlite3.Error):
+            self.error(503, "activity_storage", "No se pudo leer la bitácora local.")
+
+    def do_POST(self):
+        if not self.local_request():
+            return
+        route = urlsplit(self.path).path
+        if route.startswith("/api/human-skills/"):
+            self.human_skill_post(route)
+            return
+        if route not in {"/api/practice", "/api/voice/speech", "/api/voice/turn", "/api/config/meta", "/api/config/dubbing"}:
+            self.error(404, "not_found", "Recurso no disponible.")
+            return
+        if self.headers.get("Content-Type", "").split(";")[0].strip() != "application/json":
+            self.error(415, "json_required", "Envía una transcripción como JSON; no se aceptan archivos.")
+            return
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+        except ValueError:
+            length = 0
+        if not 0 < length <= MAX_BODY_BYTES or self.headers.get("Transfer-Encoding"):
+            self.error(413, "body_limit", "La solicitud está vacía o supera el límite de 64 KiB.")
+            return
+        if route == "/api/voice/speech":
+            self.speech(length)
+            return
+        if route == "/api/voice/turn":
+            self.conversation(length)
+            return
+        if route in {"/api/config/meta", "/api/config/dubbing"}:
+            if not self.headers.get("Origin") or length > 4096:
+                self.error(403, "local_form_required", "Usa el formulario local de Brivany.")
+                return
+            try:
+                body = json.loads(self.rfile.read(length))
+                expected = {"key", "provider"} if route == "/api/config/dubbing" else {"key"}
+                if not isinstance(body, dict) or set(body) != expected:
+                    raise ValueError("invalid_key")
+                if route == "/api/config/dubbing" and body["provider"] not in {"palabra", "elevenlabs", "gemini", "openai"}:
+                    raise ValueError("invalid_key")
+                if route == "/api/config/meta": save_meta_key(body["key"])
+                elif body["provider"] == "palabra": save_dubbing_key(body["key"])
+                elif body["provider"] == "gemini": save_gemini_key(body["key"])
+                elif body["provider"] == "openai": save_openai_key(body["key"])
+                else: save_eleven_key(body["key"])
+            except (ValueError, TypeError):
+                self.error(422, "invalid_key", "Revisa la clave: pégala completa, sin espacios ni saltos de línea.")
+                return
+            except OSError:
+                self.error(500, "config_write_failed", "No se pudo guardar la configuración local.")
+                return
+            self.send_json(200, {"saved": True})
+            return
+        try:
+            request = PracticeRequest.model_validate_json(self.rfile.read(length))
+        except (ValidationError, ValueError):
+            self.error(422, "invalid_practice", "Revisa la transcripción (máximo 12 000 caracteres), duración (hasta 600 s), procedencia y consentimiento para Meta.")
+            return
+        result = inspect_practice(request)
+        if request.use_meta:
+            if not META_LOCK.acquire(blocking=False):
+                self.error(409, "meta_busy", "Hay una consulta a Meta en curso. Espera a que termine.")
+                return
+            try:
+                response = propose_guidance(meta_context(request, result))
+                result["mode"] = "meta"
+                result["guidance"] = response["guidance"]
+                result["meta"] = {key: response.get(key) for key in ("provider", "model", "latency_ms", "usage")}
+                # Las sugerencias del modelo nunca cambian los veredictos deterministas.
+            except MetaProviderError as exc:
+                self.error(502, exc.code, str(exc))
+                return
+            finally:
+                META_LOCK.release()
+        self.send_json(200, result)
+
+    def human_skill_service(self):
+        with HUMAN_SERVICE_LOCK:
+            if not hasattr(self.server, "human_skills"):
+                self.server.human_skills = HumanSkillService(ROOT / ".local" / "human-skills")
+            return self.server.human_skills
+
+    def human_skill_post(self, route):
+        if not self.headers.get("Origin"):
+            self.error(403, "local_form_required", "Usa Human-skills desde la interfaz local.")
+            return
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+            is_upload = route == "/api/human-skills/jobs"
+            limit = MAX_VIDEO_BYTES if is_upload else 4096
+            if not 0 < length <= limit or self.headers.get("Transfer-Encoding"):
+                raise SkillServiceError("body_limit", "La solicitud está vacía o supera el tamaño permitido.", 413)
+            service = self.human_skill_service()
+            mime = self.headers.get("Content-Type", "").split(";")[0].strip()
+            if is_upload:
+                if mime != "video/mp4": raise SkillServiceError("mp4_required", "Selecciona un video MP4.", 415)
+                if self.headers.get("X-Brivany-Consent") != "true":
+                    raise SkillServiceError("video_consent_required", "Autoriza el envío de este video a Meta antes de analizarlo.", 422)
+                raw = self.headers.get("X-Brivany-Metadata", "")
+                if not raw or len(raw) > 9000: raise ValueError()
+                metadata = json.loads(unquote(raw))
+                if not isinstance(metadata, dict) or set(metadata) != {"filename", "goal"}: raise ValueError()
+                video = self.rfile.read(length)
+                if len(video) != length: raise ValueError()
+                job = service.start(video, metadata["filename"], metadata["goal"])
+                self.send_json(200 if job["status"] == "complete" else 202, {"job": job})
+            else:
+                parts = route.removeprefix("/api/human-skills/").split("/")
+                if len(parts) != 2 or parts[1] != "progress":
+                    raise SkillServiceError("not_found", "Recurso no disponible.", 404)
+                if mime != "application/json": raise SkillServiceError("json_required", "Envía los pasos de práctica como JSON.", 415)
+                value = json.loads(self.rfile.read(length))
+                self.send_json(200, {"skill": service.progress(parts[0], value)})
+        except SkillServiceError as exc: self.error(exc.status, exc.code, str(exc))
+        except (ValueError, TypeError, KeyError): self.error(422, "invalid_skill_request", "Revisa el archivo y el objetivo de la habilidad.")
+        except OSError: self.error(500, "skill_storage_failed", "No se pudo guardar la habilidad en este equipo.")
+
+    def do_DELETE(self):
+        if not self.local_request(): return
+        route = urlsplit(self.path).path
+        if not route.startswith("/api/human-skills/") or not self.headers.get("Origin"):
+            self.error(403, "local_form_required", "Usa Human-skills desde la interfaz local.")
+            return
+        try:
+            self.human_skill_service().delete(route.removeprefix("/api/human-skills/"))
+            self.send_json(200, {"deleted": True})
+        except SkillServiceError as exc: self.error(exc.status, exc.code, str(exc))
+        except OSError: self.error(500, "skill_storage_failed", "No se pudo borrar la habilidad de este equipo.")
+
+    def speech(self, length):
+        try:
+            body = json.loads(self.rfile.read(length))
+            if not isinstance(body, dict) or body.get("consent") is not True:
+                self.error(422, "voice_consent", "Activa Melodi para enviar a Cloudflare el texto que se va a leer.")
+                return
+            if set(body) - {"text", "consent"} or not isinstance(body.get("text"), str) or not 0 < len(body["text"].strip()) <= 1800:
+                self.error(422, "invalid_speech", "El texto de voz debe tener entre 1 y 1800 caracteres.")
+                return
+        except (ValueError, TypeError):
+            self.error(422, "invalid_speech", "Revisa el texto de voz.")
+            return
+        if not VOICE_LOCK.acquire(blocking=False):
+            self.error(409, "voice_busy", "Hay una voz en preparación. Espera un momento.")
+            return
+        sent_headers, owns_voice_lock = False, True
+        try:
+            with open_melodi(body["text"]) as response:
+                first = response.read1(4096)
+                if not first:
+                    raise VoiceError("empty_audio", "Cloudflare devolvió audio vacío.")
+                self.close_connection = True
+                self.protocol_version = "HTTP/1.1"
+                self.send_headers(200, PCM_TYPE, chunked=True)
+                sent_headers = True
+                size, chunk = 0, first
+                while chunk:
+                    size += len(chunk)
+                    if size > 4_800_000:
+                        raise OSError("Audio limit")
+                    self.wfile.write(f"{len(chunk):X}\r\n".encode() + chunk + b"\r\n")
+                    self.wfile.flush()
+                    chunk = response.read1(4096)
+            # Publish EOF only after the upstream is closed and the next
+            # sentence may acquire the single synthesis slot.
+            VOICE_LOCK.release()
+            owns_voice_lock = False
+            self.wfile.write(b"0\r\n\r\n")
+            self.wfile.flush()
+        except VoiceError as exc:
+            if not sent_headers:
+                self.error(503 if exc.code == "tts_not_configured" else 502, exc.code, str(exc))
+        except (OSError, TimeoutError):
+            if not sent_headers:
+                self.error(502, "voice_connection", "La conexión de voz se interrumpió.")
+        finally:
+            if owns_voice_lock:
+                VOICE_LOCK.release()
+
+    def conversation(self, length):
+        try:
+            value = ConversationRequest.model_validate_json(self.rfile.read(length))
+        except (ValueError, ValidationError):
+            self.error(422, "invalid_turn", "Revisa el mensaje (hasta 1200 caracteres), historial y permiso de envío.")
+            return
+        if not CHAT_LOCK.acquire(blocking=False):
+            self.error(409, "chat_busy", "Hay una respuesta en curso. Espera un momento.")
+            return
+        self.close_connection = True
+        sent = False
+        try:
+            for event in stream_reply(value):
+                if not sent:
+                    self.send_headers(200, "application/x-ndjson; charset=utf-8"); sent = True
+                self.wfile.write((json.dumps(event, ensure_ascii=False) + "\n").encode()); self.wfile.flush()
+        except VoiceError as error:
+            if sent:
+                try:
+                    self.wfile.write((json.dumps({"type": "error", "message": str(error)}) + "\n").encode()); self.wfile.flush()
+                except OSError:
+                    pass
+            else:
+                self.error(502, error.code, str(error))
+        except OSError:
+            pass
+        finally:
+            CHAT_LOCK.release()
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Brivany H1: práctica local de oratoria")
+    parser.add_argument("--port", type=int, default=8765)
+    args = parser.parse_args()
+    if not 1024 <= args.port <= 65535:
+        parser.error("El puerto debe estar entre 1024 y 65535.")
+    load_local_config()
+    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    server.voice_bridge = MuseBridge(args.port).start()
+    server.translation_bridge = TranslationBridge(args.port).start()
+    server.eleven_bridge = ElevenBridge(args.port).start()
+    server.modular_bridge = ModularBridge(args.port).start()
+    server.gemini_bridge = GeminiBridge(args.port).start()
+    server.openai_translation_bridge = OpenAITranslationBridge(args.port).start()
+    print(f"Brivany H1: http://127.0.0.1:{args.port}", flush=True)
+    print("Voz live preparada. Audio a Muse y texto a Cloudflare solo al activar sus controles. Ctrl+C detiene el servidor.", flush=True)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.voice_bridge.close()
+        server.translation_bridge.close()
+        server.eleven_bridge.close()
+        server.modular_bridge.close()
+        server.gemini_bridge.close()
+        server.openai_translation_bridge.close()
+        server.server_close()
+
+
+if __name__ == "__main__":
+    main()

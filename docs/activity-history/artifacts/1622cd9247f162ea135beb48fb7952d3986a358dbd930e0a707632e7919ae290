@@ -1,0 +1,18 @@
+{
+  "suite": "portable-presentation",
+  "started_at": "2026-10-29T22:32:59.742483+00:00",
+  "finished_at": "2026-10-29T22:33:35.844987+00:00",
+  "duration_seconds": 36.102504,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_portable_presentation"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "page.waitForFunction: Timeout 30000ms exceeded.\r\n    at open (<local-path>\\tools\\check_portable_presentation.cjs:9:67)\r\n    at async <local-path>\\tools\\check_portable_presentation.cjs:10:3\r\n\r\n"
+}

@@ -1,0 +1,21 @@
+{
+  "purpose": "Verify implemented timed fallback for currently observed track; no lyric text or music metadata saved.",
+  "requests": [
+    {
+      "provider": "LRCLIB",
+      "http_code": 502
+    },
+    {
+      "provider": "SyncLRC",
+      "http_code": 200,
+      "artist_match": true
+    }
+  ],
+  "provider_requests": 2,
+  "spotify_reads": 1,
+  "status": "ready",
+  "provider": "SyncLRC",
+  "synced": true,
+  "lines": 104,
+  "cost": "No paid inference; monetary/network cost not measured."
+}

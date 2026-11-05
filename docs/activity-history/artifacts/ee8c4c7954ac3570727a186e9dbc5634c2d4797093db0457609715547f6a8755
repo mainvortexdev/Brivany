@@ -1,0 +1,69 @@
+{
+  "scope": "retrospective of early native browser trials; excludes account data and screenshots",
+  "trials": [
+    {
+      "report": "attempt-1.json",
+      "status": "failed",
+      "failure": "El clic no cambió el estado del botón observado.",
+      "provider_calls": 0,
+      "checks": [
+        "observed browser window and tabs"
+      ]
+    },
+    {
+      "report": "attempt-2.json",
+      "status": "failed",
+      "failure": "El clic no cambió el estado del botón observado.",
+      "provider_calls": 0,
+      "checks": [
+        "observed browser window and tabs"
+      ]
+    },
+    {
+      "report": "attempt-3.json",
+      "status": "failed",
+      "failure": "La captura necesita la fixture de navegador identificada.",
+      "provider_calls": 0,
+      "checks": [
+        "observed browser window and tabs"
+      ]
+    },
+    {
+      "report": "attempt-4.json",
+      "status": "failed",
+      "failure": "La captura necesita la fixture de navegador identificada.",
+      "provider_calls": 0,
+      "checks": [
+        "observed browser window and tabs"
+      ]
+    },
+    {
+      "report": "attempt-5.json",
+      "status": "failed",
+      "failure": "La captura necesita la fixture de navegador identificada.",
+      "provider_calls": 0,
+      "checks": [
+        "observed browser window and tabs"
+      ]
+    },
+    {
+      "report": "attempt-6.json",
+      "status": "failed",
+      "failure": "El clic no cambió el estado del botón observado.",
+      "provider_calls": 0,
+      "checks": [
+        "observed browser window and tabs"
+      ]
+    },
+    {
+      "report": "attempt-7.json",
+      "status": "failed",
+      "failure": "Ventana ausente o protegida.",
+      "provider_calls": 0,
+      "checks": [
+        "observed browser window and tabs"
+      ]
+    }
+  ],
+  "browser_network_consumption": "unknown"
+}

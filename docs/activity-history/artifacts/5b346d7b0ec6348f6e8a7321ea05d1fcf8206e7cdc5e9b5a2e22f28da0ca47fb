@@ -1,0 +1,19 @@
+{
+  "suite": "media-ui",
+  "started_at": "2026-11-01T13:49:46.770095+00:00",
+  "finished_at": "2026-11-01T13:49:55.080143+00:00",
+  "duration_seconds": 8.310048,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--media"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"status\": \"passed\",\n  \"checks\": [\n    \"video attachment names and removal\",\n    \"media background result and native IDs\",\n    \"official manual citation\",\n    \"1120/390/320 widths fit\",\n    \"microphone node retained\"\n  ],\n  \"models_and_native\": \"substituted\",\n  \"external_calls\": 0\n}\n"
+}

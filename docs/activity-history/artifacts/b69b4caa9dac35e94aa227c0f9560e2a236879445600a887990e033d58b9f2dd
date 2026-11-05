@@ -1,0 +1,51 @@
+{
+  "started_at": "2026-10-30T13:41:35.152Z",
+  "purpose": "Single Comenzar click through actual Muse, Meta and Cartesia, with fixed synthetic speech",
+  "source_synthetic": true,
+  "source_sha256": "5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30",
+  "source_seconds": 2.3442083333333334,
+  "maximum_sessions": 1,
+  "maximum_chat_requests": 1,
+  "maximum_tts_requests": 2,
+  "maximum_browser_seconds": 30,
+  "automatic_retries": 0,
+  "physical_microphone_tested": false,
+  "physical_speaker_tested": false,
+  "audio_persisted": false,
+  "transcripts_persisted": false,
+  "actual_billed_usd": null,
+  "status": "passed_actual_provider_chain_and_browser_pcm_not_physical_listening",
+  "chat_requests": 1,
+  "tts_requests": 1,
+  "asr_events": {
+    "ready": 1,
+    "speech-start": 1,
+    "partial": 5,
+    "final": 1
+  },
+  "speech_http_statuses": [
+    200
+  ],
+  "input_bytes": 387840,
+  "chat_http_status": 200,
+  "browser": {
+    "capture": 1,
+    "voice_chunks": 30,
+    "voice_energy": true,
+    "voice_context_running": true,
+    "released": 0,
+    "inputStartedAt": 2154,
+    "firstVoiceAt": 7381.0999999940395,
+    "timing": {
+      "asrFinalAt": 4895.5,
+      "replyRequestAt": 4910.299999982119,
+      "firstTextAt": 6453.299999982119,
+      "firstSentenceAt": 6495.299999982119
+    },
+    "error_visible": false
+  },
+  "cleanup": {
+    "released": 1
+  },
+  "finished_at": "2026-10-30T13:41:46.786Z"
+}

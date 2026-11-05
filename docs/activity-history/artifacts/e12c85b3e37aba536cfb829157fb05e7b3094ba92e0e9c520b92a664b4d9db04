@@ -1,0 +1,35 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/selected-video/probe-1793765801431.json",
+  "original_sha256": "f6d7a471220393b9b939035d10cd14c937b2c575ea0bd5e14c9350beb8803af5",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "user_profile_used": false,
+    "test_copy_localhost_host_permission": true,
+    "browser_action_permission_verified": false,
+    "microphone": false,
+    "media_persisted": false,
+    "passed": true,
+    "pin_mode_visible": true,
+    "selected_second_video": true,
+    "only_second_caption": true,
+    "unselected_330hz_absent": true,
+    "no_new_player_window": true,
+    "navigation_closed_capture": true
+  },
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "local_protocol_native_reader_stall_reproduction",
+  "passed": false,
+  "external_calls": 0,
+  "injected_stall_ms": 650,
+  "client_audio_paced_ms": 80,
+  "observed_events": [
+    {
+      "type": "selected",
+      "selection": "owned-native-stall"
+    },
+    {
+      "type": "error",
+      "code": "sync_protocol",
+      "message": "No se pudo iniciar el enlace sincronizado."
+    }
+  ],
+  "reproduced_user_message": true,
+  "limits": "Artificial bounded reader stall; reproduces the displayed error but does not prove the cause in the personal YouTube session."
+}

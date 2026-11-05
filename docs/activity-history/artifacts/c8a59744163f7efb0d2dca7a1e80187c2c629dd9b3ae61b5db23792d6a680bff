@@ -1,0 +1,61 @@
+{
+  "type": "real_melodi_project_task",
+  "success": true,
+  "route_model_calls": 1,
+  "provider_cost": "unknown",
+  "job_id": "76d4c328-9543-4a10-9842-a875af3ec44d",
+  "job": {
+    "id": "76d4c328-9543-4a10-9842-a875af3ec44d",
+    "kind": "terminal",
+    "state": "succeeded",
+    "phase": "Servidor local y resultados listos para revisar.",
+    "steps": 0,
+    "result": {
+      "title": "Proyecto local listo",
+      "repository": "https://github.com/mainvortexdev/ProjectFixture-Trading-Operator",
+      "commit": "57b3878cc09eaffab9789fdcc438753895995e08",
+      "work": "<local-path>\\.local\\terminal\\projects\\ProjectFixture-Trading-Operator-76d4c328\\work",
+      "url": "http://127.0.0.1:49975",
+      "server_health_verified": true,
+      "source_preserved": true,
+      "remote_changes": false,
+      "financial_actions_enabled": false,
+      "dependency_receipts": [
+        "0b34d885-a3ab-41ae-b505-045203416792",
+        "4863f24c-e735-4f22-aa8d-8f8531dd28fb",
+        "3972f1ce-cb75-4413-8fe6-95a659476b07"
+      ],
+      "server_receipt": "4d5a011a-e910-45fc-8f42-240e8c3050ad",
+      "editor": {
+        "name": "Antigravity",
+        "pid": 18684,
+        "launch_requested": true,
+        "project_open_verified": false
+      },
+      "capture": {
+        "verified": true,
+        "path": "<local-path>\\Desktop\\Evidencia Melodi\\ProjectFixture-20261101-044558-76d4c328.png",
+        "title": "ProjectFixture Trading Platform - Smart Trading",
+        "url": "http://127.0.0.1:49975/",
+        "width": 1144,
+        "height": 741,
+        "window_open": true,
+        "method": "isolated-local-browser-capture"
+      },
+      "notes": {
+        "verified": true,
+        "path": "<local-path>\\Desktop\\Evidencia Melodi\\Acciones-20261101-044558-76d4c328.txt",
+        "method": "observed-notepad-edit-save-menu",
+        "input_verified": true,
+        "file_content_verified": true
+      },
+      "evidence_folder": "<local-path>\\Desktop\\Evidencia Melodi",
+      "verified": true,
+      "message": "Servidor local y resultados listos para revisar."
+    },
+    "error": null,
+    "external_calls": 1,
+    "agent": "Agente de terminal",
+    "reviewed": false
+  }
+}

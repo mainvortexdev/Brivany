@@ -1,0 +1,299 @@
+import {SyncTimeline,translationMode,MAX_BUFFER} from './sync-timeline.js';
+const messages={buffering:'Preparando el búfer audiovisual…',lookahead:'Conservando el margen de traducción…',recognition:'Esperando el reconocimiento del audio…',translation:'Preparando la voz de este fragmento…','voice-tail':'Sincronizando el final de la frase…',paused:'En pausa'};
+const INLINE_BYTES_LIMIT=4*1024*1024;
+const INLINE_STALL_MS=9000;
+const INLINE_TURN_WAIT={maxAge:7,finalGrace:7,finalMaxAge:9.5};
+function wavURL(raw,rate){
+  const bytes=new Uint8Array(44+raw.byteLength),view=new DataView(bytes.buffer);
+  const text=(at,value)=>{for(let i=0;i<value.length;i++)bytes[at+i]=value.charCodeAt(i);};
+  text(0,'RIFF');view.setUint32(4,36+raw.byteLength,true);text(8,'WAVE');text(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,1,true);view.setUint32(24,rate,true);view.setUint32(28,rate*2,true);view.setUint16(32,2,true);view.setUint16(34,16,true);text(36,'data');view.setUint32(40,raw.byteLength,true);bytes.set(raw,44);return URL.createObjectURL(new Blob([bytes],{type:'audio/wav'}));
+}
+export class BufferedTranslationPlayer{
+  static prepare(socket,{target='en',voice='auto',epoch=1,prefix=null}={}){
+    return new Promise((resolve,reject)=>{
+      const timer=setTimeout(()=>finish(Error('La traducción no estuvo lista a tiempo.')),10000);
+      const finish=(error,data)=>{clearTimeout(timer);socket.removeEventListener('message',read);socket.removeEventListener('close',closed);error?reject(error):resolve(data);};
+      const closed=()=>finish(Error('Se cerró la preparación de traducción.'));
+      const read=event=>{let data;try{data=JSON.parse(event.data);}catch{return finish(Error('Respuesta de preparación no válida.'));}if(data.type==='error')finish(Error(data.message||'No se pudo preparar la traducción.'));else if(data.type==='ready')finish(null,data);};
+      socket.addEventListener('message',read);socket.addEventListener('close',closed);
+      socket.send(JSON.stringify({type:'start',consent:true,target_language:target,voice_mode:voice,original_gain:0,synchronized_output:true,continuous_input:true,diarization:true,epoch,...prefix}));
+    });
+  }
+  constructor({video,mode='synchronized',naturalRate=false,status=()=>{},caption=()=>{},failure=()=>{},buffer=()=>{},prepared=()=>{},finished=()=>{}}){
+    this.naturalRate=naturalRate;
+    this.finished=finished;
+    this.lastGapSeek=-1;
+    this.policy=translationMode(mode);this.prepared=prepared;this.waitingForPlayback=!this.policy.autoplay;this.preparedNotified=false;
+    this.video=video;this.status=status;this.caption=caption;this.failure=failure;this.buffer=buffer;this.timeline=new SyncTimeline({delay:this.policy.delay});this.cues=new Map();this.parts=new Map();this.pcm=[];this.pcmSamples=0;this.sentSamples=0;this.pendingBytes=0;this.appendQueue=[];this.captureTime=0;this.running=false;this.userPaused=false;this.closed=false;this.streaming=false;this.activeCue=null;this.lastReason=null;this.voiceGapEvents=[];this.lastVoiceEnd=null;this.mediaOrigin=null;this.epoch=1;
+  }
+  async start({stream,audio,socket,target='en',voice='auto',providerReady=false,originalGain=.12,sourceGain=1,prefix=null,onCapture=()=>{}}){
+    if(this.closed)throw Error('Inicio cancelado.');
+    this.stream=stream;this.audio=audio;this.socket=socket;this.running=true;
+    const formats=['video/webm;codecs=vp8,opus','video/webm;codecs=vp9,opus'];
+    const mime=(this.naturalRate?formats.slice(0,1):formats).find(type=>MediaRecorder.isTypeSupported(type)&&MediaSource.isTypeSupported(type));
+    if(!mime)throw Error('Este navegador no permite el búfer audiovisual WebM.');
+    this.media=new MediaSource();this.url=URL.createObjectURL(this.media);this.video.src=this.url;
+    const mediaReady=new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('El reproductor no preparó el búfer.')),4000);this.media.addEventListener('sourceopen',()=>{clearTimeout(timer);resolve();},{once:true});});
+    // Prepared source turns and their watermark can arrive immediately after
+    // ready, while Chromium is still opening MediaSource or the worklet.
+    socket.addEventListener('message',event=>this.message(event));
+    socket.addEventListener('close',()=>{if(!this.closed&&!this.providerDone)this.fail('Se cerró la conexión de traducción.');});
+    socket.addEventListener('error',()=>this.fail('Falló la conexión de traducción.'));
+    this.startSent=!providerReady;
+    const provider=providerReady?Promise.resolve():BufferedTranslationPlayer.prepare(socket,{target,voice,epoch:this.epoch,prefix});
+    const audioReady=new Promise((resolve,reject)=>{
+      const timer=setTimeout(()=>reject(Error('Pulsa la extensión con el video en reproducción para habilitar el audio.')),4000);
+      audio.resume().then(resolve,reject).finally(()=>clearTimeout(timer));
+    });
+    await Promise.all([mediaReady,provider,audioReady,audio.audioWorklet.addModule(new URL('./pcm-capture.js',import.meta.url).href)]);
+    if(this.closed)throw Error('Inicio cancelado.');
+    this.sourceBuffer=this.media.addSourceBuffer(mime);this.sourceBuffer.mode='segments';
+    this.sourceBuffer.addEventListener('updateend',()=>this.append());this.sourceBuffer.addEventListener('error',()=>this.fail('El navegador no pudo decodificar el búfer audiovisual.'));
+    this.originalGain=originalGain;this.sourceGain=sourceGain;this.currentGain=originalGain;
+    this.videoSource=audio.createMediaElementSource(this.video);this.original=audio.createGain();this.original.gain.value=originalGain;this.videoSource.connect(this.original);this.original.connect(audio.destination);
+    this.input=audio.createMediaStreamSource(new MediaStream(stream.getAudioTracks()));this.tap=new AudioWorkletNode(audio,'brivany-tab-pcm');this.silent=audio.createGain();this.silent.gain.value=0;this.input.connect(this.tap);this.tap.connect(this.silent);this.silent.connect(audio.destination);
+    this.tap.port.onmessage=event=>{
+      if(event.data?.flushed){this.inputFlushed=true;this.sendPCM();return;}
+      if(this.closed||!(event.data?.buffer instanceof ArrayBuffer)||event.data.buffer.byteLength!==3840)return;
+      if(this.pcm.length>=(this.naturalRate?25:MAX_BUFFER/.08))return this.fail('El audio capturado dejó de llegar a tiempo. El video sigue con su audio original.');
+      this.pcm.push(event.data.buffer);this.pcmSamples=event.data.end_sample;this.captureTime=this.pcmSamples/24000;this.sendPCM();
+    };
+    this.recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:this.naturalRate?400000:1800000,audioBitsPerSecond:this.naturalRate?64000:96000,videoKeyFrameIntervalDuration:1000});
+    this.recorder.addEventListener('dataavailable',event=>{
+      if(this.closed||!event.data.size)return;
+      this.pendingBytes+=event.data.size;
+      if(this.pendingBytes>(this.naturalRate?INLINE_BYTES_LIMIT:32*1024*1024)||this.appendQueue.length>=64)return this.fail('El búfer audiovisual superó su límite de memoria.');
+      this.appendQueue.push(event.data);this.append();
+    });
+    this.recorder.addEventListener('stop',()=>{this.recordingDone=true;this.append();},{once:true});
+    this.recorder.addEventListener('error',()=>this.fail('La captura audiovisual se interrumpió.'));
+    for(const track of stream.getTracks())track.addEventListener('ended',()=>setTimeout(()=>{if(!this.sourceFinished)this.fail('Terminó la captura de la pestaña.');},100),{once:true});
+    await onCapture();if(this.closed)throw Error('Inicio cancelado.');
+    this.recorder.start(250);this.tap.port.postMessage({active:true});this.startedAt=performance.now();
+    this.streaming=true;
+    this.tickTimer=setInterval(()=>this.tick(),this.naturalRate?32:15);this.showStatus('Preparando el búfer audiovisual…');
+  }
+  append(){
+    if(this.closed||!this.sourceBuffer||this.converting||this.sourceBuffer.updating||this.media.readyState!=='open')return;
+    try{
+      const behind=this.video.currentTime-6;
+      if(behind>0&&this.sourceBuffer.buffered.length&&this.sourceBuffer.buffered.start(0)<behind-.5){this.sourceBuffer.remove(0,behind);return;}
+      const next=this.appendQueue.shift();
+      if(next){
+        this.converting=true;
+        next.arrayBuffer().then(raw=>{
+          if(this.closed)return;
+          this.pendingBytes-=next.size;this.sourceBuffer.appendBuffer(raw);
+        }).catch(()=>this.fail('No se pudo preparar el video capturado.')).finally(()=>{this.converting=false;this.append();});
+      }
+      else if(this.recordingDone)this.media.endOfStream();
+    }catch{this.fail('No se pudo mantener el búfer audiovisual.');}
+  }
+  sendPCM(){
+    if(this.closed||!this.streaming||this.pumpTimer||this.socket.readyState!==WebSocket.OPEN)return;
+    if(!this.pcm.length){
+      if(this.sourceFinished&&this.inputFlushed&&!this.finishSent){this.finishSent=true;this.socket.send(JSON.stringify({type:'finish'}));}
+      return;
+    }
+    const now=performance.now();
+    if(this.nextPCM!==undefined&&now<this.nextPCM){
+      this.pumpTimer=setTimeout(()=>{this.pumpTimer=null;this.sendPCM();},Math.ceil(this.nextPCM-now));
+      return;
+    }
+    if(this.socket.bufferedAmount>15360)return this.fail('La conexión no pudo enviar el audio a tiempo.');
+    this.socket.send(this.pcm.shift());this.sentSamples+=1920;
+    this.nextPCM=Math.max(now+64,(this.nextPCM??now)+80);
+    if(this.pcm.length||this.sourceFinished&&this.inputFlushed)this.sendPCM();
+  }
+  anticipate(snapshot,{early=false}={}){
+    if(this.closed||!(this.streaming||early&&this.startSent)||!this.socket||this.socket.readyState!==WebSocket.OPEN||!Array.isArray(snapshot.cues)||!snapshot.cues.length)return;
+    const message={type:'caption-lookahead',epoch:this.epoch,source:snapshot.source,position:snapshot.position,cues:snapshot.cues};
+    const raw=JSON.stringify(message);if(raw.length<=12000&&this.socket.bufferedAmount<15360)this.socket.send(raw);
+  }
+  message(event){
+    if(this.closed)return;
+    try{
+      let data=JSON.parse(event.data);
+      if(data.type==='error')throw Error(data.message||'Brivany detuvo la traducción.');
+      if(data.type==='ready')return;
+      if(data.type==='source-turn'||data.type==='source-progress'||data.type==='source-skipped'){this.timeline.event(data);return;}
+      if(data.type==='dub-cue'){this.receiveCue(data);return;}
+      if(data.type==='done'){
+        if(this.sourceFinished){this.providerDone=true;this.timeline.processed=Math.max(this.timeline.processed,this.captureTime);}
+        else this.fail('La traducción terminó. El video sigue con su audio original.');
+      }
+    }catch(error){this.fail(error.message||'Respuesta no válida de Brivany.');}
+  }
+  receiveCue(event){
+    if(event.epoch!==this.epoch||this.timeline.abandoned.has(event.cue_id))return;
+    if(event.sample_rate!==24000||typeof event.pcm_base64!=='string'||event.pcm_base64.length>2*1024*1024||typeof event.cue_id!=='string')throw Error('Formato de voz traducida no válido.');
+    const binary=atob(event.pcm_base64),raw=Uint8Array.from(binary,char=>char.charCodeAt(0));
+    if(!raw.length||raw.length%2)throw Error('La voz traducida llegó incompleta.');
+    let item=this.parts.get(event.cue_id);if(!item){item={rows:[],size:0,event};this.parts.set(event.cue_id,item);}
+    item.rows.push(raw);item.size+=raw.length;item.event={...item.event,...event};
+    if(item.size>48000*30||this.parts.size>16)throw Error('La voz traducida superó su límite de memoria.');
+    // Relay emits a complete utterance. final:false is accepted for transports
+    // that explicitly split a cue; its final packet must set final:true.
+    if(event.final===false)return;
+    const whole=new Uint8Array(item.size);let at=0;for(const row of item.rows){whole.set(row,at);at+=row.length;}this.parts.delete(event.cue_id);
+    this.timeline.cue(item.event,whole.length/48000);
+    const url=wavURL(whole,24000),voice=new Audio(url);voice.preload='auto';voice.preservesPitch=true;
+    const node=this.audio.createMediaElementSource(voice);node.connect(this.audio.destination);
+    this.cues.set(event.cue_id,{voice,node,url,event:item.event,duration:whole.length/48000});
+    if(this.cues.size>16)throw Error('Se acumularon demasiadas frases traducidas.');
+  }
+  async startVoice(id){
+    const cue=this.cues.get(id);if(!cue||this.activeCue)return;
+    const turn=this.timeline.turns.get(id),slot=turn.end!==null?turn.end-turn.start:cue.duration;
+    // HTMLMediaElement preservesPitch keeps the timbre while making small
+    // duration corrections. Longer speech holds the matching picture at tail.
+    cue.voice.playbackRate=slot>.15?Math.max(this.naturalRate?1:.85,Math.min(1.18,cue.duration/slot)):1;
+    this.activeCue=id;this.timeline.started(id);const started=performance.now();
+    cue.voice.addEventListener('ended',()=>{
+      this.timeline.finished(id);this.lastVoiceEnd=performance.now();if(this.activeCue===id)this.activeCue=null;
+      cue.node.disconnect();URL.revokeObjectURL(cue.url);this.cues.delete(id);this.caption('');
+    },{once:true});
+    cue.voice.addEventListener('error',()=>this.fail('No se pudo reproducir la voz traducida.'),{once:true});
+    try{await cue.voice.play();if(this.closed)return;if(this.firstAudioAfterCaptureMs===undefined)this.firstAudioAfterCaptureMs=performance.now()-this.startedAt;if(this.userPaused)cue.voice.pause();if(this.lastVoiceEnd!==null)this.voiceGapEvents.push(Math.max(0,started-this.lastVoiceEnd));if(this.voiceGapEvents.length>100)this.voiceGapEvents.shift();const label=typeof cue.event.speaker_label==='string'?cue.event.speaker_label.slice(0,80):'';const words=typeof cue.event.text==='string'?cue.event.text.slice(0,600):'';this.caption(words?(label?label+' · ':'')+words:label);}
+    catch{this.fail('El navegador bloqueó la voz. Inicia una sesión nueva.');}
+  }
+  knownSilentPrefix({capture,media,available}){
+    if(!this.policy.autoplay||this.waitingForPlayback||this.timeline.playbackStarted)return false;
+    const first=[...this.timeline.turns.values()].filter(turn=>!turn.finished).sort((a,b)=>a.start-b.start)[0];
+    // A real first speech marker plus ASR progress confirms the preceding
+    // interval. Replay it during preparation instead of waiting for the cue
+    // and then adding the same leading silence to first-voice latency again.
+    // The normal timeline gate still stops 55 ms before pending speech.
+    return Boolean(first&&!first.ready&&this.timeline.processed>=first.start&&
+      capture>=this.policy.delay+.2&&available>=media+.12&&media<Math.max(0,first.start-.055));
+  }
+  showStatus(text){
+    if(text===this.lastStatus)return;
+    this.lastStatus=text;this.status(text);
+  }
+  playVideo(){
+    if(!this.video.paused||this.pendingPlay)return;
+    this.pendingPlay=Promise.resolve(this.video.play()).catch(error=>{
+      if(!this.closed&&error.name!=='AbortError')this.fail('El navegador bloqueó la reproducción del video.');
+    }).finally(()=>{this.pendingPlay=null;});
+  }
+  overloadedDecoder(now){
+    if(this.video.paused||now<this.nextQualityCheck)return false;
+    const quality=this.video.getVideoPlaybackQuality?.();
+    if(!quality)return false;
+    this.nextQualityCheck=now+1000;
+    const total=quality.totalVideoFrames-(this.lastQuality?.totalVideoFrames??0);
+    const dropped=quality.droppedVideoFrames-(this.lastQuality?.droppedVideoFrames??0);
+    this.lastQuality=quality;
+    this.overloadWindows=total>=12&&dropped/total>=.4?(this.overloadWindows??0)+1:0;
+    return this.overloadWindows>=2;
+  }
+  stalledDecoder(now){
+    const position=this.video.currentTime;
+    const waiting=!this.video.paused&&Boolean(this.pendingPlay||this.video.seeking||this.video.readyState<3);
+    // A seek into a decoded range is progress. An intentional pause while
+    // waiting for its ASR/cue must not consume the decoder's failure budget.
+    this.decoderWaitSince=waiting?(this.lastDecoderPosition!==position?now:(this.decoderWaitSince??now)):null;
+    this.lastDecoderPosition=position;
+    return this.decoderWaitSince!==null&&now-this.decoderWaitSince>1500;
+  }
+  tick(){
+    if(this.closed||!this.running)return;
+    try{
+      if(this.naturalRate&&this.streaming&&!this.userPaused&&!this.waitingForPlayback){
+        const now=performance.now(),position=this.video.currentTime;
+        if(!this.sourceFinished&&this.lastCaptureTime!==this.captureTime){this.lastCaptureTime=this.captureTime;this.lastCaptureChange=now;}
+        if(!this.sourceFinished&&now-this.lastCaptureChange>1500){this.fail('Se interrumpió la captura del audio. El video sigue con su audio original.');return;}
+        if(this.overloadedDecoder(now)){this.fail('El navegador no pudo mantener el ritmo de la imagen. El video sigue con su audio original.');return;}
+        const voiceTime=this.cues.get(this.activeCue)?.voice.currentTime;
+        if(this.lastPlaybackPosition!==position||this.lastVoicePosition!==voiceTime){
+          this.lastPlaybackPosition=position;this.lastVoicePosition=voiceTime;this.lastPlaybackChange=now;
+        }
+        if(now-this.lastPlaybackChange>INLINE_STALL_MS){this.fail('La traducción se interrumpió. El video sigue con su audio original.');return;}
+      }
+      if(this.startingVoice)return;
+      if(!this.video.buffered.length)return;
+      if(this.mediaOrigin===null){this.mediaOrigin=this.video.buffered.start(0);if(this.video.currentTime<this.mediaOrigin)this.video.currentTime=this.mediaOrigin;}
+      const media=Math.max(0,this.video.currentTime-this.mediaOrigin),available=this.video.buffered.end(this.video.buffered.length-1)-this.mediaOrigin;
+      if(this.naturalRate){
+        if(this.captureTime-media>27){this.fail('La traducción perdió el ritmo. El video sigue con su audio original.');return;}
+        this.timeline.releaseLateTurns(this.captureTime,media,{...INLINE_TURN_WAIT,tail:this.providerDone===true});
+        for(const id of this.parts.keys())if(this.timeline.abandoned.has(id))this.parts.delete(id);
+        // Recover a known small recorder hole before declaring the decoder
+        // stuck. Chromium may leave readyState at 4 while play() is pending.
+        const recovering=this.video.seeking||this.resumeAcrossRecorderGap();
+        if(this.streaming&&!this.userPaused&&!this.waitingForPlayback&&this.stalledDecoder(performance.now())){this.fail('El navegador se quedó sin imagen en el búfer. El video sigue con su audio original.');return;}
+        if(recovering)return;
+        const fallback=!this.activeCue&&this.timeline.originalAt(media);
+        const gain=fallback?this.sourceGain:this.originalGain;
+        if(gain!==this.currentGain){this.currentGain=gain;this.original.gain.setTargetAtTime(gain,this.audio.currentTime,.03);}
+        this.sourceFallback=fallback;
+      }
+      if(this.providerDone&&this.recordingDone&&!this.activeCue&&(this.video.ended||media>=available-.10)&&[...this.timeline.turns.values()].every(turn=>turn.finished)){
+        if(this.sourceInterrupted){this.fail('El video original se interrumpió. Vuelve a reproducirlo para continuar la traducción.');return;}
+        this.running=false;this.finished();return;
+      }
+      const preparation=this.timeline.preparation({capture:this.captureTime,available,budget:6,smooth:this.naturalRate});
+      if(preparation.budget_exceeded)this.preparationBudgetExceeded=true;
+      if(preparation.ready&&this.preparedAtMs===undefined)this.preparedAtMs=performance.now()-this.startedAt;
+      if(this.waitingForPlayback&&preparation.ready&&!this.preparedNotified){this.preparedNotified=true;this.prepared();}
+      const initialWait=!this.providerDone&&!this.timeline.playbackStarted&&!preparation.ready&&!this.knownSilentPrefix({capture:this.captureTime,media,available});
+      const decision=this.timeline.decide({capture:this.captureTime,media,available,paused:this.userPaused||!this.streaming||this.waitingForPlayback||initialWait,activeCue:this.activeCue,tail:this.providerDone===true,recorderGap:this.recorderGap,smooth:this.naturalRate});
+      if(decision.play){
+        if(decision.startCue){
+          if(this.activeCue){this.video.pause();this.showStatus('Sincronizando las voces…');return;}
+          if(this.naturalRate)this.playVideo();else this.video.pause();
+          this.startingVoice=true;this.startVoice(decision.startCue).finally(()=>{this.startingVoice=false;});
+        }else this.playVideo();
+        this.showStatus(this.sourceFallback?'Audio original en este fragmento':'Traduciendo');
+      }else{if(!this.video.paused)this.video.pause();this.showStatus(initialWait&&preparation.needs_more_time?'La traducción necesita más tiempo.':this.waitingForPlayback?(this.preparedNotified?'Primeros cinco segundos preparados.':'Preparando los primeros cinco segundos…'):(messages[decision.reason]||'Preparando la traducción…'));}
+      this.buffer({lag:decision.lag,reason:decision.reason,media,capture:this.captureTime,processed:this.timeline.processed});this.timeline.prune(media-2);this.append();
+    }catch(error){this.fail(error.message);}
+  }
+  finishInput({sourceInterrupted=false}={}){
+    if(this.closed||this.sourceFinished)return;
+    this.sourceInterrupted=sourceInterrupted===true;
+    this.sourceFinished=true;
+    this.tap?.port.postMessage({flush:true});
+    if(this.recorder?.state==='recording')this.recorder.stop();
+    this.sendPCM();
+  }
+  resumeAcrossRecorderGap(){
+    const ranges=this.video.buffered,current=this.video.currentTime;
+    for(let index=0;index+1<ranges.length;index++){
+      const end=ranges.end(index),next=ranges.start(index+1);
+      const pendingStalled=this.pendingPlay&&this.lastDecoderPosition===current&&Number.isFinite(this.decoderWaitSince)&&performance.now()-this.decoderWaitSince>=100;
+      const decoderStalled=this.recoveringGap===next||!this.video.paused&&(pendingStalled||this.video.readyState<=2)&&end-current<=.2;
+      if(current<end-.035&&!decoderStalled||current>=next+.015||next-current>.75||next<=this.lastGapSeek)continue;
+      const relativeEnd=Math.max(0,Math.min(current,end)-this.mediaOrigin-.035),relativeNext=next-this.mediaOrigin+.015;
+      const inside=[...this.timeline.turns.values()].filter(turn=>!turn.started&&turn.start>=relativeEnd&&turn.start<=relativeNext);
+      if(inside.some(turn=>!turn.ready)||this.timeline.processed<relativeNext){
+        this.recoveringGap=next;this.video.pause();this.showStatus('Preparando la voz de este fragmento…');return true;
+      }
+      this.lastGapSeek=next;this.recoveringGap=null;
+      this.recorderGap={start:relativeEnd,end:relativeNext};
+      this.video.currentTime=Math.max(current,next+.015);
+      return true;
+    }
+    return false;
+  }
+  async pause(value){
+    this.userPaused=value;this.video.pause();
+    // Capture uses this same context. Suspending it would stop the ASR clock
+    // while MediaRecorder kept recording, destroying A/V alignment.
+    if(value){for(const cue of this.cues.values())cue.voice.pause();}
+    else{await this.audio.resume();const cue=this.cues.get(this.activeCue);if(cue)await cue.voice.play();}
+  }
+  beginPrepared(){if(!this.preparedNotified||!this.waitingForPlayback)throw Error('El fragmento aún no está preparado.');this.waitingForPlayback=false;this.video.currentTime=this.mediaOrigin||0;}
+  stats(){return {...this.timeline.stats(),preparation_budget_ms:6000,preparation_budget_exceeded:this.preparationBudgetExceeded===true,prepared_after_capture_ms:this.preparedAtMs??null,first_audio_after_capture_ms:this.firstAudioAfterCaptureMs??null,capture_seconds:this.captureTime,sent_seconds:this.sentSamples/24000,queued_PCM_seconds:this.pcm.length*.08,queued_encoded_bytes:this.pendingBytes,active_cue:this.activeCue,translated_cues_buffered:this.cues.size,voice_gaps_ms:[...this.voiceGapEvents],video_time:this.video.currentTime,closed:this.closed};}
+  fail(message){if(this.closed)return;try{this.failure(message);}finally{this.close();}}
+  close(){
+    if(this.closed)return;this.closed=true;this.running=false;clearTimeout(this.pumpTimer);clearInterval(this.tickTimer);
+    this.video.pause();this.video.removeAttribute('src');this.video.load();
+    try{this.tap?.port.postMessage({active:false});this.recorder?.stop();}catch{}
+    for(const track of this.stream?.getTracks()||[])track.stop();
+    for(const node of [this.input,this.tap,this.silent,this.videoSource,this.original])try{node?.disconnect();}catch{}
+    for(const cue of this.cues.values()){cue.voice.pause();cue.voice.removeAttribute('src');cue.node.disconnect();URL.revokeObjectURL(cue.url);}this.cues.clear();this.parts.clear();this.pcm=[];this.appendQueue=[];this.pendingBytes=0;
+    if(this.socket?.readyState===WebSocket.OPEN)try{this.socket.send(JSON.stringify({type:'stop'}));}catch{}this.socket?.close();this.audio?.close().catch(()=>{});if(this.url)URL.revokeObjectURL(this.url);
+  }
+}

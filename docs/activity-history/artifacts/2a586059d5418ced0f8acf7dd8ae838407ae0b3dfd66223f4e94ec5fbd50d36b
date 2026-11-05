@@ -1,0 +1,19 @@
+{
+  "suite": "orchestration",
+  "started_at": "2026-11-04T01:53:45.221678+00:00",
+  "finished_at": "2026-11-04T01:53:51.567673+00:00",
+  "duration_seconds": 6.345995,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_orchestration"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "...........................\r\n----------------------------------------------------------------------\r\nRan 27 tests in 5.397s\r\n\r\nOK\r\n"
+}

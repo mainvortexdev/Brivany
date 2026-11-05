@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Melodi WorkSpace</title><link rel="stylesheet" href="/desktop-shell/island.css"><script src="/desktop-shell/island.js" defer></script></head>
+<body data-expanded="false" data-mood="idle">
+<main id="island" class="island" aria-label="Melodi WorkSpace">
+ <header class="island-header">
+  <button id="island-brand" class="brand" type="button" aria-label="Abrir inicio de Melodi WorkSpace"><span class="brivany-mark" aria-hidden="true"><i></i><i></i><i></i></span><span><strong>Melodi WorkSpace</strong><small id="island-mini-state">Estoy aquí</small></span></button>
+  <button id="island-toggle" class="face-button" type="button" aria-label="Desplegar Melodi WorkSpace" aria-expanded="false" aria-controls="island-content"><span class="face" aria-hidden="true"><i class="eye eye-left"></i><i class="eye eye-right"></i></span></button>
+  <div class="header-actions"><span class="signal" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><time id="bar-clock"></time><button id="bar-chat" class="icon-button" type="button" aria-label="Abrir Brivany" title="Abrir Brivany"><svg viewBox="0 0 24 24"><path d="M5 5h14v11H9l-4 4z"/></svg></button><button id="island-collapse" class="icon-button expanded-control" type="button" aria-label="Contraer panel" title="Contraer panel"><svg viewBox="0 0 24 24"><path d="m7 14 5-5 5 5"/></svg></button></div>
+ </header>
+ <div id="island-content" class="island-content" inert>
+  <div class="context-line"><span><i class="status-dot"></i><span id="island-context">Tu espacio, en segundo plano</span></span><span id="island-time"></span></div>
+  <section id="island-home" class="island-panel" role="tabpanel" aria-labelledby="tab-home">
+   <div class="island-tiles">
+    <button id="voice-tile" class="tile voice-tile" type="button"><span class="tile-top">Melodi<span class="tile-orb" aria-hidden="true"><i></i><i></i><i></i></span></span><span class="tile-main" id="voice-tile-title">Estoy aquí.</span><span class="tile-detail" id="voice-tile-detail">Voz live apagada</span></button>
+    <button id="tasks-tile" class="tile tasks-tile" type="button"><span class="tile-top">Agentes<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="2"/><rect x="14" y="4" width="6" height="6" rx="2"/><rect x="4" y="14" width="6" height="6" rx="2"/><path d="M17 14v6m-3-3h6"/></svg></span><span class="tile-main" id="tasks-tile-title">Todo en calma</span><span class="tile-detail" id="tasks-tile-detail">Sin tareas en curso</span></button>
+    <button id="work-region" class="tile screen-tile" type="button" aria-label="Seleccionar región de pantalla"><span class="tile-top">Pantalla<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3M9 9h6v6H9z"/></svg></span><span class="tile-main">Una mirada.</span><span class="tile-detail">Seleccionar una región <span aria-hidden="true">↗</span></span></button>
+   </div>
+   <div class="home-foot"><span id="home-status">Puedes continuar con lo tuyo.</span><button id="work-return" type="button">Volver al chat <span aria-hidden="true">↗</span></button></div>
+  </section>
+  <section id="island-tasks" class="island-panel" role="tabpanel" aria-labelledby="tab-tasks" hidden><div class="panel-heading"><h1>En buenas manos.</h1><span id="tasks-total">Actividad</span></div><ul id="island-jobs" class="job-list" aria-label="Actividad de los agentes"></ul><button id="tasks-open-chat" class="text-button" type="button">Revisar resultados en el chat <span aria-hidden="true">↗</span></button></section>
+  <section id="island-voice" class="island-panel" role="tabpanel" aria-labelledby="tab-voice" hidden>
+   <div class="panel-heading"><h1>Tu voz. Tu ritmo.</h1><span id="live-label">Live apagado</span></div>
+   <button id="voice-open-chat" class="voice-open" type="button"><span class="voice-glyph" aria-hidden="true">↗</span><span>Conversar con Melodi<small>Abre el chat para iniciar o continuar Live</small></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+   <label class="listen-row" for="work-listen"><span>Detectar audio en otro idioma<small>Salida del sistema · activación explícita</small></span><input id="work-listen" type="checkbox" role="switch"><span class="switch" aria-hidden="true"></span></label>
+   <p class="work-disclosure">Al activarlo, Muse recibe el audio para detectar el idioma. Hasta 120 s previos en memoria. Conservar y traducir requiere tu respuesta.</p>
+   <section id="work-offer" class="translation-offer" hidden><p></p><div><button id="work-accept" class="primary" type="button">Conservar y traducir</button><button id="work-decline" type="button">Ahora no</button></div></section>
+   <button id="work-finish" class="primary finish-button" type="button" hidden>Finalizar grabación y traducir</button><audio id="work-audio-result" controls hidden></audio><p id="work-coverage"></p>
+  </section>
+  <section id="island-settings" class="island-panel" role="tabpanel" aria-labelledby="tab-settings" hidden>
+   <div class="panel-heading"><h1>A tu manera.</h1><span>Personalizar isla</span></div>
+   <fieldset class="size-setting"><legend>Tamaño</legend><div class="size-options"><button type="button" data-size="compact" aria-pressed="false">Compacta</button><button type="button" data-size="normal" aria-pressed="true">Normal</button><button type="button" data-size="large" aria-pressed="false">Amplia</button></div></fieldset>
+   <div class="opacity-setting"><label for="island-opacity">Transparencia<small>Deja ver lo que hay debajo</small></label><input id="island-opacity" type="range" min="0" max="40" step="2" value="18"><output id="island-opacity-value" for="island-opacity">18 %</output></div>
+   <label class="listen-row" for="island-motion"><span>Animaciones<small>Movimiento suave y avisos de actividad</small></span><input id="island-motion" type="checkbox" role="switch" checked><span class="switch" aria-hidden="true"></span></label>
+   <div class="settings-bottom"><button id="island-demo" type="button">Probar animaciones</button><button id="work-close" type="button">Salir de WorkSpace</button></div>
+  </section>
+  <p id="work-status" role="status" aria-live="polite"></p>
+  <nav class="island-nav" role="tablist" aria-label="Secciones de la isla">
+   <button id="tab-home" type="button" role="tab" data-tab="home" aria-selected="true" aria-controls="island-home"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7M6 9v11h12V9m-8 11v-7h4v7"/></svg><span>Inicio</span></button>
+   <button id="tab-tasks" type="button" role="tab" data-tab="tasks" aria-selected="false" aria-controls="island-tasks"><svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h9M5 17h6"/><circle cx="18" cy="17" r="3"/></svg><span>Tareas</span><i id="tasks-badge" hidden></i></button>
+   <button id="tab-voice" type="button" role="tab" data-tab="voice" aria-selected="false" aria-controls="island-voice"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11v1a7 7 0 0 0 14 0v-1M12 19v3"/></svg><span>Voz</span></button>
+   <button id="tab-settings" type="button" role="tab" data-tab="settings" aria-selected="false" aria-controls="island-settings"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg><span>Ajustes</span></button>
+  </nav>
+ </div>
+</main></body></html>

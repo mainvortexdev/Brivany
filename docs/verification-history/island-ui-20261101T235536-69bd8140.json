@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-11-01T23:55:36.235199+00:00",
+  "finished_at": "2026-11-01T23:55:44.901933+00:00",
+  "duration_seconds": 8.666734,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Failure view {\n  panel: 'Música',\n  spotify: {\n    configured: true,\n    connected: false,\n    pending: false,\n    streaming_access: true,\n    local_player: { state: 'ready', id: 'localfixture0000000000000000000000000000' }\n  },\n  body: {\n    expanded: 'true',\n    sleeping: 'false',\n    surface: 'preview',\n    motion: 'true',\n    panel: 'music',\n    characterState: 'idle',\n    musicDucked: 'false',\n    liveListening: 'false',\n    liveSpeaking: 'false',\n    liveStarting: 'false',\n    musicAmbience: 'false',\n    musicPlaying: 'false'\n  }\n}\nAssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'brivany.',\n    'Traducción auditiva',\n    'Selección de área',\n+   'z',\n    'Música',\n    'Abrir app'\n  ]\n\n    at <local-path>\\tools\\check_island_ui.cjs:31:75\n"
+}

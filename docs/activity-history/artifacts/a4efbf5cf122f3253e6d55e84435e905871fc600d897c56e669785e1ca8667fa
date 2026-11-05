@@ -1,0 +1,17 @@
+{
+  "suite": "contracts",
+  "started_at": "2026-10-27T23:00:43.792045+00:00",
+  "finished_at": "2026-10-27T23:00:45.453976+00:00",
+  "duration_seconds": 1.661931,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "tools/validate_contracts.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"examples_validated\": 11,\r\n  \"negative_cases_rejected\": 18,\r\n  \"schemas_current\": 27,\r\n  \"http_operations_checked\": 23,\r\n  \"local_schema_refs_resolved\": 292,\r\n  \"markdown_links_checked\": 77,\r\n  \"negative_cases\": [\r\n    \"publicacion-sin-revision\",\r\n    \"cambio-despues-de-revision\",\r\n    \"grafo-ciclico\",\r\n    \"dependencia-inexistente\",\r\n    \"fuente-inexistente\",\r\n    \"parametro-inexistente\",\r\n    \"predeterminado-fuera-de-rango\",\r\n    \"unidades-incompatibles\",\r\n    \"capacidad-no-declarada\",\r\n    \"pass-sin-evidencia\",\r\n    \"opinion-visual-como-pass\",\r\n    \"comando-sin-autorizacion\",\r\n    \"accion-alterada-despues-del-hash\",\r\n    \"vencimiento-invalido\",\r\n    \"irreversible-sin-confirmacion\",\r\n    \"senales-duplicadas\",\r\n    \"cliente-inyecta-veredicto\",\r\n    \"cliente-crea-publicacion-directa\"\r\n  ],\r\n  \"not_tested\": [\r\n    \"live Meta APIs\",\r\n    \"professional application connectors\",\r\n    \"database migrations or RLS\",\r\n    \"full OpenAPI validator\",\r\n    \"user learning outcomes\"\r\n  ]\r\n}\r\n"
+}

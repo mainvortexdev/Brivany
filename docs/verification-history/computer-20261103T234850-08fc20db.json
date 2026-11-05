@@ -1,0 +1,19 @@
+{
+  "suite": "computer",
+  "started_at": "2026-11-03T23:48:50.801808+00:00",
+  "finished_at": "2026-11-03T23:48:58.589820+00:00",
+  "duration_seconds": 7.788012,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_computer_control"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".....................FF...\r\n======================================================================\r\nFAIL: test_simple_app_open_is_one_background_launch_without_followup_input (tests.test_computer_control.ComputerTests.test_simple_app_open_is_one_background_launch_without_followup_input)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_computer_control.py\", line 100, in test_simple_app_open_is_one_background_launch_without_followup_input\r\n    value=self.wait(job);self.assertTrue(value['finished'].wait(2));self.assertEqual(value['state'],'succeeded')\r\n                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: 'failed' != 'succeeded'\r\n- failed\r\n+ succeeded\r\n\r\n\r\n======================================================================\r\nFAIL: test_simple_open_rejects_planner_attempt_to_focus_a_window (tests.test_computer_control.ComputerTests.test_simple_open_rejects_planner_attempt_to_focus_a_window)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_computer_control.py\", line 107, in test_simple_open_rejects_planner_attempt_to_focus_a_window\r\n    value=self.wait(job);self.assertTrue(value['finished'].wait(2));self.assertEqual(value['state'],'succeeded')\r\n                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: 'failed' != 'succeeded'\r\n- failed\r\n+ succeeded\r\n\r\n\r\n----------------------------------------------------------------------\r\nRan 26 tests in 5.804s\r\n\r\nFAILED (failures=2)\r\n"
+}

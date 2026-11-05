@@ -1,0 +1,29 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/render-check/report.json",
+  "original_sha256": "5cb9c14baa1e9f774468d53bea4aef7256664acd0c813a569590e4a254cebf21",
+  "new_test_execution": false,
+  "reported_result": "pending",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "physical_gpu_tested": false,
+    "model_executed": false,
+    "gpu_inference": false,
+    "geometry_fidelity_verified": false,
+    "metric_scale_verified": false,
+    "physical_realism_verified": false
+  },
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

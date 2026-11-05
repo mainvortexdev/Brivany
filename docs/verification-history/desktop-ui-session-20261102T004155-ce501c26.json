@@ -1,0 +1,19 @@
+{
+  "suite": "desktop-ui-session",
+  "started_at": "2026-11-02T00:41:55.190285+00:00",
+  "finished_at": "2026-11-02T00:42:12.498115+00:00",
+  "duration_seconds": 17.30783,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_desktop_ui_session"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".....\r\n----------------------------------------------------------------------\r\nRan 5 tests in 2.680s\r\n\r\nOK\r\n"
+}

@@ -1,0 +1,36 @@
+# Relleno exterior de síntesis y arranque lento de voz
+
+La observación en memoria del fragmento generado en el ensayo 067 mostró
+90 ms iniciales a cero y pequeñas muestras posteriores. La cola de ese
+fragmento también contenía muestras de amplitud mínima. El cambio elimina
+únicamente bordes exteriores de PCM16 de 24 kHz con amplitud absoluta de
+hasta cuatro unidades, aproximadamente −78 dBFS. Inspecciona hasta 200 ms
+por borde, exige encontrar la transición a la voz dentro de esa ventana
+y conserva 30 ms junto a ella. Retira como máximo 170 ms por borde.
+
+La forma de onda central y las pausas interiores se conservan byte por byte.
+La tasa de muestreo y la velocidad de reproducción siguen controladas por
+el reproductor. Los bytes recibidos y las mediciones de síntesis conservan
+su contabilización original. El evento de publicación añade las duraciones
+retiradas y la duración realmente enviada. Las piezas sin transición visible
+en ese intervalo conservan el borde completo.
+
+El reproductor también mantiene la imagen en el ciclo siguiente si todavía
+espera el arranque de una voz. La imagen vuelve a avanzar después de que
+el navegador confirme su reproducción. Se comprobó en Edge aislado con
+fuente propia y dos tonos. Una espera provocada de 450,4 ms permitió avanzar
+32 ms de imagen antes de retenerla. Ambos tonos completaron un segundo
+a 1×, con señal, tono preservado y una sola llamada de arranque por voz.
+Informe `tmp/extension-sync-buffer/probe-2026-11-04T20-58-46-804Z.json`.
+
+La primera ejecución del nuevo modo de prueba encontró un paréntesis
+faltante en el corredor de integración. Se corrigió y se ejecutó el modo
+completo. Las suites registraron 102 pruebas de `sync-relay` y 77 de
+`workspace-sync-extension`, aprobadas con protocolos locales. Informes
+`docs/verification-history/sync-relay-20261104T210121-81f210a3.json` y
+`docs/verification-history/workspace-sync-extension-20261104T210121-66d5bbe2.json`.
+
+El banco identifica las voces que empezaron pero quedaron incompletas y
+muestra qué límite de retraso se excedió. La comprobación real posterior
+se registra en otro hito. Estas verificaciones locales no hicieron nuevas
+solicitudes a los proveedores de traducción.

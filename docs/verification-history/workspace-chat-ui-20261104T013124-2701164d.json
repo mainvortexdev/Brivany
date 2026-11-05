@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-chat-ui",
+  "started_at": "2026-11-04T01:31:24.613537+00:00",
+  "finished_at": "2026-11-04T01:32:13.479707+00:00",
+  "duration_seconds": 48.86617,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-chat"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Workspace chat, Live dispatch, waveform, pulse, close/reopen and five widths passed.\n"
+}

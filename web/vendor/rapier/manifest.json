@@ -1,0 +1,30 @@
+{
+  "name": "@dimforge/rapier3d-compat",
+  "version": "0.21.0",
+  "license": "Apache-2.0",
+  "source": "https://registry.npmjs.org/@dimforge/rapier3d-compat/-/rapier3d-compat-0.21.0.tgz",
+  "npm_integrity": "sha512-tCl1HPGwOhn5aCQbgqWbOH+Nx/5fnr3IPAnzQuR7zIhC/raqi2yxC6LhvZqjdI2El5hQgY5RDAwDrAjAi2FdPA==",
+  "tarball_sha256": "e036e2e958b8d314b5731cbae256d3c4e42198cda8a56bf3b25fce983ded05b4",
+  "local_change": null,
+  "wasm_distribution": "Embedded base64 WASM in exact upstream ES module. No runtime CDN or external WASM fetch.",
+  "files": [
+    {
+      "source": "dist/rapier.mjs",
+      "path": "rapier.mjs",
+      "size_bytes": 4340292,
+      "sha256": "02dc6a4e2fffc013bab08fbb44fa68f501d8303615e9afe4c7d89ad4eedda0d0"
+    },
+    {
+      "source": "LICENSE",
+      "path": "LICENSE",
+      "size_bytes": 11343,
+      "sha256": "4c05555705e3efde601fb1252ae48f1d63992af8a8fb8947745b7fa834e8f519"
+    }
+  ],
+  "sources": [
+    "https://rapier.rs/docs/user_guides/javascript/getting_started_js/",
+    "https://rapier.rs/docs/user_guides/javascript/rigid_bodies/",
+    "https://rapier.rs/docs/user_guides/javascript/colliders/",
+    "https://www.npmjs.com/package/@dimforge/rapier3d-compat"
+  ]
+}

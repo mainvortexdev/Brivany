@@ -1,0 +1,27 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/extension-sync-buffer/probe-2026-11-02T03-19-58-345Z.json",
+  "original_sha256": "69590065353cc1fcd684fa787303565e23537a30a025cc45b684563fa90727b6",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "microphone": false,
+    "user_audio_persisted": false,
+    "passed": true,
+    "finished": true
+  },
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

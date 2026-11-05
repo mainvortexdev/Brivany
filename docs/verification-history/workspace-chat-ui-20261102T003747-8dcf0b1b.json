@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-chat-ui",
+  "started_at": "2026-11-02T00:37:47.338121+00:00",
+  "finished_at": "2026-11-02T00:39:48.050791+00:00",
+  "duration_seconds": 120.71267,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-chat"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Cerrar panel', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button class=\"icon-button\" id=\"island-collapse\" aria-label=\"Cerrar panel\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - performing click action\u001b[22m\n\n    at <local-path>\\tools\\check_workspace_chat.cjs:33:68 {\n  log: [\n    \"  - waiting for getByRole('button', { name: 'Cerrar panel', exact: true })\",\n    '    - locator resolved to <button class=\"icon-button\" id=\"island-collapse\" aria-label=\"Cerrar panel\">…</button>',\n    '  - attempting click action',\n    '    - waiting for element to be visible, enabled and stable',\n    '    - element is visible, enabled and stable',\n    '    - scrolling into view if needed',\n    '    - done scrolling',\n    '    - performing click action'\n  ],\n  name: 'TimeoutError'\n}\n"
+}

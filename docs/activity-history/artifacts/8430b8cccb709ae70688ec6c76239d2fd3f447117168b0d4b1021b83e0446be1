@@ -1,0 +1,23 @@
+{
+  "suite": "spatial",
+  "started_at": "2026-10-28T15:48:29.921618+00:00",
+  "finished_at": "2026-10-28T15:48:37.870388+00:00",
+  "duration_seconds": 7.94877,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_spatial*.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".......................................................\r\n----------------------------------------------------------------------\r\nRan 55 tests in 6.994s\r\n\r\nOK\r\n"
+}

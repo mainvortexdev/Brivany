@@ -1,0 +1,24 @@
+{
+  "pdf": "<local-path>\\Brivany_Auditoria_Casos_de_Uso_2026-10-29.pdf",
+  "pages": 8,
+  "sha256": "c94dd780e99d100ff265a9cc7e454783c271674425f487f65841de8bb201fa0c",
+  "size_bytes": 59605,
+  "page_character_counts": [
+    1124,
+    1517,
+    1704,
+    1657,
+    2113,
+    1783,
+    1881,
+    1842
+  ],
+  "checks": {
+    "eight_pages": true,
+    "no_empty_pages": true,
+    "findings_present": true,
+    "six_new_cases_present": true,
+    "limits_present": true,
+    "evidence_manifest_present": true
+  }
+}

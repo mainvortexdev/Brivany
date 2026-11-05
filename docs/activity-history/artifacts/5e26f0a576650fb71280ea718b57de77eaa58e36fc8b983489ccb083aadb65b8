@@ -1,0 +1,60 @@
+{
+  "type": "real_inline_padding_and_voice_start_audit",
+  "report": "inline-sync-1793826270224.json",
+  "passed": false,
+  "completed": 15,
+  "completed_source_end_ms": 31700,
+  "first_signal_ms": 6362,
+  "lag": {
+    "initial_seconds": 4.288,
+    "maximum_seconds": 10.608,
+    "final_seconds": 10.608,
+    "maximum_growth_seconds": 6.32
+  },
+  "prefix": {
+    "elapsed_ms": 12808,
+    "resume_from_ms": 7000,
+    "verified": true,
+    "completed_live_cues": 12,
+    "repeated_cue_starts": 0,
+    "replay_overlap_ms": 0
+  },
+  "completed_categories": {
+    "feminine": 9,
+    "masculine": 6
+  },
+  "completed_provisional": 5,
+  "all_emitted_trim_ms": 1267.541,
+  "completed_trim_ms": 1148.75,
+  "quality": {
+    "maximum_nonsong_fallback_seconds": 1,
+    "maximum_allowed_lag_seconds": 8,
+    "maximum_observed_lag_seconds": 10.608,
+    "maximum_allowed_lag_growth_seconds": 3,
+    "maximum_observed_lag_growth_seconds": 6.32,
+    "observed_nonsong_fallback_seconds": 0,
+    "verified_source_end_ms": 31700,
+    "unplayed_published_cues": 0,
+    "missing_intervals": [],
+    "passed": false
+  },
+  "consumption_observed": {
+    "pipeline_ready_events_observed": 1,
+    "muse_live_input_started": 1,
+    "muse_live_session_acks_observed": 1,
+    "prefix_mt_attempts_observed": 3,
+    "live_mt_attempts_observed": 16,
+    "prefix_tts_requests_observed": 3,
+    "live_tts_requests_observed": 15,
+    "live_prosody_stages_started": 5,
+    "billing_amount": null,
+    "relay_sessions_started": 1,
+    "prefix_preparations_started": 1,
+    "prefix_muse_batch_attempts": 1,
+    "prefix_meta_prosody_attempts": 2,
+    "live_meta_prosody_attempts": 5,
+    "meta_caption_prefetch_attempts": 1
+  },
+  "billing_amount": null,
+  "source_interrupted": false
+}

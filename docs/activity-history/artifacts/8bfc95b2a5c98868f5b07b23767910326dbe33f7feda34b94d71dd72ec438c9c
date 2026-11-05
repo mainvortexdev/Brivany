@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "scope": "isolated_browser_fixture_not_physical_iPhone",
+  "external_calls": 0,
+  "checks": [
+    "conversation_ownership_during_async_reply",
+    "parallel_job_monitoring",
+    "multi_computer_selection",
+    "voice_source_routing",
+    "revoked_device_hidden",
+    "login_fields_preserved",
+    "account_history_isolation"
+  ],
+  "errors": []
+}

@@ -1,0 +1,22 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/workspace-compact-ui/report.json",
+  "original_sha256": "ed38e727c8a519841be726266fd8c124978832b8ecd40b63dcfbb2673afee5a0",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {},
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

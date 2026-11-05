@@ -1,0 +1,171 @@
+{
+  "status": "passed",
+  "checks": {
+    "multi_track_queue": {
+      "passed": true,
+      "queued_distinct": 20
+    },
+    "pause": {
+      "passed": true,
+      "confirmed_ms": 188
+    },
+    "resume": {
+      "passed": true,
+      "confirmed_ms": 453
+    },
+    "next": {
+      "passed": true,
+      "confirmed_ms": 172
+    },
+    "previous": {
+      "passed": true,
+      "confirmed_ms": 172
+    },
+    "seek": {
+      "passed": true,
+      "confirmed_ms": 172
+    },
+    "volume": {
+      "passed": true,
+      "confirmed_ms": 0
+    },
+    "shuffle_on": {
+      "passed": true,
+      "confirmed_ms": 687
+    },
+    "shuffle_off": {
+      "passed": true,
+      "confirmed_ms": 625
+    },
+    "repeat_context": {
+      "passed": true,
+      "confirmed_ms": 500
+    },
+    "repeat_track": {
+      "passed": true,
+      "confirmed_ms": 672
+    },
+    "repeat_off": {
+      "passed": true,
+      "confirmed_ms": 500
+    },
+    "natural_end_continues": {
+      "passed": true,
+      "next_command_sent": false,
+      "next_position_ms": 0
+    },
+    "native_audio": {
+      "passed": true,
+      "muted": false
+    }
+  },
+  "screen_audio_capture": false,
+  "cost": "No paid inference; API/SDK/CDN cost not measured.",
+  "checking": "repeat_off",
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/v1/me/player",
+      "code": 204,
+      "ms": 297
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/currently-playing",
+      "code": 204,
+      "ms": 672
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 156
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/recently-played",
+      "code": 200,
+      "ms": 250
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/tracks",
+      "code": 200,
+      "ms": 734
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 141
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 140
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player",
+      "code": 204,
+      "ms": 172
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 141
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/play",
+      "code": 204,
+      "ms": 359
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/shuffle",
+      "code": 200,
+      "ms": 547
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/shuffle",
+      "code": 200,
+      "ms": 328
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/repeat",
+      "code": 200,
+      "ms": 344
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/repeat",
+      "code": 200,
+      "ms": 375
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/repeat",
+      "code": 200,
+      "ms": 344
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/shuffle",
+      "code": 200,
+      "ms": 328
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/repeat",
+      "code": 200,
+      "ms": 625
+    }
+  ],
+  "known_native_api_calls": 17,
+  "sdk_network_calls": "not measured"
+}

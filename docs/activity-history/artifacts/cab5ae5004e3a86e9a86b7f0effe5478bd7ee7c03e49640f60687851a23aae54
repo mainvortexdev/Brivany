@@ -1,0 +1,221 @@
+# WorkSpace: fluidez, parada y aprendizaje de aplicaciones
+
+3 de noviembre de 2026. Continuación de los equipos y visor Glisse. Mantiene
+voz/human-skills, permisos de archivo, bloqueo del registro y límites de UAC.
+No se genera IPA.
+
+## Conversación y presencia
+
+El chat comienza con 148 px de alto, mide el contenido real y crece hasta los
+404 px que tenía anteriormente. El ancho se mantiene en 388 px, acotado al
+monitor. Al llegar al máximo, el historial se desplaza verticalmente con barra
+oculta. Recibe mensajes parciales sin reconstruir todo el árbol de burbujas;
+la altura tiene una transición de 240 ms y respeta movimiento reducido.
+
+Tras 300 ms esperando la primera respuesta muestra «Pensando…»; desaparece al
+llegar texto o terminar/cancelar el turno. No se presenta una respuesta vacía
+como una burbuja de puntos. Las instrucciones locales y las dos rutas del
+gateway indican que el usuario conoce el nombre de Melodi y no debe volver a
+presentarse. La confirmación de un encargo es «Claro, lo haré.», separada de
+haberlo completado: ya no expone el acuse técnico ni el nombre del PC.
+
+Corrección posterior solicitada por el usuario: salir con el cursor ya no cierra
+el chat ni lo reemplaza por otra herramienta al pasar sobre la barra. Ajustes →
+Melodi WorkSpace permite elegir Automático o Manual, con ejemplos de Word y cierre
+con ×/Escape. En Automático sólo se pide cerrar cuando hay entrada de escritura
+en otro proceso; el teclado del propio Brivany no lo cierra. Se usa una señal
+booleana de actividad con hook Windows, sin conservar teclas ni texto. Se activa
+al abrir el chat, se desactiva al cerrarlo o elegir Manual, y se libera al salir
+de WorkSpace. En las otras plataformas esta detección no se anuncia disponible.
+La elección se guarda en workspace-ui.json. No depende del proveedor ni de la red.
+
+La salida conserva opacidad/traslación durante 200 ms, mensajes y Live. El recorte
+nativo se mantiene hasta acabarla. Una reapertura invalida el cierre anterior.
+El visor de resultados sigue disponible hasta su cierre. Los otros paneles
+conservan su margen de 1,2 s al salir.
+
+La actividad del ejecutor se publica directamente con revisión monotónica y
+el sondeo es respaldo. Control, agentes, revisión, escucha, conexión Live,
+respuesta pendiente y voz despiertan a Melodi. Un estado antiguo no puede
+volver a dormirla durante una tarea. Los dos minutos de inactividad se cuentan
+después de la actividad efectiva, no durante ella.
+
+## Bloqueo de traducción auditiva
+
+El usuario reportó una congelación de Python al cambiar idioma. La revisión
+encontró rutas capaces de formar esperas circulares: cambio de región o de
+posición nativa mientras se retenía el mutex de geometría, callbacks AppBar y
+notificaciones que esperaban indefinidamente el resultado de JavaScript en
+WebView2. No se obtuvo un volcado del proceso forzado original; estos son
+defectos encontrados y corregidos, no una atribución forense inequívoca.
+
+Las notificaciones se publican con BeginInvoke/ExecuteScriptAsync, sin esperar
+al hilo de interfaz y agrupando el último estado pendiente. Las confirmaciones
+de pintado tienen tiempo máximo. No se retienen los mutex de geometría/AppBar
+durante operaciones de ventana que puedan invocar callbacks. Se sustituye el
+selector nativo de idioma por tres botones dentro del panel.
+
+Cambiar idioma detiene la salida anterior y reinicia en segundo plano, después
+de que hayan salido los trabajadores previos. La cancelación invalida cualquier
+reinicio pendiente; la UI descarta revisiones antiguas. «Detener» silencia y
+vacía la salida local antes de esperar a proveedores o a la limpieza. Un
+proveedor bloqueado no puede mantener su audio en cola. La sesión conserva sus
+límites de búfer y no oculta pérdidas de audio mediante descartes silenciosos.
+Pausar una fuente puede dejar una traducción ya pendiente; «Detener» cancela
+esa salida inmediatamente. No se promete ausencia absoluta de futuros fallos.
+
+Ensayos: catorce pruebas de traducción; UI con cinco anchos; prueba nativa de
+doce ciclos iniciar/cambiar idioma/detener junto con doce cambios de posición
+de panel, sin bloquear las respuestas del puente. La salida Windows real se
+abrió con PCM digital cero y proveedor sustituido detenido: se cerraron mixer
+y driver y las dos colas quedaron en cero antes de liberar al proveedor. No
+se usó audio del usuario ni inferencia en estos ensayos; no constituyen una
+nueva evaluación subjetiva de la calidad audible de la traducción.
+
+## Música y letras
+
+Las consultas de portada/letra usan la pista ya observada; no inician otra
+consulta de Spotify bajo su bloqueo sólo para enriquecer la UI. El control
+local utiliza primero el SDK y evita consultar repetidamente la recuperación
+cuando ya hay reproducción local. Los estados del SDK se publican sin esperar
+la finalización del pintado. Play/Pausa cambian inmediatamente su indicación
+con un estado transitorio, sin sombrear el botón; la animación musical sigue
+la reproducción observada, no una orden que aún pueda fallar.
+
+Las búsquedas de letra para la vista sincronizada devuelven caché o pendiente
+inmediatamente. Hasta dos pistas consultan dos proveedores en paralelo, con
+plazos de red acotados y respeto a Retry-After. Una respuesta de una pista
+antigua no sustituye a la actual; la UI conserva hasta 32 resultados. La
+letra con tiempos se prefiere a texto sin tiempos y se valida título, artista
+y duración. No se inventan tiempos para aparentar sincronización. Se retira
+«Sin letra sincronizada»; una pista sin tiempos deja limpio ese espacio.
+
+La consulta real de la pista del checkpoint no obtuvo tiempos en ninguno de
+los dos proveedores. Una búsqueda adicional del catálogo tampoco halló una
+versión compatible con tiempos. Se conserva ese resultado como fallo de
+disponibilidad. La prueba posterior con metadatos públicos de una pista de
+referencia obtuvo 64 líneas temporizadas mediante LRCLIB en 0,391 s, con
+respuesta de caché inferior a la resolución mostrada por el reloj. No garantiza
+ese tiempo para toda pista/red ni disponibilidad universal. Los informes no
+contienen las letras ni el nombre de la escucha del usuario.
+
+Esta investigación hizo ocho solicitudes públicas conocidas de letras
+(incluidos diagnóstico y búsqueda); una terminó después de la primera respuesta
+ganadora y su estado final no figura en ese informe. Sin modificaciones de
+Spotify ni inferencia. Las suites sustituidas comprueban cambio rápido con una
+respuesta anterior retenida, rechazo de letra incorrecta y render por posición.
+
+## Aprendizaje automático de aplicaciones
+
+El coordinador puede abrir/inspeccionar una aplicación mientras otro agente
+investiga su manual oficial. Una operación de negocio posterior espera ambas
+evidencias. Se refuerza la división en tres fases y se valida el orden antes de
+ejecutar; un plan incompleto dispone de una corrección acotada. El primer ensayo
+real de planificación devolvió sólo dos tareas, sin la dependencia de operación;
+se conserva el fallo. El segundo ensayo, con el contrato reforzado, produjo las
+tres fases correctas. Sólo planificación: no se hicieron facturas con ese modelo.
+
+Tras una operación desktop exitosa y aceptada por revisión, se genera una receta
+local en `application-skills`, sin pedir al usuario crear/instalar habilidades.
+Se conservan aplicación/versión conocida, nombres/roles de controles, pasos y
+fuentes, con valores de entrada parametrizados. No contiene código ejecutable,
+credenciales, clientes, importes, cantidades anteriores ni IDs efímeros. Los
+ejecutores reciben recetas compatibles en el siguiente encargo y deben volver
+a observar cada control usando los datos actuales. Una versión o interfaz
+incompatible invalida la coincidencia. Si no se informa versión, la receta
+permanece limitada al proceso y a controles observados, con esa limitación.
+
+Esto aprende procedimientos comprobados; no supone comprender completamente
+cualquier programa, modificar el código de Melodi, adquirir permisos ni instalar
+código externo arbitrario. Los fallos inciertos de una operación de negocio no
+se repiten por intentar aprender. Las human-skills mantienen su biblioteca.
+
+El usuario no tiene un programa comercial de facturas/inventario para la prueba.
+Se creó una aplicación nativa propia FacturaLab con datos sintéticos. El primer
+intento encontró sólo contenedores UIA y se detuvo. Se amplió el fallback Win32
+para reconocer Edit/Button clásicos y WinForms, leer sus nombres accesibles,
+validar proceso/ventana/campo actual y ejecutar escritura verificada o botón
+con tiempo máximo. No se usa una secuencia de coordenadas memorizadas.
+
+Ensayo nativo final: dos borradores de factura y existencias acumuladas de diez,
+una receta de cuatro pasos guardada y reutilizada con otro cliente/cantidad.
+La aplicación fue lanzada por el arnés y enfocada/operada por el ejecutor real;
+planificador, manual y evaluación de este ensayo fueron sustitutos. Se prueba
+la ejecución real y el aprendizaje, no el dominio de un software comercial ni
+la corrección fiscal de facturas. Se mantienen todos los fallos anteriores.
+
+## Aperturas sencillas en segundo plano
+
+La sesión desktop empieza sin retener cursor ni mostrar borde de control.
+Una solicitud limitada a abrir una app sólo admite un paso launch_app; una vez
+verificado el inicio termina sin solicitar foco ni una segunda acción. Se rechaza
+un intento del planificador de enfocar controles para esa petición sencilla.
+Para abrir una app, el resolvedor selecciona un acceso del catálogo observado;
+su destino local se valida y se solicita inicio minimizado sin activación
+(`SW_SHOWMINNOACTIVE`), sin usar rutas ejecutables inventadas por el modelo.
+Se bloquean intérpretes y ejecutables protegidos también en el destino.
+Archivo nuevo, lista/copia y Office mediante su API no necesitan overlay.
+Antes de una acción que requiere foco/ratón, se activa su guardia e indicador.
+El acceso por terminal mantiene las comprobaciones y autorizaciones existentes.
+
+La prueba con ejecutable propio y acceso temporal en Inicio confirmó ejecución,
+archivo marcador, foco preservado y ninguna guardia de cursor. El acceso temporal
+se retiró al terminar. La primera prueba con la apertura anterior cambió el
+foco; se conservó y se sustituyó por ShellExecuteEx con show=7. Una aplicación
+puede ignorar su estado de ventana inicial; no se certifica que toda app externa
+admita ejecución invisible. Si no hay destino inequívoco, se detiene.
+
+## Evidencias y consumo
+
+Los informes de `tools.verify` conservan salidas y fallos en la bitácora. Entre
+los cierres aprobados de esta entrega:
+
+- `workspace-chat-ui-20261103T230943-e8f389e8.json`: chat, espera, tamaño y cierre.
+- `workspace-chat-native-20261103T231115-9b7d41ba.json`: puente y estrés nativos.
+- `workspace-agents-ui-20261103T225152-424cfdbd.json`: actividad y rechazo de estado antiguo.
+- `application-learning-native-20261103T230752-73dc61be.json`: aplicación real propia.
+- `background-launch-native-20261103T231153-49cc688f.json`: apertura sin foco/guardia.
+- `translation-stop-device-20261103T231537-9649a098.json`: cancelación Windows real.
+- `island-ui-20261103T231313-be82e38b.json`: Música, controles, letras y dimensiones.
+- `spotify-20261103T231537-5a6aa58a.json`: 38 pruebas sustituidas.
+- `computer-20261103T231537-e973705c.json`: 24 pruebas.
+- `orchestration-20261103T231647-e216cf52.json`: 20 pruebas.
+- `application-learning-20261103T231607-58567d39.json`: cuatro pruebas.
+- `mobile-gateway-20261103T231441-90a21964.json`: 30 pruebas.
+
+Consumo de esta continuación: tres peticiones Meta conocidas: dos de
+planificación (primera incompleta, segunda correcta) y una de saludo en la cuenta
+real. El saludo no se volvió a presentar, no creó tareas y su texto no se guardó
+en desarrollo. Ocho peticiones públicas de letras conocidas; sin cuenta/licencia
+de un programa de facturación. La factura monetaria y tráfico interno de
+proveedores no se midieron. Las demás pruebas citadas usan proveedores
+sustituidos; entrada, ventanas y driver físicos se identifican por separado.
+
+Gateway publicado: `7ba2d5a4-8b8b-4053-bc3f-ee5957dc2731`.
+
+Fuentes primarias consultadas para los cambios:
+
+- [Modelo de hilos y reentrada de WebView2](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/threading-model).
+- [Control.BeginInvoke](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control.begininvoke).
+- [Accesibilidad Win32](https://learn.microsoft.com/en-us/windows/win32/winauto/retrieving-an-iaccessible-object).
+- [LRCLIB: API y coincidencia por duración](https://lrclib.net/docs).
+
+Actualización de cierre (sin nuevas peticiones a modelos): computer-20261103T232639-91edd1ac
+(26 pruebas), work-20261103T232914-1d0c02bc (39, incluye instalación/liberación real
+del hook Windows y lógica de señal con eventos sustituidos), workspace-chat-ui-20261103T232914-037ac34c
+(Automático/Manual, salida de cursor, entrada en otra app simulada, 5 anchos),
+workspace-chat-native-20261103T232755-fb3497f6 (puente WebView2 real),
+application-learning-20261103T232639-a918bc2e y orchestration-20261103T232656-8d9394db.
+Se conserva también el fallo UI 28609b5d: el cursor simulado cancelaba la apertura
+antes de los 480 ms; el arnés se corrigió para limitar esa señal al chat que prueba.
+La escritura en otra app del ensayo UI es sustituida; no se afirma una nueva
+prueba con contenido real del usuario ni captura de su teclado.
+
+Brivany reiniciado con los cambios finales (PID nativo 7072). Comprobación
+posterior: barra de 40 px, reserva superior de 40 px y superficies WorkSpace
+fuera de la barra de tareas; dispositivo de la cuenta en línea. Un sondeo inicial
+esperaba el panel cerrado cuando ya estaba visible; se conserva esa expectativa
+fallida y no se fuerza el cierre del panel del usuario. WM_QUIT cerró la UI vieja
+pero dejó Python vivo; se verificaron y detuvieron sólo los procesos anteriores.
+Informe: tmp/workspace-fluidez-runtime.json. Una consulta adicional de lectura
+al registro de dispositivos, sin inferencia ni acciones remotas.

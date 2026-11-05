@@ -1,0 +1,5 @@
+{
+  "secure": true,
+  "eme": true,
+  "widevine": true
+}

@@ -1,0 +1,32 @@
+{
+  "type": "retrospective_numeric_quality_audit",
+  "source_report": "inline-sync-1793803374340.json",
+  "maximum_nonsong_fallback_seconds": 1,
+  "observed_nonsong_fallback_seconds": 10.207999999999998,
+  "verified_source_end_ms": 34468.0,
+  "unplayed_published_cues": 5,
+  "missing_intervals": [
+    {
+      "start_ms": 21556,
+      "end_ms": 22802.667
+    },
+    {
+      "start_ms": 22802.667,
+      "end_ms": 25136.533
+    },
+    {
+      "start_ms": 25136.533,
+      "end_ms": 27075.307
+    },
+    {
+      "start_ms": 27075.307,
+      "end_ms": 29255.061
+    },
+    {
+      "start_ms": 29255.061,
+      "end_ms": 31700
+    }
+  ],
+  "passed": false,
+  "new_external_calls": 0
+}

@@ -1,0 +1,25 @@
+{
+  "suite": "sync-relay",
+  "started_at": "2026-11-04T17:15:19.693412+00:00",
+  "finished_at": "2026-11-04T17:16:04.849984+00:00",
+  "duration_seconds": 45.156572,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_sync_relay",
+    "tests.test_prefix_translation",
+    "tests.test_inline_clauses",
+    "tests.test_dubbing_timing",
+    "tests.test_inline_timbre_pipeline",
+    "tests.test_dubbing_delivery_pipeline",
+    "tests.test_inline_trial_limits"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".......INFO: Created TensorFlow Lite XNNPACK delegate for CPU.\n.....F....................................................................\r\n======================================================================\r\nFAIL: test_inline_dubbing_budget_uses_source_timing_and_keeps_text_as_data (tests.test_sync_relay.SynchronizedPipelineTests.test_inline_dubbing_budget_uses_source_timing_and_keeps_text_as_data)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_sync_relay.py\", line 378, in test_inline_dubbing_budget_uses_source_timing_and_keeps_text_as_data\r\n    self.assertTrue(all(1<row['generation_config']['speed']<=1.28 for row in synthesis))\r\nAssertionError: False is not true\r\n\r\n----------------------------------------------------------------------\r\nRan 81 tests in 43.872s\r\n\r\nFAILED (failures=1)\r\n"
+}

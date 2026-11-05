@@ -1,0 +1,76 @@
+# 46. Corrección de permisos y reproducción local
+
+30 de octubre de 2026, America/La_Paz. Corrección posterior a los hitos 44 y
+45: el usuario rechazó la ventana auxiliar y reportó pausa del video, falta de
+traducción y desbordamiento de la salida local. Esos hitos conservan su alcance
+histórico; la versión actual usa el dispositivo de Windows y no abre ventanas
+de escucha.
+
+## Cambios y causas comprobadas
+
+- La captura requiere el permiso del navegador y una pista de audio. Capture
+  Handle y los ajustes opcionales dejan de ser requisitos universales: se
+  comprueban cuando existen. Una selección identificada como escritorio o
+  ventana, una identidad contradictoria y la ausencia de audio se rechazan.
+  Sin metadatos, el origen sólo está autorizado por el selector del navegador;
+  no se presenta como identidad de pestaña verificada.
+- El temporizador de reproducción comienza después de aceptar el permiso.
+  Reanudar durante el arranque no se confunde con una pausa de una sesión activa.
+  El botón principal también puede iniciar doblaje si el usuario ya reprodujo
+  el iframe. La orden explícita de reproducir restituye el audio de YouTube.
+- AudioContext se activa en el clic, se limpian permisos tardíos tras cancelar
+  y se conserva el iframe. No se transmiten ni guardan sus fotogramas.
+- Palabra recibe PCM en vivo y devuelve voz a una salida WinMM local, fuera del
+  audio de la pestaña capturada. No hay popup ni reproducción de esa voz en la
+  pestaña. Esta salida está implementada para el ordenador Windows que ejecuta
+  el servidor; no acredita salida remota en móvil/macOS.
+- Original al 12 % y traducción al 85 % inicialmente. Si el navegador no
+  confirma supresión del original, se mantiene bajo el reproductor, se compensa
+  su entrada y se ajusta el monitor nativo. La supresión desconocida no se
+  convierte en aislamiento físico comprobado. El conversor PCM limita muestras
+  al rango válido. El ajuste mínimo en ese modo es 2 %.
+- El origen admite detección automática acotada a inglés, español y francés.
+  Cambiar destino conserva la conexión con las limitaciones de generación de
+  Palabra ya documentadas. La traducción también aparece bajo el video.
+
+El fallo de la captura del usuario a los 16 segundos pudo reproducirse en la
+salida Windows sin API: la **cola original**, no la traducción, crecía porque
+el dispositivo consumía más lentamente que la entrada. Las comprobaciones
+locales iniciales con dispositivos sustituidos no habían detectado ese ritmo.
+
+Se sustituyó el doble reloj por las notificaciones WinMM y cuatro buffers de
+20 ms, con una petición de temporizador de 1 ms limitada a la sesión y su cierre
+pareado. Se conservan los límites de cola original de 1 s y traducida de 3 s;
+no se amplían para esconder el fallo ni se descarta voz traducida.
+
+## Evidencia y límites
+
+- `tmp/native-audio-pacing-20261030-before.json`: fallo a los 6,403 s, cola
+  original de 1000 ms. Los ensayos intermedios también se conservan.
+- `tmp/native-audio-pacing-20261030-four-buffers.json`: 24,075 s completos,
+  máximo 60 ms en ambas colas, ningún rechazo y drenaje completo. Es PCM de
+  silencio mediante el dispositivo real; no acredita calidad lingüística.
+- `tmp/youtube-capture-real/report.json`: ocho segundos del iframe público
+  real, 200 paquetes y 190517 muestras no nulas de 192000; captura y AudioWorklet
+  reales, sin micrófono, traducción ni grabación de audio. Los dos ensayos
+  anteriores silenciosos se conservan. El silencio de esos ensayos venía del
+  argumento `--mute-audio` del navegador automatizado; se excluye únicamente
+  en el navegador de pruebas propiedad de la herramienta.
+- `docs/verification-history/youtube-capture-compat-20261030T044443-3019a456.json`:
+  recorrido simulado con permiso de 9 s, metadatos ausentes y pausa del iframe
+  durante el selector, que termina enviando PCM al relay y cambiando destinos.
+- `docs/verification-history/dubbing-ui-20261030T044846-099691b6.json`: 39 controles
+  locales del reproductor existente. La inferencia es sustituida.
+- `docs/verification-history/native-audio-20261030T053634-475a81a5.json`: 10 pruebas;
+  `docs/verification-history/palabra-live-20261030T053634-7f2178a5.json`: 37 pruebas;
+  `docs/verification-history/youtube-source-20261030T053634-3ac330d7.json`: 25 pruebas.
+
+El ensayo real previo `tmp/native-audio-real/report.json` utilizó una sola
+frase sintética de 2,344 s, una sesión Palabra, sin reintentos: produjo 2,640 s
+de voz traducida enviada a WinMM, primer envío a los 2594 ms y cierre confirmado.
+Coste de entrada estimado $0,001563 a la referencia histórica $0,04/min; cobro
+real desconocido. No verificó escucha física, calidad ni el video completo.
+
+Las pruebas nuevas de reproducción completa y traducción real se registrarán
+con su propio resultado. Ninguno de los datos anteriores demuestra 500 ms
+audibles, ausencia universal de cortes ni traducción semántica perfecta.

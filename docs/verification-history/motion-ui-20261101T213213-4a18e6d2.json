@@ -1,0 +1,19 @@
+{
+  "suite": "motion-ui",
+  "started_at": "2026-11-01T21:32:13.308132+00:00",
+  "finished_at": "2026-11-01T21:32:21.504940+00:00",
+  "duration_seconds": 8.196808,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--motion"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Motion preview, MP4 metadata and three result actions passed at four widths.\n"
+}

@@ -1,0 +1,27 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/workspace-translation-continuity/report-current-20261102T022748.json",
+  "original_sha256": "132b596a4662aa870a264568ce5f7b9b172d9661b6c781e0e7756b6f1a33954f",
+  "new_test_execution": false,
+  "reported_result": "pending",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "microphone_used": false,
+    "user_audio_persisted": false,
+    "transcripts_persisted": false,
+    "physical_human_listening_verified": false
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": 1,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": 44.73,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

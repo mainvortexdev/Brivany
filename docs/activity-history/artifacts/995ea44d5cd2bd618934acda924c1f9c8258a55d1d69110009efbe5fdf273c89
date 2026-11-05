@@ -1,0 +1,19 @@
+{
+  "status": "complete",
+  "provider": "Cartesia",
+  "model": "sonic-3.6-2026-08-27",
+  "language": "en",
+  "attempted_requests": 11,
+  "completed_requests": 11,
+  "requested_characters": 2419,
+  "billing_amount": null,
+  "retries": 0,
+  "edition": "English presentation",
+  "scenes": 11,
+  "narration_seconds": 154.88,
+  "requested_length_seconds": 180,
+  "render_status": "in_progress",
+  "illustrated": true,
+  "source_language_example": "English UI labels for Spanish source audio",
+  "reused_music": true
+}

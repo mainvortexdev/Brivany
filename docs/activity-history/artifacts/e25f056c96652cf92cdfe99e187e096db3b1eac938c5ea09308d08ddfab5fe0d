@@ -1,0 +1,37 @@
+"""Native Spotify actions; credentials never cross into the renderer."""
+from pathlib import Path
+import webbrowser
+from services.spotify import SpotifyError
+
+
+class MusicBridge:
+    def _music(self):self._trusted();return self._spotify_factory()
+    def spotify_status(self):return self._music().status()
+    def spotify_configure(self,client_id):return self._music().configure(client_id)
+    def spotify_connect(self):
+        url=self._music().begin()
+        if not webbrowser.open(url):raise SpotifyError('No se pudo abrir el navegador para vincular Spotify.')
+        return {'ok':True}
+    def spotify_disconnect(self):return self._music().disconnect()
+    def spotify_playback(self):return self._music().playback()
+    def spotify_command(self,action,value=None):return self._music().command(action,value)
+    def spotify_open(self):
+        url=(self._music().playback().get('playback') or {}).get('url')
+        if not url:raise SpotifyError('No hay una canción disponible para abrir.')
+        return {'ok':bool(webbrowser.open(url))}
+    def spotify_dashboard(self):
+        self._trusted();return {'ok':bool(webbrowser.open('https://developer.spotify.com/dashboard'))}
+    def spotify_import_lyrics(self):
+        music=self._music()
+        import webview
+        track=(music.playback().get('playback') or {}).get('id')
+        if not track:raise SpotifyError('Reproduce una canción antes de importar su letra.')
+        held=getattr(self,'_workspace_keyboard',False);self._workspace_keyboard=True
+        try:selected=self._work_window.create_file_dialog(webview.FileDialog.OPEN,allow_multiple=False,file_types=('Letras (*.lrc;*.txt)',))
+        finally:self._workspace_keyboard=held
+        if not selected:return {'cancelled':True}
+        path=Path(selected[0])
+        if path.suffix.lower() not in {'.lrc','.txt'} or path.stat().st_size>65536:raise SpotifyError('Elige un archivo LRC o TXT de hasta 64 KB.')
+        try:text=path.read_text(encoding='utf-8-sig')
+        except (UnicodeError,OSError):raise SpotifyError('La letra debe estar guardada como texto UTF-8.') from None
+        return music.import_lyrics(text,expected_id=track)

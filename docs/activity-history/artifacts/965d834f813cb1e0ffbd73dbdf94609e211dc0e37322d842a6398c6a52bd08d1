@@ -1,0 +1,135 @@
+# Hablantes anónimos antes del cierre de Muse
+
+4 de noviembre de 2026. La traducción inline puede asignar una voz estable
+antes de recibir la letra de hablante de Muse. Se añade agrupación acústica
+local por sesión; no identifica personas ni deduce su identidad de género.
+La calidad del video natural y la sincronización completa siguen pendientes
+de la prueba real que dirige el banco de Traducción auditiva.
+
+## Problema y datos disponibles
+
+Los parciales de una intervención larga podían llegar varios segundos antes
+de su etiqueta de hablante. Las piezas se traducían sin hablante y volvían a
+usar la voz de reserva. Además, `A` del prefijo y `A` de la conexión en vivo
+pertenecen a dos espacios de etiquetas distintos. La coincidencia de letras
+no demuestra que se trate de la misma voz.
+
+El servidor ya conserva PCM16 mono a 24 kHz en memoria: siete segundos del
+prefijo, una ventana circular de treinta segundos y la muestra de cada pieza.
+La nueva asociación usa ese audio; no añade captura ni sube muestras a otra API.
+
+## Implementación
+
+`packages/providers/acoustic_speakers.py` extrae vectores de 192 componentes
+con CAM++ de 3D-Speaker. El modelo oficial de
+[ModelScope](https://modelscope.cn/models/iic/speech_campplus_sv_zh_en_16k-common_advanced/summary)
+declara Apache License 2.0 y entrenamiento en chino e inglés. Se utiliza el
+[ONNX publicado por Sherpa](https://github.com/k2-fsa/sherpa-onnx/releases/tag/speaker-recongition-models),
+de 28.281.164 bytes, SHA-256
+`aa3cfc16963a10586a9393f5035d6d6b57e98d358b347f80c2a30bf4f00ceba2`.
+La ficha se fija a `v1.0.0`; el hash fija el archivo exportado concreto.
+El instalador comprueba los hashes del modelo, ficha y licencia.
+
+La inferencia usa `sherpa-onnx==2.0.1`, CPU y un hilo, con acceso serializado
+al extractor. La [API oficial](https://k2-fsa.github.io/sherpa/onnx/speaker-identification/index.html)
+permite obtener embeddings de audio; no depende de la transcripción ni del
+clasificador de timbre. Se calienta en segundo plano al iniciar inline.
+
+Cada pieza con contenido clasificado como habla puede recibir un grupo:
+
+- Coincidencia: coseno de al menos 0,65 y margen de 0,12 frente al segundo grupo.
+- Voz nueva: no hay grupos o todos tienen coseno menor que 0,45.
+- Zona intermedia o empate: queda sin identificar y no modifica los grupos.
+- Límite de ocho grupos y cuatro vectores recientes por grupo, en memoria.
+
+Son umbrales conservadores de funcionamiento, no probabilidades de identidad
+ni una calibración validada sobre español natural. El tono fundamental y el
+timbre masculino/femenino no participan en la asociación. Dos voces con el
+mismo registro pueden conservar voces sintéticas diferentes.
+
+Las muestras muy cortas, silenciosas o con ventanas contradictorias no
+entrenan grupos. Una pieza admite de 1,2 a 8 segundos; cada ventana del modelo
+se limita a 3 segundos. Desde 3,6 segundos se comparan dos ventanas de al
+menos 1,8 segundos. Esta guarda detecta algunas mezclas, sin sustituir una
+separación completa de voces simultáneas. Música, canciones y contenido
+desconocido quedan fuera de la asociación, incluso si se desactiva la omisión
+de canciones en la reproducción.
+
+`SpeakerTracker` asigna el grupo a cada pieza, no a toda una intervención
+larga. Prefijo y conexión en vivo comparten estos grupos si coincide su audio.
+Una etiqueta tardía de Muse se conserva como anotación y no fusiona dos grupos
+acústicamente distintos ni renumera los ya usados. Los metadatos señalan
+`local_acoustic_embedding` y `speaker_provisional`. Las voces sintéticas se
+mantienen en el grupo durante la sesión. No se reutilizan grupos entre sesiones.
+
+La extracción ocurre después de reservar el orden de salida y fuera del
+bloque de despacho, con un máximo de dos contextos pendientes. La clasificación
+de timbre puede reutilizar un resultado confiable por grupo durante ocho piezas
+distintas mediante `cached_timbre` y `remember_timbre`. Una lectura repetida de
+la misma pieza no consume ese intervalo. El origen y la confianza del timbre
+se conservan; su corrección acústica es un trabajo separado de esta asociación.
+
+## Medición local y corrección de la guarda
+
+Se reutilizaron exclusivamente grabaciones sintéticas propias que ya existían.
+No se generaron voces nuevas ni se invocaron Muse, Meta o Cartesia.
+
+El candidato inicial tardó 925,65 ms en cargar y 39–65 ms por muestra.
+Los cortes, ganancia, ruido y frases distintas de una misma voz dieron
+coseno 0,728–0,9985; las dos voces distintas, 0,1857–0,2493.
+[Informe del candidato](../tmp/speaker-embedding/candidate-owned-fixtures.json).
+
+La primera guarda de producción dividía una muestra de 2,48 s en dos mitades
+de aproximadamente 1,24 s. Rechazó esa misma voz por variación entre fonemas.
+Se preserva el [resultado fallido](../tmp/speaker-embedding/production-owned-fixtures.json).
+Se corrigió la guarda para comparar ventanas independientes solo desde 3,6 s.
+
+Con la guarda corregida se aceptaron las ocho muestras propias comprobadas:
+36,88–53,19 ms para piezas de hasta 3 s; 115,44 ms para 6 s y dos ventanas.
+La carga con calentamiento fue de 773,09 ms. Las frases de una misma voz
+dieron 0,7697–0,9499; los cambios de ganancia 0,9971–0,9985, y las voces
+distintas 0,1976–0,2471. Tras el cálculo, cinco segundos de reposo acumularon
+0,0 segundos de CPU en ese proceso. Es una medición local, no una promesa de
+rendimiento de todos los equipos.
+[Informe de producción corregida](../tmp/speaker-embedding/production-owned-fixtures-v2.json).
+
+## Verificación
+
+`tests/test_acoustic_speakers.py` añadió nueve comprobaciones: rechazo de audio
+inválido, ventanas contradictorias, ambigüedad sin aprendizaje, concurrencia,
+dos voces con el mismo pitch sustituido y la misma letra ASR, continuidad entre
+prefijo y vivo con letras distintas, etiqueta tardía sin fusionar piezas,
+aislamiento por sesión y caché acotada. Una comprobación usa realmente el modelo
+local sobre las dos grabaciones sintéticas propias existentes; se omite si
+esos artefactos opcionales no están disponibles.
+
+El ensayo de protocolo progresivo se modificó para retrasar la etiqueta Muse
+hasta después del primer audio traducido. Con embedding y gate sustituidos,
+la primera pieza ya tiene grupo y las siguientes conservan la voz. Otro caso
+mantiene distintos dos audios con la letra `A` en prefijo y conexión en vivo.
+La regresión de canciones/desconocido exige que ni el extractor de hablantes
+ni el clasificador de timbre reciban esas muestras.
+
+`tools.verify river-translation`: 54 pruebas aprobadas en 26,504 s.
+[Informe](../tmp/verification/river-translation-20261104T155027-78346200.json).
+La primera suite sync-relay aprobó 56 pruebas en 32,076 s.
+[Informe inicial](../tmp/verification/sync-relay-20261104T155027-95ae28dd.json).
+
+Una ejecución posterior incluyó una versión intermedia del test asíncrono de
+timbre: 59 pruebas, una fallida por exigir exactamente dos mensajes TTS cuando
+la segmentación podía producir uno. El test fue corregido por su autor para
+comprobar el comportamiento y un mínimo de un mensaje; el informe intermedio
+se conserva, sin modificarlo.
+[Informe intermedio](../tmp/verification/sync-relay-20261104T155247-31ee3911.json).
+
+Con el código y el test definitivos, `tools.verify sync-relay` aprobó 59/59
+pruebas en 34,855 s, incluyendo la exclusión de música/desconocido y las dos
+regresiones asíncronas de timbre/cancelación.
+[Informe final](../tmp/verification/sync-relay-20261104T155451-184c02bf.json).
+
+Todas las mediciones y comprobaciones de este hito fueron locales, con cero
+llamadas de inferencia a proveedores y sin GPU. La descarga de dependencias,
+modelo, ficha y licencia sí usó red; no se conoce aquí el total exacto de
+solicitudes HTTPS, por lo que no se registra como cero llamadas externas.
+No se adjuntan audio, video ni transcripciones a la bitácora. Los hashes fijan
+artefactos; no prueban calidad semántica ni exactitud sobre el video natural.

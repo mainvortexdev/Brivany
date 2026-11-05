@@ -1,0 +1,190 @@
+"""Opt-in local listening artifacts for one known synthetic EN→ES fixture only.
+
+No providers are called. The source's built-in path, digest and PCM frame count
+are authority; caller metadata and flags cannot authorize a different recording.
+Output media must not be attached to the construction activity ledger.
+"""
+from __future__ import annotations
+
+import base64
+import binascii
+from datetime import datetime, timezone
+import hashlib
+import io
+import json
+from pathlib import Path
+import re
+import unicodedata
+from uuid import uuid4
+import wave
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE_RELATIVE = Path("tmp/modular-dubbing/english-room.wav")
+SOURCE_SHA256 = "5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30"
+SOURCE_FRAMES = 56261
+KNOWN_SOURCE_TEXT = "This room has two windows."
+OUTPUT_RELATIVE = Path("tmp/synthetic-dubbing-review")
+SAMPLE_RATE = 24000
+MAX_SOURCE_BYTES = 2*1024*1024
+MAX_OUTPUT_PCM_BYTES = SAMPLE_RATE*2*20
+MAX_AUDIO_CHUNK_BYTES = SAMPLE_RATE*2*10
+MAX_TEXT_CHARACTERS = 512
+
+
+def _clean_text(value):
+    if not isinstance(value, str) or len(value) > MAX_TEXT_CHARACTERS:
+        raise ValueError("El texto de revisión excede el límite o no es válido.")
+    value = "".join(character for character in value if not unicodedata.category(character).startswith("C"))
+    value = re.sub(r"\s+", " ", value)
+    # Observed translation is plain text. Credentials/URLs, if accidentally
+    # injected into the text event, are never copied into a persisted artifact.
+    if (re.search(r"(?:https?://|www\.|bearer\s+|api[_-]?key|access[_-]?token|(?:sk|AIza)[-_a-zA-Z0-9]{8,})", value, re.I)
+        or re.search(r"[A-Za-z0-9_+/=-]{48,}", value)):
+        raise ValueError("El texto de revisión contiene datos ajenos a una traducción.")
+    return value
+
+
+class SyntheticReview:
+    """Collect normalized relay events for the authorized synthetic fixture.
+
+    ``collect`` accepts PCM audio only as validated base64 in ``event['audio']``;
+    Source and target transcripts are bounded observations: recognition errors
+    are retained as evidence, never an automatic semantic verification.
+    """
+    def __init__(self, source_path, output_directory=None):
+        if not isinstance(source_path, (str, Path)):
+            raise ValueError("La revisión requiere la fixture sintética autorizada.")
+        expected = (ROOT/SOURCE_RELATIVE).resolve()
+        source = Path(source_path).resolve()
+        if source != expected or not source.is_file() or source.suffix.lower() != ".wav":
+            raise ValueError("La revisión solo admite la fixture sintética autorizada.")
+        if not 44 <= source.stat().st_size <= MAX_SOURCE_BYTES:
+            raise ValueError("La fixture sintética no tiene un tamaño válido.")
+        # One file descriptor/read: digest and WAV validation refer to the same
+        # bytes even if the file on disk is replaced after construction.
+        with source.open("rb") as handle: content = handle.read(MAX_SOURCE_BYTES+1)
+        if len(content) > MAX_SOURCE_BYTES or hashlib.sha256(content).hexdigest() != SOURCE_SHA256:
+            raise ValueError("La fixture sintética no coincide con su hash autorizado.")
+        try:
+            with wave.open(io.BytesIO(content), "rb") as audio:
+                if (audio.getnchannels() != 1 or audio.getsampwidth() != 2 or audio.getframerate() != SAMPLE_RATE or
+                    audio.getcomptype() != "NONE" or audio.getnframes() != SOURCE_FRAMES):
+                    raise ValueError("format")
+                pcm = audio.readframes(SOURCE_FRAMES+1)
+                if len(pcm) != SOURCE_FRAMES*2: raise ValueError("incomplete")
+        except (wave.Error, EOFError, OSError, ValueError):
+            raise ValueError("La fixture debe ser PCM16 mono de 24 kHz con duración autorizada.") from None
+        default = (ROOT/OUTPUT_RELATIVE).resolve()
+        if default != (ROOT/OUTPUT_RELATIVE).absolute():
+            raise ValueError("La carpeta de revisión no puede redirigirse fuera del proyecto.")
+        output = Path(output_directory).resolve() if output_directory is not None else default
+        if output != default:
+            raise ValueError("La revisión debe guardarse en tmp/synthetic-dubbing-review.")
+        self._output = output
+        self._source_size = len(content)
+        self._audio = bytearray()
+        self._observed_target = ""
+        self._observed_source = ""
+        self._segment_targets = {}
+        self._audio_chunks = 0
+        self._closed = False
+        self._result = None
+
+    def source_metadata(self):
+        return {"synthetic": True, "filename": SOURCE_RELATIVE.name, "sha256": SOURCE_SHA256,
+                "size_bytes": self._source_size, "duration_seconds": SOURCE_FRAMES/SAMPLE_RATE,
+                "sample_rate": SAMPLE_RATE, "channels": 1, "format": "pcm16"}
+
+    def collect(self, event):
+        if self._closed: raise ValueError("La revisión sintética está cerrada.")
+        if not isinstance(event, dict): raise ValueError("La revisión requiere eventos normalizados.")
+        kind = event.get("type")
+        if kind == "audio":
+            rate, channels = event.get("sample_rate", SAMPLE_RATE), event.get("channels", 1)
+            audio_format = event.get("format", "pcm16")
+            if (type(rate) is not int or rate != SAMPLE_RATE or type(channels) is not int or channels != 1 or
+                not isinstance(audio_format, str) or audio_format not in {"pcm16", "pcm_s16le"}):
+                raise ValueError("La revisión requiere audio PCM16 mono de 24 kHz.")
+            encoded = event.get("audio")
+            if not isinstance(encoded, str) or not encoded or len(encoded) > (MAX_AUDIO_CHUNK_BYTES+2)//3*4:
+                raise ValueError("El bloque de revisión no tiene un tamaño válido.")
+            try: chunk = base64.b64decode(encoded, validate=True)
+            except (ValueError, binascii.Error):
+                raise ValueError("El bloque de revisión no es base64 válido.") from None
+            if not chunk or len(chunk)%2 or len(chunk) > MAX_AUDIO_CHUNK_BYTES:
+                raise ValueError("El bloque de revisión debe contener muestras PCM completas.")
+            if len(self._audio)+len(chunk) > MAX_OUTPUT_PCM_BYTES:
+                raise ValueError("La salida de revisión excede veinte segundos.")
+            self._audio.extend(chunk); self._audio_chunks += 1
+        elif kind == "transcript":
+            source = event.get("source")
+            if not isinstance(source, str): return
+            if source not in {"original", "translation"}: return
+            text = _clean_text(event.get("text"))
+            operation = event.get("operation", "append")
+            if not isinstance(operation, str) or operation not in {"append", "replace"}:
+                raise ValueError("La operación de texto no está admitida.")
+            if source == "original":
+                value = text if operation == "replace" else self._observed_source+text
+                if len(value) > MAX_TEXT_CHARACTERS:
+                    raise ValueError("La transcripción de la fixture excede el límite.")
+                self._observed_source = value
+            else:
+                identifier = event.get("segment_id")
+                if identifier is not None:
+                    if not isinstance(identifier, (str, int)) or isinstance(identifier, bool):
+                        raise ValueError("El identificador de segmento no es válido.")
+                    identifier = str(identifier)
+                    if not re.fullmatch(r"[A-Za-z0-9_.:-]{1,80}", identifier):
+                        raise ValueError("El identificador de segmento no es válido.")
+                    proposed = dict(self._segment_targets)
+                    proposed[identifier] = text if operation == "replace" else proposed.get(identifier, "")+text
+                    value = " ".join(proposed.values())
+                    if len(value) > MAX_TEXT_CHARACTERS or len(proposed) > 32:
+                        raise ValueError("La transcripción de revisión excede el límite.")
+                    self._segment_targets = proposed
+                else:
+                    value = text if operation == "replace" else self._observed_target+text
+                    if len(value) > MAX_TEXT_CHARACTERS:
+                        raise ValueError("La transcripción de revisión excede el límite.")
+                self._observed_target = value
+
+    def finish(self):
+        """Write synthetic output only. JSON declares review, not correctness."""
+        if self._result is not None: return dict(self._result)
+        if self._closed: raise ValueError("La revisión sintética está cerrada.")
+        if not self._audio: raise ValueError("La revisión aún no tiene audio PCM de salida.")
+        # Resolve again to reject a parent redirected after initialization.
+        if self._output.resolve() != (ROOT/OUTPUT_RELATIVE).absolute():
+            raise ValueError("La carpeta de revisión cambió de ubicación.")
+        self._output.mkdir(parents=True, exist_ok=True)
+        directory = self._output/str(uuid4()); directory.mkdir()
+        wav_path, json_path = directory/"translated.wav", directory/"review.json"
+        buffer = io.BytesIO()
+        with wave.open(buffer, "wb") as audio:
+            audio.setnchannels(1); audio.setsampwidth(2); audio.setframerate(SAMPLE_RATE)
+            audio.writeframes(self._audio)
+        content = buffer.getvalue()
+        report = {"created_at": datetime.now(timezone.utc).isoformat(), "synthetic": True,
+            "source": self.source_metadata(), "known_source_text_en": KNOWN_SOURCE_TEXT,
+            "source_text_observed": self._observed_source.strip(), "target_language": "es",
+            "target_text_observed": self._observed_target.strip(),
+            "output": {"filename": "translated.wav", "sha256": hashlib.sha256(content).hexdigest(),
+                "pcm_sha256": hashlib.sha256(self._audio).hexdigest(), "size_bytes": len(content),
+                "pcm_bytes": len(self._audio), "duration_seconds": len(self._audio)/(SAMPLE_RATE*2),
+                "sample_rate": SAMPLE_RATE, "channels": 1, "format": "pcm16", "audio_chunks": self._audio_chunks},
+            "pcm_review_available": True, "semantic_accuracy_verified": False,
+            "naturalness_verified": False, "review_status": "pending_human_listening",
+            "automatic_semantic_assessment": False,
+            "limitations": ["Audio sintético de prueba; los bytes PCM no prueban traducción correcta ni naturalidad.",
+                "Texto observado del proveedor, sin verificación semántica automática.",
+                "No adjuntar audio de revisión a la bitácora de construcción."]}
+        with wav_path.open("xb") as handle: handle.write(content)
+        with json_path.open("x", encoding="utf-8") as handle: json.dump(report, handle, ensure_ascii=False, indent=2)
+        self._closed = True
+        self._audio.clear()
+        self._result = {"directory": str(directory), "wav_path": str(wav_path), "json_path": str(json_path),
+                        "pcm_review_available": True, "semantic_accuracy_verified": False,
+                        "source_sha256": SOURCE_SHA256, "output_sha256": report["output"]["sha256"]}
+        return dict(self._result)

@@ -1,0 +1,19 @@
+{
+  "checked_at": "2026-11-02T01:34:06.753224+00:00",
+  "type": "real_access_check",
+  "purpose": "Bounded metadata GET requests, no inference, ASR or synthesis sessions.",
+  "external_calls": 2,
+  "monetary_cost": null,
+  "results": {
+    "meta": {
+      "http_status": 200,
+      "access": true,
+      "checked_model": "muse-spark-1.3",
+      "model_available": true
+    },
+    "cartesia": {
+      "http_status": 200,
+      "access": true
+    }
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "$defs": {
+    "JsonValue": {},
+    "ToolProposal": {
+      "additionalProperties": false,
+      "properties": {
+        "tool_name": {
+          "maxLength": 120,
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Tool Name",
+          "type": "string"
+        },
+        "arguments": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Arguments",
+          "type": "object"
+        },
+        "rationale": {
+          "minLength": 1,
+          "title": "Rationale",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool_name",
+        "arguments",
+        "rationale"
+      ],
+      "title": "ToolProposal",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "proposal_id": {
+      "format": "uuid",
+      "title": "Proposal Id",
+      "type": "string"
+    },
+    "session_id": {
+      "format": "uuid",
+      "title": "Session Id",
+      "type": "string"
+    },
+    "expected_session_revision": {
+      "minimum": 0,
+      "title": "Expected Session Revision",
+      "type": "integer"
+    },
+    "step_id": {
+      "maxLength": 120,
+      "pattern": "^[a-z][a-z0-9_.-]*$",
+      "title": "Step Id",
+      "type": "string"
+    },
+    "intervention": {
+      "enum": [
+        "explain",
+        "ask",
+        "propose_tool",
+        "request_verification",
+        "escalate"
+      ],
+      "title": "Intervention",
+      "type": "string"
+    },
+    "message": {
+      "minLength": 1,
+      "title": "Message",
+      "type": "string"
+    },
+    "source_ids": {
+      "items": {
+        "maxLength": 120,
+        "pattern": "^[a-z][a-z0-9_.-]*$",
+        "type": "string"
+      },
+      "title": "Source Ids",
+      "type": "array"
+    },
+    "missing_information": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Missing Information",
+      "type": "array"
+    },
+    "tool": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ToolProposal"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "proposal_id",
+    "session_id",
+    "expected_session_revision",
+    "step_id",
+    "intervention",
+    "message",
+    "source_ids"
+  ],
+  "title": "MelodiProposal",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:MelodiProposal:0.1.0"
+}

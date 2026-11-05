@@ -1,0 +1,104 @@
+# Dirección visual y producción propuesta
+
+**Idea:** de la saturación a la claridad. Melodi reorganiza el mismo mundo que
+al principio agobia a la persona. Continuidad de cámara, formas y sonido;
+personaje con intención en lugar de una sucesión de tarjetas y logotipos.
+
+Esto es planificación. No hay imágenes, voz ni película nuevas renderizadas.
+
+## Herramientas seleccionadas para proponer
+
+| Herramienta | Uso concreto | Situación local |
+| --- | --- | --- |
+| HyperFrames | Montaje de once escenas sobre un reloj de 180 s, preview y MP4 | Proyecto histórico fijado en 0.8.229. Comprobar versión vigente antes de renderizar. |
+| GSAP | Tipografía, líneas, cámara y actuación de Melodi sincronizadas | 3.15.0 instalado. |
+| Three.js | Personaje en volumen, materiales satinados y diagrama espacial | 0.187.0 instalado; recursos 3D reutilizables. |
+| SVG/HTML/CSS | Wordmark, diagramas y texto nítido a cualquier escala | Recursos originales del proyecto. |
+| FFmpeg | Mezcla de pistas, codificación y comprobación de duración/audio | 9.0.1 local. |
+| Voz original de Melodi | Narración española con la identidad del producto | Sólo se sintetizará cuando el guion esté fijado; reutilizar audio en revisiones. |
+
+El film necesita una composición nueva: `motion-studio/render.mjs` admite
+18/24/30 s y no debe usarse directamente para afirmar un render de 180 s.
+Tampoco se estiran sus cuatro frases históricas a tres minutos.
+
+Fuentes oficiales: [HyperFrames](https://www.heygen.com/research/html-to-video),
+[GSAP Timeline](https://gsap.com/docs/v3/GSAP/Timeline/),
+[Three.js](https://threejs.org/docs/), [FFmpeg](https://ffmpeg.org/documentation.html).
+Alternativas y límites en `INVESTIGACION_HERRAMIENTAS.md`.
+
+## Melodi
+
+- Conservar la silueta, ojos oscuros, manos pequeñas y cuerpo blanco del diseño
+  de `desktop/experience/character.css`. Reconstruir las capas para primer plano;
+  el screenshot pequeño del escritorio no tiene resolución para ser el hero.
+- Volumen blanco satinado, iluminación suave lateral, sombra de contacto.
+  El azul pertenece a la interfaz y a las acciones; no rediseñar el personaje.
+- Entrada: anticipación breve, mirada, desplazamiento y asentamiento suave.
+  Saludo de una mano al presentarse; respiración discreta durante reposo.
+- Escucha: mirada al interlocutor y pequeño asentimiento. Trabajo: sigue con
+  los ojos la ruta del audio. Cierre: mira a cámara y saluda.
+- Sin rebote constante ni una boca nueva para forzar sincronización labial.
+  Una cinta o halo sutil puede responder a la envolvente de la voz final.
+- Cada gesto y movimiento de cámara tendrá un motivo narrativo. Todas las
+  animaciones dependerán del timeline de la composición y serán reproducibles
+  al buscar cualquier segundo, sin física aleatoria sin preparar.
+
+## Transiciones que cuentan la historia
+
+1. Las notificaciones saturan el espacio; Melodi lo ordena y deja aire.
+2. La línea de una agenda se transforma en la mesa de reunión ilustrada.
+3. Las ondas de dos interlocutores se convierten en pistas de la línea A/V.
+4. Esas pistas abren un video, luego sus ideas se transforman en ejercicios.
+5. El marco de una escena 3D se separa en las capas de la arquitectura.
+6. Un paquete de audio recorre la arquitectura y entra al reloj de sincronía.
+7. Las marcas del reloj se convierten en registros de prueba; Melodi cierra.
+
+## Arquitectura para explicar, no para abrumar
+
+Cuatro grupos, revelados según la narración. Nombres técnicos ligados a verbos.
+No mostrar todos los conectores a la vez ni simular que es una traza de red real.
+
+```mermaid
+flowchart LR
+  A[Tu voz, videos y archivos] --> B[WorkSpace + extensión Brave]
+  B <--> C[Coordinador local Python]
+  C <--> L[Modelos locales: canciones, hablantes y timbre]
+  C <--> M[Muse: transcribir]
+  C <--> S[Muse Spark: interpretar y traducir]
+  C <--> T[Cartesia Sonic: generar voz]
+  C --> R[Herramientas y resultados]
+  R --> V[Voz, documentos, práctica y escena 3D]
+```
+
+En la ampliación del flujo auditivo, las flechas respetan el orden real:
+captura → transcripción → traducción → síntesis → reproducción. Se muestra
+solapamiento entre fragmentos; nunca se atribuye al modelo de transcripción
+la síntesis de voz. WebSockets es la comunicación y Web Audio, la captura y
+reproducción. ONNX Runtime apoya inferencia local; la arquitectura completa
+también usa servicios remotos. Three.js pertenece al visor/representación 3D,
+no al motor de traducción.
+
+## Créditos y alcance de producción
+
+Usar primero SVG, componentes y recursos existentes. No se requieren nuevas
+generaciones de avatar ni clips de IA para producir la propuesta. Una única
+pasada de locución final, corregir montaje reutilizando ese audio y renderizar
+un tramo corto antes del MP4 completo. No se ha activado ningún servicio pagado
+de medios ni se han cambiado planes o sobrecostes.
+
+La lectura de `hyperframes usage --json` fue conocida y mostró cuota del
+entorno Codex; no mide créditos de Cartesia ni garantiza capacidad o precio de
+render. La fecha de lectura fue el 4 de noviembre de 2026. La locución y el
+render todavía no tienen consumo ni duración medidos.
+
+## Tratamiento de las escenas ideales
+
+La reunión presencial y la personalización de voz usan un rótulo discreto
+pero legible «Demostración ilustrada · visión de experiencia». No se representa
+una clonación real instantánea ni se usa la voz de un tercero. Los colores de
+dos interlocutores permanecen estables sin asociarlos a un género.
+
+El visor conserva «Escena conceptual». Las cifras de la bitácora distinguen
+informes históricos y casos aprobados de cuatro suites concretas. Se presenta
+un producto con seguridad visual, sin transformar gráficos ilustrados en
+evidencia de funciones verificadas.

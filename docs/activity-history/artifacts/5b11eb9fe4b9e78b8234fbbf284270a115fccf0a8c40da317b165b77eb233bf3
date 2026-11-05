@@ -1,0 +1,49 @@
+{
+  "scope": "read-only metadata of this Brivany process; no UI input, capture or inference",
+  "windows": [
+    {
+      "title": "Melodi WorkSpace · Panel",
+      "visible": true,
+      "bounds": {
+        "left": 300,
+        "top": 40,
+        "right": 980,
+        "bottom": 444
+      },
+      "tool_window": true,
+      "app_window": false
+    },
+    {
+      "title": "Melodi WorkSpace",
+      "visible": true,
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1280,
+        "bottom": 40
+      },
+      "tool_window": true,
+      "app_window": false
+    },
+    {
+      "title": "Brivany",
+      "visible": false,
+      "bounds": {
+        "left": 80,
+        "top": 132,
+        "right": 1184,
+        "bottom": 853
+      },
+      "tool_window": false,
+      "app_window": true
+    }
+  ],
+  "work_area": {
+    "left": 0,
+    "top": 40,
+    "right": 1280,
+    "bottom": 994
+  },
+  "passed": true,
+  "external_calls": 0
+}

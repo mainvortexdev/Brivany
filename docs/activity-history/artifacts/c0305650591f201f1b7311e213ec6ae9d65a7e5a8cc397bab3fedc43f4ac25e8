@@ -1,0 +1,69 @@
+import {readVideoCaptions} from './caption-probe.js';
+import {PCMSender} from './pcm-sender.js';
+
+export function visibleVideos(doc=document){
+ return [...doc.querySelectorAll('video')].filter(video=>{const rect=video.getBoundingClientRect(),style=getComputedStyle(video);return rect.width>=120&&rect.height>=68&&rect.right>0&&rect.bottom>0&&rect.left<innerWidth&&rect.top<innerHeight&&style.display!=='none'&&style.visibility!=='hidden';});
+}
+export function chooseAt(videos,x,y){return videos.map(video=>({video,rect:video.getBoundingClientRect()})).filter(({rect:r})=>x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom).sort((a,b)=>a.rect.width*a.rect.height-b.rect.width*b.rect.height)[0]?.video||null;}
+export function automaticVideo(videos,href=location.href){const url=new URL(href);return /(^|\.)youtube\.com$/.test(url.hostname)&&videos.length===1?videos[0]:null;}
+
+let session=null,picker=null;
+function stopSession(){session?.stop();session=null;}
+function clearOldIndicators(){
+ for(const host of document.querySelectorAll('[id="brivany-video-marker"]'))if(host!==session?.host)host.remove();
+ if(!picker&&document.documentElement.hasAttribute('data-brivany-picking')){delete document.documentElement.dataset.brivanyPicking;document.documentElement.style.removeProperty('cursor');}
+}
+function surface(){
+ const host=document.createElement('div');host.id='brivany-video-marker';host.style.cssText='position:fixed;inset:0;z-index:2147483646;pointer-events:none';
+ const root=host.attachShadow({mode:'closed'});root.innerHTML='<style>:host{all:initial}[hidden]{display:none!important}.mark{position:fixed;border:2px solid #6aa6ff;border-radius:12px;box-shadow:0 0 0 1px #0007;pointer-events:none;transition:opacity .15s}.pin{position:fixed;width:25px;height:31px;filter:drop-shadow(0 2px 3px #0008);pointer-events:none}.status{position:fixed;right:20px;top:58px;display:flex;align-items:center;gap:12px;max-width:340px;padding:10px 14px;background:#181b20ee;color:#f5f7fc;border:1px solid #ffffff26;border-radius:22px;font:13px Segoe UI,sans-serif;box-shadow:0 6px 24px #0003;pointer-events:auto;backdrop-filter:blur(16px)}.live{margin:4px 0 0;color:#cbd2dd;font-size:12px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}button{color:inherit;background:none;border:0;font:inherit;cursor:pointer;padding:2px 5px;border-radius:12px}button:hover{background:#ffffff14}</style><div class="mark" hidden></div><svg class="pin" hidden viewBox="0 0 24 30"><path fill="#77adff" stroke="#fff" stroke-width="1.5" d="M12 29S2 16 2 10a10 10 0 0 1 20 0c0 6-10 19-10 19Z"/><circle cx="12" cy="10" r="3.5" fill="#13223c"/></svg><div class="status"><div><span></span><p class="live" hidden></p></div><button type="button" aria-label="Cancelar selección de video">Cancelar</button></div>';
+ document.documentElement.append(host);return {host,mark:root.querySelector('.mark'),pin:root.querySelector('.pin'),text:root.querySelector('span'),caption:root.querySelector('.live'),button:root.querySelector('button')};
+}
+export async function activateVideoSelection(){
+ picker?.stop();clearOldIndicators();const videos=visibleVideos(),automatic=automaticVideo(videos);
+ if(automatic){await selectVideo(automatic);return;}
+ const ui=surface(),oldCursor=document.documentElement.style.cursor;ui.text.textContent=videos.length?'Marca el video':'No hay un video visible en esta página.';
+ document.documentElement.style.setProperty('cursor','none','important');
+ document.documentElement.dataset.brivanyPicking='';
+ const move=event=>{ui.pin.hidden=false;ui.pin.style.left=event.clientX-5+'px';ui.pin.style.top=event.clientY-3+'px';const video=chooseAt(visibleVideos(),event.clientX,event.clientY);ui.mark.hidden=!video;if(video){const r=video.getBoundingClientRect();Object.assign(ui.mark.style,{left:r.left+'px',top:r.top+'px',width:r.width+'px',height:r.height+'px'});}};
+ const stop=()=>{document.removeEventListener('pointermove',move,true);document.removeEventListener('click',click,true);document.removeEventListener('keydown',key,true);document.documentElement.style.cursor=oldCursor;delete document.documentElement.dataset.brivanyPicking;ui.host.remove();if(picker?.stop===stop)picker=null;};
+ const click=event=>{if(event.composedPath().includes(ui.host))return;const video=chooseAt(visibleVideos(),event.clientX,event.clientY);if(!video)return;event.preventDefault();event.stopImmediatePropagation();stop();selectVideo(video);};
+ const key=event=>{if(event.key==='Escape'){event.preventDefault();stop();}};
+ ui.button.onclick=stop;picker={stop};document.addEventListener('pointermove',move,true);document.addEventListener('click',click,true);document.addEventListener('keydown',key,true);
+}
+async function selectVideo(video){
+ stopSession();clearOldIndicators();const ui=surface();ui.text.textContent='Conectando con Brivany…';ui.button.textContent='Detener';ui.button.setAttribute('aria-label','Detener transcripción y traducción');
+ const selection=crypto.randomUUID();video.dataset.brivanySelection=selection;
+ const port=chrome.runtime.connect({name:'brivany-video'}),audio=new AudioContext({sampleRate:24000});audio.resume().catch(()=>{});
+ let closed=false,stream,node,input,silent,timer,sender,original=video.volume,ownVolume=false,captions=[],captionIndex=0;
+ const nextCaptions=()=>{if(closed||captionIndex>=captions.length)return;const cues=captions.slice(captionIndex,captionIndex+8);captionIndex+=cues.length;port.postMessage({type:'captions',cues,done:captionIndex>=captions.length});};
+ const restore=()=>{if(ownVolume){video.volume=original;ownVolume=false;}};
+ const mediaState=()=>{if(closed||!node)return;if(video.paused)sender?.pause();node.port.postMessage({active:!video.paused});port.postMessage({type:'media-state',paused:video.paused});};
+ const stop=()=>{if(closed)return;closed=true;sender?.close();clearInterval(timer);try{node?.port.postMessage({active:false});node?.disconnect();input?.disconnect();silent?.disconnect();port.postMessage({type:'stop'});port.disconnect();}catch{}for(const track of stream?.getTracks()||[])track.stop();audio.close().catch(()=>{});restore();delete video.dataset.brivanySelection;ui.host.remove();video.removeEventListener('ended',stop);video.removeEventListener('pause',mediaState);video.removeEventListener('play',mediaState);video.removeEventListener('emptied',stop);window.removeEventListener('pagehide',stop);};
+ session={stop,host:ui.host};ui.button.onclick=stop;video.addEventListener('ended',stop,{once:true});window.addEventListener('pagehide',stop,{once:true});
+ const fail=message=>{stop();const error=surface();error.text.textContent=message;error.button.textContent='Cerrar';error.button.onclick=()=>error.host.remove();};
+ port.onDisconnect.addListener(()=>{if(!closed)fail('Se perdió la conexión con Brivany. Vuelve a marcar el video.');});
+ port.onMessage.addListener(async message=>{
+  if(closed)return;
+  if(message.type==='error'){fail(message.message||'No se pudo transcribir este video.');return;}
+  if(message.type==='ack'){sender?.acknowledge(message.sequence);return;}
+  if(message.type==='transcript'){ui.text.textContent='Traduciendo';if(message.source==='original'){ui.caption.textContent=String(message.text||'');ui.caption.hidden=!message.text;}return;}
+  if(message.type==='translation-state'){if(message.state==='stopped'){stop();return;}ui.text.textContent=message.state==='paused'?'En pausa':message.state==='starting'?'Preparando traducción…':'Traduciendo';return;}
+  if(message.type==='caption-ack'){nextCaptions();return;}
+  if(message.type==='original-gain'){
+   const target=Math.max(0,Math.min(1,message.value));if(target<1&&!ownVolume){original=video.volume;ownVolume=true;}const from=video.volume,to=target===1?original:original*target,at=performance.now();
+   const fade=now=>{if(closed)return;const t=Math.min(1,(now-at)/300);video.volume=from+(to-from)*t;if(t<1)requestAnimationFrame(fade);else if(target===1)ownVolume=false;};requestAnimationFrame(fade);return;
+  }
+  if(message.type!=='video-ready')return;
+  try{
+   const snapshot=message.snapshot||await readVideoCaptions(null,selection);if(closed)return;
+   const cues=snapshot?.cues||[];captions=cues;
+   stream=video.captureStream();if(!stream.getAudioTracks().length){for(const track of stream.getTracks())track.stop();stream=null;throw Error('Este video no permite obtener su audio. Abre el reproductor original.');}
+   await audio.audioWorklet.addModule(chrome.runtime.getURL('pcm-capture.js'));if(closed)return;
+   input=audio.createMediaStreamSource(new MediaStream(stream.getAudioTracks()));node=new AudioWorkletNode(audio,'brivany-tab-pcm');silent=audio.createGain();silent.gain.value=0;input.connect(node);node.connect(silent);silent.connect(audio.destination);
+   sender=new PCMSender({send:message=>port.postMessage(message),fail});node.port.onmessage=event=>{if(!closed&&event.data?.buffer)sender.enqueue(event.data.buffer);};
+   port.postMessage({type:'select',selection,source:snapshot?.source||'video:0',has_captions:cues.length>0,translate:true,audio_ack:true});port.postMessage({type:'position',position:video.currentTime});nextCaptions();
+   video.addEventListener('pause',mediaState);video.addEventListener('play',mediaState);video.addEventListener('emptied',stop,{once:true});mediaState();ui.text.textContent='Preparando traducción…';timer=setInterval(()=>{if(!video.isConnected)stop();else port.postMessage({type:'position',position:video.currentTime});},1000);
+  }catch(error){fail(error.message?.startsWith('Este video no permite')?error.message:'No se pudo obtener el audio de este video. Reprodúcelo y vuelve a marcarlo.');}
+ });
+ port.postMessage({type:'connect-video',selection});
+}

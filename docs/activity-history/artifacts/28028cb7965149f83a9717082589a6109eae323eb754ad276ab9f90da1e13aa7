@@ -1,0 +1,25 @@
+{
+  "type": "retrospective_lab_consumption_snapshot",
+  "recorded_at": "2026-11-04T16:27:13.121851+00:00",
+  "port": 49196,
+  "state": "failed",
+  "started_at": "2026-11-04T16:14:42.681387+00:00",
+  "finished_at": "2026-11-04T16:14:55.892389+00:00",
+  "report_file": "inline-sync-1793808895861.json",
+  "report_passed": false,
+  "source_error": "El ensayo terminó por debajo de las condiciones de reproducción verificadas.",
+  "consumption": {
+    "billing_amount": null,
+    "relay_sessions_started": 0,
+    "prefix_preparations_started": 0,
+    "prefix_muse_batch_attempts": 0,
+    "prefix_meta_prosody_attempts": 0,
+    "live_meta_prosody_attempts": 0,
+    "meta_caption_prefetch_attempts": 0
+  },
+  "relay_sessions_started": 0,
+  "prefix_preparations_started": 0,
+  "new_provider_inferences_for_snapshot": 0,
+  "billing_amount": null,
+  "original_media_attached": false
+}

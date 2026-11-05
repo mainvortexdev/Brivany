@@ -1,0 +1,20 @@
+{
+  "suite": "workspace-sync-extension",
+  "started_at": "2026-11-04T04:43:21.017464+00:00",
+  "finished_at": "2026-11-04T04:43:21.637814+00:00",
+  "duration_seconds": 0.62035,
+  "command": [
+    "node",
+    "--test",
+    "browser-extension/tests/sync-timeline.test.mjs",
+    "browser-extension/tests/background.test.mjs",
+    "browser-extension/tests/stream-setup.test.mjs",
+    "browser-extension/tests/caption-probe.test.mjs",
+    "browser-extension/tests/video-selection.test.mjs",
+    "browser-extension/tests/pcm-sender.test.mjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ browser action captures its granted source into a separate consumer and navigation stops it (59.2956ms)\n✔ caption probing requires a captured source and drops a reply after navigation (5.1936ms)\n✔ native captions preserve voice hints as data and select only the upcoming bounded window (4.8475ms)\n✔ only same-origin timedtext of the current exposed YouTube video can be fetched (102.0164ms)\n✔ unavailable captions return an empty fallback; a cached track avoids another request (5.4126ms)\n✔ slow setup and a burst of worklet frames wait for acknowledgements instead of cancelling (25.1394ms)\n✔ a renderer stall does not flush the accumulated queue faster than real time (1.2139ms)\n✔ a genuinely missing acknowledgement and an excessive queue still stop explicitly (1.6315ms)\n✔ an explicit media pause discards unsent pre-pause frames before resuming (11.9894ms)\n✔ provider preparation waits for ready before the capture phase and creates one session (67.9825ms)\n✔ cancellation during provider preparation rejects instead of activating later capture (3.0274ms)\n✔ provider rejection is surfaced without a second start request (0.6151ms)\n✔ lookahead uses the active epoch and stops when playback closes or transport is congested (0.915ms)\n✔ autoplay replays only a confirmed silent prefix while the first translated cue is pending (11.1202ms)\n✔ unknown silence, insufficient ASR progress or less than the minimum buffer never bypass preparation (2.4146ms)\n✔ preproduction and an explicit user pause retain their playback requirement for a confirmed prefix (3.5635ms)\n✔ a filtered song advances without waiting for translated lyrics or audio (5.5507ms)\n✔ pairing accepts only a loopback WebSocket with a six digit code and binds sync origin (2.201ms)\n✔ four seconds alone cannot start a picture before real ASR progress (0.3696ms)\n✔ a late provider holds the matching picture before the speech and resumes with its cue (0.627ms)\n✔ late audio is rejected rather than played over an unrelated picture (0.7513ms)\n✔ old epochs never enter the new session and transcript-only markers cannot be cues (0.6637ms)\n✔ buffer has a hard thirty second horizon even while paused (0.5801ms)\n✔ preproduction requires five prepared seconds and explicit playback (0.7346ms)\n✔ cue IDs are unique and completed intervals can be released from memory (2.0637ms)\n✔ an eight second utterance with seven seconds provider work holds at its source onset instead of dropping content (0.7103ms)\n✔ preproduction can start with the first cue while a second utterance crossing five seconds is still being translated (0.6056ms)\n✔ six seconds without the first cue signals a missed budget without dropping audio or silently extending a promise (0.4213ms)\n✔ one visible YouTube video is automatic, several videos require an explicit choice (6.7169ms)\n✔ pin chooses only the video underneath its coordinates and ignores hidden/offscreen videos (2.305ms)\n✔ a cancelled or timed-out connection cannot send a late request on opening (9.123ms)\nℹ tests 31\nℹ suites 0\nℹ pass 31\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 422.2969\n"
+}

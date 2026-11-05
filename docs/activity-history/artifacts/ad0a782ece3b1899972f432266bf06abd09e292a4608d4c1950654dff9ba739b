@@ -1,0 +1,15 @@
+{
+  "type": "real_trial_quality_review",
+  "report_file": "inline-sync-1793805005857.json",
+  "automated_continuity_gate_passed": true,
+  "physical_sample_listening": "user_confirmed_clear_and_natural",
+  "physical_sample_scope": "bounded translated sample replayed in the integrated browser; not the whole video",
+  "speaker_voice_match": "user_reported_incorrect",
+  "speaker_voice_match_scope": "predominant male presenter received feminine voices",
+  "overall_quality_accepted": false,
+  "capture_to_picture_lag_end_seconds": 10.414645,
+  "reason": "Continuity and signal alone do not establish correct speaker assignment or bounded delay.",
+  "provider_calls_for_review": 0,
+  "original_audio_attached": false,
+  "conversation_attached": false
+}

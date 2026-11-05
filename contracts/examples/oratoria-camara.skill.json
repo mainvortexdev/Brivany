@@ -1,0 +1,192 @@
+{
+  "schema_version": "0.1.0",
+  "skill_id": "583fbded-2084-5cad-9ad1-eb94783abf17",
+  "version": "0.1.0",
+  "title": "Explica una idea en público y frente a cámara",
+  "domain": "public_speaking",
+  "objective": "Explicar una idea con ejemplo y cierre, y repetir ante otra audiencia o tema con menos ayuda.",
+  "prerequisites": [
+    "Elegir un tema propio y una audiencia",
+    "Aceptar que la rúbrica es un borrador pendiente de revisión"
+  ],
+  "compatibility": {
+    "application": "brivany-browser",
+    "connector_profile": "speaking.browser.experimental",
+    "tested_versions": [
+      "h1-experimental-pending-device-validation"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "required_capabilities": [
+      "speaking.duration.read",
+      "speaking.transcript.manual"
+    ]
+  },
+  "parameters": {},
+  "sources": [
+    {
+      "source_id": "proposed-method",
+      "kind": "manual_reference",
+      "artifact_id": "055c91f0-37d5-59aa-bba8-788e6d985764",
+      "sha256": "d0e83131491f7f9998ba412b6c2e4ae95e553a2e9a19ff2743f609e7bf87dbe0",
+      "license": "Nota local de producto para el prototipo; pendiente de revisión experta. No incluye grabaciones de terceros."
+    }
+  ],
+  "steps": [
+    {
+      "step_id": "prepare",
+      "title": "Elegir audiencia e intención",
+      "intent": "Revisar que audiencia, intención e idea central sean explícitas.",
+      "instruction": "Escribe para quién hablas y la idea que quieres que recuerde.",
+      "requires": [],
+      "sources": [
+        {
+          "source_id": "proposed-method",
+          "start_ms": null,
+          "end_ms": null
+        }
+      ],
+      "checks": [
+        {
+          "check_id": "prepare-review",
+          "evaluator_kind": "expert",
+          "rubric": "Revisar que audiencia, intención e idea central sean explícitas.",
+          "capability": null,
+          "signal_key": null,
+          "comparison": null,
+          "expected": null,
+          "parameter_ref": null,
+          "unit": null,
+          "tolerance": null,
+          "on_missing": "UNKNOWN"
+        }
+      ],
+      "max_attempts": 3,
+      "recovery_guidance": "Conservar la incertidumbre, pedir la información que falta y volver a practicar."
+    },
+    {
+      "step_id": "practice",
+      "title": "Explicar con un ejemplo y un cierre",
+      "intent": "Revisar relación entre idea, ejemplo y cierre; no evaluar emociones ni acento.",
+      "instruction": "Practica 60–90 segundos. Puedes grabarte localmente o introducir la duración de forma manual.",
+      "requires": [
+        "prepare"
+      ],
+      "sources": [
+        {
+          "source_id": "proposed-method",
+          "start_ms": null,
+          "end_ms": null
+        }
+      ],
+      "checks": [
+        {
+          "check_id": "practice-review",
+          "evaluator_kind": "expert",
+          "rubric": "Revisar relación entre idea, ejemplo y cierre; no evaluar emociones ni acento.",
+          "capability": null,
+          "signal_key": null,
+          "comparison": null,
+          "expected": null,
+          "parameter_ref": null,
+          "unit": null,
+          "tolerance": null,
+          "on_missing": "UNKNOWN"
+        },
+        {
+          "check_id": "exercise-duration",
+          "evaluator_kind": "deterministic",
+          "rubric": "Duración indicada de 60 a 90 s, sin verificar el contenido audiovisual.",
+          "capability": "speaking.duration.read",
+          "signal_key": "speaking.duration.seconds",
+          "comparison": "within",
+          "expected": 75,
+          "parameter_ref": null,
+          "unit": "s",
+          "tolerance": 15.0,
+          "on_missing": "UNKNOWN"
+        }
+      ],
+      "max_attempts": 3,
+      "recovery_guidance": "Conservar la incertidumbre, pedir la información que falta y volver a practicar."
+    },
+    {
+      "step_id": "review",
+      "title": "Escuchar y revisar el intento",
+      "intent": "Las sugerencias necesitan revisión humana; una duración válida no acredita claridad ni dominio.",
+      "instruction": "Aporta una transcripción fiel. Revisa los datos y elige una mejora concreta para el siguiente intento.",
+      "requires": [
+        "practice"
+      ],
+      "sources": [
+        {
+          "source_id": "proposed-method",
+          "start_ms": null,
+          "end_ms": null
+        }
+      ],
+      "checks": [
+        {
+          "check_id": "review-review",
+          "evaluator_kind": "expert",
+          "rubric": "Las sugerencias necesitan revisión humana; una duración válida no acredita claridad ni dominio.",
+          "capability": null,
+          "signal_key": null,
+          "comparison": null,
+          "expected": null,
+          "parameter_ref": null,
+          "unit": null,
+          "tolerance": null,
+          "on_missing": "UNKNOWN"
+        }
+      ],
+      "max_attempts": 3,
+      "recovery_guidance": "Conservar la incertidumbre, pedir la información que falta y volver a practicar."
+    },
+    {
+      "step_id": "transfer",
+      "title": "Cambiar audiencia o tema",
+      "intent": "Un revisor compara los intentos y registra el nivel de ayuda; no asumir transferencia por terminar.",
+      "instruction": "Repite con otra audiencia o tema y solo tres palabras de apoyo, con menos ayuda.",
+      "requires": [
+        "review"
+      ],
+      "sources": [
+        {
+          "source_id": "proposed-method",
+          "start_ms": null,
+          "end_ms": null
+        }
+      ],
+      "checks": [
+        {
+          "check_id": "transfer-review",
+          "evaluator_kind": "expert",
+          "rubric": "Un revisor compara los intentos y registra el nivel de ayuda; no asumir transferencia por terminar.",
+          "capability": null,
+          "signal_key": null,
+          "comparison": null,
+          "expected": null,
+          "parameter_ref": null,
+          "unit": null,
+          "tolerance": null,
+          "on_missing": "UNKNOWN"
+        }
+      ],
+      "max_attempts": 3,
+      "recovery_guidance": "Conservar la incertidumbre, pedir la información que falta y volver a practicar."
+    }
+  ],
+  "transfer_exercise": {
+    "goal": "Explicar con menos ayuda ante una nueva audiencia o sobre otro tema",
+    "difference_from_example": "Cambiar audiencia o tema; usar solo tres palabras de apoyo",
+    "target_help_level": "hinted",
+    "expert_review_required": true
+  },
+  "visibility": "private",
+  "lifecycle": "draft",
+  "review": null,
+  "content_sha256": "9ac1ceba15bf99b2f3d686564ee399e685e24fe9fa8740aed189cccb610bcbf7",
+  "is_example": false
+}

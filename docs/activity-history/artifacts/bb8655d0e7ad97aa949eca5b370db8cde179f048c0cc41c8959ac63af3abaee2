@@ -1,0 +1,153 @@
+{
+  "purpose": "Audible continuity and speaker correction; preserve earlier failures.",
+  "trials": [
+    {
+      "file": "report-baseline-20261102T022601.json",
+      "status": "failed",
+      "purpose": "baseline",
+      "asr_sessions": 1,
+      "mt_requests": 5,
+      "tts_contexts_started": 5,
+      "source_tts_contexts": 1,
+      "recoveries": 0,
+      "elapsed_seconds": 30.09,
+      "output_seconds": 9.76,
+      "maximum_submission_gap_ms": 2819
+    },
+    {
+      "file": "report-current-20261102T022748.json",
+      "status": "completed",
+      "purpose": "synthetic_continuity",
+      "asr_sessions": 1,
+      "mt_requests": 15,
+      "tts_contexts_started": 15,
+      "source_tts_contexts": 0,
+      "recoveries": 0,
+      "elapsed_seconds": 44.73,
+      "output_seconds": 37.76,
+      "maximum_submission_gap_ms": 402
+    },
+    {
+      "file": "report-current-20261102T022858.json",
+      "status": "failed",
+      "purpose": "live_video",
+      "asr_sessions": 1,
+      "mt_requests": 18,
+      "tts_contexts_started": 17,
+      "source_tts_contexts": 0,
+      "recoveries": 0,
+      "elapsed_seconds": 46.39,
+      "output_seconds": 38.72,
+      "maximum_submission_gap_ms": 3792
+    },
+    {
+      "file": "report-current-20261102T023214.json",
+      "status": "failed",
+      "purpose": "live_video",
+      "asr_sessions": 1,
+      "mt_requests": 1,
+      "tts_contexts_started": 0,
+      "source_tts_contexts": 0,
+      "recoveries": 0,
+      "elapsed_seconds": 12.16,
+      "output_seconds": 0,
+      "maximum_submission_gap_ms": 0
+    },
+    {
+      "file": "report-current-20261102T023415.json",
+      "status": "failed",
+      "purpose": "live_video",
+      "asr_sessions": 1,
+      "mt_requests": 19,
+      "tts_contexts_started": 18,
+      "source_tts_contexts": 0,
+      "recoveries": 0,
+      "elapsed_seconds": 55.16,
+      "output_seconds": 46.32,
+      "maximum_submission_gap_ms": 1207
+    },
+    {
+      "file": "report-current-20261102T023947.json",
+      "status": "failed",
+      "purpose": "live_video",
+      "asr_sessions": 1,
+      "mt_requests": 27,
+      "tts_contexts_started": 27,
+      "source_tts_contexts": 0,
+      "recoveries": 0,
+      "elapsed_seconds": 76.5,
+      "output_seconds": 50.75,
+      "maximum_submission_gap_ms": 1712
+    },
+    {
+      "file": "report-current-20261102T024822.json",
+      "status": "completed",
+      "purpose": "speaker_reuse",
+      "asr_sessions": 1,
+      "mt_requests": 3,
+      "tts_contexts_started": 3,
+      "source_tts_contexts": 0,
+      "recoveries": 0,
+      "elapsed_seconds": 14.84,
+      "output_seconds": 6.8,
+      "maximum_submission_gap_ms": 860
+    },
+    {
+      "file": "report-current-20261102T025050.json",
+      "status": "completed",
+      "purpose": "live_video",
+      "asr_sessions": 1,
+      "mt_requests": 1,
+      "tts_contexts_started": 1,
+      "source_tts_contexts": 0,
+      "recoveries": 0,
+      "elapsed_seconds": 93.31,
+      "output_seconds": 0.64,
+      "maximum_submission_gap_ms": 0,
+      "assessment": "Insufficient source: silence for most of the trial; completed protocol is not continuity success."
+    },
+    {
+      "file": "report-current-20261102T025505.json",
+      "status": "completed",
+      "purpose": "live_video",
+      "asr_sessions": 1,
+      "mt_requests": 20,
+      "tts_contexts_started": 20,
+      "source_tts_contexts": 0,
+      "recoveries": 0,
+      "elapsed_seconds": 50.41,
+      "output_seconds": 42.64,
+      "maximum_submission_gap_ms": 2740,
+      "assessment": "Own fixture played through system capture; external source may have resumed. Content checks are partial lexical evidence."
+    },
+    {
+      "file": "report-current-20261102T025646.json",
+      "status": "completed",
+      "purpose": "live_video",
+      "asr_sessions": 1,
+      "mt_requests": 19,
+      "tts_contexts_started": 19,
+      "source_tts_contexts": 0,
+      "recoveries": 0,
+      "elapsed_seconds": 91.3,
+      "output_seconds": 40.96,
+      "maximum_submission_gap_ms": 378
+    }
+  ],
+  "known_consumption": {
+    "asr_sessions": 10,
+    "mt_requests": 128,
+    "tts_contexts_started": 125,
+    "source_tts_contexts": 1,
+    "recoveries": 0
+  },
+  "billed_amount": null,
+  "source_fixture_regenerations": 1,
+  "user_media_or_transcripts_attached": false,
+  "human_feedback": {
+    "latest_video_trial_flow_and_distinguishable_voices_confirmed": true,
+    "not_a_semantic_accuracy_certificate": true
+  },
+  "final_video_report": "report-current-20261102T025646.json",
+  "real_two_speaker_report": "report-current-20261102T024822.json"
+}

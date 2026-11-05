@@ -1,0 +1,19 @@
+{
+  "suite": "river-translation",
+  "started_at": "2026-10-30T12:58:55.553665+00:00",
+  "finished_at": "2026-10-30T12:58:59.495812+00:00",
+  "duration_seconds": 3.942147,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_river_translation"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "....F....\r\n======================================================================\r\nFAIL: test_actual_protocols_deduplicate_partials_and_reuse_connections (tests.test_river_translation.PipelineTests.test_actual_protocols_deduplicate_partials_and_reuse_connections)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_river_translation.py\", line 156, in test_actual_protocols_deduplicate_partials_and_reuse_connections\r\n    self.assertEqual(events[-1]['type'],'done',events)\r\nAssertionError: 'error' != 'done'\r\n- error\r\n+ done\r\n : [{'type': 'transcript', 'source': 'original', 'text': 'Hello.', 'final': False}, {'type': 'transcript', 'source': 'original', 'text': 'Hello. Again.', 'final': False}, {'type': 'transcript', 'source': 'original', 'text': 'Hello. Again.', 'final': False}, {'type': 'voice-style', 'style': 'neutral', 'method': 'local_pitch_heuristic', 'cloned': False}, {'type': 'transcript', 'source': 'translation', 'text': 'Bonjour ', 'segment_id': 'translation-1-0', 'final': False}, {'type': 'transcript', 'source': 'translation', 'text': 'Bonjour le monde.', 'segment_id': 'translation-1-0', 'final': False}, {'type': 'metrics', 'first_audio_ms': 16, 'tts_first_audio_ms': 0, 'billing_amount': None}, {'type': 'transcript', 'source': 'translation', 'text': 'Bonjour le monde.', 'segment_id': 'translation-1-0', 'final': True}, {'type': 'usage', 'segments': 1, 'characters': 23, 'translation_ms': 31, 'usage': {}, 'billing_amount': None}, {'type': 'voice-style', 'style': 'neutral', 'method': 'local_pitch_heuristic', 'cloned': False}, {'type': 'error', 'code': 'mt_session_closed', 'message': 'La sesión de traducción está cerrada.'}]\r\n\r\n----------------------------------------------------------------------\r\nRan 9 tests in 3.196s\r\n\r\nFAILED (failures=1)\r\n"
+}

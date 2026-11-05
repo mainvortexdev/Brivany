@@ -1,0 +1,23 @@
+{
+  "language": "eng",
+  "onscreen_copy_language": "English",
+  "duration_seconds": 180,
+  "width": 1920,
+  "height": 1080,
+  "fps": 60,
+  "frames": 10800,
+  "narration_seconds": 154.88,
+  "bytes": 33293888,
+  "sha256": "0133a69c161c39a4927f24bb417312d96e7c1d44e898f42ec83f934c31527e36",
+  "format_pass": true,
+  "full_decode_pass": true,
+  "sync_pass": true,
+  "sync_points": 8,
+  "worst_lag_samples": 0,
+  "lufs": -14.0,
+  "true_peak_dbtp": -2.26,
+  "cartesia_requests": 11,
+  "characters": 2419,
+  "retries": 0,
+  "billed_amount": null
+}

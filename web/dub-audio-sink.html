@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ffffff"><title>Escucha · Brivany</title>
+  <link rel="icon" href="/icon.svg"><link rel="stylesheet" href="/dubbing.css"><link rel="stylesheet" href="/palette.css">
+  <script src="/dub-audio-sink.js" defer></script>
+<link rel="stylesheet" href="/typography.css"></head>
+<body>
+  <header class="dub-header"><span class="wordmark">brivany<span>.</span></span></header>
+  <main>
+    <header class="page-heading"><p class="eyebrow">LIVE TRADUCTOR</p><h1>Escucha aquí.</h1><p>Mantén esta ventana abierta mientras traduces.</p></header>
+    <button id="activate-audio" class="primary" type="button">Activar audio</button>
+    <p id="listen-state" class="notice" role="status" aria-live="polite">Conectando con tu video…</p>
+    <p id="listen-error" class="error" role="alert" hidden></p>
+    <button id="close-listener" class="text-button" type="button">Cerrar escucha</button>
+  </main>
+</body>
+</html>

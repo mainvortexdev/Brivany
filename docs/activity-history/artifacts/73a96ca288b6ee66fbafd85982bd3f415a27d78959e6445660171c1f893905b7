@@ -1,0 +1,107 @@
+# 28. Siguiente candidato: OpenAI Translate preparado
+
+28 de octubre de 2026. La configuración ensayada de Palabra no cumplió el
+objetivo de 500 ms audibles. Esta etapa conecta otro motor al flujo existente,
+sin repetir inferencias de esa configuración ni declarar alcanzado el objetivo.
+
+## Base documental y acceso
+
+La documentación oficial de OpenAI describe `gpt-realtime-translate` como
+traducción continua que devuelve audio mientras sigue llegando la fuente.
+Usa un endpoint dedicado, distinto del asistente conversacional. Esa capacidad
+documentada justifica el siguiente contraste; no acredita una latencia máxima
+de 500 ms ni acceso de esta cuenta.
+[Guía oficial](https://developers.openai.com/api/docs/guides/realtime-translation).
+
+La ficha publica **$0.034 por minuto de audio** y no ofrece el modelo en la
+capa Free. Se requiere acceso y saldo propios de API; no se compran créditos ni
+se crea una cuenta automáticamente.
+[Modelo y tarifa](https://developers.openai.com/api/docs/models/gpt-realtime-translate).
+
+La configuración local se comprobó sin imprimir valores: no había clave
+`BRIVANY_OPENAI_API_KEY` ni clave ElevenLabs; Gemini seguía configurado.
+Por ello no se abrió ninguna sesión real con OpenAI en esta etapa. Una clave
+guardada acredita configuración local, no acceso al modelo ni saldo suficiente.
+
+## Integración disponible en Brivany
+
+En `/dubbing`, **OpenAI Translate** usa el selector y el formulario privado
+existentes. El enlace `/dubbing?provider=openai&configure=1` abre únicamente un
+modal vacío. Guardar la clave no inicia audio. La credencial se conserva de forma
+atómica en el servidor local bajo su variable propia; no se reutilizan claves
+de otras aplicaciones ni se devuelve el secreto al navegador o a la bitácora.
+
+La nota de la interfaz indica que el proveedor detecta el idioma de origen.
+La selección fuente se valida como expectativa EN/ES diferente del destino,
+pero no se presenta como un idioma impuesto al modelo. El consentimiento nombra
+a OpenAI y debe activarse al cambiar de proveedor.
+
+El relay WebSocket acepta la captura PCM16 mono de 24 kHz y la agrupa en frames
+de **200 ms**. Envía la cola final sin rellenarla con silencio; `session.close`
+solicita el flush y la recepción continúa hasta `session.closed`, con plazo
+propio de 10 s. Ese acuse confirma cierre del protocolo, no calidad semántica.
+[Eventos de entrada y cierre](https://developers.openai.com/api/reference/resources/realtime/translation-client-events).
+
+Las salidas se dividen en bloques de hasta 40 ms con adelanto máximo de 300 ms,
+sin descartar PCM. Cancelación, error y finalización se serializan con los
+envíos para evitar voz posterior al estado terminal. Se conservan los límites
+de sesión y salida; no hay reintento ni sustitución automática de proveedor.
+
+`elapsed_ms` se conserva como marca de alineación, no como inferencia ni ID
+único. Dos deltas distintos con la misma marca se conservan por sus event IDs.
+No se convierte esa marca en intervalos semánticos por fragmento. La interfaz
+mantiene desconocida la correlación que el protocolo no haya suministrado.
+[Eventos de salida](https://developers.openai.com/api/reference/resources/realtime/translation-server-events).
+
+## Evidencia local, sin modelo real
+
+Se comprobaron el guardado aislado, origen/Host, configuración sin secretos,
+consentimiento, cambios de proveedor, modal por enlace y cancelación. El
+recorrido integral usa HTTP, UI, AudioWorklet y relay reales contra un servidor
+OpenAI **simulado en loopback**. Recibió una ráfaga de 126730 bytes más su cola:
+69 bloques programados, 18 paquetes de entrada, 167168 bytes y un cierre.
+
+Ese ensayo prueba transporte y reproducción acotada. Su primer audio rápido
+es una respuesta del stub: **no mide inferencia, acceso, calidad o latencia de
+OpenAI**, ni sonido físico. El objetivo permanece no verificado.
+
+Informes:
+
+- `tmp/verification/dubbing-20261028T123114-d04196eb.json`: 22 pruebas locales de adaptador/medidor.
+- `tmp/verification/http-20261028T122939-12e6bf7e.json`: 19 pruebas HTTP/configuración.
+- `tmp/verification/dubbing-ui-20261028T122745-1f36a319.json`: 39 escenarios de interfaz.
+- `tmp/verification/openai-translation-pipeline-20261028T123257-b27d87f3.json`: recorrido integral con upstream simulado.
+- `tmp/verification/python-20261028T123304-bed68f41.json`: suite completa de 204 pruebas aprobadas.
+
+## Próximo ensayo real, condicionado a acceso
+
+Una vez configurada una clave de API con acceso, se usará **una sola sesión**
+con la fuente sintética fija de dos frases de [la etapa anterior](27-doblaje-por-fragmentos.md).
+Se medirán inicio de voz original→inicio traducido, respuesta al final de habla,
+integridad del contenido, colas y salida estimada del navegador. El informe
+conservará coste facturado desconocido si no hay recibo y no llamará inferencia
+interna a un reloj de red. Si no hay credencial, la comprobación previa termina
+antes de abrir el socket del proveedor.
+
+```powershell
+node tools/measure_dubbing_browser.cjs --provider openai --two-clauses --allow-paid
+```
+
+Ese comando puede consumir crédito y no forma parte de `tools.verify`.
+La suite gratuita es `python -m tools.verify openai-translation-pipeline`.
+
+## Alternativas contrastadas sin inferencias
+
+Eleven Realtime documenta `eagerness=high`, pero su acceso sigue restringido a
+Enterprise. Soniox documenta STT con traducción incremental más TTS mediante dos
+WebSockets; requiere credencial y una integración nueva. Sus tokens traducidos
+carecen de correspondencia 1:1 con los timestamps fuente. Un endpoint de 500 ms
+no equivale a 500 ms de doblaje total.
+[ElevenLabs](https://elevenlabs.io/docs/api-reference/realtime-translation/v-1-translation-realtime),
+[Soniox voz a voz](https://soniox.com/docs/translation/sts-translation),
+[alineación Soniox](https://soniox.com/docs/translation/stt-translation/rt-translation).
+
+Gradium publica unos 3 s de traducción audible media en su propia página; una
+cifra de primer audio cercana a 200 ms en otra sección no demuestra el objetivo.
+No se añadió otro ensayo para esa ruta.
+[Referencia Gradium](https://gradium.ai/live-translation).

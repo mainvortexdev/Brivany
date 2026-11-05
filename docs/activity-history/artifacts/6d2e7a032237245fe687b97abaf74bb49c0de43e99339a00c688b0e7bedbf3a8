@@ -1,0 +1,97 @@
+{
+  "passed": false,
+  "scope": "real_account_desktop_and_meta_own_content",
+  "checked_at": "2026-11-03T21:25:30.943053+00:00",
+  "physical_iphone": false,
+  "microphone": false,
+  "originals_modified": false,
+  "calls": {
+    "account_chat": 1
+  },
+  "content_in_report": false,
+  "command_id": "590e3897-45bf-4494-83a2-eff024a51a75",
+  "broker_kind": "orchestrator",
+  "state": "failed",
+  "local_state": "awaiting_user",
+  "error": null,
+  "team_size": 3,
+  "accepted": 0,
+  "attempts": [
+    {
+      "kind": "document",
+      "state": "failed",
+      "attempt": 1,
+      "review_state": "rejected",
+      "external_calls": 1
+    },
+    {
+      "kind": "image",
+      "state": "failed",
+      "attempt": 1,
+      "review_state": "rejected",
+      "external_calls": 1
+    },
+    {
+      "kind": "research",
+      "state": "failed",
+      "attempt": 1,
+      "review_state": "rejected",
+      "external_calls": 1
+    },
+    {
+      "kind": "document",
+      "state": "awaiting_user",
+      "attempt": 2,
+      "review_state": "rejected",
+      "external_calls": 1
+    },
+    {
+      "kind": "image",
+      "state": "awaiting_user",
+      "attempt": 2,
+      "review_state": "rejected",
+      "external_calls": 1
+    },
+    {
+      "kind": "research",
+      "state": "awaiting_user",
+      "attempt": 2,
+      "review_state": "rejected",
+      "external_calls": 1
+    }
+  ],
+  "known_host_provider_attempts": 13,
+  "artifacts": [
+    {
+      "kind": "document",
+      "path": "<local-path>\\.local\\computer\\workspace\\documents\\05bd254e-fc93-4a4c-88ab-328ebb90549d.txt",
+      "review_state": "rejected"
+    },
+    {
+      "kind": "image",
+      "path": "<local-path>\\.local\\computer\\workspace\\images\\229e0aac-cbab-49fd-8669-54e49073e934.png",
+      "review_state": "rejected"
+    },
+    {
+      "kind": "research",
+      "path": "<local-path>\\.local\\computer\\workspace\\research\\4cfd39a2-e69a-48f5-8226-001a9b1d9c27.md",
+      "review_state": "rejected"
+    },
+    {
+      "kind": "document",
+      "path": "<local-path>\\.local\\computer\\workspace\\documents\\18659a78-a3a6-448f-b262-6e57f546873b.txt",
+      "review_state": "rejected"
+    },
+    {
+      "kind": "image",
+      "path": "<local-path>\\.local\\computer\\workspace\\images\\87c4285c-f013-428d-b0c9-2e4cb293c229.png",
+      "review_state": "rejected"
+    },
+    {
+      "kind": "research",
+      "path": "<local-path>\\.local\\computer\\workspace\\research\\7a53a7c2-da5a-4c68-afd1-9c79cdaba5e5.md",
+      "review_state": "rejected"
+    }
+  ],
+  "elapsed_seconds": 58.03
+}

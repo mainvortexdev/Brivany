@@ -1,0 +1,20 @@
+{
+  "suite": "work",
+  "started_at": "2026-10-31T02:32:51.449208+00:00",
+  "finished_at": "2026-10-31T02:32:53.370072+00:00",
+  "duration_seconds": 1.920864,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_work_mode",
+    "tests.test_work_bridge"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "...........F....\r\n======================================================================\r\nFAIL: test_failed_region_capture_restores_companion (tests.test_work_bridge.BridgeTests.test_failed_region_capture_restores_companion)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_work_bridge.py\", line 47, in test_failed_region_capture_restores_companion\r\n    self.assertFalse(self.windows[0][0].hidden);self.assertEqual(self.capture_calls,[])\r\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: True is not false\r\n\r\n----------------------------------------------------------------------\r\nRan 16 tests in 0.676s\r\n\r\nFAILED (failures=1)\r\n"
+}

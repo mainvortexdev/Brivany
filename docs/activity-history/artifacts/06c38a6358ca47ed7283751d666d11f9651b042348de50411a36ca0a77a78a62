@@ -1,0 +1,23 @@
+{
+  "suite": "connections-http",
+  "started_at": "2026-11-01T02:44:04.753901+00:00",
+  "finished_at": "2026-11-01T02:44:14.460614+00:00",
+  "duration_seconds": 9.706713,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_connections_http.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "............\r\n----------------------------------------------------------------------\r\nRan 12 tests in 8.069s\r\n\r\nOK\r\n"
+}

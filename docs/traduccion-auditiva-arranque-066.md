@@ -1,0 +1,84 @@
+# Arranque del prefijo en Brave y versión de la extensión activa
+
+El [seguimiento personal 064](traduccion-auditiva-visual-y-carga-064.md)
+mostró que una extensión podía estar emparejada sin que el video desde cero
+mostrara marcas de preparación. En el código encontramos dos puntos donde
+podía perderse el arranque. La pestaña podía activarse antes de tener URL
+utilizable y pasar toda la navegación sin otro intento. El script registrado
+al inicio del documento podía llegar antes de que existiera su raíz.
+
+La extensión vuelve a verificar una navegación confirmada o completada en
+una pestaña activa. Usa la comprobación de permiso para el sitio exacto y
+agrupa intentos concurrentes por documento. Una inyección temprana fallida
+puede reintentarse al terminar la navegación. El cargador espera la raíz con
+un observador de hasta 1,5 s y comparte su resultado entre el registro al
+inicio y la inyección posterior. La página recibe un estado limitado de
+carga para distinguir el observador listo de un error del módulo.
+
+El relay anuncia que entiende el informe de versión en el acuse autenticado
+de `/workspace`. La extensión envía una vez la versión devuelta por el
+manifiesto en ejecución y la compilación `0.4.8-prefix-nav-066`. El estado
+local expone esos dos campos mientras haya un único cliente conectado.
+Los clientes antiguos siguen enviando sus mensajes habituales y los nuevos
+omiten el informe si el relay carece de esa opción. El mensaje tiene esquema
+cerrado y no admite URL, texto, audio, token ni identificador de perfil.
+
+La distribución 0.4.8 conserva veinte archivos. Se actualizaron tres scripts
+en el ZIP, la carpeta de versión y la carpeta de distribución. El manifiesto
+coincide byte por byte con el anterior. El respaldo previo y los hashes se
+conservan en `dist/Brivany-Traduccion-Brave-pre-066-20261104.zip` y
+`tmp/selected-video/package-048-prefix-nav-066.json`.
+
+La misma identidad estable aparece en los archivos 0.4.4 y 0.4.8. Un cliente
+antiguo puede emparejarse aunque carezca del prefijo; los archivos actualizados
+en disco tampoco identifican el código que un trabajador ya cargó. Queda
+pendiente observar la versión en ejecución y completar el recorrido personal.
+El origen exacto del fallo 064 sigue abierto.
+
+## Comprobaciones locales y consumo
+
+- `workspace-sync-extension` pasó 76 pruebas y `sync-desktop` pasó 10. Se
+  comprobaron el permiso existente, el reintento tras fallo temprano, el
+  cargador único, la negociación con versiones anteriores y el rechazo de
+  campos inesperados en el informe de versión. Informes
+  `docs/verification-history/workspace-sync-extension-20261104T192451-c482f8b2.json`
+  y `docs/verification-history/sync-desktop-20261104T192138-59ec5c57.json`.
+- Brave aislado visitó y recargó una página local sin video, con permiso
+  comodín ya disponible en el perfil de prueba. Hubo cero registros dinámicos
+  y una inicialización `ready` por cada documento. Esto ejercita la recuperación
+  de la navegación y no incluye captura ni proveedores.
+- El recorrido con video propio y proveedores sustituidos ejecutó
+  `node browser-extension/tests/run-inline-sync-probe.mjs --fixture --encoded --prefix --progressive-turn`.
+  Preparó 88 bloques, reanudó en 7000 ms, omitió la música y completó una voz
+  del prefijo y cuatro en vivo a 1×. Primera señal a 4,776 s, máximo 4,333 s
+  y crecimiento 0,040 s. Informe `tmp/selected-video/inline-sync-1793820212809.json`.
+  La ejecución anterior sin `--progressive-turn` (`inline-sync-1793820082131.json`)
+  comprobó el prefijo y dos voces, pero no alcanzó la secuencia de tres voces
+  exigida por esa variante. Se conserva el fallo de ese ensayo.
+
+Estas pruebas usaron servicios sustituidos o páginas sin audio. No abrieron
+solicitudes externas de traducción. Los tiempos de proveedores reales y la
+correspondencia entre personas y voces siguen sujetos a la aceptación del
+[ensayo real](traduccion-auditiva-ensayo-065.md).
+
+## Medir la espera de síntesis
+
+En el ensayo 065 el tercer turno del prefijo pidió voz a 6426 ms, recibió
+su primer bloque a 6666 ms y publicó el turno a 10060 ms. La espera en
+reproducción antes de ese turno fue de aproximadamente 1,386 s. Los datos
+anteriores no indican cuándo llegó el último bloque PCM. Cartesia distingue
+mensajes de [bloque de audio y fin de contexto](https://docs.cartesia.ai/api-reference/tts/websocket).
+
+El evento de fin existente ahora mide dos intervalos, desde la solicitud
+hasta el último bloque y desde ese bloque hasta la confirmación final.
+Las duraciones viajan como números acotados por el banco. La ruta de síntesis
+conserva la validación del audio completo. Una prueba local demoró el fin de
+contexto después de enviar PCM y comprobó que ambos tiempos se miden por
+separado. `sync-relay` pasó 96 pruebas y guardó
+`docs/verification-history/sync-relay-20261104T192335-412b9df3.json`.
+
+El tramo de 80 ms observado en el ensayo 065 era un turno separado con dos
+palabras, entre dos límites de Muse. El campo `audioProcessedMs` documenta
+progreso al emitir un evento. La magnitud de ese intervalo no demuestra la
+duración física de la intervención ni justifica eliminar sus palabras.
+[Esquema de eventos de Muse](https://dev.meta.ai/docs/api-reference/voice/schemas?project_id=1661600634933790&team_id=2096920474558192).

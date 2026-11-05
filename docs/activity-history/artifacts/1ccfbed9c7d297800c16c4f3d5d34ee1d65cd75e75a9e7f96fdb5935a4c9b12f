@@ -1,0 +1,318 @@
+{
+  "type": "real_isolated_brave_inline_sync_and_provider_voice_trial",
+  "passed": true,
+  "source_owned_synthetic": true,
+  "encoded_video_source": true,
+  "owned_caption_track": true,
+  "provider_trial_max_seconds": 28,
+  "billing_amount": null,
+  "user_profile_used": false,
+  "physical_listening_verified": false,
+  "cloning_enabled": false,
+  "error_message": null,
+  "cues": [
+    {
+      "speaker": 1,
+      "category": "masculine",
+      "source": 0.14,
+      "picture": 0.117333,
+      "rate": 1,
+      "duration": 2.16,
+      "played": 2.16,
+      "wall": 2.16189999999851,
+      "onset_ms": 7269,
+      "sync_error_ms": -23
+    },
+    {
+      "speaker": 2,
+      "category": "feminine",
+      "source": 6.54,
+      "picture": 6.531335,
+      "rate": 1,
+      "duration": 2.32,
+      "played": 2.32,
+      "wall": 2.329,
+      "onset_ms": 13702,
+      "sync_error_ms": -9
+    },
+    {
+      "speaker": 1,
+      "category": "masculine",
+      "source": 12.54,
+      "picture": 12.515468,
+      "rate": 1,
+      "duration": 2.24,
+      "played": 2.24,
+      "wall": 2.23910000000149,
+      "onset_ms": 19701,
+      "sync_error_ms": -25
+    }
+  ],
+  "no_new_window": true,
+  "protocol": [
+    {
+      "type": "ready",
+      "at": 0
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 140,
+      "end": null,
+      "at": 744
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "at": 1791
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_done",
+      "at": 4199
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 140,
+      "end": 5020,
+      "at": 5602
+    },
+    {
+      "type": "stage-metrics",
+      "start": 140,
+      "stage": "segment_ready",
+      "at": 5603
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "at": 5643
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "caption_cache_hit",
+      "at": 5644
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "at": 5644
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "at": 5645
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "at": 5745
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "at": 5915
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "at": 6233
+    },
+    {
+      "type": "stage-metrics",
+      "start": 140,
+      "end": 5020,
+      "stage": "cue_ready",
+      "at": 6235
+    },
+    {
+      "type": "dub-cue",
+      "start": 140,
+      "end": 5020,
+      "speaker": 1,
+      "category": "masculine",
+      "at": 6248
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 6540,
+      "end": null,
+      "at": 7082
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "at": 8162
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_done",
+      "at": 10335
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 6540,
+      "end": 10620,
+      "at": 11185
+    },
+    {
+      "type": "stage-metrics",
+      "start": 6540,
+      "stage": "segment_ready",
+      "at": 11187
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "at": 11227
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "caption_cache_hit",
+      "at": 11228
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "at": 11229
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "at": 11230
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "at": 11270
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "at": 11450
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "at": 11677
+    },
+    {
+      "type": "stage-metrics",
+      "start": 6540,
+      "end": 10620,
+      "stage": "cue_ready",
+      "at": 11678
+    },
+    {
+      "type": "dub-cue",
+      "start": 6540,
+      "end": 10620,
+      "speaker": 2,
+      "category": "feminine",
+      "at": 11687
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 12540,
+      "end": null,
+      "at": 13078
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "at": 14179
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_done",
+      "at": 15584
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 12540,
+      "end": 17020,
+      "at": 17590
+    },
+    {
+      "type": "stage-metrics",
+      "start": 12540,
+      "stage": "segment_ready",
+      "at": 17591
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "at": 17624
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "caption_cache_hit",
+      "at": 17625
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "at": 17625
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "at": 17625
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "at": 17625
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "at": 17810
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "at": 18017
+    },
+    {
+      "type": "stage-metrics",
+      "start": 12540,
+      "end": 17020,
+      "stage": "cue_ready",
+      "at": 18017
+    },
+    {
+      "type": "dub-cue",
+      "start": 12540,
+      "end": 17020,
+      "speaker": 1,
+      "category": "masculine",
+      "at": 18024
+    }
+  ],
+  "last_processed_ms": 21040,
+  "last_buffer": {
+    "lag": 7.194666999999999,
+    "reason": null,
+    "media": 14.885333,
+    "capture": 22.08,
+    "processed": 21.12,
+    "paused": false,
+    "ready": 4,
+    "frames": 449,
+    "buffered": [
+      [
+        9.281,
+        21.776
+      ]
+    ]
+  },
+  "browser_voice_played": 3,
+  "finished_after_source": false,
+  "correct_speaker_sequence": true
+}

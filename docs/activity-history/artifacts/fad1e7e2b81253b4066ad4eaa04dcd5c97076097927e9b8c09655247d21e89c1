@@ -1,0 +1,54 @@
+{
+  "type": "current_requirement_audit",
+  "recorded_utc": "2026-11-01T19:50:23.529153+00:00",
+  "goal_complete": false,
+  "platform": "Windows real; macOS not executed",
+  "command_entries": 190,
+  "shortcuts": 231,
+  "macos_entries": 46,
+  "checklist": {
+    "approved": 65,
+    "failed": 1,
+    "pending": 401
+  },
+  "checklist_advanced_this_milestone": false,
+  "source": {
+    "commit": "57b3878cc09eaffab9789fdcc438753895995e08",
+    "clean": true,
+    "status_receipt": "08b09011-2a7a-466d-88b9-3d09222bec1c",
+    "revision_receipt": "ca4dbbc2-9e22-4369-b6e5-f95d69ce3cb5"
+  },
+  "original_Notepad_artifact": {
+    "exists": true,
+    "bytes": 1376,
+    "actions_and_repository_present": true,
+    "original_save_verification": true,
+    "reexecuted_now": false
+  },
+  "known_source_executable": {
+    "exists": true,
+    "sha256_matches": true,
+    "reexecuted_now": false
+  },
+  "IDE_attempts": {
+    "failed": 3,
+    "passed": 1,
+    "model_calls_including_open_and_route": 6,
+    "provider_cost": "unknown"
+  },
+  "router": {
+    "type": "real_router_intent_check",
+    "model_calls": 1,
+    "provider_cost": "unknown",
+    "kind": "terminal",
+    "request_preserved": true,
+    "executed": false
+  },
+  "not_proven": [
+    "2000 documented Windows commands in the active desktop scope",
+    "complete sequential checklist execution",
+    "real macOS execution",
+    "Regedit route navigation",
+    "universal repository build repair and execution"
+  ]
+}

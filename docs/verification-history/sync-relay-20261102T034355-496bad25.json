@@ -1,0 +1,19 @@
+{
+  "suite": "sync-relay",
+  "started_at": "2026-11-02T03:43:55.827229+00:00",
+  "finished_at": "2026-11-02T03:44:17.804384+00:00",
+  "duration_seconds": 21.977155,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_sync_relay"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".....................\r\n----------------------------------------------------------------------\r\nRan 21 tests in 20.849s\r\n\r\nOK\r\n"
+}

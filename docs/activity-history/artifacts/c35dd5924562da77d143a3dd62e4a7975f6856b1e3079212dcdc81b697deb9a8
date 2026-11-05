@@ -1,0 +1,52 @@
+{
+  "status": "passed",
+  "native_windows": "real",
+  "screen_capture": false,
+  "audio_capture": false,
+  "inference_calls": 0,
+  "background_network_consumption_known": false,
+  "baseline_work_area": {
+    "left": 0,
+    "top": 0,
+    "right": 1280,
+    "bottom": 994
+  },
+  "reserved_bar": {
+    "left": 0,
+    "top": 0,
+    "right": 1280,
+    "bottom": 40
+  },
+  "maximized_fixture_visible_bounds": {
+    "left": 0,
+    "top": 40,
+    "right": 1280,
+    "bottom": 994
+  },
+  "newly_maximized_fixture_bounds": {
+    "left": 0,
+    "top": 40,
+    "right": 1280,
+    "bottom": 994
+  },
+  "appbar_reserved": true,
+  "maximized_existing_fixture_below_bar": true,
+  "newly_maximized_fixture_below_bar": true,
+  "popup_does_not_change_work_area": true,
+  "bar_visible_with_chat": true,
+  "taskbar_hidden_verified": true,
+  "native_transparency_verified": true,
+  "work_area_restored": true,
+  "checks": [
+    "full-width native Windows AppBar",
+    "existing and newly maximized owned fixtures respect reserved work area",
+    "floating panel overlays without reserving extra space",
+    "collapse hides panel and preserves strip",
+    "bar remains with the main chat",
+    "auxiliary windows have no taskbar entries",
+    "native transparency on bar and panel",
+    "exit restores baseline desktop work area",
+    "no capture or inference"
+  ],
+  "cleanup_work_area_restored": true
+}

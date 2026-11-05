@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "native_runtime": "real WebView2",
+  "pages": "synthetic local fixture",
+  "external_calls": 0,
+  "screen_capture": false,
+  "audio_capture": false,
+  "native_main": true,
+  "same_origin_iframe": true,
+  "native_helper": true,
+  "clean_native_urls": true,
+  "ordinary_clients_rejected": true
+}

@@ -1,0 +1,74 @@
+{
+  "type": "retrospective_continuity_quality_audit",
+  "reviewed_at": "2026-11-04T16:53:58.841308+00:00",
+  "original_report": "tmp/selected-video/inline-sync-1793810199055.json",
+  "new_provider_inference_requests_during_review": 0,
+  "source_type": "public_youtube_isolated_brave_inline_sync",
+  "source_capture_anchor_ms": 305472,
+  "completed_source_end_ms": 13260,
+  "required_source_end_ms": 12000,
+  "completed_voices_with_signal": 7,
+  "completed_voice_sync_error_ms_range": [
+    -17,
+    13
+  ],
+  "activation_to_first_signal_ms": 7996,
+  "production_audio_diagnostics": {
+    "signaled_voices": 7,
+    "completed_voice_count": 7,
+    "completed_voices_with_signal": 7,
+    "first_signal_after_capture_ms": 6752.899999991059
+  },
+  "media_lag": {
+    "initial_seconds": 6.533333,
+    "maximum_seconds": 9.701346,
+    "final_seconds": 9.690667000000001,
+    "maximum_growth_seconds": 3.1680129999999993
+  },
+  "continuity_quality": {
+    "maximum_nonsong_fallback_seconds": 1,
+    "maximum_allowed_lag_seconds": 8,
+    "maximum_observed_lag_seconds": 9.701346,
+    "maximum_allowed_lag_growth_seconds": 3,
+    "maximum_observed_lag_growth_seconds": 3.1680129999999993,
+    "observed_nonsong_fallback_seconds": 0,
+    "verified_source_end_ms": 13260,
+    "unplayed_published_cues": 0,
+    "missing_intervals": [],
+    "passed": false
+  },
+  "second_mt_start_ms": 5567,
+  "second_mt_done_ms": 10062,
+  "second_mt_elapsed_ms": 4495,
+  "third_mt_done_ms": 8455,
+  "third_cue_ready_ms": 10868,
+  "observed_consumption": {
+    "pipeline_ready_events_observed": 1,
+    "muse_live_session_acks_observed": 1,
+    "muse_live_input_started": 1,
+    "prefix_mt_attempts_observed": 0,
+    "live_mt_attempts_observed": 12,
+    "prefix_tts_requests_observed": 0,
+    "live_tts_requests_observed": 10,
+    "live_prosody_stages_started": 8,
+    "billing_amount": null
+  },
+  "caption_prefetch_attempts_in_persisted_report": null,
+  "caption_prefetch_count_recoverable_from_lab_on_review": false,
+  "billing_amount": null,
+  "remote_gpu_seconds": null,
+  "source_interrupted": false,
+  "image_decoder_error_observed": false,
+  "actual_gap_recovery_proven": false,
+  "physical_listening_verified": false,
+  "public_speaker_match_verified": false,
+  "accepted": false,
+  "reason": "lag_exceeded_8_seconds_and_growth_exceeded_3_seconds",
+  "limits": [
+    "short_deep_trial_without_prefix",
+    "intermediate_asr_boundaries_estimated",
+    "no_human_interval_speaker_reference",
+    "no_workSpace_stop_verification",
+    "no_complete_video_coverage"
+  ]
+}

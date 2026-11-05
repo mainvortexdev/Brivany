@@ -1,0 +1,118 @@
+{
+  "name": "three",
+  "version": "0.180.0",
+  "license": "MIT",
+  "source": "https://registry.npmjs.org/three/-/three-0.180.0.tgz",
+  "npm_integrity": "sha512-o+qycAMZrh+TsE01GqWUxUIKR1AL0S8pq7zDkYOQw8GqfX8b8VoCKYUoHbhiX5j+7hr8XsuHDVU6+gkQJQKg9w==",
+  "local_change": "Addon bare imports resolve to local /vendor/three/three.module.js; no runtime CDN",
+  "files": [
+    {
+      "source": "build/three.module.js",
+      "path": "three.module.js",
+      "sha256": "9e06b55afc5c845ad8663d0dba7dc8f4e815c218bedae8a9917fac5972e5314f",
+      "source_sha256": "c8211c69345d2e9949dc7a8ac969380497aa0600a5a8ac6a459c8cd02dd9cb8a"
+    },
+    {
+      "source": "build/three.core.js",
+      "path": "three.core.js",
+      "sha256": "7c075bd6b2414b6c4ed4b3416b180df2984051118c2b89965de066ce99307f1c",
+      "source_sha256": "eb077d2417f61d3e6d9264c317cabc4ea35769ed6b0ab533067292a550784c20"
+    },
+    {
+      "source": "examples/jsm/controls/OrbitControls.js",
+      "path": "addons/controls/OrbitControls.js",
+      "sha256": "9191a339db246e4cf8253fd147647fb62d8d4dc421e8132ca21e7432086b4f3a",
+      "source_sha256": "b97879c748170baadeb3fb84cea1ffdf4674e283dc06042f34e2acb95a76042c"
+    },
+    {
+      "source": "examples/jsm/controls/TransformControls.js",
+      "path": "addons/controls/TransformControls.js",
+      "sha256": "71c876485a39a9c90543141894e46231820351b7d3c8b6a9a8c569eb67869aed",
+      "source_sha256": "621fb8894c0f748c2be2a6ff8a6bdd72c18a22b24ddfe21d506514544df5c84e"
+    },
+    {
+      "source": "examples/jsm/loaders/GLTFLoader.js",
+      "path": "addons/loaders/GLTFLoader.js",
+      "sha256": "a47711f24ea35cbdd547714f820aa6cb0c1bc5d4af7758ba4c4928b649adb81b",
+      "source_sha256": "67ac5551fdafa6e349bd80c8f8e5e39c136d6b2fb1ad647db9abb21dc86f9e4a"
+    },
+    {
+      "source": "examples/jsm/utils/BufferGeometryUtils.js",
+      "path": "addons/utils/BufferGeometryUtils.js",
+      "sha256": "074f6b7856312b0666c7bc70268326b554911417a4a059ab51fd63c6bf9829bd",
+      "source_sha256": "fda7e946b8e0b5ab39b779206589e7a1079a22eb24efb89d7223e03fdfb1f751"
+    },
+    {
+      "source": "LICENSE",
+      "path": "LICENSE",
+      "sha256": "df2a91696186fe58c92518a25d48bc59c8ee2edc7cac9ca6d19a5a0d599a2a05",
+      "source_sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
+    },
+    {
+      "source": "examples/jsm/postprocessing/EffectComposer.js",
+      "path": "addons/postprocessing/EffectComposer.js",
+      "sha256": "188c2d72dc7f42a9f1f9691a85538be36e12ab8a071ecaa3a32c1ad7e1068b07",
+      "source_sha256": "4b8c855f28eed2570bed898adc0ab89c585a8a281ecb6d905c09d00697f9f50a"
+    },
+    {
+      "source": "examples/jsm/postprocessing/RenderPass.js",
+      "path": "addons/postprocessing/RenderPass.js",
+      "sha256": "60971477beebf3e963ad027a36f6586ca98fea0b07b4380191c034f754a8d734",
+      "source_sha256": "fd91229aacc5830e3984b0f2bdefcf566163ea028f4c1f1ab233fa6665a133ac"
+    },
+    {
+      "source": "examples/jsm/postprocessing/SSAOPass.js",
+      "path": "addons/postprocessing/SSAOPass.js",
+      "sha256": "65da929646f77ac4d08ccb7afab10ca2fc9173b8f6c54f18ebe6336e4c72a2ba",
+      "source_sha256": "59944f833d10330f6bdd205260ad06a8ef2bd12a115e4101d81578b249627e3f"
+    },
+    {
+      "source": "examples/jsm/postprocessing/OutputPass.js",
+      "path": "addons/postprocessing/OutputPass.js",
+      "sha256": "cdcf9d58e4d0aafb606181f956f3f088ef27968491143484d5ab070f551e6963",
+      "source_sha256": "f5b81c96e76b6b28b4b3ba8c41c4aeb982b1e03f3d82883242d951b2ab082fa2"
+    },
+    {
+      "source": "examples/jsm/shaders/CopyShader.js",
+      "path": "addons/shaders/CopyShader.js",
+      "sha256": "a33057d5ac91c43304c186ac0e8816e62bb2ed471d3a00ff3018dfd5c0389718",
+      "source_sha256": "a33057d5ac91c43304c186ac0e8816e62bb2ed471d3a00ff3018dfd5c0389718"
+    },
+    {
+      "source": "examples/jsm/postprocessing/ShaderPass.js",
+      "path": "addons/postprocessing/ShaderPass.js",
+      "sha256": "99aebca2a65b56269168d2bcc2189281197569ed176a2f659aad92e907642ef6",
+      "source_sha256": "e2500a5913b26bbf5148ceaae644c6edcff06a18b01494ee37bf856353d2ab9d"
+    },
+    {
+      "source": "examples/jsm/postprocessing/MaskPass.js",
+      "path": "addons/postprocessing/MaskPass.js",
+      "sha256": "7cd08eee9d5d6f5578beaddbdcbe9c384f6873810af27f22ab7db3ceeb127aa3",
+      "source_sha256": "7cd08eee9d5d6f5578beaddbdcbe9c384f6873810af27f22ab7db3ceeb127aa3"
+    },
+    {
+      "source": "examples/jsm/postprocessing/Pass.js",
+      "path": "addons/postprocessing/Pass.js",
+      "sha256": "e9b047bdca3059f7b293a6baa20e1874ef323e480f17430e7a148d14481c949a",
+      "source_sha256": "444b409c235ead986893c472e720da1b779a56985c7d10b279c7944b52bd61c5"
+    },
+    {
+      "source": "examples/jsm/math/SimplexNoise.js",
+      "path": "addons/math/SimplexNoise.js",
+      "sha256": "dd1f3c42c1bc9fa1b76c1c0796d352521accf0a3a95cc7d0caf479abc5a444a2",
+      "source_sha256": "dd1f3c42c1bc9fa1b76c1c0796d352521accf0a3a95cc7d0caf479abc5a444a2"
+    },
+    {
+      "source": "examples/jsm/shaders/SSAOShader.js",
+      "path": "addons/shaders/SSAOShader.js",
+      "sha256": "ef7ee2c2b713e95084ff0a36fa10a00fc56d40be0fa099cb040dff4610e5efeb",
+      "source_sha256": "57ec7cc10ad3b6a8aafa97be21eca12972c5597ebc3023de1b37102a56c6b23b"
+    },
+    {
+      "source": "examples/jsm/shaders/OutputShader.js",
+      "path": "addons/shaders/OutputShader.js",
+      "sha256": "353479f77a8d7e2629d49ccac9fc2f5dbfdda5442e0adf867b00377a2fcb0cb2",
+      "source_sha256": "353479f77a8d7e2629d49ccac9fc2f5dbfdda5442e0adf867b00377a2fcb0cb2"
+    }
+  ]
+}

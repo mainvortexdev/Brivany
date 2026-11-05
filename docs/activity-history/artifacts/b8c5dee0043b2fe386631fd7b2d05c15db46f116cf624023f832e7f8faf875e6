@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "scope": "real interface with synthetic microphone and ASR events",
+  "samples_drive_waveform": true,
+  "no_automatic_sending": true,
+  "stop_restores_editable_draft": true,
+  "cancel_discards_new_speech": true,
+  "duplicate_and_late_transcripts_ignored": true,
+  "send_explicit": true,
+  "tts_unavailable_does_not_block_input": true,
+  "permission_error_recovers": true,
+  "incomplete_transcription_preserves_draft_without_sending": true,
+  "widths": [
+    390,
+    320,
+    280
+  ],
+  "physical_microphone_used": false,
+  "external_calls": 0
+}

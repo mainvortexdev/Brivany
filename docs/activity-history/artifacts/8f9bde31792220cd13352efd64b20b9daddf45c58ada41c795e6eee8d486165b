@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "real_paint": true,
+  "real_meta": true,
+  "billing_usd": null,
+  "state": "awaiting_user",
+  "phase": "La tarea quedó incompleta. Escribir poema en Paint · La tarea se detuvo. Revisa la aplicación, la carpeta autorizada o la configuración. No se reintentó automáticamente.",
+  "error": "Melodi no aprobó el resultado.",
+  "provider_requests": 2,
+  "elapsed_seconds": 21.09
+}

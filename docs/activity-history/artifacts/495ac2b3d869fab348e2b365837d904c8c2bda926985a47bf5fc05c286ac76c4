@@ -1,0 +1,207 @@
+"""A selected media element, silent transcript and live-translation input.
+
+No microphone, media files or tab mix. Captions/ASR text and bounded PCM queues
+are session memory only. Captions do not certify a speaker's identity.
+"""
+from collections import deque
+import json
+import math
+import queue
+import re
+import threading
+import time
+from websockets.sync.client import connect
+from websockets.exceptions import ConnectionClosed
+from packages.providers.live_voice import MUSE_URL,MuseEvents,muse_handshake
+from packages.providers.pcm_pacing import PCMRateGate,PCMFrameClock
+
+
+class SelectedVideo:
+    def __init__(self,socket,options,*,connector=connect):
+        if not isinstance(options,dict) or set(options)!={'type','selection','source','has_captions'} or options.get('type')!='select':raise ValueError('Selección de video no válida.')
+        if not isinstance(options['selection'],str) or not re.fullmatch(r'[\w-]{8,80}',options['selection']):raise ValueError('Identificador de video no válido.')
+        if not isinstance(options['source'],str) or not re.fullmatch(r'(?:youtube:[\w-]{11}|video:[0-9a-f]{1,8})',options['source']):raise ValueError('Origen de video no válido.')
+        if type(options['has_captions']) is not bool:raise ValueError('Pista de video no válida.')
+        self.socket=socket;self.connector=connector;self.selection=options['selection'];self.source=options['source'];self.has_captions=options['has_captions']
+        self.lock=threading.RLock();self.send_lock=threading.Lock();self.stopped=threading.Event();self.asr_stop=threading.Event();self.asr=None;self.worker=None
+        self.pcm=queue.Queue(maxsize=100);self.subscriber=None;self.cues=[];self.rows=deque(maxlen=500);self.partial='';self.error='';self.state='preparing';self.frames=0;self.calls=0
+        self.pacing=PCMRateGate(time.monotonic());self.paused=False;self.position=0
+    def send(self,event):
+        with self.send_lock:
+            if not self.stopped.is_set():self.socket.send(json.dumps(event,ensure_ascii=False))
+    def _start_asr(self):
+        if self.has_captions or self.subscriber is not None or self.stopped.is_set() or self.paused:return
+        if self.worker and self.worker.is_alive():return
+        self.asr_stop=threading.Event();stop=self.asr_stop
+        def work():
+            upstream=None
+            try:
+                upstream=self.connector(MUSE_URL,open_timeout=5,close_timeout=1,max_size=65536,max_queue=8,compression=None,proxy=None)
+                with self.lock:
+                    if stop.is_set() or self.stopped.is_set():upstream.close();return
+                    self.asr=upstream;self.calls+=1
+                handshake=muse_handshake({'type':'start','consent':True,'mode':'practice','language':'es-ES'});handshake.update(mode='DIARIZATION',languageBias=['Spanish','English','French'])
+                upstream.send(json.dumps(handshake));ack=json.loads(upstream.recv(timeout=5))
+                if not isinstance(ack.get('sessionId'),str):raise ValueError('Muse no confirmó la transcripción.')
+                events=MuseEvents();finished=threading.Event()
+                def sender():
+                    try:
+                        pacing=PCMFrameClock()
+                        while not stop.is_set() and not self.stopped.is_set():
+                            try:raw=self.pcm.get(timeout=.1)
+                            except queue.Empty:continue
+                            if stop.wait(pacing.delay(time.monotonic())) or self.stopped.is_set():break
+                            pacing.sent(time.monotonic())
+                            upstream.send(raw)
+                    except Exception:pass
+                    finally:finished.set()
+                threading.Thread(target=sender,daemon=True,name='brivany-video-asr-input').start()
+                self.state='transcribing'
+                while not stop.is_set() and not self.stopped.is_set() and not finished.is_set():
+                    try:event=json.loads(upstream.recv(timeout=.1))
+                    except TimeoutError:continue
+                    normalized=events.accept(event)
+                    if normalized and normalized['type']=='transcript':
+                        with self.lock:
+                            text=normalized['text'][:800];self.partial='' if normalized['final'] else text
+                            if normalized['final']:self.rows.append({'text':text,'speaker':normalized.get('speaker'),'at':normalized.get('at',0),'origin':'asr'})
+            except Exception:
+                if not stop.is_set() and not self.stopped.is_set():
+                    self.error='La transcripción se interrumpió. Vuelve a marcar el video.';self.state='error'
+                    try:self.send({'type':'error','message':self.error})
+                    finally:self.stopped.set()
+            finally:
+                if upstream:upstream.close()
+                with self.lock:
+                    if self.asr is upstream:self.asr=None
+        self.worker=threading.Thread(target=work,daemon=True,name='brivany-selected-video-transcription');self.worker.start()
+    def accept(self,raw):
+        if self.stopped.is_set():return
+        if not isinstance(raw,bytes) or len(raw)!=3840:raise ValueError('El video debe enviar PCM16 mono de 80 ms.')
+        if not self.pacing.accept(len(raw),time.monotonic()):raise ValueError('El audio del video llegó demasiado rápido.')
+        with self.lock:
+            if self.stopped.is_set():return
+            self.frames+=1920;subscriber=self.subscriber
+            target=subscriber if subscriber is not None else self.pcm if not self.has_captions else None
+            if target is not None:
+                try:target.put_nowait(raw)
+                except queue.Full:raise ValueError('La transcripción no pudo seguir el audio. Vuelve a marcar el video.')
+        if not self.has_captions and subscriber is None:self._start_asr()
+    def captions(self,message):
+        if set(message)!={'type','cues','done'} or type(message.get('done')) is not bool or not isinstance(message.get('cues'),list) or len(message['cues'])>8:raise ValueError('Subtítulos no válidos.')
+        clean=[]
+        for cue in message['cues']:
+            if not isinstance(cue,dict) or set(cue)!={'start','end','text','speaker'}:raise ValueError('Subtítulos no válidos.')
+            if any(type(cue[k]) not in (int,float) or not math.isfinite(cue[k]) for k in ('start','end')) or not 0<=cue['start']<cue['end'] or cue['end']-cue['start']>30:raise ValueError('Intervalo no válido.')
+            if not isinstance(cue['text'],str) or not 1<=len(cue['text'])<=400 or cue['speaker'] is not None and (not isinstance(cue['speaker'],str) or len(cue['speaker'])>60):raise ValueError('Texto de subtítulo no válido.')
+            clean.append(dict(cue))
+        with self.lock:
+            if not self.has_captions or len(self.cues)+len(clean)>2000:raise ValueError('Límite de subtítulos excedido.')
+            self.cues.extend(clean)
+            if message['done']:self.state='ready'
+    def route(self):return SelectedVideoRoute(self)
+    def set_position(self,position):
+        if type(position) not in (int,float) or not math.isfinite(position) or not 0<=position<=604800:raise ValueError('Posición del video no válida.')
+        with self.lock:self.position=position
+    def lookahead(self):
+        with self.lock:
+            if self.stopped.is_set() or self.paused:return None
+            cues=[dict(c) for c in self.cues if c['end']>self.position and c['start']<self.position+16][:6]
+            return {'type':'caption-lookahead','epoch':1,'source':self.source,'position':self.position,'cues':cues} if cues else None
+    def set_paused(self,paused):
+        if type(paused) is not bool:raise ValueError('Estado de reproducción no válido.')
+        with self.lock:
+            self.paused=paused
+            if paused:self.state='paused';self.asr_stop.set();upstream=self.asr
+            else:self.state='ready' if self.has_captions else 'selected';upstream=None
+        if upstream:upstream.close()
+        if paused:
+            while True:
+                try:self.pcm.get_nowait()
+                except queue.Empty:break
+    def status(self):
+        with self.lock:return {'selected':not self.stopped.is_set(),'selection':self.selection,'state':self.state,'cue_count':len(self.cues),'transcribed_turns':len(self.rows),'translation_input':self.subscriber is not None,'source':'selected_video','audio_persisted':False,'error':self.error,'asr_calls':self.calls}
+    def snapshot(self):
+        with self.lock:return {**self.status(),'captions':[dict(c) for c in self.cues],'turns':[dict(r) for r in self.rows],'partial':self.partial}
+    def close(self):
+        self.stopped.set();self.asr_stop.set()
+        if self.asr:
+            try:self.asr.close()
+            except Exception:pass
+        with self.lock:
+            self.cues.clear();self.rows.clear();self.partial=''
+            for channel in (self.pcm,self.subscriber):
+                if channel is not None:
+                    while True:
+                        try:channel.get_nowait()
+                        except queue.Empty:break
+
+
+class SelectedVideoRoute:
+    source='selected-video';output=None
+    def __init__(self,video):
+        self.video=video;self.closed=False;self.queue=queue.Queue(maxsize=50)
+        with video.lock:
+            if video.stopped.is_set() or video.subscriber is not None:raise ValueError('El video seleccionado ya no está disponible.')
+            video.subscriber=self.queue;video.asr_stop.set();upstream=video.asr
+        if upstream:upstream.close()
+        while True:
+            try:video.pcm.get_nowait()
+            except queue.Empty:break
+    def reduce_original(self,gain):self.video.send({'type':'original-gain','value':gain})
+    def packets(self,stopped):
+        index=0
+        while not self.closed and not stopped.is_set():
+            if self.video.stopped.is_set():raise ValueError('Se cerró o cambió el video seleccionado.')
+            try:raw=self.queue.get(timeout=.1)
+            except queue.Empty:continue
+            yield index,raw;index+=1
+    def close(self):
+        if self.closed:return
+        self.closed=True
+        with self.video.lock:
+            if self.video.subscriber is self.queue:self.video.subscriber=None
+        try:self.video.send({'type':'original-gain','value':1})
+        except ConnectionClosed:pass
+        if not self.video.stopped.is_set():self.video.state='ready' if self.video.has_captions else 'selected'
+
+
+class SelectedVideoHub:
+    def __init__(self,*,connector=connect):self.lock=threading.RLock();self.current=None;self.connector=connector
+    def handle(self,socket):
+        raw=socket.recv(timeout=8);options=json.loads(raw) if isinstance(raw,str) else None
+        selected=SelectedVideo(socket,options,connector=self.connector)
+        with self.lock:old=self.current;self.current=selected
+        if old:
+            old.close()
+            try:old.socket.close()
+            except Exception:pass
+        try:
+            selected.send({'type':'selected','selection':selected.selection})
+            while not selected.stopped.is_set():
+                try:raw=socket.recv(timeout=.2)
+                except TimeoutError:continue
+                if isinstance(raw,bytes):selected.accept(raw)
+                else:
+                    control=json.loads(raw)
+                    if control=={'type':'stop'}:break
+                    if isinstance(control,dict) and control.get('type')=='captions':selected.captions(control);selected.send({'type':'caption-ack'})
+                    elif isinstance(control,dict) and set(control)=={'type','paused'} and control['type']=='media-state':selected.set_paused(control['paused'])
+                    elif isinstance(control,dict) and set(control)=={'type','position'} and control['type']=='position':selected.set_position(control['position'])
+                    else:raise ValueError('Control de video no válido.')
+        except ConnectionClosed:pass
+        finally:
+            selected.close()
+            with self.lock:
+                if self.current is selected:self.current=None
+    def selected(self):
+        with self.lock:return self.current if self.current and not self.current.stopped.is_set() else None
+    def route(self):
+        selected=self.selected()
+        if not selected:raise ValueError('Selecciona un video desde la extensión.')
+        return selected.route()
+    def status(self):
+        selected=self.selected();return selected.status() if selected else {'selected':False}
+    def close(self):
+        selected=self.selected()
+        if selected:selected.close();selected.socket.close()

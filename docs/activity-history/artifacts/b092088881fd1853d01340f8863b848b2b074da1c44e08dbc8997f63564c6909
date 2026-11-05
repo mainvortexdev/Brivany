@@ -1,0 +1,29 @@
+{
+  "scope": "real Paint; native Cognira executors through Brivany adapter",
+  "synthetic_drawing": true,
+  "started_at": "2026-10-30T16:21:34.358613+00:00",
+  "steps": [],
+  "cost_amount": null,
+  "physical_quality_verified": false,
+  "status": "failed",
+  "failure": "ERR_FAILED (-2) loading 'data:text/html;charset=utf-8,%3C!--%20Adaptado%20de%20Cognira%20Desktop%20por%20solicitud%20del%20usuario%3B%20conserva%20su%20dise%C3%B1o%20de%20parada.%20--%3E%0D%0A%3C!doctype%20html%3E%0D%0A%3Chtml%20lang%3D%22es%22%3E%0D%0A%3Chead%3E%0D%0A%20%20%3Cmeta%20charset%3D%22utf-8%22%3E%0D%0A%20%20%3Cmeta%20http-equiv%3D%22Content-Security-Policy%22%20content%3D%22default-src%20'none'%3B%20style-src%20'unsafe-inline'%22%3E%0D%0A%20%20%3Cmeta%20name%3D%22viewport%22%20content%3D%22width%3Ddevice-width%2C%20initial-scale%3D1%22%3E%0D%0A%20%20%3Ctitle%3EMelodi%20%C2%B7%20Control%20del%20equipo%3C%2Ftitle%3E%0D%0A%20%20%3Cstyle%3E%0D%0A%20%20%20%20%3Aroot%20%7B%20color-scheme%3A%20dark%3B%20--accent%3A%2035%2C%20135%2C%20125%3B%20%7D%0D%0A%20%20%20%20*%20%7B%20box-sizing%3A%20border-box%3B%20%7D%0D%0A%20%20%20%20html%2C%20body%20%7B%20margin%3A%200%3B%20width%3A%20100%25%3B%20height%3A%20100%25%3B%20overflow%3A%20hidden%3B%20background%3A%20transparent%3B%20pointer-events%3A%20none%3B%20user-select%3A%20none%3B%20%7D%0D%0A%20%20%20%20.frame%20%7B%20position%3A%20fixed%3B%20inset%3A%200%3B%20border%3A%202px%20solid%20rgba(var(--accent)%2C%20.82)%3B%20border-radius%3A%2012px%3B%0D%0A%20%20%20%20%20%20box-shadow%3A%20inset%200%200%2012px%203px%20rgba(var(--accent)%2C%20.36)%2C%20inset%200%200%2040px%209px%20rgba(var(--accent)%2C%20.14)%2C%20inset%200%200%205px%201px%20rgba(7%2C%2027%2C%2043%2C%20.55)%3B%20%7D%0D%0A%20%20%20%20.status%20%7B%20position%3A%20fixed%3B%20top%3A%2012px%3B%20left%3A%2050%25%3B%20transform%3A%20translateX(-50%25)%3B%20max-width%3A%20calc(100%25%20-%2032px)%3B%0D%0A%20%20%20%20%20%20display%3A%20flex%3B%20align-items%3A%20center%3B%20gap%3A%209px%3B%20padding%3A%208px%2012px%3B%20border-radius%3A%209px%3B%0D%0A%20%20%20%20%20%20background%3A%20rgba(13%2C%2027%2C%2039%2C%20.95)%3B%20border%3A%201px%20solid%20rgba(var(--accent)%2C%20.44)%3B%20color%3A%20%23e6f4ff%3B%0D%0A%20%20%20%20%20%20box-shadow%3A%200%202px%2014px%20%230005%3B%20font%3A%20500%2012px%2F1.35%20'Segoe%20UI'%2C%20sans-serif%3B%20whi'",
+  "visual_review_pending": true,
+  "finished_at": "2026-10-30T16:21:34.617892+00:00",
+  "planner_requests": 0,
+  "external_cost_unknown": true,
+  "native_diagnostics": [
+    {
+      "event": "diagnostic",
+      "phase": "display-metrics-changed"
+    },
+    {
+      "event": "diagnostic",
+      "phase": "window-closed"
+    }
+  ],
+  "limits": [
+    "No semantic or artistic quality claim from stroke count.",
+    "No inference retries at task level; source Paint helper may correct a structured response.",
+    "Only the new Paint drawing is captured; no original user image."
+  ]
+}

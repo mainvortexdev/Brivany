@@ -1,0 +1,35 @@
+{
+  "type": "actual_local_models_on_existing_owned_speech",
+  "external_calls": 0,
+  "remote_gpu_seconds": 0,
+  "single_cpu_thread_per_model": true,
+  "warm_success": true,
+  "warm_ms": 1962.63,
+  "rows": [
+    {
+      "owned_catalog_fixture": "masculine",
+      "seconds": 2.48,
+      "voice_timbre": "masculine",
+      "timbre_confidence": 0.999075,
+      "available": true,
+      "timbre_inference_source": "local_timbre_consensus",
+      "corroboration_available": true,
+      "corroboration_confidence": 0.999822,
+      "reason": "local_models_agree",
+      "latency_ms": 674.25
+    },
+    {
+      "owned_catalog_fixture": "feminine",
+      "seconds": 2.0,
+      "voice_timbre": "feminine",
+      "timbre_confidence": 0.996175,
+      "available": true,
+      "timbre_inference_source": "local_timbre_consensus",
+      "corroboration_available": true,
+      "corroboration_confidence": 0.99993,
+      "reason": "local_models_agree",
+      "latency_ms": 491.02
+    }
+  ],
+  "human_public_speaker_verified": false
+}

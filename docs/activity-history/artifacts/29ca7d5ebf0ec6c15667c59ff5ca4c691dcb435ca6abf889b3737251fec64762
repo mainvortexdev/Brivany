@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "scope": "real repeated desktop entry point with existing WorkSpace",
+  "original_pid_preserved": true,
+  "bar_handle_preserved": true,
+  "visible_bars_in_process": 1,
+  "activation_trials": [
+    {
+      "exit_code": 0,
+      "elapsed_seconds": 2.656
+    },
+    {
+      "exit_code": 0,
+      "elapsed_seconds": 2.766
+    }
+  ],
+  "work_area": {
+    "left": 0,
+    "top": 40,
+    "right": 1280,
+    "bottom": 994
+  },
+  "external_calls": 0,
+  "microphone_used": false
+}

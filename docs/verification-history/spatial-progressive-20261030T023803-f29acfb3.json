@@ -1,0 +1,18 @@
+{
+  "suite": "spatial-progressive",
+  "started_at": "2026-10-30T02:38:03.736089+00:00",
+  "finished_at": "2026-10-30T02:38:14.173945+00:00",
+  "duration_seconds": 10.437856,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_spatial_progressive"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"checks\": [\r\n    \"partial geometry is rendered before the last GLB arrives; UI gates editing/export until all assets finish\",\r\n    \"load timings and retained geometry bytes are reported with GPU memory explicitly unmeasured\",\r\n    \"cancel during a later request removes the partial scene and cannot publish late geometry\",\r\n    \"later asset failure clears partial geometry; an explicit reload succeeds and resources can be released\"\r\n  ],\r\n  \"scope\": \"Loopback HTTP, generated GLBs and actual WebGL with software rendering permitted; gated transfer is synthetic.\",\r\n  \"external_calls\": 0,\r\n  \"gpu_inference\": false,\r\n  \"physical_devices_tested\": false,\r\n  \"gpu_memory_measured\": false,\r\n  \"last_asset_release_to_ready_ms\": 3257,\r\n  \"load\": {\r\n    \"phase\": \"ready\",\r\n    \"loadedAssets\": 4,\r\n    \"totalAssets\": 4,\r\n    \"loadedObjects\": 4,\r\n    \"totalObjects\": 4,\r\n    \"receivedBytes\": 36304,\r\n    \"estimatedBytes\": null,\r\n    \"firstVisibleMs\": 1713.5,\r\n    \"elapsedMs\": 1754.5999999940395,\r\n    \"timingScope\": \"local_render_submission_not_gpu_completion\"\r\n  },\r\n  \"resources\": {\r\n    \"geometryArrayBufferBytes\": 9264,\r\n    \"geometries\": 4,\r\n    \"textures\": 0,\r\n    \"gpuMemoryMeasured\": false,\r\n    \"scope\": \"retained_geometry_arrays_only_excludes_textures_renderer_and_driver\"\r\n  }\r\n}\r\n\r\n"
+}

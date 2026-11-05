@@ -1,0 +1,100 @@
+{
+  "type": "real_melodi_media_owned_fixture",
+  "provider_cost": "unknown",
+  "started_at": "2026-11-01T13:37:37.123456+00:00",
+  "jobs": [
+    {
+      "id": "42900cc6-c51c-40c3-ac13-eb11feb80854",
+      "kind": "media",
+      "state": "succeeded",
+      "phase": "Guardado en <local-path>\\Documents\\Evidencia Melodi Medios\\Prueba-Melodi-audio.wav",
+      "steps": 0,
+      "result": {
+        "title": "Audio listo",
+        "path": "<local-path>\\Documents\\Evidencia Melodi Medios\\Prueba-Melodi-audio.wav",
+        "evidence_folder": "<local-path>\\Documents\\Evidencia Melodi Medios",
+        "verified": true,
+        "original_modified": false,
+        "bytes": 195830,
+        "sha256": "ad9c53a55413833ed43a4af931a911d37824206bab3451bf4a31d2d8b5ff6ff5",
+        "message": "Guardado en <local-path>\\Documents\\Evidencia Melodi Medios\\Prueba-Melodi-audio.wav",
+        "duration_seconds": 4.438821,
+        "source_duration_seconds": 4.44,
+        "local_processing": true,
+        "extraction_receipt": "3b2537b8-0495-4bf7-8e09-d2af5002ad91"
+      },
+      "error": null,
+      "external_calls": 1,
+      "agent": "Agente de medios",
+      "reviewed": false
+    },
+    {
+      "id": "823f510b-9482-4b08-8067-6b7b42c33c73",
+      "kind": "media",
+      "state": "succeeded",
+      "phase": "A partir de 4 fotogramas muestreados a los 0.355s, 1.554s, 2.886s y 4.085s de un video de 4.44s (sin audio analizado):\n\nHechos observados:\n- Fondo blanco en todos los fotogramas.\n- En la parte superior izquierda aparece el texto en negro: \"Prueba de video de Melodi\".\n- En la mitad derecha, centrado verticalmente, se ve un cuadrado sólido de color rojo intenso.\n- Los 4 fotogramas son visualmente idénticos entre sí: no se aprecia movimiento, cambio de color, cambio de posición ni otros elementos.\n\nInferencia limitada:\n- Dentro de la cobertura muestreada no hay acción visible; parece una imagen estática. No se puede afirmar qué ocurre en los intervalos no muestreados.",
+      "steps": 0,
+      "result": {
+        "title": "Video",
+        "message": "A partir de 4 fotogramas muestreados a los 0.355s, 1.554s, 2.886s y 4.085s de un video de 4.44s (sin audio analizado):\n\nHechos observados:\n- Fondo blanco en todos los fotogramas.\n- En la parte superior izquierda aparece el texto en negro: \"Prueba de video de Melodi\".\n- En la mitad derecha, centrado verticalmente, se ve un cuadrado sólido de color rojo intenso.\n- Los 4 fotogramas son visualmente idénticos entre sí: no se aprecia movimiento, cambio de color, cambio de posición ni otros elementos.\n\nInferencia limitada:\n- Dentro de la cobertura muestreada no hay acción visible; parece una imagen estática. No se puede afirmar qué ocurre en los intervalos no muestreados.",
+        "sample_times_seconds": [
+          0.355,
+          1.554,
+          2.886,
+          4.085
+        ],
+        "duration_seconds": 4.44,
+        "sampled_visual_analysis": true,
+        "continuous_viewing_verified": false,
+        "audio_analyzed": false,
+        "semantic_verification": false,
+        "verified": true,
+        "original_modified": false
+      },
+      "error": null,
+      "external_calls": 2,
+      "agent": "Agente de medios",
+      "reviewed": false
+    },
+    {
+      "id": "7af74190-7170-4f69-803b-9b19c22726b7",
+      "kind": "media",
+      "state": "succeeded",
+      "phase": "Guardado en <local-path>\\Documents\\Evidencia Melodi Medios\\Prueba-Melodi-traducido.mkv",
+      "steps": 0,
+      "result": {
+        "title": "Video traducido",
+        "path": "<local-path>\\Documents\\Evidencia Melodi Medios\\Prueba-Melodi-traducido.mkv",
+        "evidence_folder": "<local-path>\\Documents\\Evidencia Melodi Medios",
+        "verified": true,
+        "original_modified": false,
+        "bytes": 104217,
+        "sha256": "6653359f5755e0a31cf42062c8878dba683cacd4c9c3bf89f9d5c2f0a8af44a0",
+        "message": "Guardado en <local-path>\\Documents\\Evidencia Melodi Medios\\Prueba-Melodi-traducido.mkv",
+        "translation": {
+          "complete_input_processed": true,
+          "source_frames": 106532,
+          "submitted_frames": 106532,
+          "padding_frames": 988,
+          "input_bytes_confirmed": 215040,
+          "translated_frames": 90240,
+          "billing_amount": null,
+          "provider_segments": 2,
+          "error": null,
+          "semantic_completeness_verified": false,
+          "physical_playback_verified": false
+        },
+        "language": "es",
+        "duration_seconds": 4.44,
+        "lip_sync_verified": false,
+        "billing_amount": null
+      },
+      "error": null,
+      "external_calls": 1,
+      "agent": "Agente de medios",
+      "reviewed": false
+    }
+  ],
+  "source_original_modified": false,
+  "success": true
+}

@@ -1,0 +1,17 @@
+{
+  "ui_mode": "desktop-only",
+  "tray": {
+    "supported": true,
+    "active": true,
+    "closed": false,
+    "name": "Brivany",
+    "actions": [
+      "open",
+      "workspace",
+      "exit"
+    ]
+  },
+  "workspace_active": true,
+  "workspace_visuals": null,
+  "work_audio_translation": null
+}

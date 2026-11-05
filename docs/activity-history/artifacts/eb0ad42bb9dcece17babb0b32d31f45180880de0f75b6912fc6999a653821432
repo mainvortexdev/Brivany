@@ -1,0 +1,27 @@
+{
+  "type": "actual_native_file_operations_on_owned_synthetic_files",
+  "recorded_utc": "2026-11-01T20:20:38.193969+00:00",
+  "human_approval_simulated_by_test": true,
+  "user_files_accessed": false,
+  "model_calls": 0,
+  "uac_requested": false,
+  "gui_input": false,
+  "checks": [
+    "prepare_keeps_original",
+    "actual_transport_replace_and_backup",
+    "actual_electron_os_trash"
+  ],
+  "passed": true,
+  "replacement": {
+    "verified": true,
+    "destination": "<local-path>\\tmp\\computer-access-real\\f74cdf13-0e6f-43f7-9da2-634fa8230945\\owned\\anterior.txt",
+    "backup_path": "<local-path>\\tmp\\computer-access-real\\f74cdf13-0e6f-43f7-9da2-634fa8230945\\runtime\\file-versions\\ed1640c8-c066-46f3-8ada-8430315bd250.txt",
+    "method": "approved-replace-with-backup"
+  },
+  "trash": {
+    "verified": true,
+    "path": "<local-path>\\tmp\\computer-access-real\\f74cdf13-0e6f-43f7-9da2-634fa8230945\\owned\\papelera.txt",
+    "method": "approved-os-trash",
+    "permanent_delete": false
+  }
+}

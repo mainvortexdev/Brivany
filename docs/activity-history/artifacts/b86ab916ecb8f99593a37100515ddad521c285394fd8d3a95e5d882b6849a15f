@@ -1,0 +1,1061 @@
+{
+  "type": "append_only_retrospective_reconciliation",
+  "new_test_execution": false,
+  "document_records": [
+    {
+      "id": "a283c1d1-aae3-4a27-a879-772c81d1c982",
+      "title": "Bases del producto y contratos iniciales",
+      "documents": [
+        "docs/00-idea-completa.md",
+        "docs/01-objetivo-y-capacidades.md",
+        "docs/02-arquitectura.md",
+        "docs/03-skills-y-aprendizaje.md",
+        "docs/04-melodi-y-modelos.md",
+        "docs/05-conectores.md",
+        "docs/06-datos-api-eventos.md",
+        "docs/07-operacion.md"
+      ]
+    },
+    {
+      "id": "0a2a4034-64fa-43fd-bf5f-3de344513266",
+      "title": "Plan inicial, supuestos y alternativas de doblaje",
+      "documents": [
+        "docs/08-plan.md",
+        "docs/09-decisiones.md",
+        "docs/10-fuentes-y-supuestos.md",
+        "docs/11-h1-oratoria-y-meta-glasses.md",
+        "docs/12-asistencia-contextual.md",
+        "docs/19-doblaje-apis.md"
+      ]
+    },
+    {
+      "id": "de6eea00-d140-4087-b9cb-2f58835cd8a0",
+      "title": "Revisiones históricas de voz, traducción y latencia",
+      "documents": [
+        "docs/18-traduccion-video-live.md",
+        "docs/24-voz-a-voz-nativa.md",
+        "docs/26-retraso-audible.md",
+        "docs/workspace-traduccion-auditiva.md"
+      ]
+    },
+    {
+      "id": "23ac7df2-0ae1-4b1a-92ab-16f6b906164e",
+      "title": "Control del ordenador y checklist de terminal",
+      "documents": [
+        "docs/control-ordenador-melodi.md",
+        "docs/terminal-melodi.md",
+        "docs/terminal-checklist.md"
+      ]
+    },
+    {
+      "id": "b493a223-b1f3-446f-a93f-bef3588a4c87",
+      "title": "Evolución visual de Mini Melodi a WorkSpace",
+      "documents": [
+        "docs/mini-melodi-isla.md",
+        "docs/melodi-workspace.md",
+        "docs/melodi-workspace-premium.md",
+        "docs/melodi-workspace-compacto.md"
+      ]
+    },
+    {
+      "id": "ad123bad-953b-4be0-99f0-cbd14e60bc0f",
+      "title": "Spotify, retorno HTTPS, biblioteca y conversación",
+      "documents": [
+        "docs/spotify-retorno-https.md",
+        "docs/spotify-biblioteca-letras.md",
+        "docs/workspace-chat-live-y-spotify.md"
+      ]
+    },
+    {
+      "id": "ea1a48f6-fb67-4372-9f0b-33b5cec6446d",
+      "title": "Infraestructura, accesos y diseño de iPhone",
+      "documents": [
+        "docs/30-accesos-pendientes.md",
+        "docs/31-infraestructura-y-visor.md",
+        "docs/iphone-diseno-en-curso.md"
+      ]
+    },
+    {
+      "id": "c1f33de2-8b6c-4ea3-8a5c-5bbe4e89385f",
+      "title": "Medios, documentación, web y Motion",
+      "documents": [
+        "docs/melodi-medios-documentacion-y-web.md",
+        "docs/melodi-bang-motion.md"
+      ]
+    }
+  ],
+  "report_records": [
+    {
+      "id": "76e2c7d7-5388-4526-ae28-139ef4a74377",
+      "area": "Búsqueda web",
+      "reported_result": "failed",
+      "reports": 4
+    },
+    {
+      "id": "d4d49ccc-dfb1-4231-aa85-fdd62135922c",
+      "area": "Búsqueda web",
+      "reported_result": "passed",
+      "reports": 2
+    },
+    {
+      "id": "05782fe2-f2b1-4071-88eb-bb781fb6a8ca",
+      "area": "Chat de WorkSpace",
+      "reported_result": "passed",
+      "reports": 3
+    },
+    {
+      "id": "a41163db-e8cf-48cc-a1ef-e206dcf915cf",
+      "area": "Chat de WorkSpace",
+      "reported_result": "pending",
+      "reports": 1
+    },
+    {
+      "id": "7e20047f-e0f8-4e4e-a6e2-32b2a2af2ff8",
+      "area": "Cuentas, conectores y eventos",
+      "reported_result": "failed",
+      "reports": 5
+    },
+    {
+      "id": "bfefce93-2cb4-4bf7-922f-ee5846907669",
+      "area": "Cuentas, conectores y eventos",
+      "reported_result": "passed",
+      "reports": 7
+    },
+    {
+      "id": "1d38c368-f7ea-45e5-9320-0903e99a20ff",
+      "area": "Espacios y presentaciones",
+      "reported_result": "passed",
+      "reports": 8
+    },
+    {
+      "id": "6afc8381-d4c9-4db3-a9e1-787d9691f106",
+      "area": "Espacios y presentaciones",
+      "reported_result": "passed",
+      "reports": 1
+    },
+    {
+      "id": "12fc5e7e-f6b9-4663-8821-2f812df7f2e4",
+      "area": "Medios",
+      "reported_result": "passed",
+      "reports": 1
+    },
+    {
+      "id": "2ca49463-ff78-47ef-a0ea-062ac409a1e9",
+      "area": "Motion y render",
+      "reported_result": "passed",
+      "reports": 5
+    },
+    {
+      "id": "33467409-22d1-40d1-a9fb-a4f6faaeb732",
+      "area": "Motion y render",
+      "reported_result": "pending",
+      "reports": 1
+    },
+    {
+      "id": "880725ae-c6ba-4322-b2cf-061381bd34fd",
+      "area": "Ordenador, Paint y archivos",
+      "reported_result": "failed",
+      "reports": 3
+    },
+    {
+      "id": "ca3d4970-5868-47e6-b6b7-5cffb6300396",
+      "area": "Ordenador, Paint y archivos",
+      "reported_result": "passed",
+      "reports": 6
+    },
+    {
+      "id": "793219db-b792-4b2d-b796-cb71453c6006",
+      "area": "Sous",
+      "reported_result": "passed",
+      "reports": 4
+    },
+    {
+      "id": "3d6ceffd-5f7a-45eb-885c-aff780ea4767",
+      "area": "Terminal e IDE",
+      "reported_result": "passed",
+      "reports": 1
+    },
+    {
+      "id": "6450d896-dd50-49c2-8a7f-40f480692a92",
+      "area": "Terminal e IDE",
+      "reported_result": "pending",
+      "reports": 6
+    },
+    {
+      "id": "c951b9a7-464b-4128-8cdb-9ab28c00ce75",
+      "area": "Traducción y fuentes de video",
+      "reported_result": "failed",
+      "reports": 8
+    },
+    {
+      "id": "1109e949-f58d-4bde-a547-5d059e7baeee",
+      "area": "Traducción y fuentes de video",
+      "reported_result": "passed",
+      "reports": 8
+    },
+    {
+      "id": "bda247e4-c8ea-4fa7-9137-5d18ff897ec0",
+      "area": "Traducción y fuentes de video",
+      "reported_result": "passed",
+      "reports": 8
+    },
+    {
+      "id": "75a1e546-929f-4f5a-9299-f9207f12cc93",
+      "area": "Traducción y fuentes de video",
+      "reported_result": "passed",
+      "reports": 7
+    },
+    {
+      "id": "1d563f77-aefc-4d9c-b80d-e2cb6b081305",
+      "area": "Traducción y fuentes de video",
+      "reported_result": "pending",
+      "reports": 8
+    },
+    {
+      "id": "89485291-1662-40a8-bba2-74839561c3cc",
+      "area": "Traducción y fuentes de video",
+      "reported_result": "pending",
+      "reports": 7
+    },
+    {
+      "id": "f0406124-d7e7-4381-a39b-c13e9a7ee51b",
+      "area": "WorkSpace y música",
+      "reported_result": "passed",
+      "reports": 8
+    },
+    {
+      "id": "da537785-ae4a-4811-b1fc-4fbe9afe5b7c",
+      "area": "WorkSpace y música",
+      "reported_result": "pending",
+      "reports": 6
+    }
+  ],
+  "recovered_reports": [
+    {
+      "original": "tmp/search-latency-google-probe.json",
+      "sha256": "c61ccc80f26fb5f1543a17013c05da319c6a8726919500febff7abb57be7a51b",
+      "metadata": "tmp/activity-reconciliation/c61ccc80f26fb5f1543a17013c05da319c6a8726919500febff7abb57be7a51b.json",
+      "record_id": "76e2c7d7-5388-4526-ae28-139ef4a74377",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/search-latency-probe.json",
+      "sha256": "12569e95a6d277c4cc5e58a0a90ed5c8886d827e39216a0e40ce42f280c487ae",
+      "metadata": "tmp/activity-reconciliation/12569e95a6d277c4cc5e58a0a90ed5c8886d827e39216a0e40ce42f280c487ae.json",
+      "record_id": "76e2c7d7-5388-4526-ae28-139ef4a74377",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/search-review-real/22003e8c3e1f42d784e3b00aa3289986/report.json",
+      "sha256": "efb2838dd3f7f0768c5c380be75f4c27c87647bf09c513dd9ab51ca0545c6fe9",
+      "metadata": "tmp/activity-reconciliation/efb2838dd3f7f0768c5c380be75f4c27c87647bf09c513dd9ab51ca0545c6fe9.json",
+      "record_id": "76e2c7d7-5388-4526-ae28-139ef4a74377",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/search-review-real/ef5ee0f51f384dafb4ba4c501c7e6ba1/report.json",
+      "sha256": "4fc02c6b7294f8ffd3dbb33f26e5dbbdda761249495c52ad16a22c9ad0bef420",
+      "metadata": "tmp/activity-reconciliation/4fc02c6b7294f8ffd3dbb33f26e5dbbdda761249495c52ad16a22c9ad0bef420.json",
+      "record_id": "76e2c7d7-5388-4526-ae28-139ef4a74377",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/meta-weather-local-date-real.json",
+      "sha256": "76d35bf7a737ef7dfdb35c35b99c5483b9dc5fe87738c88b697490d6674294ae",
+      "metadata": "tmp/activity-reconciliation/76d35bf7a737ef7dfdb35c35b99c5483b9dc5fe87738c88b697490d6674294ae.json",
+      "record_id": "d4d49ccc-dfb1-4231-aa85-fdd62135922c",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/search-review-real/4dc9cbff667f4de68c30ad33294b2921/report.json",
+      "sha256": "3107c27a51bbd27ee20a91e6d1b3c5bbc17bbbb835472d8a993b5a6c360431a4",
+      "metadata": "tmp/activity-reconciliation/3107c27a51bbd27ee20a91e6d1b3c5bbc17bbbb835472d8a993b5a6c360431a4.json",
+      "record_id": "d4d49ccc-dfb1-4231-aa85-fdd62135922c",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-chat-ui/native-report.json",
+      "sha256": "ff05fbda75e2b2df75d59278f156ff0d92f5e30130edce75403afd319e9a3c2d",
+      "metadata": "tmp/activity-reconciliation/ff05fbda75e2b2df75d59278f156ff0d92f5e30130edce75403afd319e9a3c2d.json",
+      "record_id": "05782fe2-f2b1-4071-88eb-bb781fb6a8ca",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-chat-ui/report.json",
+      "sha256": "c977490ea3d9ffd8f42a50e4947e50046e540bd39adfc7067f98937fa2394a72",
+      "metadata": "tmp/activity-reconciliation/c977490ea3d9ffd8f42a50e4947e50046e540bd39adfc7067f98937fa2394a72.json",
+      "record_id": "05782fe2-f2b1-4071-88eb-bb781fb6a8ca",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-chat-ui/result-native-report.json",
+      "sha256": "588982d123087d339bede26238baed336296a4ecea1becc6e137736b4b7a4777",
+      "metadata": "tmp/activity-reconciliation/588982d123087d339bede26238baed336296a4ecea1becc6e137736b4b7a4777.json",
+      "record_id": "05782fe2-f2b1-4071-88eb-bb781fb6a8ca",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-chat-ui/native-start.json",
+      "sha256": "1aa6c515ab08f1e7c87a03e953bd5d101f93d13b08a45ef150b9151b6deb0eab",
+      "metadata": "tmp/activity-reconciliation/1aa6c515ab08f1e7c87a03e953bd5d101f93d13b08a45ef150b9151b6deb0eab.json",
+      "record_id": "a41163db-e8cf-48cc-a1ef-e206dcf915cf",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/account-remote/real-chat-20261102T123231.json",
+      "sha256": "40cb9d57c17f3c72492922f7fef6997056b1c748cc5cecd19251dd4366dcb9a3",
+      "metadata": "tmp/activity-reconciliation/40cb9d57c17f3c72492922f7fef6997056b1c748cc5cecd19251dd4366dcb9a3.json",
+      "record_id": "7e20047f-e0f8-4e4e-a6e2-32b2a2af2ff8",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/account-remote/real-chat-20261102T123457.json",
+      "sha256": "c7baca533dace6d438f4bd13b5ccdb2ea6bad88d2a576ea08338d428feed2f90",
+      "metadata": "tmp/activity-reconciliation/c7baca533dace6d438f4bd13b5ccdb2ea6bad88d2a576ea08338d428feed2f90.json",
+      "record_id": "7e20047f-e0f8-4e4e-a6e2-32b2a2af2ff8",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/account-remote/real-chat-20261102T123911.json",
+      "sha256": "e997d476857c98a19a0726479677a9056e7b09d72969dda5697ae3484cabbc5b",
+      "metadata": "tmp/activity-reconciliation/e997d476857c98a19a0726479677a9056e7b09d72969dda5697ae3484cabbc5b.json",
+      "record_id": "7e20047f-e0f8-4e4e-a6e2-32b2a2af2ff8",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/account-remote/real-chat-20261102T124034.json",
+      "sha256": "ff4bc05b76789141f1bc872930b4edea93fd2f06cd3c6a1302c39a7d31f086b2",
+      "metadata": "tmp/activity-reconciliation/ff4bc05b76789141f1bc872930b4edea93fd2f06cd3c6a1302c39a7d31f086b2.json",
+      "record_id": "7e20047f-e0f8-4e4e-a6e2-32b2a2af2ff8",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/google-setup/google-real-reads.json",
+      "sha256": "d1fbb04f3a246b488b91d1b223ceb727ffa74f56381eb3e5dda000b0bd721799",
+      "metadata": "tmp/activity-reconciliation/d1fbb04f3a246b488b91d1b223ceb727ffa74f56381eb3e5dda000b0bd721799.json",
+      "record_id": "7e20047f-e0f8-4e4e-a6e2-32b2a2af2ff8",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/meta-weather-account-real.json",
+      "sha256": "0a6e38353ea350d9c537b5e66e085d791532cca15045612f415d721b9c6cd1d7",
+      "metadata": "tmp/activity-reconciliation/0a6e38353ea350d9c537b5e66e085d791532cca15045612f415d721b9c6cd1d7.json",
+      "record_id": "bfefce93-2cb4-4bf7-922f-ee5846907669",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/chat-requests/report.json",
+      "sha256": "c280b7ecc9f3f38902727f13c661df39ee89d8bf496e48868547583885ce6066",
+      "metadata": "tmp/activity-reconciliation/c280b7ecc9f3f38902727f13c661df39ee89d8bf496e48868547583885ce6066.json",
+      "record_id": "bfefce93-2cb4-4bf7-922f-ee5846907669",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/connections/report.json",
+      "sha256": "9e3376b10c5a72bb027e1fd3c2944ea201c3d4919caca573851e4315438c99c7",
+      "metadata": "tmp/activity-reconciliation/9e3376b10c5a72bb027e1fd3c2944ea201c3d4919caca573851e4315438c99c7.json",
+      "record_id": "bfefce93-2cb4-4bf7-922f-ee5846907669",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/personal-ui/report.json",
+      "sha256": "4d9e0e10fcd765d9afa9986ee7f752b84f08dd580bc9e6b948f15d3f83320437",
+      "metadata": "tmp/activity-reconciliation/4d9e0e10fcd765d9afa9986ee7f752b84f08dd580bc9e6b948f15d3f83320437.json",
+      "record_id": "bfefce93-2cb4-4bf7-922f-ee5846907669",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/social-ui/report.json",
+      "sha256": "e9071299292d81080accb44db8e1fd4f670a8895d632694e282934dde7ca6f22",
+      "metadata": "tmp/activity-reconciliation/e9071299292d81080accb44db8e1fd4f670a8895d632694e282934dde7ca6f22.json",
+      "record_id": "bfefce93-2cb4-4bf7-922f-ee5846907669",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/work-events-ui/report.json",
+      "sha256": "5048a2db8daae6ae410b3098648a62ed5061d4febdfe0844322f50136b953e69",
+      "metadata": "tmp/activity-reconciliation/5048a2db8daae6ae410b3098648a62ed5061d4febdfe0844322f50136b953e69.json",
+      "record_id": "bfefce93-2cb4-4bf7-922f-ee5846907669",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-chat-ui/account-query-native-report.json",
+      "sha256": "94dada0f7c62952a1c0dd60460ced48ec8ef64738dcba77db038681c9a648c42",
+      "metadata": "tmp/activity-reconciliation/94dada0f7c62952a1c0dd60460ced48ec8ef64738dcba77db038681c9a648c42.json",
+      "record_id": "bfefce93-2cb4-4bf7-922f-ee5846907669",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/floorplan-ui/report.json",
+      "sha256": "dd711d2155243b9679cdd3bc9713635744759ddfb3349bf16df406ad331a578b",
+      "metadata": "tmp/activity-reconciliation/dd711d2155243b9679cdd3bc9713635744759ddfb3349bf16df406ad331a578b.json",
+      "record_id": "1d38c368-f7ea-45e5-9320-0903e99a20ff",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/ingest-ui/report.json",
+      "sha256": "212176ee273409d98f97cae528ef0c80a4d8bce8327f97565a5b1221700eed38",
+      "metadata": "tmp/activity-reconciliation/212176ee273409d98f97cae528ef0c80a4d8bce8327f97565a5b1221700eed38.json",
+      "record_id": "1d38c368-f7ea-45e5-9320-0903e99a20ff",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/portable-floorplan/report.json",
+      "sha256": "98fce2b009f391dd5321515923d1b9ef8841402b1ab8d7869030d65bdf20e36d",
+      "metadata": "tmp/activity-reconciliation/98fce2b009f391dd5321515923d1b9ef8841402b1ab8d7869030d65bdf20e36d.json",
+      "record_id": "1d38c368-f7ea-45e5-9320-0903e99a20ff",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/portable-presentation/report.json",
+      "sha256": "6c62c8adf1f52db9d1949c4c57efb023e8e44b9ef167b4df0911a1520729c91d",
+      "metadata": "tmp/activity-reconciliation/6c62c8adf1f52db9d1949c4c57efb023e8e44b9ef167b4df0911a1520729c91d.json",
+      "record_id": "1d38c368-f7ea-45e5-9320-0903e99a20ff",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/presentation-ui/report.json",
+      "sha256": "19d586db196694579016843184e4205dd62653b4916b5af25d8f6fe9ff83d6d8",
+      "metadata": "tmp/activity-reconciliation/19d586db196694579016843184e4205dd62653b4916b5af25d8f6fe9ff83d6d8.json",
+      "record_id": "1d38c368-f7ea-45e5-9320-0903e99a20ff",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/room-ingest-ui/report.json",
+      "sha256": "686e025a3d9d99f077ea01b3ff098402442c7d1f2a7ccc701eda3896254fa047",
+      "metadata": "tmp/activity-reconciliation/686e025a3d9d99f077ea01b3ff098402442c7d1f2a7ccc701eda3896254fa047.json",
+      "record_id": "1d38c368-f7ea-45e5-9320-0903e99a20ff",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/spatial-assistant/report.json",
+      "sha256": "fdcc9794c59bfc31bfcde6bac533fc97a9b581233da16ae67f8df7cce10f7f18",
+      "metadata": "tmp/activity-reconciliation/fdcc9794c59bfc31bfcde6bac533fc97a9b581233da16ae67f8df7cce10f7f18.json",
+      "record_id": "1d38c368-f7ea-45e5-9320-0903e99a20ff",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/spatial-progressive/report.json",
+      "sha256": "63d4daffa7e15669d8ae9dc1d9a51a9b624a96f57285874a750c2ff952cfda50",
+      "metadata": "tmp/activity-reconciliation/63d4daffa7e15669d8ae9dc1d9a51a9b624a96f57285874a750c2ff952cfda50.json",
+      "record_id": "1d38c368-f7ea-45e5-9320-0903e99a20ff",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/spatial-room/report.json",
+      "sha256": "daff866f3a7f5d81a200be958c4db7a33664a5fa89d2fd6555505b2cffeac369",
+      "metadata": "tmp/activity-reconciliation/daff866f3a7f5d81a200be958c4db7a33664a5fa89d2fd6555505b2cffeac369.json",
+      "record_id": "6afc8381-d4c9-4db3-a9e1-787d9691f106",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/media-ui/report.json",
+      "sha256": "1ed0d0dcea67787bbb58813ecd5c6f04b7e0c1fb11c54acebfe719d466b0d696",
+      "metadata": "tmp/activity-reconciliation/1ed0d0dcea67787bbb58813ecd5c6f04b7e0c1fb11c54acebfe719d466b0d696.json",
+      "record_id": "12fc5e7e-f6b9-4663-8821-2f812df7f2e4",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/motion-design/35f92793-5af1-4e4a-ba58-38a44badcf5c/render-report.json",
+      "sha256": "38a089f5735c721c7e35bc8bb11265f386305b0dd513c81b668a334eab70b149",
+      "metadata": "tmp/activity-reconciliation/38a089f5735c721c7e35bc8bb11265f386305b0dd513c81b668a334eab70b149.json",
+      "record_id": "2ca49463-ff78-47ef-a0ea-062ac409a1e9",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/motion-design/aed39830-9fce-4ac0-8c5c-909e702e3c96/render-report.json",
+      "sha256": "98a959da37d571ad8bf0d9ab137e96665dd7724dd6810e9e02b4b82f4e78da28",
+      "metadata": "tmp/activity-reconciliation/98a959da37d571ad8bf0d9ab137e96665dd7724dd6810e9e02b4b82f4e78da28.json",
+      "record_id": "2ca49463-ff78-47ef-a0ea-062ac409a1e9",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/motion-design/c5f942dd-d051-4554-9cb6-4c1fe54fdc2e/render-report.json",
+      "sha256": "7f3342a8e93fa4c3e0e04e356126bea07b69f81d72afc16c188c1a3f8900fd5e",
+      "metadata": "tmp/activity-reconciliation/7f3342a8e93fa4c3e0e04e356126bea07b69f81d72afc16c188c1a3f8900fd5e.json",
+      "record_id": "2ca49463-ff78-47ef-a0ea-062ac409a1e9",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/motion-design/ef46c001-267b-43d4-bf37-6004e4aba066/render-report.json",
+      "sha256": "72204b874a93059866303604ac9d8e9ef615e8b5330cc4f702e7120a846d1f34",
+      "metadata": "tmp/activity-reconciliation/72204b874a93059866303604ac9d8e9ef615e8b5330cc4f702e7120a846d1f34.json",
+      "record_id": "2ca49463-ff78-47ef-a0ea-062ac409a1e9",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/motion-ui/report.json",
+      "sha256": "09bc33424650971d03fabd07d6eea65389cf2ae5657b48f86c0401fcc9f1c35b",
+      "metadata": "tmp/activity-reconciliation/09bc33424650971d03fabd07d6eea65389cf2ae5657b48f86c0401fcc9f1c35b.json",
+      "record_id": "2ca49463-ff78-47ef-a0ea-062ac409a1e9",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/render-check/report.json",
+      "sha256": "5cb9c14baa1e9f774468d53bea4aef7256664acd0c813a569590e4a254cebf21",
+      "metadata": "tmp/activity-reconciliation/5cb9c14baa1e9f774468d53bea4aef7256664acd0c813a569590e4a254cebf21.json",
+      "record_id": "33467409-22d1-40d1-a9fb-a4f6faaeb732",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/paint-adaptive-real-report.json",
+      "sha256": "6b6695315bf0e1074b543a1ed11017e75ccd524db73e6996b4b9f9d20216d27c",
+      "metadata": "tmp/activity-reconciliation/6b6695315bf0e1074b543a1ed11017e75ccd524db73e6996b4b9f9d20216d27c.json",
+      "record_id": "880725ae-c6ba-4322-b2cf-061381bd34fd",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/paint-adaptive-real/aabec1487b1e4ea5b521a773d401d3a0/report.json",
+      "sha256": "7b7f8c59c88916c8598bfee613d2210f240d86784a9fdb1a75c6d27cf2cc7157",
+      "metadata": "tmp/activity-reconciliation/7b7f8c59c88916c8598bfee613d2210f240d86784a9fdb1a75c6d27cf2cc7157.json",
+      "record_id": "880725ae-c6ba-4322-b2cf-061381bd34fd",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/paint-adaptive-real/af5da20fc5464b49a9c7b66ad276f2eb/report.json",
+      "sha256": "97b0528527ab25abec127e5960b48582b663fded40f81260d4aae5ee73f1cc2d",
+      "metadata": "tmp/activity-reconciliation/97b0528527ab25abec127e5960b48582b663fded40f81260d4aae5ee73f1cc2d.json",
+      "record_id": "880725ae-c6ba-4322-b2cf-061381bd34fd",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/background-launch/report.json",
+      "sha256": "ce82c059bb2a26f40c35426862cbf8bdc3558a84df4f7ab2a4e200c031e70d86",
+      "metadata": "tmp/activity-reconciliation/ce82c059bb2a26f40c35426862cbf8bdc3558a84df4f7ab2a4e200c031e70d86.json",
+      "record_id": "ca3d4970-5868-47e6-b6b7-5cffb6300396",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/computer-access-ui/report.json",
+      "sha256": "026aafcc9c0badba00fb0e67abd2b2bb1b4c98f2c9c486455e85fcfb019d3432",
+      "metadata": "tmp/activity-reconciliation/026aafcc9c0badba00fb0e67abd2b2bb1b4c98f2c9c486455e85fcfb019d3432.json",
+      "record_id": "ca3d4970-5868-47e6-b6b7-5cffb6300396",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/computer-browser-real/page-controls-probe.json",
+      "sha256": "55d3e59a3189684da2c2147c0afa5f4c675d784d06a4a647f79529464827fc7c",
+      "metadata": "tmp/activity-reconciliation/55d3e59a3189684da2c2147c0afa5f4c675d784d06a4a647f79529464827fc7c.json",
+      "record_id": "ca3d4970-5868-47e6-b6b7-5cffb6300396",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/computer-files-real/report.json",
+      "sha256": "d52c9bd6b89f256aef5690c4ff7beb1947e34e47e2f48c620b68b40888b21571",
+      "metadata": "tmp/activity-reconciliation/d52c9bd6b89f256aef5690c4ff7beb1947e34e47e2f48c620b68b40888b21571.json",
+      "record_id": "ca3d4970-5868-47e6-b6b7-5cffb6300396",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/computer-images-agents-ui/report.json",
+      "sha256": "c650ef72bb8abf57e1701e80187db8ba9682e869f85155a6ea0559136bcc3733",
+      "metadata": "tmp/activity-reconciliation/c650ef72bb8abf57e1701e80187db8ba9682e869f85155a6ea0559136bcc3733.json",
+      "record_id": "ca3d4970-5868-47e6-b6b7-5cffb6300396",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/computer-ui/report.json",
+      "sha256": "44235ed5c6757f166074a5af5733db28e695e900951989b00b90eb73c7178ac3",
+      "metadata": "tmp/activity-reconciliation/44235ed5c6757f166074a5af5733db28e695e900951989b00b90eb73c7178ac3.json",
+      "record_id": "ca3d4970-5868-47e6-b6b7-5cffb6300396",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/sous-catalog/report.json",
+      "sha256": "6fa72fbc2a5308b73515cdb158d85579efe1409de6d48a7602da782a6cddfdd3",
+      "metadata": "tmp/activity-reconciliation/6fa72fbc2a5308b73515cdb158d85579efe1409de6d48a7602da782a6cddfdd3.json",
+      "record_id": "793219db-b792-4b2d-b796-cb71453c6006",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/sous-pipeline/report.json",
+      "sha256": "0563395aca2ed898f93a07b02a2d057b96e90bdf6cabb53d0efadcb19ce3a4fd",
+      "metadata": "tmp/activity-reconciliation/0563395aca2ed898f93a07b02a2d057b96e90bdf6cabb53d0efadcb19ce3a4fd.json",
+      "record_id": "793219db-b792-4b2d-b796-cb71453c6006",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/sous-ui/report.json",
+      "sha256": "2a1118275f9bd889833bba3d76fc754390c3aa169a682ab6b22c1cc34f88032d",
+      "metadata": "tmp/activity-reconciliation/2a1118275f9bd889833bba3d76fc754390c3aa169a682ab6b22c1cc34f88032d.json",
+      "record_id": "793219db-b792-4b2d-b796-cb71453c6006",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/sous-voice/report.json",
+      "sha256": "ccc271847ee3d9abdd3d98d1c8616628c77d00965c9247441683e01c90656fe9",
+      "metadata": "tmp/activity-reconciliation/ccc271847ee3d9abdd3d98d1c8616628c77d00965c9247441683e01c90656fe9.json",
+      "record_id": "793219db-b792-4b2d-b796-cb71453c6006",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/terminal-ui/report.json",
+      "sha256": "9a4125e0facbe05117dc0c13623930b4a6f4d6901bd90709c5ba4ea47141b669",
+      "metadata": "tmp/activity-reconciliation/9a4125e0facbe05117dc0c13623930b4a6f4d6901bd90709c5ba4ea47141b669.json",
+      "record_id": "3d6ceffd-5f7a-45eb-885c-aff780ea4767",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/terminal-app/native-state.json",
+      "sha256": "ee7f092547c46eb9522114ab5153c0acbb63088473fbf066a19aaa91dad7b9d8",
+      "metadata": "tmp/activity-reconciliation/ee7f092547c46eb9522114ab5153c0acbb63088473fbf066a19aaa91dad7b9d8.json",
+      "record_id": "6450d896-dd50-49c2-8a7f-40f480692a92",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/terminal-app/system-native-state.json",
+      "sha256": "621eb762cc2402c6ddffb51aa781a8b7ec795c3377392989fb5edd57fed0fbe8",
+      "metadata": "tmp/activity-reconciliation/621eb762cc2402c6ddffb51aa781a8b7ec795c3377392989fb5edd57fed0fbe8.json",
+      "record_id": "6450d896-dd50-49c2-8a7f-40f480692a92",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/terminal-ide-real/native-20261101T191507.json",
+      "sha256": "faa834f0f686c6239c3e1f62a86246a6351d916217905be4817a0ffbfd484fa0",
+      "metadata": "tmp/activity-reconciliation/faa834f0f686c6239c3e1f62a86246a6351d916217905be4817a0ffbfd484fa0.json",
+      "record_id": "6450d896-dd50-49c2-8a7f-40f480692a92",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/terminal-ide-real/native-20261101T191752.json",
+      "sha256": "bb754283403383246492e27532ba8286a49be284c136a98d18944780cb20f15a",
+      "metadata": "tmp/activity-reconciliation/bb754283403383246492e27532ba8286a49be284c136a98d18944780cb20f15a.json",
+      "record_id": "6450d896-dd50-49c2-8a7f-40f480692a92",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/terminal-ide-real/native-20261101T192139.json",
+      "sha256": "11a51c9a2f535d173896c1d89a522d9753f79f9e290be3feb28078154b6f1546",
+      "metadata": "tmp/activity-reconciliation/11a51c9a2f535d173896c1d89a522d9753f79f9e290be3feb28078154b6f1546.json",
+      "record_id": "6450d896-dd50-49c2-8a7f-40f480692a92",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/terminal-research/native-evidence-20261101-043956.json",
+      "sha256": "e44202c32e310928d3482e48d4f426d6b08ee61325aea9d6f31d2916d17a6a29",
+      "metadata": "tmp/activity-reconciliation/e44202c32e310928d3482e48d4f426d6b08ee61325aea9d6f31d2916d17a6a29.json",
+      "record_id": "6450d896-dd50-49c2-8a7f-40f480692a92",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/probe-2026-11-02T03-18-57-879Z.json",
+      "sha256": "77972b976a9469c50d2e58f8624dcee58ca16ab979a9e63d5e02cf76cadcdf7b",
+      "metadata": "tmp/activity-reconciliation/77972b976a9469c50d2e58f8624dcee58ca16ab979a9e63d5e02cf76cadcdf7b.json",
+      "record_id": "c951b9a7-464b-4128-8cdb-9ab28c00ce75",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/probe-2026-11-02T03-25-27-518Z.json",
+      "sha256": "cbe6701a32eb84c6545a1653e7f123b031a3ede04191036df3932c864ea21663",
+      "metadata": "tmp/activity-reconciliation/cbe6701a32eb84c6545a1653e7f123b031a3ede04191036df3932c864ea21663.json",
+      "record_id": "c951b9a7-464b-4128-8cdb-9ab28c00ce75",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/real-1793589929418.json",
+      "sha256": "4c0c219893680b8279f6acf31831a4e30382b192012465c95e4c93c5ab0f723b",
+      "metadata": "tmp/activity-reconciliation/4c0c219893680b8279f6acf31831a4e30382b192012465c95e4c93c5ab0f723b.json",
+      "record_id": "c951b9a7-464b-4128-8cdb-9ab28c00ce75",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/workspace-translation-continuity/report-baseline-20261102T022601.json",
+      "sha256": "2d329baed08952bf4014cbe5a8ae9f795a9c3c6111f90f266272c54a13d7c288",
+      "metadata": "tmp/activity-reconciliation/2d329baed08952bf4014cbe5a8ae9f795a9c3c6111f90f266272c54a13d7c288.json",
+      "record_id": "c951b9a7-464b-4128-8cdb-9ab28c00ce75",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/workspace-translation-continuity/report-current-20261102T022858.json",
+      "sha256": "bfcbbd72d3e16d5a65ae842e0ad3afe21dbb985c51df2262e98677d0f26706a4",
+      "metadata": "tmp/activity-reconciliation/bfcbbd72d3e16d5a65ae842e0ad3afe21dbb985c51df2262e98677d0f26706a4.json",
+      "record_id": "c951b9a7-464b-4128-8cdb-9ab28c00ce75",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/workspace-translation-continuity/report-current-20261102T023214.json",
+      "sha256": "bfb92c52bca8d9afd5403a0c03456c907cbd3869fdf30d3d2f49bbdb7aca6cd3",
+      "metadata": "tmp/activity-reconciliation/bfb92c52bca8d9afd5403a0c03456c907cbd3869fdf30d3d2f49bbdb7aca6cd3.json",
+      "record_id": "c951b9a7-464b-4128-8cdb-9ab28c00ce75",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/workspace-translation-continuity/report-current-20261102T023415.json",
+      "sha256": "d9721bdff04ab03cfa063d87ba2e5ec7d602cdd26a3df54678deb63bd6b22175",
+      "metadata": "tmp/activity-reconciliation/d9721bdff04ab03cfa063d87ba2e5ec7d602cdd26a3df54678deb63bd6b22175.json",
+      "record_id": "c951b9a7-464b-4128-8cdb-9ab28c00ce75",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/workspace-translation-continuity/report-current-20261102T023947.json",
+      "sha256": "cc1b3853cf2d21bc9f3140ec1d40f7645894fc5f902c59799c141a412e3af865",
+      "metadata": "tmp/activity-reconciliation/cc1b3853cf2d21bc9f3140ec1d40f7645894fc5f902c59799c141a412e3af865.json",
+      "record_id": "c951b9a7-464b-4128-8cdb-9ab28c00ce75",
+      "reported_result": "failed"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/probe-2026-11-02T03-19-58-345Z.json",
+      "sha256": "69590065353cc1fcd684fa787303565e23537a30a025cc45b684563fa90727b6",
+      "metadata": "tmp/activity-reconciliation/69590065353cc1fcd684fa787303565e23537a30a025cc45b684563fa90727b6.json",
+      "record_id": "1109e949-f58d-4bde-a547-5d059e7baeee",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/probe-2026-11-02T03-21-39-130Z.json",
+      "sha256": "77f3b9defbcfd8b2d10f56417571ee6556f54792cb918ceeba1655d4de9a0289",
+      "metadata": "tmp/activity-reconciliation/77f3b9defbcfd8b2d10f56417571ee6556f54792cb918ceeba1655d4de9a0289.json",
+      "record_id": "1109e949-f58d-4bde-a547-5d059e7baeee",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/probe-2026-11-02T03-25-27-893Z.json",
+      "sha256": "0c83b38b4f3a9c0799eb890a6660d2699325dbfcc5186c9aabca720e815a7da1",
+      "metadata": "tmp/activity-reconciliation/0c83b38b4f3a9c0799eb890a6660d2699325dbfcc5186c9aabca720e815a7da1.json",
+      "record_id": "1109e949-f58d-4bde-a547-5d059e7baeee",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/probe-2026-11-02T03-26-39-237Z.json",
+      "sha256": "a4f0824b731105571c92a3b38848727f934936556bbaf03c8798c49457a5d7b7",
+      "metadata": "tmp/activity-reconciliation/a4f0824b731105571c92a3b38848727f934936556bbaf03c8798c49457a5d7b7.json",
+      "record_id": "1109e949-f58d-4bde-a547-5d059e7baeee",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/probe-2026-11-02T03-28-31-945Z.json",
+      "sha256": "25fd371847ac45c2eb6d4db734cbfd87fd49d72ae3338576e020bfcd6287b162",
+      "metadata": "tmp/activity-reconciliation/25fd371847ac45c2eb6d4db734cbfd87fd49d72ae3338576e020bfcd6287b162.json",
+      "record_id": "1109e949-f58d-4bde-a547-5d059e7baeee",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/probe-2026-11-02T04-04-06-446Z.json",
+      "sha256": "4ec205dc629d40e85d9273fcfe10f21b2643466dc8d70cf5a0b0855aa32a4e30",
+      "metadata": "tmp/activity-reconciliation/4ec205dc629d40e85d9273fcfe10f21b2643466dc8d70cf5a0b0855aa32a4e30.json",
+      "record_id": "1109e949-f58d-4bde-a547-5d059e7baeee",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/real-1793590203413.json",
+      "sha256": "082d7810d005d5ff33627963ce25ac8563cd0f3eea7d667b190605da56d7a79e",
+      "metadata": "tmp/activity-reconciliation/082d7810d005d5ff33627963ce25ac8563cd0f3eea7d667b190605da56d7a79e.json",
+      "record_id": "1109e949-f58d-4bde-a547-5d059e7baeee",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/real-1793590304462.json",
+      "sha256": "508a2f488c7739fac67ca160eb1e7370acc1f4ca1bc139bc63469e058b34870e",
+      "metadata": "tmp/activity-reconciliation/508a2f488c7739fac67ca160eb1e7370acc1f4ca1bc139bc63469e058b34870e.json",
+      "record_id": "1109e949-f58d-4bde-a547-5d059e7baeee",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/real-1793591082790.json",
+      "sha256": "be46f501acb067b91fae91a2fd5fd57803861a100488dc54f26136dc865db20a",
+      "metadata": "tmp/activity-reconciliation/be46f501acb067b91fae91a2fd5fd57803861a100488dc54f26136dc865db20a.json",
+      "record_id": "bda247e4-c8ea-4fa7-9137-5d18ff897ec0",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/real-1793591272707.json",
+      "sha256": "11452b0dd3526fa364bbb517525495834fb4ab85c4e9dcece78e5d1c9b1be29d",
+      "metadata": "tmp/activity-reconciliation/11452b0dd3526fa364bbb517525495834fb4ab85c4e9dcece78e5d1c9b1be29d.json",
+      "record_id": "bda247e4-c8ea-4fa7-9137-5d18ff897ec0",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/extension-sync-buffer/real-1793591518883.json",
+      "sha256": "b8740ee141c1d9c20168f6ba8798aa4658b19c6e5da91183896f20ce40d0defb",
+      "metadata": "tmp/activity-reconciliation/b8740ee141c1d9c20168f6ba8798aa4658b19c6e5da91183896f20ce40d0defb.json",
+      "record_id": "bda247e4-c8ea-4fa7-9137-5d18ff897ec0",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/selected-video/probe-1793765801431.json",
+      "sha256": "f6d7a471220393b9b939035d10cd14c937b2c575ea0bd5e14c9350beb8803af5",
+      "metadata": "tmp/activity-reconciliation/f6d7a471220393b9b939035d10cd14c937b2c575ea0bd5e14c9350beb8803af5.json",
+      "record_id": "bda247e4-c8ea-4fa7-9137-5d18ff897ec0",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/selected-video/probe-1793765918711.json",
+      "sha256": "556e47c0b5eb3b51354d9ebb33e3aed228021a4f0f041dd4df813b7249970b76",
+      "metadata": "tmp/activity-reconciliation/556e47c0b5eb3b51354d9ebb33e3aed228021a4f0f041dd4df813b7249970b76.json",
+      "record_id": "bda247e4-c8ea-4fa7-9137-5d18ff897ec0",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-translation-pacing/report-20261102T021011.json",
+      "sha256": "09b58e2ae757d0b7cfe3ead2e468b99d7becb5bab2df9c1bcf8d7ab8448b56df",
+      "metadata": "tmp/activity-reconciliation/09b58e2ae757d0b7cfe3ead2e468b99d7becb5bab2df9c1bcf8d7ab8448b56df.json",
+      "record_id": "bda247e4-c8ea-4fa7-9137-5d18ff897ec0",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-translation-pacing/report-20261102T021116.json",
+      "sha256": "88beb57ea580b64e0add250d12b00222c3879c1acfcb762ed440cfd412c5e930",
+      "metadata": "tmp/activity-reconciliation/88beb57ea580b64e0add250d12b00222c3879c1acfcb762ed440cfd412c5e930.json",
+      "record_id": "bda247e4-c8ea-4fa7-9137-5d18ff897ec0",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-translation-pacing/report-20261102T023327.json",
+      "sha256": "5b43c5388e84f4826d9ad3d89cdb78e679ac8166744009a19ded25f79c8ebde0",
+      "metadata": "tmp/activity-reconciliation/5b43c5388e84f4826d9ad3d89cdb78e679ac8166744009a19ded25f79c8ebde0.json",
+      "record_id": "bda247e4-c8ea-4fa7-9137-5d18ff897ec0",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-translation-pacing/report-20261102T025937.json",
+      "sha256": "085b8f6c7457de326195ef34f2433151fd0356b301054ee31903d9cd85e5dd6d",
+      "metadata": "tmp/activity-reconciliation/085b8f6c7457de326195ef34f2433151fd0356b301054ee31903d9cd85e5dd6d.json",
+      "record_id": "75a1e546-929f-4f5a-9299-f9207f12cc93",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-translation-real/report-20261102T013724.json",
+      "sha256": "cbb92806e6ccda25256ac20fb69e8404bba7160197f8e6d38c6d6a3620266be8",
+      "metadata": "tmp/activity-reconciliation/cbb92806e6ccda25256ac20fb69e8404bba7160197f8e6d38c6d6a3620266be8.json",
+      "record_id": "75a1e546-929f-4f5a-9299-f9207f12cc93",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-translation-real/report-20261102T013908.json",
+      "sha256": "3e309ce00334c9a13dc824ffcdceea99fb6d3fd8d9edd9079033361be2b44cc2",
+      "metadata": "tmp/activity-reconciliation/3e309ce00334c9a13dc824ffcdceea99fb6d3fd8d9edd9079033361be2b44cc2.json",
+      "record_id": "75a1e546-929f-4f5a-9299-f9207f12cc93",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-translation-ui/report.json",
+      "sha256": "1f70927bbecec4265318a0eca1d62b310731e37b679071372280ea163ddb5776",
+      "metadata": "tmp/activity-reconciliation/1f70927bbecec4265318a0eca1d62b310731e37b679071372280ea163ddb5776.json",
+      "record_id": "75a1e546-929f-4f5a-9299-f9207f12cc93",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/youtube-capture-compat/report.json",
+      "sha256": "3d4f18e6cd6e588f7b16b1fb562e54bd9307c5a6d101fc7f8379202133c1b1de",
+      "metadata": "tmp/activity-reconciliation/3d4f18e6cd6e588f7b16b1fb562e54bd9307c5a6d101fc7f8379202133c1b1de.json",
+      "record_id": "75a1e546-929f-4f5a-9299-f9207f12cc93",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/youtube-dubbing/report.json",
+      "sha256": "f06ab7b25df2b81364932baf318881168011586be3cd1d939a3e34876372aa07",
+      "metadata": "tmp/activity-reconciliation/f06ab7b25df2b81364932baf318881168011586be3cd1d939a3e34876372aa07.json",
+      "record_id": "75a1e546-929f-4f5a-9299-f9207f12cc93",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/youtube-simple/report.json",
+      "sha256": "4f8fca5dfd0495d2fe0b897f65b94183fe53c056739a3efce739981238e5d189",
+      "metadata": "tmp/activity-reconciliation/4f8fca5dfd0495d2fe0b897f65b94183fe53c056739a3efce739981238e5d189.json",
+      "record_id": "75a1e546-929f-4f5a-9299-f9207f12cc93",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-voices-native.json",
+      "sha256": "014df53197176d3ea5080b94706867b01d11b19b162c4886ee30403ab1fc2f50",
+      "metadata": "tmp/activity-reconciliation/014df53197176d3ea5080b94706867b01d11b19b162c4886ee30403ab1fc2f50.json",
+      "record_id": "1d563f77-aefc-4d9c-b80d-e2cb6b081305",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/palabra-quality-real/en-es-20261030T054517/report.json",
+      "sha256": "f26a17e5d073db0a2d2ef317021de961120450ba3c88adbf87ff60eb6b6c5e71",
+      "metadata": "tmp/activity-reconciliation/f26a17e5d073db0a2d2ef317021de961120450ba3c88adbf87ff60eb6b6c5e71.json",
+      "record_id": "1d563f77-aefc-4d9c-b80d-e2cb6b081305",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/palabra-quality-real/en-fr-20261030T054650/report.json",
+      "sha256": "e368a421afb6326ae0857f69e3da31e4717bea9bbd5f3c8cc6264093b0733d50",
+      "metadata": "tmp/activity-reconciliation/e368a421afb6326ae0857f69e3da31e4717bea9bbd5f3c8cc6264093b0733d50.json",
+      "record_id": "1d563f77-aefc-4d9c-b80d-e2cb6b081305",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/palabra-quality-real/es-en-20261030T054904/report.json",
+      "sha256": "e21d06c839c48111053791d1b764e7a7d1ff3cc2a2811b1cfa9eb5d1832f78ee",
+      "metadata": "tmp/activity-reconciliation/e21d06c839c48111053791d1b764e7a7d1ff3cc2a2811b1cfa9eb5d1832f78ee.json",
+      "record_id": "1d563f77-aefc-4d9c-b80d-e2cb6b081305",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/workspace-translation-continuity/prosody-real-20261102.json",
+      "sha256": "607e74142e70c291b2439c8fd65230ef04f2c0f09200df7e67b5a321bc2df8c0",
+      "metadata": "tmp/activity-reconciliation/607e74142e70c291b2439c8fd65230ef04f2c0f09200df7e67b5a321bc2df8c0.json",
+      "record_id": "1d563f77-aefc-4d9c-b80d-e2cb6b081305",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/workspace-translation-continuity/report-current-20261102T022748.json",
+      "sha256": "132b596a4662aa870a264568ce5f7b9b172d9661b6c781e0e7756b6f1a33954f",
+      "metadata": "tmp/activity-reconciliation/132b596a4662aa870a264568ce5f7b9b172d9661b6c781e0e7756b6f1a33954f.json",
+      "record_id": "1d563f77-aefc-4d9c-b80d-e2cb6b081305",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/workspace-translation-continuity/report-current-20261102T025050.json",
+      "sha256": "85608f53fc1828f70c38c2ca131375d8889855b30f755ba1c5df8e3a0908e7b7",
+      "metadata": "tmp/activity-reconciliation/85608f53fc1828f70c38c2ca131375d8889855b30f755ba1c5df8e3a0908e7b7.json",
+      "record_id": "1d563f77-aefc-4d9c-b80d-e2cb6b081305",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/workspace-translation-continuity/report-current-20261102T025505.json",
+      "sha256": "3a8d69ea185263056e7cc9f2530ae379aaade71418ad4026d79007a31d83a0b2",
+      "metadata": "tmp/activity-reconciliation/3a8d69ea185263056e7cc9f2530ae379aaade71418ad4026d79007a31d83a0b2.json",
+      "record_id": "1d563f77-aefc-4d9c-b80d-e2cb6b081305",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/youtube-capture-real/report-20261030T045240435Z.json",
+      "sha256": "6cd16a0299d1e7e99a55b1201fa9358b6813028bd2a9d42390eb5481be2c0b77",
+      "metadata": "tmp/activity-reconciliation/6cd16a0299d1e7e99a55b1201fa9358b6813028bd2a9d42390eb5481be2c0b77.json",
+      "record_id": "89485291-1662-40a8-bba2-74839561c3cc",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/youtube-capture-real/report-20261030T051335663Z.json",
+      "sha256": "7249e8337a31b819b86f39b63d75bd21aae2d9138404f75f18f7cfbc3be1d553",
+      "metadata": "tmp/activity-reconciliation/7249e8337a31b819b86f39b63d75bd21aae2d9138404f75f18f7cfbc3be1d553.json",
+      "record_id": "89485291-1662-40a8-bba2-74839561c3cc",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/youtube-dubbing-real/report-20261030T053947665Z.json",
+      "sha256": "f619ddecc2ec75d9c739e137279169b86dfe9ac1a827af047b3577363c7c4589",
+      "metadata": "tmp/activity-reconciliation/f619ddecc2ec75d9c739e137279169b86dfe9ac1a827af047b3577363c7c4589.json",
+      "record_id": "89485291-1662-40a8-bba2-74839561c3cc",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/youtube-dubbing-real/report-20261030T060910759Z.json",
+      "sha256": "f6720aeb446c7bc4b466f59e41d43458e0320866c28f5d6c270a1294764f3118",
+      "metadata": "tmp/activity-reconciliation/f6720aeb446c7bc4b466f59e41d43458e0320866c28f5d6c270a1294764f3118.json",
+      "record_id": "89485291-1662-40a8-bba2-74839561c3cc",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/youtube-dubbing-real/report-20261030T105535999Z.json",
+      "sha256": "22f4e64a10f563917b21513d21e1d82bec46b1e1276e78ffcaee4f579abb51a9",
+      "metadata": "tmp/activity-reconciliation/22f4e64a10f563917b21513d21e1d82bec46b1e1276e78ffcaee4f579abb51a9.json",
+      "record_id": "89485291-1662-40a8-bba2-74839561c3cc",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/youtube-dubbing-real/report-20261030T110327651Z.json",
+      "sha256": "71756c21b4c7728f1959cd9597f7793e1eb80193c1b9d58778177d12b8c52537",
+      "metadata": "tmp/activity-reconciliation/71756c21b4c7728f1959cd9597f7793e1eb80193c1b9d58778177d12b8c52537.json",
+      "record_id": "89485291-1662-40a8-bba2-74839561c3cc",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/youtube-playback-real/report.json",
+      "sha256": "978d69e020faccdd127aaa2c0e11eff2968073d2483a3879bf91ac8523abbc82",
+      "metadata": "tmp/activity-reconciliation/978d69e020faccdd127aaa2c0e11eff2968073d2483a3879bf91ac8523abbc82.json",
+      "record_id": "89485291-1662-40a8-bba2-74839561c3cc",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/desktop-ui/report.json",
+      "sha256": "9c83d552a423a32338f5937379f6c49321fa40d68ba722f2f1941d59fe9d1136",
+      "metadata": "tmp/activity-reconciliation/9c83d552a423a32338f5937379f6c49321fa40d68ba722f2f1941d59fe9d1136.json",
+      "record_id": "f0406124-d7e7-4381-a39b-c13e9a7ee51b",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/island-native/report.json",
+      "sha256": "a73887b82e1156e7b7ccf201d396d0e02e66513bbc8709c7eb90aa789abbab6b",
+      "metadata": "tmp/activity-reconciliation/a73887b82e1156e7b7ccf201d396d0e02e66513bbc8709c7eb90aa789abbab6b.json",
+      "record_id": "f0406124-d7e7-4381-a39b-c13e9a7ee51b",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/island-ui/report.json",
+      "sha256": "441f259a497bf5e90584f89e1c90262ea10bb47215abc3d194eaf2f455d04e09",
+      "metadata": "tmp/activity-reconciliation/441f259a497bf5e90584f89e1c90262ea10bb47215abc3d194eaf2f455d04e09.json",
+      "record_id": "f0406124-d7e7-4381-a39b-c13e9a7ee51b",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/spotify-https-relay/local-report.json",
+      "sha256": "8bdb372690b07cf79b33962c8640168f82c92761d16a74118d8b44cbc1979d1c",
+      "metadata": "tmp/activity-reconciliation/8bdb372690b07cf79b33962c8640168f82c92761d16a74118d8b44cbc1979d1c.json",
+      "record_id": "f0406124-d7e7-4381-a39b-c13e9a7ee51b",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-agents/ui-report.json",
+      "sha256": "fe7fa6ed6895fab907ef9a6d18a89b66ea27c1be8d4131c33043f2e7e5e98536",
+      "metadata": "tmp/activity-reconciliation/fe7fa6ed6895fab907ef9a6d18a89b66ea27c1be8d4131c33043f2e7e5e98536.json",
+      "record_id": "f0406124-d7e7-4381-a39b-c13e9a7ee51b",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-compact-ui/report.json",
+      "sha256": "ed38e727c8a519841be726266fd8c124978832b8ecd40b63dcfbb2673afee5a0",
+      "metadata": "tmp/activity-reconciliation/ed38e727c8a519841be726266fd8c124978832b8ecd40b63dcfbb2673afee5a0.json",
+      "record_id": "f0406124-d7e7-4381-a39b-c13e9a7ee51b",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-premium-ui/report.json",
+      "sha256": "dad249db628dc03f73c157ecc2feaafed4f2ed5738bfda88573971add9896bdf",
+      "metadata": "tmp/activity-reconciliation/dad249db628dc03f73c157ecc2feaafed4f2ed5738bfda88573971add9896bdf.json",
+      "record_id": "f0406124-d7e7-4381-a39b-c13e9a7ee51b",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/workspace-results/ui-report.json",
+      "sha256": "44e628dc00d4f9a97977f5ffc169d8db69eeee3bd1d00801c77e0b4a156b67e4",
+      "metadata": "tmp/activity-reconciliation/44e628dc00d4f9a97977f5ffc169d8db69eeee3bd1d00801c77e0b4a156b67e4.json",
+      "record_id": "f0406124-d7e7-4381-a39b-c13e9a7ee51b",
+      "reported_result": "passed"
+    },
+    {
+      "original": "tmp/spotify-audio-controls/native-audio.json",
+      "sha256": "b5acb0388225dfdc9edd7fb307ee4214d5d23f1ad2fce900bd8b123608277929",
+      "metadata": "tmp/activity-reconciliation/b5acb0388225dfdc9edd7fb307ee4214d5d23f1ad2fce900bd8b123608277929.json",
+      "record_id": "da537785-ae4a-4811-b1fc-4fbe9afe5b7c",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/spotify-audio-controls/native-latest.json",
+      "sha256": "978edfd30ade370a4bed43d43567775fa5854360c5bc56c25e9770a8ca88ea68",
+      "metadata": "tmp/activity-reconciliation/978edfd30ade370a4bed43d43567775fa5854360c5bc56c25e9770a8ca88ea68.json",
+      "record_id": "da537785-ae4a-4811-b1fc-4fbe9afe5b7c",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/spotify-https-relay/native-before-restart.json",
+      "sha256": "eae55e6374646672cd1224ccdee55083166a014dc5639ff0c5d85707834df530",
+      "metadata": "tmp/activity-reconciliation/eae55e6374646672cd1224ccdee55083166a014dc5639ff0c5d85707834df530.json",
+      "record_id": "da537785-ae4a-4811-b1fc-4fbe9afe5b7c",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/spotify-https-relay/native-before-tls-fix.json",
+      "sha256": "6c82b19be2ba42ac26202bb783c050bb8faf2157aa0067de27f6e4e9d592f4ad",
+      "metadata": "tmp/activity-reconciliation/6c82b19be2ba42ac26202bb783c050bb8faf2157aa0067de27f6e4e9d592f4ad.json",
+      "record_id": "da537785-ae4a-4811-b1fc-4fbe9afe5b7c",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/spotify-https-relay/native-released.json",
+      "sha256": "54dbfb720a9989bfa1858e04ada1e3dc61bb0ff26040d3f4c2ecd4b108c50bc6",
+      "metadata": "tmp/activity-reconciliation/54dbfb720a9989bfa1858e04ada1e3dc61bb0ff26040d3f4c2ecd4b108c50bc6.json",
+      "record_id": "da537785-ae4a-4811-b1fc-4fbe9afe5b7c",
+      "reported_result": "pending"
+    },
+    {
+      "original": "tmp/ui-cleanup/native.json",
+      "sha256": "5b6f835574d25c8aaf63d20afb6e3177fe9f4467b66a4ceddad7cbd8a04cedab",
+      "metadata": "tmp/activity-reconciliation/5b6f835574d25c8aaf63d20afb6e3177fe9f4467b66a4ceddad7cbd8a04cedab.json",
+      "record_id": "da537785-ae4a-4811-b1fc-4fbe9afe5b7c",
+      "reported_result": "pending"
+    }
+  ]
+}

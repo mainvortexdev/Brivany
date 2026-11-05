@@ -1,0 +1,14 @@
+{
+  "suite": "activity-ui",
+  "started_at": "2026-10-28T15:48:01.892617+00:00",
+  "finished_at": "2026-10-28T15:48:06.671832+00:00",
+  "duration_seconds": 4.779215,
+  "command": [
+    "node",
+    "tools/check_activity_ui.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"checks\": 10,\n  \"passed\": [\n    \"API-backed ledger and integrity status\",\n    \"evidence SHA, local link and recorded zero cost\",\n    \"type filter and escaped third-party content\",\n    \"empty filtered results\",\n    \"text search\",\n    \"JSON snapshot export\",\n    \"layout fits 320/390/768/1440 px\",\n    \"refresh failure preserves prior results\",\n    \"empty ledger\",\n    \"cursor pagination retains earlier loaded entries\"\n  ],\n  \"external_calls\": 0,\n  \"gpu_seconds\": 0,\n  \"api\": \"simulated\",\n  \"http_mutations\": 0,\n  \"local_api_requests\": 5,\n  \"physical_devices\": false,\n  \"screenshots\": [\n    \"tmp/ui/activity-390.png\",\n    \"tmp/ui/activity-1440.png\"\n  ]\n}\n"
+}

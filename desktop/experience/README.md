@@ -1,0 +1,59 @@
+# Brivany · experiencia de escritorio
+
+Actualización del 30 de octubre: la ventana abre directamente el nuevo chat de
+Melodi, con imágenes y Live. Ajustes se abre sobre el chat; Agentes permite
+revisar resultados en paralelo. Sustituye la portada y el panel de práctica
+descritos en la propuesta inicial de abajo.
+[Entrega y pruebas](../../docs/melodi-chat-imagenes-agentes.md).
+
+Propuesta de interfaz de escritorio a partir de las referencias visuales del usuario.
+El inicio pone a Melodi al frente y organiza los módulos existentes en un menú.
+La barra de título clara incluye arrastre y controles nativos de ventana. El tamaño
+inicial se limita al 90 % del ancho y 86 % de la altura de la pantalla seleccionada,
+con un máximo de 1120 × 760 px; el usuario puede redimensionar o maximizar.
+
+## Iniciar en Windows
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m desktop.experience.launcher
+```
+
+En macOS/Linux, con las dependencias de Python y del motor gráfico instaladas:
+`python -X utf8 -B -m desktop.experience.launcher`. La compatibilidad física y el
+empaquetado de esas plataformas siguen pendientes. Los botones de exportación
+pueden abrir el selector de destino del host para guardar ZIP, SVG o JSON.
+
+El lanzador abre una ventana pywebview y monta el servidor local de la aplicación;
+las vistas de Melodi, Espacios, Human-skills, Práctica, Video, Conexiones y Bitácora
+reutilizan las rutas existentes dentro de un panel del mismo origen. La navegación
+oculta el panel de conversación y respeta el estado `hidden` de cada vista. La
+Bitácora carga páginas anteriores automáticamente hasta mostrar todo el registro
+disponible. Los proyectos y sus servicios permanecen locales.
+
+La capa de ventana selecciona Edge WebView2 en Windows, WKWebView en macOS y GTK
+en Linux. Windows se comprobó en el equipo de desarrollo; macOS y Linux requieren
+sus runtimes nativos y todavía no se han validado en esos sistemas. No es un
+instalador ni declara binarios empaquetados.
+
+Esta carpeta es una propuesta aislada. No modifica el lanzador ni los módulos
+existentes. El módulo de voz conserva sus confirmaciones de micrófono; abrir la
+ventana no inicia captura ni conversación.
+
+## Primera presentación
+
+Desde el inicio, **Abrir Melodi live** abre la interfaz de voz; **Comenzar** inicia
+la escucha y **Terminar** la libera. Práctica, Reunión e Inglés conservan el motor
+Muse → Meta → Cartesia. La interrupción automática requiere que el dispositivo
+confirme cancelación de eco. La respuesta silenciosa no cierra el turno del usuario.
+
+Espacios ofrece biblioteca, capturas/revisión, visor, objetos, distribución,
+historial, variantes, plano, recorridos y carpetas portátiles. Sous incluye
+inventario, recetas, compras, evidencia y voz. Conexiones reúne agenda, Gmail,
+Drive, WhatsApp, redes, solicitudes revisadas, notas y recordatorios. Los enlaces
+de estos módulos conservan la navegación del escritorio. Servicios y APIs muestra
+la presencia de configuración sin devolver credenciales. Las autorizaciones de
+cuentas y la reconstrucción remota se mantienen con su estado real.
+
+La adaptación está comprobada con Edge headless entre 320 × 568 y 1440 × 900;
+esto no certifica toda resolución, lector de pantalla ni hardware de voz. Pruebas
+y límites de esta entrega: `docs/desktop-presentacion.md`.

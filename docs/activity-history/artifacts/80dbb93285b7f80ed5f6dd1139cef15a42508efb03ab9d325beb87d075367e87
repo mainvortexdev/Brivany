@@ -1,0 +1,19 @@
+{
+  "suite": "music-ducking",
+  "started_at": "2026-11-01T03:38:43.501683+00:00",
+  "finished_at": "2026-11-01T03:38:44.012418+00:00",
+  "duration_seconds": 0.510735,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_music_ducking"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "........\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.022s\r\n\r\nOK\r\n"
+}

@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-10-31T12:59:46.297248+00:00",
+  "finished_at": "2026-10-31T12:59:56.494428+00:00",
+  "duration_seconds": 10.19718,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Failure view {\n  panel: 'Música',\n  spotify: { configured: true, connected: true, pending: false },\n  body: {\n    expanded: 'true',\n    sleeping: 'false',\n    surface: 'preview',\n    motion: 'true',\n    translationBusy: 'true',\n    translationFocus: 'true'\n  }\n}\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\ntrue !== false\n\n    at <local-path>\\tools\\check_island_ui.cjs:36:90\n"
+}

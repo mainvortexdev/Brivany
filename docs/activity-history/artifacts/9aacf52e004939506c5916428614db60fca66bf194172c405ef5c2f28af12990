@@ -1,0 +1,36 @@
+{
+  "type": "real_account_and_desktop_read_only",
+  "source": "chat",
+  "physical_iphone": false,
+  "microphone_used": false,
+  "audio_persisted": false,
+  "transcripts_persisted": false,
+  "calls": {
+    "chat": 1,
+    "asr": 0,
+    "tts": 0
+  },
+  "passed": true,
+  "checked_at": "2026-11-02T12:44:49.537848+00:00",
+  "connected_computers": 1,
+  "event_types": [
+    "computer_job",
+    "delta",
+    "done"
+  ],
+  "command_id": "f556c4de-5f6c-425c-b884-fea2b4d26268",
+  "kind": "terminal",
+  "device_id": "59365531-75b3-49d1-a8c5-89712d312d20",
+  "initial_state": "offered",
+  "states": [
+    "running",
+    "succeeded"
+  ],
+  "final_state": "succeeded",
+  "host_external_calls": 1,
+  "result_fields": [
+    "approval_required",
+    "output",
+    "phase"
+  ]
+}

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f7f9"><title>Traducción en vivo · Brivany</title>
+  <link rel="icon" href="/icon.svg"><link rel="stylesheet" href="/translate.css"><link rel="stylesheet" href="/palette.css">
+  <script src="/youtube-source.js" defer></script><script src="/video-file-source.js" defer></script><script src="/dub-tab-capture.js" defer></script><script src="/translate.js" defer></script>
+<link rel="stylesheet" href="/typography.css"></head>
+<body>
+  <header><a class="brand" href="/">brivany<span>.</span></a><nav aria-label="Brivany"><a href="/spaces">Espacios</a><a href="/app">Melodi</a><a href="/dubbing" aria-current="page">Traducción</a></nav></header>
+  <main>
+    <div class="intro"><p class="eyebrow">VOZ · TRADUCCIÓN EN VIVO</p><h1>Más cerca.<br><span>En tu idioma.</span></h1><p>Abre YouTube o un video de tu equipo. Escúchalo en español, inglés o francés.</p></div>
+    <section class="workspace" aria-label="Traducción de video"><div class="source-bar"><label for="source-kind">Origen del video</label><select id="source-kind"><option value="youtube">YouTube</option><option value="file">Archivo de este equipo</option></select></div>
+      <div id="youtube-input" class="link"><label for="youtube-url">TU VIDEO</label><input id="youtube-url" type="url" inputmode="url" autocomplete="off" spellcheck="false" maxlength="2048" placeholder="Pega un enlace de YouTube y pulsa Enter"><span id="video-state">Sin video</span></div>
+      <div id="file-input" class="file-input" hidden><label for="video-file">Abre un video de este equipo</label><input id="video-file" type="file" accept="video/*"><span id="file-name">El archivo permanece en este ordenador.</span></div>
+      <div class="stage"><video id="local-video" playsinline controls preload="metadata" hidden aria-label="Video de este equipo"></video><div id="youtube-player"><div class="empty"><span aria-hidden="true">▷</span><p>Una ventana a otras voces.</p><small>Tu video aparecerá aquí.</small></div></div></div>
+      <div class="toolbar"><div class="actions"><button id="start" class="primary" disabled>▶ Iniciar traducción</button><button id="language" aria-label="Cambiar idioma de traducción">Español ↻</button><button id="stop" class="stop" disabled>■ Detener todo</button></div><span id="session-clock">Hasta que lo detengas</span></div>
+      <p id="status" role="status" aria-live="polite">Preparando conexión local…</p>
+    </section>
+    <div class="below"><section class="caption-panel"><p class="eyebrow">LO QUE ESCUCHAS</p><p id="caption" lang="es">Las palabras traducidas aparecerán aquí.</p><p id="original" class="original"></p></section><aside><p class="eyebrow">TRADUCCIÓN CONTINUA</p><label class="voice-label" for="voice-mode">Voz traducida</label><select id="voice-mode"><option value="auto">Automática por tono</option><option value="masculine" selected>Masculina · Daniel</option><option value="feminine">Femenina · Skylar</option></select><dl><div><dt>Fragmentos traducidos</dt><dd id="segments">0</dd></div><div><dt>Primer audio recibido</dt><dd id="latency">Sin medir</dd></div><div><dt>Voz seleccionada</dt><dd id="voice-style">Por escuchar</dd></div></dl></aside></div>
+    <p id="source-note" class="capture-note">Al iniciar, elige esta pestaña y activa «Compartir audio». El audio se envía a Meta; la traducción la genera Muse Spark de Meta y Cartesia convierte ese texto en voz. La voz traducida sale por los altavoces de este ordenador Windows. Usa Chrome o Edge de escritorio si el navegador integrado no ofrece captura.</p>
+    <footer><span>Muse Voice → Meta Spark → Sonic 3.6</span><span>Sin reintentos automáticos · Coste monetario por verificar</span></footer>
+  </main>
+</body>
+</html>

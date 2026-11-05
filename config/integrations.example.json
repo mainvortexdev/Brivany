@@ -1,0 +1,9 @@
+{
+  "execution_enabled": false,
+  "webhook_enabled": false,
+  "allowed_senders": [],
+  "self_recipient": null,
+  "opted_in_recipients": [],
+  "phone_number_id": null,
+  "project_ids": []
+}

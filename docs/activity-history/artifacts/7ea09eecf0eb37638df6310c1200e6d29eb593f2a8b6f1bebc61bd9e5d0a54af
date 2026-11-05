@@ -1,0 +1,37 @@
+{
+  "scope": "real native Paint reference",
+  "synthetic_only": true,
+  "external_cost_amount": null,
+  "physical_audio_verified": false,
+  "status": "passed",
+  "result": {
+    "localPath": "<local-path>\\tmp\\computer-reference-real\\fixture-388cb126\\workspace\\paint\\Stacy-Paint-2026-10-30T20-52-02-006Z.preview.png",
+    "workingPath": "<local-path>\\tmp\\computer-reference-real\\fixture-388cb126\\workspace\\paint\\Stacy-Paint-2026-10-30T20-52-02-006Z.png",
+    "previewPath": "<local-path>\\tmp\\computer-reference-real\\fixture-388cb126\\workspace\\paint\\Stacy-Paint-2026-10-30T20-52-02-006Z.preview.png",
+    "checkpointPath": "<local-path>\\tmp\\computer-reference-real\\fixture-388cb126\\workspace\\paint\\Stacy-Paint-2026-10-30T20-52-02-006Z.progress.json",
+    "width": 64,
+    "height": 64,
+    "sourceWidth": 64,
+    "sourceHeight": 64,
+    "displayZoom": 100,
+    "colors": 3,
+    "strokes": 192,
+    "recoveries": 0,
+    "method": "paint-native-resolution-tiles",
+    "openedInPaint": true,
+    "windowHandle": "9110172",
+    "durationMs": 17874,
+    "verification": {
+      "success": true,
+      "matchedPixels": 1,
+      "savedPixelMatch": 1,
+      "repairPasses": 0,
+      "method": "saved-paint-pixel-comparison"
+    }
+  },
+  "external_calls": 0,
+  "limits": [
+    "Pixel comparison is against the quantized drawing plan, not artistic quality.",
+    "Only the generated synthetic image was drawn."
+  ]
+}

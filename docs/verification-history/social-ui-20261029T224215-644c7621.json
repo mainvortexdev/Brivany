@@ -1,0 +1,18 @@
+{
+  "suite": "social-ui",
+  "started_at": "2026-10-29T22:42:15.863782+00:00",
+  "finished_at": "2026-10-29T22:42:22.800400+00:00",
+  "duration_seconds": 6.936618,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_social_ui"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Actual Connections UI, shared review/approval/execute, SQLite drafts and HTTP with substituted Meta Graph.\",\r\n  \"checks\": [\r\n    \"opening Connections reads local social state without account requests, drafts, secret writes or publication\",\r\n    \"explicit setup saves allowed targets and declared permissions; credentials clear from inputs and remain absent from displayed state\",\r\n    \"drafts save only explicitly, survive reload, render inert copy and reject stale revisions\",\r\n    \"the shared human-readable review can cancel or confirm exact saved Facebook text; simulated acceptance does not imply visibility\",\r\n    \"Instagram preparation uses a declared JPEG reference without fetching it; publication requires a second review bound to the returned container\",\r\n    \"budget, currency, countries, ages and special category are saved and reviewed; the only campaign action remains PAUSED without active ads or spend\",\r\n    \"an explicit social read strips provider token fields, labels substituted data and never follows pagination automatically\",\r\n    \"drafts and configuration persist while read results and typed secrets do not; unrelated origins cannot request account reads\",\r\n    \"social setup, drafts and shared review fit desktop and narrow screens without page errors or external asset loads\"\r\n  ],\r\n  \"screenshots\": [\r\n    \"tmp/social-ui/social-1440.png\",\r\n    \"tmp/social-ui/social-390.png\"\r\n  ],\r\n  \"post_counts\": {\r\n    \"/api/integrations/settings\": 2,\r\n    \"/api/integrations/credentials\": 1,\r\n    \"/api/integrations/social/drafts\": 4,\r\n    \"/api/integrations/social/proposals\": 5,\r\n    \"/api/integrations/approve\": 4,\r\n    \"/api/integrations/execute\": 4,\r\n    \"/api/integrations/social/read\": 1\r\n  },\r\n  \"checked_at\": \"2026-10-29T22:42:22.460086+00:00\",\r\n  \"external_calls\": 0,\r\n  \"provider_stub_calls\": 6,\r\n  \"private_credential_save_transport\": \"substituted_no_real_env_write\",\r\n  \"real_publications\": 0,\r\n  \"real_ads_created\": 0,\r\n  \"ad_activation_implemented\": false,\r\n  \"persistence_reopened_in_new_service\": true,\r\n  \"limitations\": [\r\n    \"Actual loopback HTTP, Connections shared approval controls, versioned SQLite and browser; Graph HTTP and secret persistence use fixed substitutes.\",\r\n    \"No real account, permission, JPEG bytes/hash/reachability, publication visibility, campaign currency or ad delivery verified.\"\r\n  ]\r\n}\r\n"
+}

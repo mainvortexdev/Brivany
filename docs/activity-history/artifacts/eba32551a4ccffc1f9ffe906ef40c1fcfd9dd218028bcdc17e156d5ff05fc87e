@@ -1,0 +1,9 @@
+{
+  "passed": false,
+  "scope": "real browser getUserMedia, production PCM worklet and one Meta Muse ASR session",
+  "physical_microphone_used": false,
+  "input": "own offline synthetic fixture",
+  "audio_or_transcript_in_report": false,
+  "billing_usd": null,
+  "error": "page.evaluate: Error: No se pudo iniciar Muse. Revisa la clave, la conexión y el acceso al modelo.\n    at socket.onmessage (http://127.0.0.1:63552/live-voice.js:156:48)"
+}

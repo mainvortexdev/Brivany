@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Brivany · Estudio de práctica</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  <link rel="stylesheet" href="/palette.css"><link rel="stylesheet" href="/typography.css"></head>
+  <body>
+    <a class="skip-link" href="#practice">Ir a la práctica</a>
+    <header class="site-header">
+      <a class="brand" href="/app" aria-label="Volver a Melodi"><span class="brand-mark" aria-hidden="true">b.</span><span>brivany</span></a>
+      <div class="header-section"><span class="small-dot" aria-hidden="true"></span>Estudio de práctica</div>
+      <span class="prototype-label">PRIMER HITO <span> / </span> PROTOTIPO</span>
+    </header>
+
+    <main id="practice">
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">HABILIDAD 01 <span aria-hidden="true">—</span> ORATORIA Y CÁMARA</p>
+          <h1 id="page-title">Tu voz,<br><em>con intención.</em></h1>
+          <p class="intro-copy">Una idea que importa. Un minuto para contarla.<br>Practica, observa y vuelve a intentarlo con Melodi.</p>
+        </div>
+        <div class="practice-card">
+          <span class="card-index" aria-hidden="true">01 /</span>
+          <p class="eyebrow">EL EJERCICIO</p>
+          <h2>Presenta una idea<br>en 60–90 segundos.</h2>
+          <p>Cuenta qué propones, dale vida con un ejemplo y termina con una invitación concreta.</p>
+          <span class="draft-label">Guía inicial · pendiente de revisión experta</span>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="Preparar y grabar un intento">
+        <div class="studio">
+          <div class="section-heading"><h2><span class="step-number">01</span> Haz espacio para tu voz</h2><span class="quiet-label" id="capture-label">CÁMARA APAGADA</span></div>
+          <div class="viewfinder" id="viewfinder">
+            <span class="frame-corner top-left" aria-hidden="true"></span><span class="frame-corner top-right" aria-hidden="true"></span><span class="frame-corner bottom-left" aria-hidden="true"></span><span class="frame-corner bottom-right" aria-hidden="true"></span>
+            <video id="preview" playsinline aria-label="Vista previa de tu práctica" hidden></video>
+            <div class="viewfinder-empty" id="preview-empty">
+              <svg viewBox="0 0 80 80" width="80" height="80" aria-hidden="true"><rect x="13" y="25" width="40" height="31" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M53 35L68 27V54L53 46" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="33" cy="40.5" r="8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+              <h3>Este es tu espacio de ensayo.</h3>
+              <p>Activa la cámara cuando estés listo.<br>También puedes practicar solo con audio.</p>
+            </div>
+            <div class="audio-preview" id="audio-preview" hidden><span class="audio-symbol" aria-hidden="true">◉</span><p>Tu voz es el centro.</p><span>Micrófono activo · cámara apagada</span></div>
+            <div class="viewfinder-footer"><span class="recording-indicator" id="recording-indicator"><span aria-hidden="true"></span><span id="recording-state">VISTA PREVIA LOCAL</span></span><output id="timer" aria-label="Tiempo de grabación">00:00</output></div>
+          </div>
+          <audio id="audio-player" controls hidden aria-label="Escuchar tu práctica"></audio>
+          <div class="capture-controls">
+            <div class="capture-buttons">
+              <button class="button button-dark" type="button" id="activate-camera"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="5" width="11" height="10" rx="2"/><path d="M13 8L18 5V15L13 12"/></svg>Activar cámara y micrófono</button>
+              <button class="button button-plain" type="button" id="activate-audio">Solo micrófono</button>
+              <button class="button button-record" type="button" id="record" hidden><span class="record-dot" aria-hidden="true"></span>Grabar intento</button>
+              <button class="button button-stop" type="button" id="stop" hidden><span aria-hidden="true">■</span>Detener</button>
+            </div>
+            <div class="playback-actions" id="playback-actions" hidden><a id="download" class="text-link" download>Guardar grabación</a><button id="discard" class="text-link" type="button">Descartar</button></div>
+          </div>
+          <p class="privacy-note"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="2"/><path d="M5 7V5A3 3 0 0 1 11 5V7"/></svg>La grabación permanece en este navegador. Se pierde al cerrar si no la guardas.</p>
+          <p id="capture-message" class="inline-message" role="status" aria-live="polite"></p>
+        </div>
+
+        <aside class="preparation" aria-labelledby="prepare-title">
+          <div class="section-heading"><h2 id="prepare-title">Antes de empezar</h2><span class="quiet-label">TU ENFOQUE</span></div>
+          <fieldset class="context-picker"><legend>¿Dónde quieres aplicar esta habilidad?</legend><label><input type="radio" name="context" value="camera" checked><span>Frente a cámara</span></label><label><input type="radio" name="context" value="public"><span>En público</span></label></fieldset>
+          <label class="field-label" for="goal">¿Qué quieres que recuerden?</label>
+          <textarea id="goal" rows="3" maxlength="500" placeholder="Por ejemplo: mi proyecto ayuda a las personas a aprender practicando.">Presentar una idea con claridad y terminar con una invitación concreta.</textarea>
+          <div class="cue-sheet"><p class="eyebrow">TRES PUNTOS DE APOYO</p><ol><li><span>Abre una puerta.</span>¿Qué idea quieres compartir?</li><li><span>Hazla tangible.</span>Cuenta un ejemplo que la explique.</li><li><span>Deja una invitación.</span>¿Qué te gustaría que ocurra después?</li></ol></div>
+          <p class="handwritten-note">No necesitas un discurso perfecto.<br>Necesitas un primer intento.</p>
+        </aside>
+      </section>
+
+      <section class="review-workspace" aria-label="Revisar la práctica">
+        <form id="review-form" class="transcript-panel">
+          <div class="section-heading"><h2><span class="step-number">02</span> Escucha lo que dijiste</h2><span class="quiet-label">REFLEXIÓN</span></div>
+          <label class="field-label" for="transcript">Transcripción de tu intento</label>
+          <p class="field-help" id="transcript-help">Pega o escribe tus palabras. En este prototipo, la transcripción es manual; el video y el audio no se analizan.</p>
+          <textarea id="transcript" rows="7" maxlength="10000" aria-describedby="transcript-help" placeholder="Escribe aquí lo que dijiste, incluyendo las pausas o muletillas que quieras revisar…"></textarea>
+          <div class="duration-row"><div><label class="field-label" for="duration">Duración del intento</label><div class="duration-input"><input id="duration" type="number" min="0.1" max="600" step="0.1" inputmode="decimal" placeholder="75"><span>segundos</span></div></div><p id="duration-note" class="field-help">Se completa al grabar, o puedes introducirla manualmente.</p></div>
+          <div class="meta-options" hidden>
+            <label class="checkbox-label"><input id="use-meta" type="checkbox" disabled><span>Recibir sugerencias de Melodi con Meta</span><span class="connection-tag" id="provider-tag">COMPROBANDO</span></label>
+            <p id="provider-note" class="field-help">Comprobando la conexión disponible…</p>
+            <label class="checkbox-label consent" id="consent-label" hidden><input id="consent" type="checkbox"><span>Autorizo enviar esta transcripción y el objetivo a Meta para recibir sugerencias. La grabación permanece local.</span></label>
+          </div>
+          <button class="button button-accent evaluate-button" type="submit" id="evaluate">Revisar mi intento <span aria-hidden="true">↗</span></button>
+          <p id="review-message" class="inline-message" role="status" aria-live="polite"></p>
+        </form>
+
+        <aside class="feedback-panel" aria-labelledby="feedback-title">
+          <div class="section-heading"><h2 id="feedback-title"><span class="melodi-mark" aria-hidden="true">m</span> Tu revisión</h2><span id="feedback-mode" class="quiet-label">SIN EVALUAR</span></div>
+          <div id="feedback-empty" class="feedback-empty"><span class="feedback-quote" aria-hidden="true">“</span><h3>Una mejora.<br>Un nuevo intento.</h3><p>Después de practicar, revisaremos la duración y tus palabras. Las sugerencias te darán un punto de partida para volver a intentarlo.</p><span>Tu progreso empieza con lo que puedes observar.</span></div>
+          <div id="feedback-results" hidden>
+            <div class="metrics" aria-label="Mediciones del intento"><div><span id="metric-duration">—</span><small>segundos</small></div><div><span id="metric-words">—</span><small>palabras</small></div><div><span id="metric-pace">—</span><small>palabras/min</small></div></div>
+            <p class="field-help">El ritmo es una estimación basada en la transcripción y la duración indicadas, no una calificación.</p>
+            <div class="checks-section"><p class="eyebrow">LO QUE PODEMOS COMPROBAR</p><ul id="checks" class="checks-list"></ul></div>
+            <div class="guidance-section"><p class="eyebrow" id="guidance-heading">GUÍA PARA TU PRÓXIMO INTENTO</p><p id="guidance-message"></p><div id="strengths-section" hidden><h3>Puntos de apoyo</h3><ul id="strengths"></ul></div><div id="improvements-section" hidden><h3>Algo para practicar</h3><ul id="improvements"></ul></div><div class="next-exercise"><span>PRÓXIMO INTENTO</span><p id="next-exercise"></p></div><details><summary>Cómo leer esta revisión</summary><ul id="evidence-notes"></ul><p id="provider-detail"></p></details></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="evolution" aria-labelledby="evolution-title"><div><p class="eyebrow">UNA HABILIDAD QUE VA CONTIGO</p><h2 id="evolution-title">Del ensayo a tu mundo.</h2></div><ol><li class="current"><span>01 / AHORA</span><strong>Cámara y micrófono</strong><small>Un espacio para practicar y revisar.</small></li><li><span>02 / PRÓXIMO</span><strong>Práctica móvil</strong><small>El mismo aprendizaje en otro contexto.</small></li><li><span>03 / EVOLUCIÓN</span><strong>Meta Glasses</strong><small>Integración con gafas en diseño.</small></li></ol></section>
+    </main>
+    <footer><span class="footer-brand">brivany</span><p>Aprender también es volver a intentarlo.</p><span>Melodi · Prototipo H1</span></footer>
+  </body>
+</html>

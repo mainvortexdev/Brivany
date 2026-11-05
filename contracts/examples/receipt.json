@@ -1,0 +1,13 @@
+{
+  "workspace_id": "f480ddd6-397a-53c4-9b25-4e34cee84bd6",
+  "session_id": "5ee63234-c9f7-5ec8-bdc8-cdb0532a6422",
+  "receipt_id": "82e0a201-c109-593e-be6a-c9cf79240291",
+  "command_id": "7b286377-9f5e-5e08-b2e0-458945a41d3c",
+  "device_id": "301096ab-6e4d-57dd-a1a2-c367ab0ad7ac",
+  "state": "succeeded",
+  "project_revision_before": "revision-1",
+  "project_revision_after": "revision-1",
+  "observation_id": "3cbffebb-d25d-5574-ba07-af520de9c41f",
+  "recorded_at": "2026-10-27T10:01:02Z",
+  "detail": "Ejemplo de lectura; no se ejecutó ninguna aplicación real"
+}

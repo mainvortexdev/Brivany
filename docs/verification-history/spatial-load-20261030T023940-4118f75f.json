@@ -1,0 +1,15 @@
+{
+  "suite": "spatial-load",
+  "started_at": "2026-10-30T02:39:40.095290+00:00",
+  "finished_at": "2026-10-30T02:39:40.381513+00:00",
+  "duration_seconds": 0.286223,
+  "command": [
+    "node",
+    "--test",
+    "tests/spatial-load.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ bounded reader counts actual chunks with or without a length header (32.5896ms)\n✔ false small length and actual oversized chunks cannot bypass the bound (1.8801ms)\n✔ abort while waiting cancels the reader and never returns a partial file (1.2081ms)\n✔ local artifact SHA must match and environment assets load first (9.9353ms)\nℹ tests 4\nℹ suites 0\nℹ pass 4\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 164.3518\n"
+}

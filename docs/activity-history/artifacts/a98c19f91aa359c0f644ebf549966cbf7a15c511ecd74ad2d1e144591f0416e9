@@ -1,0 +1,19 @@
+{
+  "suite": "computer-images-agents-ui",
+  "started_at": "2026-10-30T21:11:07.165548+00:00",
+  "finished_at": "2026-10-30T21:11:41.640458+00:00",
+  "duration_seconds": 34.47491,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--images-agents"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.agent-monitor li').filter({ hasText: 'Agente espacial' }).getByText('Listo para revisar') to be visible\u001b[22m\n\u001b[2m    55 × locator resolved to hidden <strong>Agente espacial · Listo para revisar</strong>\u001b[22m\n\n    at <local-path>\\tools\\check_computer_images_agents_ui.cjs:21:125\n"
+}

@@ -1,0 +1,75 @@
+# WorkSpace: traducción y controles simplificados
+
+31 de octubre de 2026, hora de La Paz. Cambio solicitado sobre la aplicación de
+escritorio; no se vuelve a ofrecer una edición de navegador.
+
+## Implementación
+
+WorkSpace conserva tres acciones de texto: **Traducir**, **Música** y **Abrir app**.
+Se retiran la hora y los accesos Pantalla, Espacios, Skills, Video, Conexiones,
+Más y Ajustes de esta barra. Los módulos de la aplicación principal se conservan.
+Abrir app invoca el retorno a la ventana principal, sin desplegar otro panel.
+
+Traducir agrupa **Seleccionar área**, **Traducir video** y el interruptor de
+detección de otro idioma. La selección abre el selector existente en modo de
+traducción, sin la acción Explicar. Tras seleccionar, se utiliza el flujo de
+referencia visual y traducción del chat ya implementado. Traducir video abre el
+módulo existente de video y traducción de la app. La captura de audio conserva
+sus controles de aceptación, finalización y resultado. Se elimina el párrafo
+técnico sobre Muse y el búfer, así como los encabezados ornamentales del panel y
+de vinculación musical. No se enciende captura al abrir el panel.
+
+Se eliminan los contornos y sombras de foco de los botones. El foco por teclado
+conserva subrayado en las etiquetas y énfasis del trazo en los SVG. Los campos de
+texto mantienen su tratamiento de foco. El chat retira el símbolo de tres barras
+y «Estoy contigo» tanto del HTML inicial como del estado restaurado por JavaScript.
+
+Se unifican los controles indicados con SVG locales de trazo redondeado:
+WorkSpace, nueva conversación, contraer/expandir menú, adjuntar imagen/video,
+detener, cerrar y controles de ventana. Conservan nombres accesibles y no usan
+caracteres tipográficos dependientes de la fuente como iconos. No se descargan
+iconos ni se modifica el logo `brivany.` elegido por el usuario.
+
+## Comprobación
+
+- `work`: 28 pruebas locales, incluido el acceso al selector en modo traducción,
+  rechazo de modo inválido y ausencia de captura de audio en ese recorrido. Las
+  ventanas y la instantánea de pantalla están sustituidas en esta suite.
+- `computer-images-agents-ui`: pasa chat limpio, iconos SVG y foco sin contorno,
+  referencias, revisión de agentes, ajustes y chat live con proveedores
+  sustituidos. Comprueba visibilidad del micrófono y ausencia de desbordamiento
+  en siete tamaños, incluido 320 px de ancho. No prueba hardware de audio.
+- `island-ui`: pasa las tres herramientas, Abrir app, acceso a traducción de
+  video y selector real de región con imagen y puente nativo sintéticos. Verifica
+  apertura por intención, cambio rápido de panel y cierre tolerante, foco sin
+  contorno, ocho anchos de barra, cinco tamaños de panel y el resultado de audio
+  a 280 × 240 px. Conserva comprobaciones sustituidas de música, letras, ondas y
+  animación. No acredita una nueva traducción con proveedores reales.
+
+Los primeros lanzamientos de las suites UI no encontraron Playwright; se usó
+después la instalación ya disponible en el runtime, sin instalar dependencias.
+Se corrigieron dos expectativas de prueba que aún buscaban controles retirados.
+La prueba responsive también encontró una salida real del personaje con la zona
+central reducida a 48 px; se restableció su mínimo de 64 px y pasó la repetición.
+Estos fallos se conservan en los registros anteriores.
+
+Las suites UI bloquearon llamadas externas y usaron datos sintéticos. Antes del
+reinicio de la app se consultó realmente Spotify para preservar una escucha en
+curso: no había reproducción activa. El tráfico externo de fondo de la app no
+se midió. No se enviaron mensajes ni se modificaron cuentas o permisos.
+
+Evidencia:
+
+- `tmp/verification/work-20261101T030431-97bf5ac6.json`
+- `tmp/verification/computer-images-agents-ui-20261101T030431-de571146.json`
+- `tmp/verification/island-ui-20261101T030856-a5fd1a4a.json`
+- `tmp/computer-images-agents-ui/clean-chat.png` (render con servicios sustituidos)
+- `tmp/workspace-compact-ui/premium-screen.png` (panel con puente sustituido)
+- `tmp/ui-cleanup/toolstrip-final-runtime.json` y
+  `tmp/ui-cleanup/toolstrip-final-windows.json`: proceso real reiniciado, bandeja
+  y WorkSpace activos, barra nativa de 1280 × 40 px y reserva superior de 40 px.
+  Las rutas de navegador comprobadas continúan retiradas. Estos metadatos no
+  equivalen a una captura visual nativa ni a una traducción con proveedor real.
+
+El objetivo general de control del ordenador permanece pausado; esta revisión no
+lo declara completado ni amplía su alcance.

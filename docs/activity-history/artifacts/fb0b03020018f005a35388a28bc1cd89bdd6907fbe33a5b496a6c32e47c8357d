@@ -1,0 +1,226 @@
+# Brivany · Plan de la plataforma espacial
+
+Actualizado el 28 de octubre de 2026. Este plan sustituye la secuencia de prioridades de `docs/08-plan.md`; la voz de Melodi y human-skills son la base reutilizable.
+
+**Dirección vigente:** continuar la checklist con todo lo que se pueda implementar y comprobar localmente, dejando pendiente la intervención del usuario. La parada anterior en el primer visor queda superada por esta autorización. Cuentas, claves, acceso a pesos, GPU real y pruebas pagadas siguen separados en [accesos pendientes](docs/30-accesos-pendientes.md). El objetivo de voz conserva su pausa; su acceso real se retomará después.
+
+**Brivany convierte espacios reales en mundos 3D interactivos donde Melodi ayuda a explorar, diseñar y aprender a usar lo que nos rodea.**
+
+La primera demostración objetivo es una habitación capturada con un móvil: recorrerla, seleccionar hasta tres objetos, moverlos con colisiones y pedir a Melodi una explicación o una skill vinculada a un objeto y a sus fuentes. La fidelidad visual, la precisión de medidas y la física se evaluarán por separado. El producto comienza en web para Windows, macOS, iPhone y Android; Meta Glasses y robótica se incorporan tras validar las capacidades necesarias.
+
+`[x]` significa implementado o documentado y comprobado dentro del alcance indicado. `[ ]` significa pendiente. Los hitos expresan dependencias, sin fechas de entrega ni créditos del evento asumidos.
+
+## Secuencia y comienzo del frontend
+
+| Hito | Entrega | Puerta para avanzar |
+|---|---|---|
+| S0 | Alcance y selección técnica | Roles, licencias y límites identificados |
+| S1 | Paquete de captura trazable | Video → fotogramas, manifiesto y plan sin inferencia |
+| S2 | Infraestructura Modal y diseño de experiencia | Acceso a pesos, presupuesto y trabajo cancelable; wireframes del nuevo frontend |
+| S3 | Un objeto reconstruido y primer visor | Artefacto 3D válido con procedencia; visor funcional sobre el contrato de escena |
+| S4 | Reconstrucción de habitación | Geometría y cámaras consistentes; revisión de cobertura y escala |
+| S5 | Experiencia espacial integrada | Captura, trabajos, visor, edición y Melodi usables en escritorio y móvil |
+| S6 | Interacciones físicas | Colisiones y parámetros explícitos, escala comprobada y simulación estable |
+| S7 | Objetos, manuales y human-skills | Identidad verificable y ayuda respaldada por fuentes |
+| S8 | Herramientas inmobiliarias y operación | Presentación compartible, permisos, conservación y costes controlados |
+| S9 | Traducción de video en vivo y nuevas superficies | Flujo incremental medido; adaptadores de gafas y robótica evaluados por separado |
+| S10 | Demo y validación final | Recorrido reproducible con evidencia de utilidad, límites, latencia y consumo |
+
+**El diseño del nuevo frontend comienza en S2**, en paralelo a la preparación de Modal. **La implementación del visor empieza en S3** al disponer de un contrato y un artefacto válidos; podrá usar una escena de prueba identificada mientras se conecta la reconstrucción. La integración completa de captura y edición llega en S5. La bitácora local se implementa desde ahora como herramienta de seguimiento, sin esperar al visor.
+
+## S0 · Dirección y decisiones
+
+- [x] Priorizar inmobiliarias y arquitectos, conservando voz y human-skills.
+- [x] Definir reconstrucción visual, objetos editables y simulación como componentes distintos.
+- [x] Revisar candidatos Meta: SAM 3.1 para máscaras, SAM 3D Objects para objetos y VGGT-1B-Commercial para geometría multivista.
+- [x] Identificar restricciones de licencia y distinguir pesos comerciales de variantes de investigación.
+- [x] Reservar Spaik Iris como proyecto pendiente con arquitectura por aportar por el usuario.
+- [ ] Confirmar condiciones, fecha de entrega y criterios del hackatón en su fuente oficial.
+- [ ] Solicitar y confirmar créditos Modal y el saldo utilizable; fijar presupuesto monetario por trabajo y total.
+- [ ] Elegir una habitación y tres objetos de la primera demo, además del móvil disponible.
+
+## S1 · Primera tarea: captura y contrato espacial
+
+- [x] Crear contratos estrictos para captura, plan de reconstrucción y escena.
+- [x] Registrar hashes SHA-256 de video y fotogramas, tiempos de muestreo solicitado y dimensiones.
+- [x] Preparar MP4 de hasta 60 s y 25 MiB, con 2–8 fotogramas JPEG y lado máximo de 1280 px.
+- [x] Generar manifiesto, preflight, plan declarativo para Modal y ZIP sin el video original.
+- [x] Distinguir referencia de longitud declarada de geometría métrica verificada.
+- [x] Registrar duplicados exactos y dejar revisión de calidad y cobertura pendiente.
+- [x] Validar referencias entre objetos, artefactos, fotogramas y propiedades físicas.
+- [x] Comprobar contratos y empaquetado con pruebas locales y decodificación FFmpeg de una muestra sintética de nueve segundos.
+- [ ] Ensayar una captura real de habitación; la muestra sintética solo comprueba preparación del paquete.
+- [x] Añadir señales locales de luminancia, exposición, nitidez orientativa y cambio de píxeles; conservar duplicados y revisión pendiente. Comprobado con imágenes y video sintéticos.
+- [x] Resolver seek vacío en clips de un fotograma con un único fallback local explícito, registrando sus límites; no verifica timestamps reales ni cobertura.
+- [ ] Seleccionar vistas por solapamiento geométrico, movimiento de cámara, cobertura y orientación; las señales actuales no certifican captura suficiente.
+- [x] Añadir captura optativa solo de video desde la cámara, vista previa, límites y parada/liberación de tracks; MP4 según soporte del navegador. Recorrido comprobado con cámara y grabador sustituidos, sin hardware real.
+- [ ] Validar captura guiada en móviles físicos e incorporar evaluación de cobertura, profundidad y calibración del dispositivo cuando existan.
+
+La tarea implementada está en [contratos](contracts/spatial.py), [preparación](services/spatial/capture.py) y [CLI](tools/prepare_spatial_capture.py). El estado producido es `prepared_not_reconstructed`: no existe aún una escena reconstruida ni un worker GPU desplegado. La interfaz de Espacios ya permite preparar el paquete y revisar sus seis fotogramas localmente.
+
+## S2 · Modal, almacenamiento y diseño
+
+- [ ] Configurar cuenta, SDK autenticado y secretos de Modal; acceder a checkpoints y aceptar licencias. Separado para el usuario en [accesos pendientes](docs/30-accesos-pendientes.md).
+- [x] Fijar versión/hash del SDK y commits/hashes de fuentes de modelos en un lock, sin descargar pesos.
+- [ ] Completar hashes de checkpoints, digest de imagen y lock de dependencias CUDA, y comprobar el build real.
+- [x] Preparar factory Modal y runner específico SAM3D con dispatch desactivado; L40S candidata, entradas revisadas y GLB acotado. No construido ni desplegado.
+- [x] Separar campos de verificación de pesos/proceso, descarga y arranque; los tiempos no observados y la factura quedan desconocidos.
+- [x] Declarar mínimos cero, máximo uno, buffer cero y retries de aplicación cero en el factory; aplicación real pendiente de despliegue. No garantiza ausencia de rescheduling del proveedor.
+- [x] Implementar cola local de un worker con estados persistentes, progreso, cancelación cooperativa, timeout, recuperación y limpieza; sin reintentos.
+- [x] Implementar presupuesto/reservas atómicas locales, límites, conciliación y bloqueo de consumo desconocido. Configuración sin tarifa/saldo inventados y sin habilitar dispatch remoto.
+- [ ] Conectar reserva, autorización, idempotencia y cancelación remotas al ejecutar el primer trabajo Modal y medir consumo real.
+- [x] Conectar paquete revisado, identidad persistente y presupuesto en un orquestador local probado con transporte sustituto; conservar consumo desconocido y cancelación cooperativa entre instancias sin replay.
+- [ ] Implementar y validar el adaptador remoto real; el CLI actual rechaza submit sin enviarlo a Modal, incluso con `--execute`.
+- [x] Crear caché local verificada por hashes/versión y claves de caché del worker por entrada, parámetros y versión. El volumen real de pesos sigue pendiente.
+- [x] Guardar artefactos privados locales con enlaces firmados de 15 minutos; eliminar video temporal tras preparación/cancelación. Las capturas preparadas permanecen locales; retención y borrado remotos pendientes.
+- [x] Diseñar e implementar biblioteca, entrada de captura, revisión de fotogramas, estado de trabajo y visor.
+- [x] Mantener blanco, negro, grises y azul; escena dominante y detalle progresivo.
+
+El contrato declara seis fotogramas, hasta tres objetos y 180 segundos GPU para la primera prueba propuesta. El runtime preparado limita el proceso y el factory declara ese timeout, **sin ejecución GPU que lo valide y sin promesa de coste total**. Imagen, pesos y presupuesto incompletos bloquean la ejecución remota. La primera inferencia real se limitará a un solo objeto para resolver compatibilidad, salida y coste. [Infraestructura](docs/31-infraestructura-y-visor.md).
+
+## S3 · Un objeto y primer visor
+
+- [x] Implementar selección manual de hasta tres objetos, etiquetas corregibles, máscara rectangular binaria, revisión explícita y hashes del fotograma/máscara. No ejecuta segmentación Meta.
+- [x] Preparar entrada local de un objeto como PNG, máscara y procedencia; no es dispatch ni reconstrucción.
+- [ ] Seleccionar y revisar un objeto real de la captura del usuario; evaluar si la máscara manual basta o necesita segmentación precisa.
+- [ ] Ejecutar una reconstrucción acotada SAM 3D Objects en Modal.
+- [ ] Registrar parámetros, versión, duración, consumo y errores sin reintentos invisibles.
+- [ ] Convertir la salida a un artefacto admitido por el visor; comprobar orientación, transformaciones, texturas y hash.
+- [ ] Distinguir superficies observadas y reconstruidas por inferencia, incluyendo partes ocultas.
+- [x] Implementar visor GLB local: orbitar, acercar, desplazar cámara, seleccionar, inspeccionar, enfocar y restablecer vista; comprobado con geometría procedural identificada.
+- [x] Presentar procedencia generada, limitaciones y escala no verificada junto a los objetos; falta recibir resultados inferidos reales.
+- [ ] Comparar el resultado con imágenes originales antes de reconstruir más objetos.
+
+## S4 · Habitación y composición de escena
+
+- [ ] Estimar cámaras, profundidad y correspondencias con el checkpoint comercial seleccionado.
+- [ ] Alinear vistas, revisar errores de reproyección y refinar cuando la evidencia lo justifique.
+- [ ] Crear fondo visual del cuarto y geometría de suelo, paredes y aperturas necesarias.
+- [ ] Separar instancias de objetos y evitar duplicarlos en el fondo al moverlos.
+- [ ] Representar huecos y zonas inferidas; permitir revisar o recapturar áreas insuficientes.
+- [ ] Comprobar escala con longitudes medidas y registrar error, método y persona o sensor que la verificó.
+- [ ] Definir límites de polígonos, texturas y representación visual según dispositivo.
+- [ ] Guardar versiones del espacio y asociación con las capturas que las originaron.
+
+## S5 · Aplicación espacial
+
+- [x] Construir biblioteca local, entrada desde archivo MP4 y captura de cámara optativa según soporte MP4, responsive. Guía por cobertura y validación de móvil físico siguen pendientes.
+- [x] Añadir revisión local de captura, selección rectangular de objetos y referencia de longitud declarada; escala sin verificar.
+- [x] Mostrar progreso, cancelación y estados de preparación local; recuperación de trabajo interrumpido sin reintentar.
+- [x] Integrar edición de la demo: seleccionar, mover/girar con ejes o posición numérica, persistir con revisión y restaurar distribución.
+- [x] Añadir deshacer/rehacer persistente de hasta cien estados, revisión monotónica y restauración deshacible; comprobado en escena procedural.
+- [ ] Integrar una habitación reconstruida real con el historial y la edición.
+- [ ] Conectar la voz existente de Melodi al objeto seleccionado y a comandos de escena con acciones acotadas.
+- [ ] Diseñar confirmaciones solo para acciones que realmente lo requieran, como borrar un espacio.
+- [x] Añadir controles del visor por ratón/táctiles, teclado, foco visible y lista/inspector textual sin activar voz. Prueba de dispositivos físicos pendiente.
+- [x] Acotar cargas GLB, evitar render redundante en reposo y recuperar la escena guardada tras un evento simulado de pérdida de contexto, desactivando antes la manipulación.
+- [ ] Medir memoria GPU, carga progresiva, rendimiento y pérdida real de contexto gráfico en equipos modestos y dispositivos físicos.
+- [ ] Verificar el flujo en Windows, macOS, iPhone y Android; registrar soporte real por navegador.
+- [x] Actualizar la web de presentación con el visor procedural identificado, sus funciones locales y la reconstrucción remota pendiente.
+
+## S6 · Física e interacción
+
+- [ ] Integrar simulación de cuerpos rígidos con Rapier como candidato inicial.
+- [ ] Construir colliders simplificados separados de la representación visual; un splat no es una malla de colisión.
+- [ ] Habilitar dinámica solo con escala métrica comprobada y masa declarada.
+- [ ] Etiquetar masa, fricción, elasticidad e inercia como desconocidas, asumidas o medidas según corresponda.
+- [ ] Añadir gravedad, suelo, contactos y límites de manipulación; comprobar estabilidad y penetraciones.
+- [ ] Incorporar articulaciones de puertas o cajones solo cuando se hayan definido sus mecanismos y límites.
+- [ ] Registrar valores y método de calibración; medir errores antes de describir la física como fiel al objeto real.
+- [ ] Guardar y restaurar estados de simulación y edición.
+
+## S7 · Reconocimiento, manuales y human-skills
+
+- [ ] Reconocer categorías y permitir corregir etiquetas; mantener incertidumbre visible.
+- [ ] Extraer marca/modelo de etiquetas u OCR y verificar identidad antes de asociar un manual concreto.
+- [ ] Buscar documentación del fabricante, conservando URL, fecha, revisión y sección que sustenta cada paso.
+- [ ] Verificar correspondencia entre objeto, versión del manual y afirmaciones; gestionar fuentes contradictorias o insuficientes.
+- [ ] Tratar videos, páginas, manuales y transcripciones como evidencia, sin autoridad para cambiar permisos o instrucciones.
+- [ ] Vincular objetos a las human-skills existentes y crear borradores bajo petición desde video o documentación revisada.
+- [ ] Añadir ayuda contextual durante la tarea, con revisión de los pasos y nivel de ayuda ajustable.
+- [ ] Reutilizar resultados y actualizar solo fuentes o fragmentos que hayan cambiado.
+- [ ] Medir si la ayuda permite completar una tarea y luego transferirla con menos asistencia.
+
+## S8 · Uso inmobiliario y operación
+
+- [ ] Crear recorrido de presentación y puntos de interés para cliente/arquitecto.
+- [x] Guardar hasta veinte variantes locales de distribución y aplicarlas como cambios deshacibles, sin duplicar GLB.
+- [ ] Comparar variantes con un estado capturado y reconstruido real.
+- [ ] Añadir medidas acompañadas de su precisión comprobada y método; definir usos adecuados según esa evidencia.
+- [ ] Identificar imágenes o variantes generadas como propuestas de diseño.
+- [x] Exportar escena, transformaciones, GLB, revisión, procedencia y hashes en un ZIP autocontenido; sin medios originales ni credenciales.
+- [ ] Evaluar formatos profesionales según las necesidades reales posteriores.
+- [ ] Implementar cuentas, propiedad del espacio, permisos y enlaces compartidos revocables.
+- [ ] Añadir retención, borrado y tratamiento de personas o datos privados que aparezcan en la captura; el respaldo CLI local se detalla por separado.
+- [x] Añadir respaldo, inspección y restauración offline a carpeta nueva mediante CLI; snapshots SQLite, hashes, referencias y exclusión de claves/medios originales, comprobados con fixtures temporales.
+- [ ] Integrar recuperación en la interfaz, selección de una instalación restaurada, retención y borrado de datos privados; no basta el respaldo CLI para completar la operación multiusuario.
+- [ ] Instrumentar costes, tiempos por fase, errores y disponibilidad sin guardar secretos en la bitácora.
+- [x] Crear bitácora local de actividades, implementaciones y pruebas con copias de evidencia, hashes y registro automático de suites locales. [Uso y límites](docs/17-bitacora.md).
+
+## S9 · Traducción en vivo, Meta Glasses y robótica
+
+- [x] Implementar primera ruta de voz a voz: video local → PCM → API dedicada → subtítulos y audio, con límite de sesión, cancelación y prueba simulada.
+- [x] Añadir configuración local de clave independiente de Meta y ensayo real acotado preparado; objetivo ≤500 ms visible como no verificado.
+- [x] Definir primera fuente: MP4 local; Palabra ES↔EN y ruta Meta modular inicial EN→ES.
+- [x] Conectar Muse incremental → cláusulas estables → M2M100 Meta → subtítulos provisionales/finales y correcciones por segmento.
+- [x] Preparar candidato nativo Google Gemini Live Translate con credencial separada, sin usarlo automáticamente al abrir la página.
+- [x] Conectar OpenAI Translate al selector, formulario privado y relay con frames de 200 ms, salida acotada y prueba integral simulada. [Acceso real pendiente](docs/28-openai-traduccion-continua.md).
+- [ ] Configurar acceso API a un siguiente motor de emisión continua y medir una sesión real de dos frases; OpenAI no tenía clave local al comprobarse.
+- [x] Guardar la clave Google y comprobar acceso con una única muestra real: primer audio a 3171 ms.
+- [x] Corregir la espera de fin de Gemini con cierre local acotado; ensayo funcional con primer PCM a 3390 ms. No confirma flush del proveedor.
+- [ ] Validar integralidad, calidad y retraso respecto al contenido; el usuario precisó un máximo de **500 ms de retraso audible**, aún sin verificar.
+- [x] Detectar final de frase omitido en la muestra sintética y probar 2 s de silencio final optativo; la comparación textual concreta conserva «dos ventanas». [Evidencia](docs/25-integridad-del-doblaje.md).
+- [ ] Añadir alineación temporal semántica de subtítulos y voz con el video y validarla en contenido hablado.
+- [x] Añadir voz traducida opcional, volumen original independiente y cola de audio acotada.
+- [x] Gestionar pausa, búsqueda, cambio de idioma y cancelación sin publicar resultados de una sesión anterior; reinicio explícito, sin reconexión automática.
+- [x] Añadir medición de energía de ambas voces en el mismo reloj, distinguir silencio final y verificar una sesión real de interfaz con Palabra: 2579 ms de inicio a inicio y 1099 ms desde fin de energía original; estimaciones, sin loopback físico. [Evidencia](docs/26-retraso-audible.md).
+- [x] Correlacionar partes de Palabra con sus marcas de entrada y energía PCM, señalar cobertura parcial y ensayar dos frases sintéticas con pausa de 260 ms. La voz comenzó tras el final del habla; 1 de 2 partes correlacionadas y máximo estimado observado de 3583 ms. [Método y límites](docs/27-doblaje-por-fragmentos.md).
+- [x] Preparar revisión optativa con PCM y traza de las fixtures sintéticas aprobadas, preflight de origen y pruebas de conservación/rechazo sin repetir proveedor. [Evidencia](docs/29-revision-audio-sintetico.md).
+- [ ] Completar medición de salida con alcance adecuado y revisión del contenido correspondiente; el host actual no acredita loopback aislado y guardarlo como WAV no equivale a medir sonido al oído.
+- [ ] Medir retraso del subtítulo y de la voz por fragmentos correspondientes, precisión y estabilidad; lograr y verificar el objetivo audible de 500 ms.
+- [ ] Controlar coste por minuto, segmentos duplicados y caché; comprobar idiomas y modelos habilitados antes de elegir proveedor.
+- [ ] Validar capturas y reproducción por navegador; el soporte de audio compartido no se presupone en todos los móviles.
+- [ ] Elegir hardware y SDK de Meta Glasses; probar captura, controles y salida en el dispositivo real.
+- [ ] Evaluar exportación de escenas a MuJoCo con parámetros, articulaciones y formatos apropiados para un gemelo de simulación.
+- [ ] Validar simulación y diferencias respecto al mundo real antes de cualquier conexión a actuadores.
+
+Palabra completó dos muestras sintéticas reales: primer audio a 3110 y 2906 ms.
+Meta modular completó otra EN→ES: primer audio a 5937 ms, petición MT de 2907 ms
+y TTS hasta primer PCM de 562 ms. Las muestras no constituyen una comparación
+controlada. El criterio vigente es 500 ms de retraso audible y sigue **sin verificar**;
+el ensayo posterior en navegador excede esa referencia incluso usando el final
+de energía original. [Medición vigente](docs/26-retraso-audible.md),
+[integración y límites](docs/18-traduccion-video-live.md),
+[ruta modular y evidencia](docs/22-traduccion-modular-meta.md). ElevenLabs conserva
+su adaptador preparado; crear su clave y comprobar acceso Enterprise siguen
+pendientes del control de navegador deshabilitado. Fuentes externas en vivo,
+hardware Meta Glasses y robótica son extensiones posteriores.
+
+## S10 · Demo y criterios de entrega
+
+- [ ] Reproducir captura → reconstrucción → revisión → interacción → ayuda de Melodi con un espacio real.
+- [ ] Documentar cobertura, fidelidad comparada, error de escala, fallos de colisión y límites conocidos.
+- [ ] Medir tiempo total, arranque en frío, inferencia, descarga, carga del visor y respuesta de ayuda.
+- [ ] Conservar consumo y presupuesto real de la muestra; repetir pruebas pagadas solo ante una decisión o fallo que lo justifique.
+- [ ] Comprobar errores relevantes: captura insuficiente, máscara incorrecta, falta de memoria, timeout y pérdida de conexión.
+- [ ] Preparar una escena precalculada como respaldo claramente identificada; distinguirla de la ejecución en vivo.
+- [ ] Registrar comandos, resultados y artefactos verificables en la bitácora.
+- [ ] Ensayar presentación y entrega según requisitos oficiales confirmados del hackatón.
+
+## Spaik Iris · Pendiente
+
+- [x] Reservar el nombre y la intención de un modelo propio de generación de imágenes.
+- [ ] Recibir y documentar la arquitectura que el usuario tiene en mente.
+- [ ] Definir problema, datos y derechos, evaluación, presupuesto y estrategia de entrenamiento después de esa definición.
+
+No se ha diseñado, entrenado ni conectado Spaik Iris. [Nota de alcance](docs/16-spaik-iris-pendiente.md).
+
+## Evidencia y siguiente tarea
+
+La base incluye voz live, human-skills, preparación espacial y biblioteca/visor 3D funcionales con demostración procedural. Hay cola, almacenamiento, caché, presupuesto local y runner/factory Modal preparados. La reconstrucción real, el build CUDA, el despliegue Modal y la simulación física siguen pendientes. Las pruebas de captura usan videos sintéticos y las del visor GLB generados; no acreditan una habitación reconstruida.
+
+La continuación local se centra en revisión de captura, selección manual trazable de objetos, historial de edición, variantes y exportación. Cuando estén disponibles [los accesos](docs/30-accesos-pendientes.md), pesos y presupuesto, se podrá probar un solo objeto real con el worker. El objetivo de voz permanece en pausa. La [primera entrega](docs/31-infraestructura-y-visor.md) conserva su alcance histórico; el avance posterior se documentará por separado.
+
+[Revisión y edición implementadas, métodos y límites](docs/32-revision-y-edicion-espacial.md). Las funciones locales adicionales no marcan como terminadas la reconstrucción real, la física, el reconocimiento automático o el soporte de hardware físico.
+
+[Orquestación local, presupuesto y recuperación sin reejecución](docs/33-orquestacion-local.md). El transporte sustituto no prueba el comportamiento de Modal ni el gasto real.

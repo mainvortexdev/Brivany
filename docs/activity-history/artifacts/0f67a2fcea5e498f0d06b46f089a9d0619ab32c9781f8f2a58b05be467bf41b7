@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "url": "https://brivany.example/",
+  "http_status": 200,
+  "tls_verify_result": 0,
+  "dns_override": false,
+  "checked_via": "OS normal resolver and TLS validation",
+  "brivany_present": true
+}

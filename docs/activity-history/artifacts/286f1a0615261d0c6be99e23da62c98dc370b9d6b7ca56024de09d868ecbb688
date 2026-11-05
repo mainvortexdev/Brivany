@@ -1,0 +1,25 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/motion-ui/report.json",
+  "original_sha256": "09bc33424650971d03fabd07d6eea65389cf2ae5657b48f86c0401fcc9f1c35b",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "passed": true,
+    "physical_output_heard": false
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": 0,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

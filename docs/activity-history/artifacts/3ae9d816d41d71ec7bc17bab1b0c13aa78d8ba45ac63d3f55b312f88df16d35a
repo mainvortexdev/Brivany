@@ -1,0 +1,7 @@
+{
+  "source_is_fxsound_virtual": true,
+  "output_is_not_virtual": true,
+  "capture_opened": true,
+  "microphone_used": false,
+  "providers_opened": false
+}

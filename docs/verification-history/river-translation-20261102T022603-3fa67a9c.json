@@ -1,0 +1,19 @@
+{
+  "suite": "river-translation",
+  "started_at": "2026-11-02T02:26:03.805096+00:00",
+  "finished_at": "2026-11-02T02:26:15.233004+00:00",
+  "duration_seconds": 11.427908,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_river_translation"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "................\r\n----------------------------------------------------------------------\r\nRan 16 tests in 10.515s\r\n\r\nOK\r\n"
+}

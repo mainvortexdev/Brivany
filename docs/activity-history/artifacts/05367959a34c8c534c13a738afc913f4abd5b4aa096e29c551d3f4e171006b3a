@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "scope": "actual_restarted_owned_desktop_metadata_and_account_read",
+  "windows": [
+    {
+      "title": "Melodi WorkSpace",
+      "visible": true,
+      "width": 1280,
+      "height": 40,
+      "top": 0,
+      "taskbar_hidden": true
+    },
+    {
+      "title": "Melodi WorkSpace · Panel",
+      "visible": false,
+      "width": 780,
+      "height": 404,
+      "top": 46,
+      "taskbar_hidden": true
+    },
+    {
+      "title": "Melodi WorkSpace · Voz",
+      "visible": false,
+      "width": 764,
+      "height": 365,
+      "top": 46,
+      "taskbar_hidden": true
+    }
+  ],
+  "work_area_top": 40,
+  "desktop_reconnected": true,
+  "account_read_requests": 1,
+  "inference_requests": 0,
+  "microphone": false
+}

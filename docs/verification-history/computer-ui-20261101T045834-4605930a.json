@@ -1,0 +1,18 @@
+{
+  "suite": "computer-ui",
+  "started_at": "2026-11-01T04:58:34.752731+00:00",
+  "finished_at": "2026-11-01T04:59:13.992829+00:00",
+  "duration_seconds": 39.240098,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "frame.waitForFunction: Timeout 30000ms exceeded.\n    at <local-path>\\tools\\check_computer_images_agents_ui.cjs:27:107\n"
+}

@@ -1,0 +1,70 @@
+{
+  "schema_version": "0.1.0",
+  "capture_id": "cef455a9-230c-4ebe-8955-12fc4119c823",
+  "source": {
+    "filename": "demo-sintetica-oratoria.mp4",
+    "sha256": "3f47afe33e8e75b564787b3917c689fe5dfc4f7a997d4572e3f5e7437bf99512",
+    "size_bytes": 38743,
+    "duration_seconds": 9.0,
+    "width": 960,
+    "height": 540,
+    "has_audio": false
+  },
+  "frames": [
+    {
+      "id": "frame-0000",
+      "relative_path": "frames/frame-0000.jpg",
+      "at_seconds": 0.75,
+      "timestamp_basis": "requested_seek",
+      "width": 960,
+      "height": 540,
+      "sha256": "7248006b7285bbb6f77eeeba67c81583e376902fec77f82380efb6f5af9ec3f0"
+    },
+    {
+      "id": "frame-0001",
+      "relative_path": "frames/frame-0001.jpg",
+      "at_seconds": 2.25,
+      "timestamp_basis": "requested_seek",
+      "width": 960,
+      "height": 540,
+      "sha256": "7248006b7285bbb6f77eeeba67c81583e376902fec77f82380efb6f5af9ec3f0"
+    },
+    {
+      "id": "frame-0002",
+      "relative_path": "frames/frame-0002.jpg",
+      "at_seconds": 3.75,
+      "timestamp_basis": "requested_seek",
+      "width": 960,
+      "height": 540,
+      "sha256": "e3d1e63f81524c1879376d4b5f20a97349e09c5055acffa7a4d6e2f9c1fa3f80"
+    },
+    {
+      "id": "frame-0003",
+      "relative_path": "frames/frame-0003.jpg",
+      "at_seconds": 5.25,
+      "timestamp_basis": "requested_seek",
+      "width": 960,
+      "height": 540,
+      "sha256": "21681aec00d695fe8c4d4bb7dd0ba441681ef329c0fc28bdbea7d6f9a3630944"
+    },
+    {
+      "id": "frame-0004",
+      "relative_path": "frames/frame-0004.jpg",
+      "at_seconds": 6.75,
+      "timestamp_basis": "requested_seek",
+      "width": 960,
+      "height": 540,
+      "sha256": "56e75969c2554673ef35c9c572b74a12c627c71e905fce341dcf210add9650eb"
+    },
+    {
+      "id": "frame-0005",
+      "relative_path": "frames/frame-0005.jpg",
+      "at_seconds": 8.25,
+      "timestamp_basis": "requested_seek",
+      "width": 960,
+      "height": 540,
+      "sha256": "56e75969c2554673ef35c9c572b74a12c627c71e905fce341dcf210add9650eb"
+    }
+  ],
+  "calibration": null
+}

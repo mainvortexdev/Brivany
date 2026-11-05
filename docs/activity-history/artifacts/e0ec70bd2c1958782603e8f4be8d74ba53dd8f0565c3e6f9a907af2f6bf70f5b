@@ -1,0 +1,87 @@
+{
+  "scope": "real HTTP turn routing, Meta planning and native Chrome on synthetic local pages",
+  "checks": [
+    "real turn router dispatched a desktop task",
+    "one native observed click reached the synthetic page",
+    "new requested tab B selected and original tab A preserved"
+  ],
+  "physical_audio_verified": false,
+  "browser_network_consumption": "unknown",
+  "cost_amount": null,
+  "last_action": {
+    "action": "browser_observe",
+    "handle_matches": true,
+    "handle_type": "str",
+    "process_matches": true
+  },
+  "task_state": "succeeded",
+  "steps": 3,
+  "status": "passed",
+  "button_events": 1,
+  "tab_count": 2,
+  "planner_requests": 5,
+  "planner_decisions": [
+    {
+      "keys": [
+        "kind",
+        "goal"
+      ],
+      "kind": "desktop",
+      "done": null,
+      "action": null,
+      "parameter_keys": []
+    },
+    {
+      "keys": [
+        "done",
+        "step"
+      ],
+      "kind": null,
+      "done": false,
+      "action": "click_control",
+      "parameter_keys": [
+        "handle",
+        "process_id",
+        "control_id"
+      ]
+    },
+    {
+      "keys": [
+        "done",
+        "step"
+      ],
+      "kind": null,
+      "done": false,
+      "action": "browser_new_tab",
+      "parameter_keys": [
+        "handle",
+        "process_id",
+        "url"
+      ]
+    },
+    {
+      "keys": [
+        "done",
+        "step"
+      ],
+      "kind": null,
+      "done": false,
+      "action": "browser_observe",
+      "parameter_keys": [
+        "handle",
+        "process_id"
+      ]
+    },
+    {
+      "keys": [
+        "done",
+        "message"
+      ],
+      "kind": null,
+      "done": true,
+      "action": null,
+      "parameter_keys": []
+    }
+  ],
+  "planner_failures": []
+}

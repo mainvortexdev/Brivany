@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-10-30T12:50:35.044200+00:00",
+  "type": "real_access_check",
+  "purpose": "Bounded metadata GET requests, no inference or synthesis; Muse not contacted.",
+  "external_calls": 1,
+  "monetary_cost": null,
+  "results": {
+    "groq": {
+      "http_status": 200,
+      "access": true,
+      "llama_model_available": false,
+      "llama_models": [
+        "meta-llama/llama-prompt-guard-2-86m",
+        "meta-llama/llama-prompt-guard-2-22m"
+      ]
+    }
+  }
+}

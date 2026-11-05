@@ -1,0 +1,51 @@
+"""One persistent, hidden SDK host with its own narrowly scoped native bridge.
+
+Only this exact local page receives short-lived access tokens. Refresh tokens
+and PKCE stay native; WorkSpace, modules and chat never receive them.
+"""
+from urllib.parse import urlsplit
+
+
+class SpotifyPlayerBridge:
+    def __init__(self,music,base):self._music=music;self._base=base;self._window=None
+    def _trusted(self):
+        value=urlsplit(self._window.get_current_url() if self._window else '')
+        base=urlsplit(self._base)
+        if (value.scheme,value.hostname,value.port,value.path)!=(base.scheme,base.hostname,base.port,'/spotify-player'):
+            raise ValueError('Reproductor no autorizado.')
+    def token(self):
+        self._trusted();return self._music.sdk_token()
+    def event(self,kind,device_id=''):
+        self._trusted();return self._music.sdk_event(kind,device_id)
+    def close(self):
+        if self._window:
+            try:self._window.evaluate_js('window.BrivanySpotifyPlayer?.dispose()')
+            except Exception:pass
+            try:self._window.destroy()
+            except Exception:pass
+            self._window=None
+        self._music.sdk_event('idle')
+
+
+def start_player(owner):
+    music=owner._music()
+    if not music.status()['streaming_access']:
+        raise ValueError('Actualiza el acceso de Spotify en Conexiones para reproducir aquí. Spotify Premium es necesario.')
+    host=getattr(owner,'_spotify_player_host',None)
+    if host and host._window:
+        if music.status()['local_player']['state'] in ('starting','ready'):return music.status()['local_player']
+        host.close()
+    import webview
+    host=SpotifyPlayerBridge(music,owner._base);owner._spotify_player_host=host
+    music.sdk_event('starting')
+    host._window=webview.create_window('Brivany · Audio',owner._base+'/spotify-player',js_api=host,
+        width=320,height=180,hidden=True,frameless=True,resizable=False,on_top=False,focus=False)
+    def loaded():
+        try:
+            from System import Action
+            native=host._window.native
+            if native.InvokeRequired:native.Invoke(Action(lambda:setattr(native,'ShowInTaskbar',False)))
+            else:native.ShowInTaskbar=False
+        except (ImportError,AttributeError):pass
+    host._window.events.loaded+=loaded
+    return music.status()['local_player']

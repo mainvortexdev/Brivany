@@ -1,0 +1,16 @@
+{
+  "model": "iic/speech_campplus_sv_zh_en_16k-common_advanced@v1.0.0",
+  "source": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/3dspeaker_speech_campplus_sv_zh_en_16k-common_advanced.onnx",
+  "sha256": "aa3cfc16963a10586a9393f5035d6d6b57e98d358b347f80c2a30bf4f00ceba2",
+  "size_bytes": 28281164,
+  "license_declared": "Apache-2.0",
+  "model_card_source": "https://modelscope.cn/api/v1/models/iic/speech_campplus_sv_zh_en_16k-common_advanced/repo?Revision=v1.0.0&FilePath=README.md",
+  "model_card_sha256": "5cc4c68f2f5afc255564493686f2a22370ac86f86ba02117989fc5a39a6aff0a",
+  "dimensions": 192,
+  "sample_rate": 16000,
+  "execution_provider": "cpu",
+  "threads": 1,
+  "cache_scope": "translation_session",
+  "audio_persisted": false,
+  "real_identity_inferred": false
+}

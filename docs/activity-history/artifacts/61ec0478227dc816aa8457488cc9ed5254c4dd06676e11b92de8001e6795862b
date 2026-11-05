@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-microphone-native",
+  "started_at": "2026-11-04T02:37:15.622531+00:00",
+  "finished_at": "2026-11-04T02:37:33.724134+00:00",
+  "duration_seconds": 18.101603,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_workspace_native",
+    "--microphone-input"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"type\": \"actual_owned_WebView2_windows_with_synthetic_conversation\", \"passed\": true, \"external_calls\": 0, \"microphone_used\": true, \"OS_input_sent\": false, \"appbar_reserved_by_test\": false, \"phase\": \"native_microphone_input\", \"voice_window_hidden_on_startup\": true, \"real_capture\": {\"active\": true, \"tracks\": [\"live\"], \"context\": \"running\", \"fft\": 2048}, \"samples\": 48, \"main_window_hidden\": true, \"transcription_disabled\": true, \"audio_persisted\": false, \"microphone_released_on_cancel\": true}\r\n"
+}

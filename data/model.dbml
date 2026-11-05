@@ -1,0 +1,315 @@
+// Brivany 0.1.0: modelo logico, no migracion operativa.
+// UUIDs se asignan en servidor. JSONB de contratos se valida en aplicacion.
+// RLS y permisos se implementaran en migraciones, con rol no propietario.
+
+Table users {
+  id uuid [pk]
+  oidc_subject varchar [not null, unique]
+  created_at timestamptz [not null]
+}
+
+Table workspaces {
+  id uuid [pk]
+  name varchar [not null]
+  created_at timestamptz [not null]
+}
+
+Table memberships {
+  workspace_id uuid [not null, ref: > workspaces.id]
+  user_id uuid [not null, ref: > users.id]
+  role varchar [not null, note: 'owner, admin, creator, reviewer, learner']
+  indexes { (workspace_id, user_id) [pk] }
+}
+
+Table devices {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  user_id uuid [not null]
+  public_key_fingerprint varchar [not null]
+  state varchar [not null, note: 'paired, revoked']
+  last_seen_at timestamptz
+  indexes { (workspace_id, id) [pk] }
+}
+Ref: devices.(workspace_id, user_id) > memberships.(workspace_id, user_id)
+
+Table artifacts {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  owner_user_id uuid [not null]
+  object_key varchar [not null, unique]
+  sha256 char(64) [not null]
+  mime_type varchar [not null]
+  size_bytes bigint [not null]
+  purpose varchar [not null]
+  state varchar [not null, note: 'pending_upload, validating, ready, quarantined, deleting, deleted']
+  expires_at timestamptz
+  license jsonb [not null]
+  derived_from_id uuid
+  indexes { (workspace_id, id) [pk] }
+}
+Ref: artifacts.(workspace_id, owner_user_id) > memberships.(workspace_id, user_id)
+Ref: artifacts.(workspace_id, derived_from_id) > artifacts.(workspace_id, id)
+
+Table captures {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  creator_user_id uuid [not null]
+  application varchar [not null]
+  consent_ref uuid [not null]
+  consent_scope jsonb [not null]
+  created_at timestamptz [not null]
+  indexes { (workspace_id, id) [pk] }
+}
+Ref: captures.(workspace_id, creator_user_id) > memberships.(workspace_id, user_id)
+
+Table capture_artifacts {
+  workspace_id uuid [not null]
+  capture_id uuid [not null]
+  artifact_id uuid [not null]
+  indexes { (workspace_id, capture_id, artifact_id) [pk] }
+}
+Ref: capture_artifacts.(workspace_id, capture_id) > captures.(workspace_id, id)
+Ref: capture_artifacts.(workspace_id, artifact_id) > artifacts.(workspace_id, id)
+
+Table skills {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  creator_user_id uuid [not null]
+  created_at timestamptz [not null]
+  indexes { (workspace_id, id) [pk] }
+}
+Ref: skills.(workspace_id, creator_user_id) > memberships.(workspace_id, user_id)
+
+Table skill_versions {
+  workspace_id uuid [not null]
+  skill_id uuid [not null]
+  version varchar [not null]
+  schema_version varchar [not null]
+  lifecycle varchar [not null]
+  content_sha256 char(64) [not null]
+  revision bigint [not null, note: 'Bloqueo optimista de borradores']
+  manifest jsonb [not null]
+  published_at timestamptz
+  indexes { (workspace_id, skill_id, version) [pk] }
+}
+Ref: skill_versions.(workspace_id, skill_id) > skills.(workspace_id, id)
+
+Table reviews {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  skill_id uuid [not null]
+  skill_version varchar [not null]
+  reviewer_user_id uuid [not null]
+  content_sha256 char(64) [not null]
+  decision varchar [not null]
+  note text [not null]
+  reviewed_at timestamptz [not null]
+  indexes { (workspace_id, id) [pk] }
+}
+Ref: reviews.(workspace_id, skill_id, skill_version) > skill_versions.(workspace_id, skill_id, version)
+Ref: reviews.(workspace_id, reviewer_user_id) > memberships.(workspace_id, user_id)
+
+Table connector_profiles {
+  id varchar [pk]
+  application varchar [not null]
+  connector_version varchar [not null]
+  supported_environment jsonb [not null]
+  capabilities jsonb [not null]
+  evidence_of_validation jsonb [not null]
+  state varchar [not null, note: 'designed, experimental, verified, revoked']
+}
+
+Table sessions {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  learner_user_id uuid [not null]
+  skill_id uuid [not null]
+  skill_version varchar [not null]
+  skill_content_sha256 char(64) [not null]
+  device_id uuid [not null]
+  connector_profile_id varchar [not null, ref: > connector_profiles.id]
+  state varchar [not null]
+  mode varchar [not null]
+  help_level varchar [not null]
+  revision bigint [not null]
+  parameters jsonb [not null]
+  step_states jsonb [not null]
+  budget_limit_usd decimal [not null]
+  budget_used_usd decimal [not null]
+  created_at timestamptz [not null]
+  indexes { (workspace_id, id) [pk] }
+}
+Ref: sessions.(workspace_id, learner_user_id) > memberships.(workspace_id, user_id)
+Ref: sessions.(workspace_id, skill_id, skill_version) > skill_versions.(workspace_id, skill_id, version)
+Ref: sessions.(workspace_id, device_id) > devices.(workspace_id, id)
+
+Table observations {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  session_id uuid [not null]
+  device_id uuid [not null]
+  project_ref varchar [not null]
+  project_revision varchar [not null]
+  observed_at timestamptz [not null]
+  accepted_at timestamptz [not null]
+  payload jsonb [not null]
+  indexes { (workspace_id, id) [pk] }
+}
+Ref: observations.(workspace_id, session_id) > sessions.(workspace_id, id)
+Ref: observations.(workspace_id, device_id) > devices.(workspace_id, id)
+
+Table evidence {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  session_id uuid [not null]
+  observation_id uuid
+  step_id varchar [not null]
+  attempt integer [not null]
+  origin varchar [not null]
+  payload jsonb [not null]
+  created_at timestamptz [not null]
+  indexes { (workspace_id, id) [pk] }
+}
+Ref: evidence.(workspace_id, session_id) > sessions.(workspace_id, id)
+Ref: evidence.(workspace_id, observation_id) > observations.(workspace_id, id)
+
+Table verifications {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  session_id uuid [not null]
+  step_id varchar [not null]
+  attempt integer [not null]
+  check_id varchar [not null]
+  verdict varchar [not null]
+  evaluator_kind varchar [not null]
+  payload jsonb [not null]
+  created_at timestamptz [not null]
+  indexes { (workspace_id, id) [pk] }
+}
+Ref: verifications.(workspace_id, session_id) > sessions.(workspace_id, id)
+
+Table verification_evidence {
+  workspace_id uuid [not null]
+  verification_id uuid [not null]
+  evidence_id uuid [not null]
+  indexes { (workspace_id, verification_id, evidence_id) [pk] }
+}
+Ref: verification_evidence.(workspace_id, verification_id) > verifications.(workspace_id, id)
+Ref: verification_evidence.(workspace_id, evidence_id) > evidence.(workspace_id, id)
+
+Table commands {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  session_id uuid [not null]
+  device_id uuid [not null]
+  action_sha256 char(64) [not null]
+  idempotency_key varchar [not null]
+  state varchar [not null]
+  payload jsonb [not null]
+  expires_at timestamptz [not null]
+  indexes {
+    (workspace_id, id) [pk]
+    (workspace_id, session_id, idempotency_key) [unique]
+  }
+}
+Ref: commands.(workspace_id, session_id) > sessions.(workspace_id, id)
+Ref: commands.(workspace_id, device_id) > devices.(workspace_id, id)
+
+Table command_decisions {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  command_id uuid [not null]
+  actor_user_id uuid [not null]
+  action_sha256 char(64) [not null]
+  decision varchar [not null]
+  expires_at timestamptz [not null]
+  created_at timestamptz [not null]
+  indexes { (workspace_id, id) [pk] }
+}
+Ref: command_decisions.(workspace_id, command_id) > commands.(workspace_id, id)
+Ref: command_decisions.(workspace_id, actor_user_id) > memberships.(workspace_id, user_id)
+
+Table receipts {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  command_id uuid [not null]
+  device_id uuid [not null]
+  payload jsonb [not null]
+  received_at timestamptz [not null]
+  indexes { (workspace_id, id) [pk] }
+}
+Ref: receipts.(workspace_id, command_id) > commands.(workspace_id, id)
+Ref: receipts.(workspace_id, device_id) > devices.(workspace_id, id)
+
+Table session_events {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  session_id uuid [not null]
+  seq bigint [not null]
+  type varchar [not null]
+  payload jsonb [not null]
+  created_at timestamptz [not null]
+  indexes {
+    (workspace_id, id) [pk]
+    (workspace_id, session_id, seq) [unique]
+  }
+}
+Ref: session_events.(workspace_id, session_id) > sessions.(workspace_id, id)
+
+Table outbox {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  event_id uuid [not null]
+  destination varchar [not null]
+  delivered_at timestamptz
+  attempt integer [not null]
+  indexes { (workspace_id, id) [pk] }
+}
+Ref: outbox.(workspace_id, event_id) > session_events.(workspace_id, id)
+
+Table jobs {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  kind varchar [not null]
+  state varchar [not null]
+  payload jsonb [not null]
+  result jsonb
+  attempts integer [not null]
+  lease_owner varchar
+  lease_until timestamptz
+  available_at timestamptz [not null]
+  indexes { (workspace_id, id) [pk] }
+}
+
+Table learning_attempts {
+  workspace_id uuid [not null]
+  id uuid [not null]
+  session_id uuid [not null]
+  learner_user_id uuid [not null]
+  help_level varchar [not null]
+  is_transfer_exercise boolean [not null]
+  agent_actions integer [not null]
+  hint_count integer [not null]
+  outcome jsonb [not null]
+  created_at timestamptz [not null]
+  indexes { (workspace_id, id) [pk] }
+}
+Ref: learning_attempts.(workspace_id, session_id) > sessions.(workspace_id, id)
+Ref: learning_attempts.(workspace_id, learner_user_id) > memberships.(workspace_id, user_id)
+
+Table idempotency_records {
+  workspace_id uuid [not null]
+  actor_ref varchar [not null]
+  operation varchar [not null]
+  key varchar [not null]
+  request_sha256 char(64) [not null]
+  response_status integer [not null]
+  response_body jsonb [not null]
+  expires_at timestamptz [not null]
+  indexes { (workspace_id, actor_ref, operation, key) [pk] }
+}
+
+// Antes de migrar: agregar FK workspace_id > workspaces.id a toda tabla de
+// espacio, CHECKs de estados, indices de consulta, privilegios y politicas RLS.
+// Verificar en servicios que evidencia, observacion y verificacion pertenecen
+// a la misma sesion e intento; las FK mostradas no expresan toda esa regla.

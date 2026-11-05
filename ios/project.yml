@@ -1,0 +1,63 @@
+name: Brivany
+options:
+  bundleIdPrefix: es.ProjectFixture
+  deploymentTarget:
+    iOS: '17.0'
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: '5.0'
+    IPHONEOS_DEPLOYMENT_TARGET: '17.0'
+    TARGETED_DEVICE_FAMILY: '1'
+    CODE_SIGNING_ALLOWED: NO
+    MARKETING_VERSION: '0.1.0'
+    CURRENT_PROJECT_VERSION: 1
+targets:
+  Brivany:
+    type: application
+    platform: iOS
+    sources: [Brivany]
+    info:
+      path: Brivany/Info.plist
+      properties:
+        CFBundleDisplayName: Brivany
+        NSMicrophoneUsageDescription: Brivany usa el micrófono cuando decides hablar con Melodi o dictar un mensaje.
+        NSSpeechRecognitionUsageDescription: Brivany reconoce tu voz cuando activas el dictado de mensajes.
+        NSCameraUsageDescription: Brivany usa la cámara cuando eliges adjuntar una fotografía a la conversación.
+        NSPhotoLibraryUsageDescription: Brivany accede a las fotografías que decides compartir con Melodi.
+        NSLocalNetworkUsageDescription: Brivany se conecta a tu aplicación de escritorio cuando eliges vincularla en tu red local.
+        ITSAppUsesNonExemptEncryption: false
+        UIRequiredDeviceCapabilities: [arm64]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: es.ProjectFixture.brivany
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    scheme:
+      testTargets: [BrivanyTests, BrivanyUITests]
+      gatherCoverageData: true
+  BrivanyTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [BrivanyTests]
+    dependencies:
+      - target: Brivany
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: es.ProjectFixture.brivany.tests
+        GENERATE_INFOPLIST_FILE: YES
+  BrivanyUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [BrivanyUITests]
+    dependencies:
+      - target: Brivany
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: es.ProjectFixture.brivany.uitests
+        GENERATE_INFOPLIST_FILE: YES

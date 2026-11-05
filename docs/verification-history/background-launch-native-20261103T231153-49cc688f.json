@@ -1,0 +1,18 @@
+{
+  "suite": "background-launch-native",
+  "started_at": "2026-11-03T23:11:53.362561+00:00",
+  "finished_at": "2026-11-03T23:12:02.354675+00:00",
+  "duration_seconds": 8.992114,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_background_launch"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"passed\": true, \"scope\": \"owned_exe_and_temporary_start_menu_shortcut_native_execution\", \"provider_calls\": 0, \"user_files_modified\": false, \"marker_created\": true, \"background_result\": {\"launched\": \"Melodi prueba 8de17de9\", \"background\": true, \"input_sent\": false, \"process_id\": 18152, \"method\": \"observed-shortcut-background\", \"verified\": true}, \"foreground_preserved\": true, \"start\": {\"started\": true, \"escape_reserved\": false, \"background\": true}, \"application_started\": true, \"cursor_guard_started\": false, \"background_method\": \"observed-shortcut-background\"}\r\n"
+}

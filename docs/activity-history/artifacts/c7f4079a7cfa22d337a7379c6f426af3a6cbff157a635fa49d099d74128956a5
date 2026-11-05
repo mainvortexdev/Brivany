@@ -1,0 +1,21 @@
+"""Bounded delivery guidance for dense video speech, without altering text."""
+import math
+import re
+
+
+def delivery_speed(text, start_ms, end_ms):
+    """Request natural faster delivery only when speech exceeds 180 words/min.
+
+    Sonic interprets speed as guidance; playback still checks actual duration.
+    Neither silence nor invalid/unknown timing can request a slower voice.
+    """
+    if not isinstance(text, str) or any(type(value) not in (int, float) or not math.isfinite(value)
+                                      for value in (start_ms, end_ms)):
+        return 1.
+    duration = (end_ms - start_ms) / 1000
+    if start_ms < 0 or not .15 <= duration <= 30:
+        return 1.
+    words = re.findall(r"\w+(?:['’]\w+)*", text, flags=re.UNICODE)
+    if len(words) < 3:
+        return 1.
+    return round(min(1.28, max(1., len(words) / duration / 3.)), 3)

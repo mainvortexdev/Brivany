@@ -1,0 +1,115 @@
+{
+  "schema_version": "0.1.0",
+  "pipeline_version": "spatial-single-object-0.1.0",
+  "checked_on": "2026-10-28",
+  "remote_dispatch_enabled": false,
+  "deployment_verified": false,
+  "modal": {
+    "sdk_version": "1.6.3",
+    "sdk_wheel_sha256": "31e8952c8908740f3fbc666191fec78ff5fadecb7a48a29d40aed90b39531ffe",
+    "gpu": "L40S",
+    "minimum_vram_gb": 32,
+    "min_containers": 0,
+    "max_containers": 1,
+    "buffer_containers": 0,
+    "retries": 0,
+    "timeout_seconds": 180,
+    "startup_timeout_seconds": 600,
+    "scaledown_window_seconds": 2,
+    "weight_volume_name": "brivany-spatial-weights",
+    "result_volume_name": "brivany-spatial-results"
+  },
+  "runtime": {
+    "platform": "linux/amd64",
+    "python": "3.11",
+    "candidate_base_image": "nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04",
+    "base_image_digest": null,
+    "dependency_lock_complete": false,
+    "build_verified": false,
+    "cuda_compatibility_verified": false,
+    "model_root": "/opt/sam3d",
+    "weights_root": "/weights/sam3d",
+    "sam3d_config_relative_path": "pipeline.yaml",
+    "checkpoint_manifest": []
+  },
+  "budget": {
+    "approved_per_job_usd": null,
+    "approved_total_usd": null,
+    "gpu_rate_usd_per_second": null,
+    "non_gpu_reserve_per_job_usd": null,
+    "note": "No account balance, GPU rate or billing cap is assumed. Wall timeout does not cap Modal startup/download/storage charges."
+  },
+  "models": {
+    "sam3d_objects": {
+      "repository": "https://github.com/facebookresearch/sam-3d-objects",
+      "code_revision": "f91db411c50efee93d8db7aeb323885650f6f722",
+      "checkpoint_repository": "facebook/sam-3d-objects",
+      "checkpoint_revision": null,
+      "checkpoint_hashes_verified": false,
+      "license_reviewed_by_user": false,
+      "code_role": "single object reconstruction"
+    },
+    "vggt": {
+      "repository": "https://github.com/facebookresearch/vggt",
+      "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+      "checkpoint_repository": "facebook/VGGT-1B-Commercial",
+      "checkpoint_revision": null,
+      "checkpoint_hashes_verified": false,
+      "license_reviewed_by_user": false,
+      "code_role": "future camera/depth stage"
+    },
+    "sam3": {
+      "repository": "https://github.com/facebookresearch/sam3",
+      "code_revision": "f1647e8d0c1d280991f4d1b7d974c2704537fe66",
+      "checkpoint_repository": "facebook/sam3",
+      "checkpoint_revision": null,
+      "checkpoint_hashes_verified": false,
+      "license_reviewed_by_user": false,
+      "code_role": "future masks/segmentation"
+    }
+  },
+  "sam3d_source_files": {
+    "doc/setup.md": {
+      "sha256": "b2c6d257baee99c5fc8c8ff3f8c6a2ccf7149984ec453453e72f7feb41625895",
+      "source": "https://raw.githubusercontent.com/facebookresearch/sam-3d-objects/f91db411c50efee93d8db7aeb323885650f6f722/doc/setup.md"
+    },
+    "environments/default.yml": {
+      "sha256": "0689ff6bed65a137af05b8fbcf772b520ae748a62eaa5d7b37957d8edab4eadd",
+      "source": "https://raw.githubusercontent.com/facebookresearch/sam-3d-objects/f91db411c50efee93d8db7aeb323885650f6f722/environments/default.yml"
+    },
+    "requirements.txt": {
+      "sha256": "2423806fbad6e35c120163cdc098ed3fae3a3e1756d90dfd2743c9140b1bf8d7",
+      "source": "https://raw.githubusercontent.com/facebookresearch/sam-3d-objects/f91db411c50efee93d8db7aeb323885650f6f722/requirements.txt"
+    },
+    "requirements.p3d.txt": {
+      "sha256": "71e6c0e97ef47bf53d4c4187b59d76b39c64783777b0a38c41c387a6125ab0ae",
+      "source": "https://raw.githubusercontent.com/facebookresearch/sam-3d-objects/f91db411c50efee93d8db7aeb323885650f6f722/requirements.p3d.txt"
+    },
+    "requirements.inference.txt": {
+      "sha256": "285ca7b2ed8989ec852e27bc5c716ff5f85701cd5b7be992f588304b289f05ca",
+      "source": "https://raw.githubusercontent.com/facebookresearch/sam-3d-objects/f91db411c50efee93d8db7aeb323885650f6f722/requirements.inference.txt"
+    },
+    "notebook/inference.py": {
+      "sha256": "a3e20615885d2b5eaf1a8af8573d271072de4e27639212317edffcddf1d39cf3",
+      "source": "https://raw.githubusercontent.com/facebookresearch/sam-3d-objects/f91db411c50efee93d8db7aeb323885650f6f722/notebook/inference.py"
+    }
+  },
+  "limits": {
+    "max_image_bytes": 8388608,
+    "max_mask_bytes": 2097152,
+    "max_image_side": 1280,
+    "max_output_glb_bytes": 33554432,
+    "max_objects": 1
+  },
+  "sources": [
+    "https://modal.com/docs/guide/scale",
+    "https://modal.com/docs/guide/retries",
+    "https://modal.com/docs/guide/images",
+    "https://github.com/facebookresearch/sam-3d-objects/blob/f91db411c50efee93d8db7aeb323885650f6f722/doc/setup.md"
+  ],
+  "limitations": [
+    "Prepared configuration only: no image was built, no checkpoints downloaded and no Modal service created.",
+    "retries=0 disables application retries; Modal documents automatic rescheduling after container crashes. Idempotency is needed before remote activation.",
+    "An image tag is a candidate only until its immutable digest and native dependency build are validated."
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "suite": "app-ui",
+  "started_at": "2026-10-27T23:21:20.107875+00:00",
+  "finished_at": "2026-10-27T23:21:25.925445+00:00",
+  "duration_seconds": 5.81757,
+  "command": [
+    "node",
+    "tools/check_ui.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"checks\": 11,\n  \"passed\": [\n    \"permiso inicial y voz local disponible\",\n    \"revisión local de muletillas\",\n    \"reunión contextual y ayuda proactiva silenciosa con fuente\",\n    \"consentimiento reunión e inicio/parada de audio simulado\",\n    \"síntesis local con pausas, sin proveedor externo\",\n    \"escucha cancela voz previa y responde tras pausa a ASR simulado\",\n    \"borrado de sesión y frases bilingües\",\n    \"diseño app y landing: 320, 390, 768 y 1440 px\",\n    \"taller conectado a API local\",\n    \"shell PWA sin conexión; caché excluye API y conversaciones\",\n    \"sin errores JavaScript\"\n  ],\n  \"physical_hardware_tested\": false,\n  \"external_models_called\": false\n}\n"
+}

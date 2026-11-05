@@ -1,0 +1,22 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/terminal-app/system-native-state.json",
+  "original_sha256": "621eb762cc2402c6ddffb51aa781a8b7ec795c3377392989fb5edd57fed0fbe8",
+  "new_test_execution": false,
+  "reported_result": "pending",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {},
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

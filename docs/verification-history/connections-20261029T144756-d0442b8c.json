@@ -1,0 +1,18 @@
+{
+  "suite": "connections",
+  "started_at": "2026-10-29T14:47:56.999097+00:00",
+  "finished_at": "2026-10-29T14:48:00.675406+00:00",
+  "duration_seconds": 3.676309,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_connections"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Actual loopback HTTP, OAuth state/DPAPI, SQLite approvals and frontend; external transports substituted.\",\r\n  \"checks\": [\r\n    \"opening the page reads state without OAuth exchange, API action or microphone\",\r\n    \"explicit connect prepares PKCE in the system-browser path, callback claims one state and simulated grant stays visibly simulated\",\r\n    \"reviewing then cancelling performs no provider action\",\r\n    \"reviewed Drive searches use actual proposal approvals and transport contract, return ephemeral metadata, and permit a fresh explicit repeated query\",\r\n    \"unrelated origins cannot invoke account operations\",\r\n    \"reloading preserves the encrypted grant and settings while query results are not persisted\",\r\n    \"account setup and review controls fit desktop and narrow viewports\"\r\n  ],\r\n  \"screenshots\": [\r\n    \"tmp/connections/connections-1440.png\",\r\n    \"tmp/connections/connections-390.png\"\r\n  ],\r\n  \"checked_at\": \"2026-10-29T14:48:00.209221+00:00\",\r\n  \"provider_stub_calls\": {\r\n    \"oauth\": 1,\r\n    \"api\": 2,\r\n    \"browser_launch_requests\": 1\r\n  },\r\n  \"external_calls\": 0,\r\n  \"real_account_access\": false,\r\n  \"real_messages_sent\": 0,\r\n  \"limitations\": [\r\n    \"OAuth state, PKCE, DPAPI persistence, HTTP, reviewed operations and browser UI are real; Google/API/browser launch transports are substituted.\",\r\n    \"No actual Google grant, access permission, WhatsApp delivery or public webhook verified.\"\r\n  ]\r\n}\r\n"
+}

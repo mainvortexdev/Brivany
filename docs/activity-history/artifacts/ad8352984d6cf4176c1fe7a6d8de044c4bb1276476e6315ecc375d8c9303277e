@@ -1,0 +1,12 @@
+{
+  "repository": "https://github.com/bangtutorial/bang-motion",
+  "commit": "c1aa65e921c970d858705fcb4a53a8294d1a4131",
+  "version": "1.19.0",
+  "license": "MIT",
+  "files": {
+    "SKILL.md": "197edbc9e4350f84f3eba4ba506ec527da4ddeb678dcfeba334c4ea1c3e2fa72",
+    "LICENSE": "cd83815a1a6741402e61ba3864c884c18ae5509c7275ce028580ba9d985c7bf0",
+    "references/anti-ppt.md": "99a590c8cc5abf4854e587136e5612b7a8391c3ea28e551579a21a59fd590182",
+    "references/opener-konsep.md": "46ebd4c01408bf62627e313812b1531d55a9fb1d6ef0d4e6a13891de218f8e7a"
+  }
+}

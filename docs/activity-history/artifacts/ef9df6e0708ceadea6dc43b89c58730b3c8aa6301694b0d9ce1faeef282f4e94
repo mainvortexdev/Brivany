@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "checks": 22,
+  "runtime": "local workerd/Miniflare with SQLite Durable Objects and rate limit bindings",
+  "local_compatibility_date": "2026-09-04",
+  "production_compatibility_date": "2026-10-31",
+  "spotify_requests": 0,
+  "real_accounts": false,
+  "notes": [
+    "HTTPS callback and fixed PKCE redirect",
+    "signed expiring state and single-use browser launch",
+    "separate read credential and browser cookie bound to flow",
+    "cross-flow, replay, expired, tampered and cross-origin rejection",
+    "retry-safe poll; acknowledgement clears authorization code",
+    "no-store/no-referrer, URL cleanup and bounded input"
+  ]
+}

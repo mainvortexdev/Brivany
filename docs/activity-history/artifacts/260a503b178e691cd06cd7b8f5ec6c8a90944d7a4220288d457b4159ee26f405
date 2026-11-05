@@ -1,0 +1,369 @@
+"""Google Live Translate adapter checks. Every upstream is loopback or mocked."""
+import base64
+import json
+import math
+import os
+import struct
+import threading
+import time
+import unittest
+from unittest.mock import patch
+
+from websockets.exceptions import ConnectionClosed
+from websockets.sync.client import connect
+from websockets.sync.server import serve
+
+from packages.providers.gemini_dubbing import (
+    GeminiBridge, GeminiEvents, PCM24To16, URL, dubbing_key, gemini_status,
+    parse_event, setup_event, start_options,
+)
+from packages.providers.live_voice import VoiceError
+
+OPTIONS = {"type": "start", "consent": True, "source_language": "en", "target_language": "es", "max_seconds": 5}
+CONFIG = {"BRIVANY_GEMINI_API_KEY": "local-test-secret"}
+PCM = b"\0\1" * 2400
+
+
+def audio_event(data=PCM, **content):
+    return {"serverContent": {"modelTurn": {"parts": [{"inlineData": {
+        "mimeType": "audio/pcm;rate=24000", "data": base64.b64encode(data).decode("ascii")}}]}, **content}}
+
+
+class GeminiDubbingTests(unittest.TestCase):
+    def with_relay(self, handler, body):
+        failures = []
+
+        def checked(ws):
+            try: handler(ws)
+            except ConnectionClosed: pass
+            except Exception as exc: failures.append(exc)
+
+        with serve(checked, "127.0.0.1", 0, compression=None) as fake:
+            threading.Thread(target=fake.serve_forever, daemon=True).start()
+            bridge = GeminiBridge(9876).start()
+            try:
+                with patch.dict(os.environ, CONFIG, clear=True), patch("packages.providers.gemini_dubbing.URL", f"ws://127.0.0.1:{fake.socket.getsockname()[1]}"):
+                    body(bridge)
+            finally: bridge.close()
+        if failures: raise failures[0]
+
+    @staticmethod
+    def browser(bridge):
+        return connect(f"ws://127.0.0.1:{bridge.port}/dub", origin="http://127.0.0.1:9876", proxy=None)
+
+    @staticmethod
+    def handshake(ws):
+        value = json.loads(ws.recv(timeout=2))
+        ws.send(json.dumps({"setupComplete": {}}))
+        return value
+
+    def receive_error(self, browser):
+        summary = json.loads(browser.recv(timeout=2))
+        self.assertEqual(summary["type"], "metrics")
+        self.assertIn("provider_diagnostics", summary)
+        event = json.loads(browser.recv(timeout=2))
+        self.assertEqual(event["type"], "error")
+        return event
+
+    def test_explicit_key_options_and_sdk_setup_shape(self):
+        with patch.dict(os.environ, {"GEMINI_API_KEY": "unrelated", "GOOGLE_API_KEY": "unrelated"}, clear=True):
+            self.assertEqual(dubbing_key(), "")
+            self.assertFalse(gemini_status()["configured"])
+            with self.assertRaises(VoiceError): start_options(OPTIONS)
+        with patch.dict(os.environ, CONFIG, clear=True):
+            self.assertEqual(start_options(OPTIONS), ("en", "es", 5))
+            self.assertEqual(start_options({**OPTIONS, "source_language": "es", "target_language": "en"}), ("es", "en", 5))
+            for options in ({**OPTIONS, "consent": False}, {**OPTIONS, "source_language": "es"},
+                            {**OPTIONS, "max_seconds": True}, {**OPTIONS, "max_seconds": 61},
+                            {**OPTIONS, "target_language": "fr"}, {**OPTIONS, "model": "other"}):
+                with self.assertRaises(VoiceError): start_options(options)
+            self.assertFalse(gemini_status()["inference_verified"])
+            self.assertFalse(gemini_status()["access_verified"])
+            self.assertEqual(gemini_status()["source_language_mode"], "automatic")
+            self.assertNotIn(CONFIG["BRIVANY_GEMINI_API_KEY"], json.dumps(gemini_status()))
+        setup = setup_event("es")["setup"]
+        self.assertEqual(setup["generationConfig"]["translationConfig"], {"targetLanguageCode": "es", "echoTargetLanguage": False})
+        self.assertEqual(setup["inputAudioTranscription"], {})
+        self.assertEqual(setup["outputAudioTranscription"], {})
+        self.assertNotIn("inputAudioTranscription", setup["generationConfig"])
+        self.assertNotIn("?", URL)
+
+    def test_resampler_preserves_state_duration_and_rejects_aliasing(self):
+        samples = [round(10000 * math.sin(2 * math.pi * 1000 * index / 24000)) for index in range(4800)]
+        raw = struct.pack("<" + "h" * len(samples), *samples)
+        whole = PCM24To16(); expected = whole.feed(raw, final=True)
+        chunks = PCM24To16(); converted = bytearray()
+        sizes, offset = [2, 22, 800, 1920, 4000, 180], 0
+        while offset < len(raw):
+            count = sizes[(offset // 2) % len(sizes)]
+            converted.extend(chunks.feed(raw[offset:offset + count])); offset += count
+        converted.extend(chunks.feed(b"", final=True))
+        self.assertEqual(bytes(converted), expected)
+        self.assertEqual(len(expected), len(samples) * 2 // 3 * 2)
+        self.assertEqual(chunks.samples, [])
+        with self.assertRaises(VoiceError): chunks.feed(b"\0\0")
+        with self.assertRaises(VoiceError): PCM24To16().feed(b"odd")
+        for count in (0, 1, 2, 3, 31, 32, 33, 4811):
+            resampler = PCM24To16()
+            output = resampler.feed(b"\0\0" * count) + resampler.feed(b"", final=True)
+            self.assertEqual(len(output), count * 2 // 3 * 2)
+        high = [round(10000 * math.sin(2 * math.pi * 10000 * index / 24000)) for index in range(4800)]
+        high_bytes = PCM24To16().feed(struct.pack("<" + "h" * len(high), *high), final=True)
+        rms = lambda data: math.sqrt(sum(value * value for value in struct.unpack("<" + "h" * (len(data) // 2), data)[33:-33]) / (len(data) // 2 - 66))
+        self.assertGreater(rms(expected), 6900)
+        self.assertLess(rms(high_bytes), rms(expected) * .03)
+
+    def test_events_pcm_transcripts_repetition_and_completion_validation(self):
+        events = GeminiEvents()
+        normalized, complete = events.accept(audio_event(inputTranscription={"text": "Hello"}, outputTranscription={"text": "Hola"}))
+        self.assertEqual([event["source"] for event in normalized if event["type"] == "transcript"], ["original", "translation"])
+        self.assertEqual(base64.b64decode(normalized[-1]["audio"]), PCM)
+        self.assertFalse(complete)
+        # Identical PCM chunks are legitimate audio, not identifiers to deduplicate.
+        events.accept(audio_event()); self.assertEqual(events.output_bytes, len(PCM) * 2)
+        self.assertTrue(events.accept({"serverContent": {"turnComplete": True}})[1])
+        self.assertFalse(events.accept({"serverContent": {"turnComplete": True, "interactionStatus": "GENERATING"}})[1])
+        self.assertTrue(events.accept({"serverContent": {"interactionStatus": "IDLE"}})[1])
+        self.assertEqual(parse_event(b'{"setupComplete":{}}'), {"setupComplete": {}})
+        for mime, encoded in (("audio/pcm;rate=16000", ""), ("audio/pcm;rate=24000;channels=2", ""), ("audio/pcm;rate=24000", "bad")):
+            value = {"serverContent": {"modelTurn": {"parts": [{"inlineData": {"mimeType": mime, "data": encoded}}]}}}
+            with self.assertRaises(VoiceError): events.accept(value)
+        events.output_bytes = 90 * 48000
+        with self.assertRaises(VoiceError): events.accept(audio_event())
+        for raw in ('[]', b'\xff', '{"error":{"code":403,"message":"local-test-secret private"}}', '{"goAway":{"timeLeft":"0s"}}'):
+            with self.assertRaises(VoiceError) as error: parse_event(raw)
+            self.assertNotIn("local-test-secret", str(error.exception))
+
+    def test_guardrails_never_connect_before_valid_consent_and_key(self):
+        bridge = GeminiBridge(9876).start()
+        try:
+            for config, options, code in (({}, OPTIONS, "dubbing_not_configured"), (CONFIG, {**OPTIONS, "consent": False}, "dubbing_consent"),
+                                          (CONFIG, {**OPTIONS, "voice": "override"}, "dubbing_options")):
+                with patch.dict(os.environ, config, clear=True), patch("packages.providers.gemini_dubbing.connect") as upstream:
+                    with self.browser(bridge) as browser:
+                        browser.send(json.dumps(options)); event = self.receive_error(browser)
+                        self.assertEqual(event["code"], code)
+                    upstream.assert_not_called()
+        finally: bridge.close()
+
+    def test_wire_setup_headers_resampling_live_audio_and_final_drain(self):
+        received = []
+        def upstream(ws):
+            self.assertEqual(ws.request.headers["x-goog-api-key"], "local-test-secret")
+            self.assertNotIn("local-test-secret", ws.request.path)
+            self.assertEqual(self.handshake(ws), setup_event("es"))
+            first = json.loads(ws.recv(timeout=2)); received.append(first)
+            ws.send(json.dumps(audio_event(PCM[:1920], outputTranscription={"text": "Prueba"})))
+            while True:
+                event = json.loads(ws.recv(timeout=2)); received.append(event)
+                if event == {"realtimeInput": {"audioStreamEnd": True}}: break
+            ws.send(json.dumps(audio_event(PCM[:960], outputTranscription={"text": " final"})))
+            ws.send(json.dumps({"serverContent": {"interactionStatus": "IDLE"}}))
+            for _ in ws: pass  # Live sessions remain open until the client closes.
+        def body(bridge):
+            with self.browser(bridge) as browser:
+                browser.send(json.dumps(OPTIONS)); ready = json.loads(browser.recv(timeout=2))
+                self.assertEqual(ready["type"], "ready"); self.assertEqual(ready["sample_rate"], 24000)
+                browser.send(PCM * 2); values = []
+                while not any(event["type"] == "audio" for event in values): values.append(json.loads(browser.recv(timeout=2)))
+                browser.send(json.dumps({"type": "finish"})); browser.send(json.dumps({"type": "finish"}))
+                while values[-1]["type"] != "done": values.append(json.loads(browser.recv(timeout=2)))
+                self.assertEqual("".join(event["text"] for event in values if event["type"] == "transcript"), "Prueba final")
+                final = [event for event in values if event["type"] == "metrics"][-1]
+                self.assertEqual(final["bytes_sent"], len(PCM) * 2)
+                self.assertEqual(final["provider_input_bytes"], len(PCM) * 2 * 2 // 3)
+                self.assertIsNotNone(final["first_output_audio_ms"])
+                self.assertIsNone(final["inference_ms"]); self.assertFalse(final["inference_verified"])
+                self.assertEqual(final["completion_signal"], "interaction_idle")
+                self.assertFalse(final["input_consumed_acknowledged"])
+                self.assertFalse(final["finalization_verified"])
+        self.with_relay(upstream, body)
+        frames = [value["realtimeInput"]["audio"] for value in received if "audio" in value["realtimeInput"]]
+        self.assertTrue(all(frame["mimeType"] == "audio/pcm;rate=16000" for frame in frames))
+        self.assertTrue(all(len(base64.b64decode(frame["data"])) <= 3200 for frame in frames))
+        actual = b"".join(base64.b64decode(frame["data"]) for frame in frames)
+        self.assertEqual(actual, PCM24To16().feed(PCM * 2, final=True))
+        self.assertEqual(sum(value == {"realtimeInput": {"audioStreamEnd": True}} for value in received), 1)
+
+    def test_idle_received_during_finish_flush_cannot_truncate_final_audio(self):
+        prior_idle_seen = threading.Event()
+
+        class GatedConnection:
+            def __init__(self, connection): self.connection = connection
+            def __getattr__(self, name): return getattr(self.connection, name)
+            def send(self, value):
+                if json.loads(value) == {"realtimeInput": {"audioStreamEnd": True}}:
+                    if not prior_idle_seen.wait(2): raise AssertionError("Prior phrase IDLE was not observed during flush")
+                return self.connection.send(value)
+
+        def observed_parse(raw, diagnostics=None):
+            value = parse_event(raw, diagnostics)
+            if value.get("serverContent", {}).get("probe") == "prior_phrase": prior_idle_seen.set()
+            return value
+
+        def upstream(ws):
+            self.handshake(ws)
+            ws.recv(timeout=2)  # First full input frame before finish.
+            ws.recv(timeout=2)  # Final resampler frame, while finish is flushing.
+            ws.send(json.dumps({"serverContent": {"interactionStatus": "IDLE", "probe": "prior_phrase"}}))
+            self.assertEqual(json.loads(ws.recv(timeout=2)), {"realtimeInput": {"audioStreamEnd": True}})
+            time.sleep(.03)
+            ws.send(json.dumps({"serverContent": {"turnComplete": True}}))
+            # Even a signal just after finish is insufficient on its own: late
+            # output resets the bounded quiet window and must still be delivered.
+            time.sleep(.2)
+            ws.send(json.dumps(audio_event(PCM[:1920], outputTranscription={"text": "Final conservado"})))
+            try:
+                for _ in ws: pass
+            except ConnectionClosed: pass
+
+        def body(bridge):
+            with patch("packages.providers.gemini_dubbing.connect", side_effect=lambda *args, **kwargs: GatedConnection(connect(*args, **kwargs))), patch("packages.providers.gemini_dubbing.parse_event", side_effect=observed_parse):
+                with self.browser(bridge) as browser:
+                    browser.send(json.dumps(OPTIONS)); browser.recv(timeout=2)
+                    browser.send(PCM * 2); browser.send(json.dumps({"type": "finish"})); values = []
+                    audio_at = None
+                    while not values or values[-1]["type"] != "done":
+                        value = json.loads(browser.recv(timeout=2)); values.append(value)
+                        if value["type"] == "audio": audio_at = time.monotonic()
+                    self.assertTrue(prior_idle_seen.is_set())
+                    self.assertEqual(next(value["text"] for value in values if value["type"] == "transcript"), "Final conservado")
+                    self.assertIsNotNone(audio_at)
+                    self.assertGreaterEqual(time.monotonic() - audio_at, .45)
+        self.with_relay(upstream, body)
+
+    def test_cancel_busy_format_and_input_pacing_bounds(self):
+        disconnected = threading.Event()
+        def upstream(ws):
+            self.handshake(ws)
+            try:
+                for _ in ws: pass
+            finally: disconnected.set()
+        def body(bridge):
+            with self.browser(bridge) as browser:
+                browser.send(json.dumps(OPTIONS)); browser.recv(timeout=2)
+                with self.browser(bridge) as other: self.assertEqual(json.loads(other.recv(timeout=2))["code"], "dubbing_busy")
+                browser.send(json.dumps({"type": "cancel"})); self.assertTrue(disconnected.wait(2))
+            for data, count, code in ((b"odd", 1, "dubbing_audio_format"), (b"\0" * 9602, 1, "dubbing_audio_format"), (b"\0" * 9600, 3, "dubbing_backlog")):
+                with self.browser(bridge) as browser:
+                    browser.send(json.dumps(OPTIONS)); browser.recv(timeout=2)
+                    for _ in range(count): browser.send(data)
+                    self.assertEqual(self.receive_error(browser)["code"], code)
+        self.with_relay(upstream, body)
+
+    def test_close_requires_completion_and_errors_are_sanitized(self):
+        def no_ack(ws):
+            self.handshake(ws)
+            try:
+                for _ in ws: pass
+            except ConnectionClosed: pass
+        def body(bridge):
+            with patch("packages.providers.gemini_dubbing.DRAIN_SECONDS", .05), self.browser(bridge) as browser:
+                browser.send(json.dumps(OPTIONS)); browser.recv(timeout=2); browser.send(json.dumps({"type": "finish"}))
+                event = self.receive_error(browser)
+                self.assertEqual(event["code"], "dubbing_drain_timeout")
+        self.with_relay(no_ack, body)
+        def denied(ws):
+            ws.recv(timeout=2); ws.send('{"error":{"code":403,"message":"local-test-secret account details"}}')
+        def denied_body(bridge):
+            with self.browser(bridge) as browser:
+                browser.send(json.dumps(OPTIONS)); event = self.receive_error(browser)
+                self.assertEqual(event["code"], "dubbing_access"); self.assertNotIn("local-test-secret", json.dumps(event))
+        self.with_relay(denied, denied_body)
+        def early_close(ws): self.handshake(ws)
+        def disconnected_body(bridge):
+            with self.browser(bridge) as browser:
+                browser.send(json.dumps(OPTIONS)); browser.recv(timeout=2)
+                self.assertEqual(self.receive_error(browser)["code"], "dubbing_incomplete")
+        self.with_relay(early_close, disconnected_body)
+
+    def test_diagnostics_allowlist_never_copies_raw_data_or_unknown_names(self):
+        private = "private-text-or-token-do-not-copy"
+        event = {private: {"url": "https://private.example"}, "serverContent": {
+            private: private, "generationComplete": True, "turnComplete": False,
+            "interrupted": private, "inputTranscription": {"text": private, "finished": True},
+            "outputTranscription": {"text": private, "finished": False}}}
+        events = GeminiEvents()
+        parsed = parse_event(json.dumps(event), events)
+        _, complete = events.accept(parsed, record=False)
+        self.assertFalse(complete)  # Generic flags do not establish a Translate flush.
+        summary = events.summary()
+        self.assertEqual(summary["events_received"], 1)
+        self.assertEqual(summary["boolean_signals"]["generationComplete"]["true"], 1)
+        self.assertEqual(summary["boolean_signals"]["interrupted"]["invalid"], 1)
+        self.assertEqual(summary["transcription_finished"]["inputTranscription"]["true"], 1)
+        self.assertEqual(summary["unknown_top_fields"], 1)
+        self.assertEqual(summary["unknown_server_content_fields"], 1)
+        encoded = json.dumps(summary)
+        self.assertNotIn(private, encoded); self.assertNotIn("https://", encoded)
+        with self.assertRaises(VoiceError): parse_event('{"error":{"code":403,"message":"' + private + '"}}', events)
+        self.assertEqual(events.summary()["top_fields"]["error"], 1)
+        self.assertNotIn(private, json.dumps(events.summary()))
+
+    def test_continuous_output_without_turn_signal_emits_diagnostics_then_timeout(self):
+        def upstream(ws):
+            self.handshake(ws)
+            while json.loads(ws.recv(timeout=2)) != {"realtimeInput": {"audioStreamEnd": True}}: pass
+            ws.send(json.dumps({"serverContent": {"generationComplete": True,
+                "inputTranscription": {"text": "private-source", "finished": True},
+                "outputTranscription": {"text": "private-translation", "finished": True}}}))
+            for _ in ws: pass
+        def body(bridge):
+            with patch("packages.providers.gemini_dubbing.DRAIN_SECONDS", .15), self.browser(bridge) as browser:
+                browser.send(json.dumps(OPTIONS)); browser.recv(timeout=2)
+                browser.send(json.dumps({"type": "finish"})); values = []
+                while not values or values[-1]["type"] != "error": values.append(json.loads(browser.recv(timeout=2)))
+                self.assertFalse(any(value["type"] == "done" for value in values))
+                self.assertEqual(values[-1]["code"], "dubbing_drain_timeout")
+                self.assertEqual(values[-2]["type"], "metrics")
+                summary = values[-2]
+                self.assertEqual(summary["bytes_sent"], 0)
+                self.assertIsNone(summary["inference_ms"])
+                diagnostics = summary["provider_diagnostics"]
+                self.assertEqual(diagnostics["boolean_signals"]["generationComplete"]["true"], 1)
+                self.assertEqual(diagnostics["transcription_finished"]["outputTranscription"]["true"], 1)
+                self.assertEqual(diagnostics["audio_stream_end_messages_sent"], 1)
+                self.assertTrue(diagnostics["audio_stream_end_sent"])
+                self.assertNotIn("private-source", json.dumps(summary))
+                self.assertNotIn("private-translation", json.dumps(summary))
+        self.with_relay(upstream, body)
+
+    def test_output_backpressure_remains_bounded_after_idle(self):
+        def upstream(ws):
+            self.handshake(ws); ws.recv(timeout=2)
+            ws.send(json.dumps(audio_event(PCM[:1920])))
+            time.sleep(.4)
+            ws.send(json.dumps(audio_event(PCM * 8)))
+            while json.loads(ws.recv(timeout=2)) != {"realtimeInput": {"audioStreamEnd": True}}: pass
+            ws.send(json.dumps({"serverContent": {"turnComplete": True}}))
+            for _ in ws: pass
+        def body(bridge):
+            with self.browser(bridge) as browser:
+                browser.send(json.dumps(OPTIONS)); browser.recv(timeout=2); browser.send(PCM * 2)
+                stamps = []
+                while len(stamps) < 9:
+                    event = json.loads(browser.recv(timeout=2))
+                    if event["type"] == "audio": stamps.append(time.monotonic())
+                self.assertGreater(stamps[-1] - stamps[1], .43)
+                browser.send(json.dumps({"type": "finish"}))
+                while json.loads(browser.recv(timeout=2))["type"] != "done": pass
+        self.with_relay(upstream, body)
+
+    def test_wall_deadline_sends_stream_end_without_more_client_messages(self):
+        ended = threading.Event()
+        def upstream(ws):
+            self.handshake(ws)
+            self.assertEqual(json.loads(ws.recv(timeout=7)), {"realtimeInput": {"audioStreamEnd": True}})
+            ended.set(); ws.send(json.dumps({"serverContent": {"turnComplete": True}}))
+            for _ in ws: pass
+        def body(bridge):
+            with self.browser(bridge) as browser:
+                browser.send(json.dumps(OPTIONS)); browser.recv(timeout=2); values = []
+                while not values or values[-1]["type"] != "done": values.append(json.loads(browser.recv(timeout=7)))
+                self.assertTrue(ended.is_set())
+                self.assertTrue(any(value["type"] == "input-ended" for value in values))
+                self.assertIsNone(next(value for value in values if value["type"] == "metrics")["first_output_audio_ms"])
+        self.with_relay(upstream, body)
+
+
+if __name__ == "__main__": unittest.main()

@@ -1,0 +1,311 @@
+"""Offline single-object dispatch coordinator; no provider adapter is installed.
+
+The only accepted injectable transport is explicitly a local simulation. Opening
+this module never loads Modal, authenticates, downloads or resumes a job. Budget
+and dispatch journals are separate SQLite databases: durable intent is written
+before each boundary, and ambiguous work is retained rather than replayed.
+"""
+from __future__ import annotations
+
+from contextlib import contextmanager
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from decimal import Decimal
+import hashlib
+from io import BytesIO
+import json
+from pathlib import Path
+import re
+import sqlite3
+import threading
+from typing import Protocol
+from uuid import UUID, NAMESPACE_URL, uuid5
+from zipfile import ZipFile
+
+from services.spatial.budget import SpatialBudget, BudgetError, micro_usd, usd
+from services.spatial.review import CaptureReviewService, CaptureReviewError, rectangle_mask, _package_info, _publish
+from workers.spatial_runtime import read_lock, readiness, validate_request, validate_glb, _png, MAX_INPUT
+
+STATES = frozenset({'reserving', 'reserved', 'starting', 'started', 'completed_test_stub',
+                    'failed_unknown', 'failed_known', 'cancelled_unknown', 'cancelled_known', 'cancelled_before_start'})
+AMBIGUOUS = frozenset({'starting', 'started', 'failed_unknown', 'cancelled_unknown'})
+_HASH = re.compile('[0-9a-f]{64}')
+_FIELDS = frozenset({'schema_version', 'job_id', 'identity', 'capture_id', 'package_id', 'package_sha256',
+    'review_revision', 'frame_id', 'source_sha256', 'image_sha256', 'mask_sha256', 'pipeline_version',
+    'lock_sha256', 'seed', 'timeout_seconds', 'created_at', 'updated_at', 'transport_kind', 'origin',
+    'model_executed', 'artifact', 'actual_billed_usd', 'actual_cost_known', 'error_code', 'cancel_requested'})
+
+
+class DispatchError(ValueError):
+    def __init__(self, code, message, status=409):
+        self.code, self.status = code, status
+        super().__init__(message)
+
+
+@dataclass(frozen=True)
+class DispatchResult:
+    artifact_bytes: bytes
+    # Exact report from the substitute, not an estimate or provider measurement.
+    actual_billed_usd: str | None = None
+
+
+class DispatchTransport(Protocol):
+    simulation: bool
+    def execute(self, request: dict) -> DispatchResult: ...
+
+
+def _hash(raw): return hashlib.sha256(raw).hexdigest()
+def _canonical(value): return json.dumps(value, sort_keys=True, ensure_ascii=False, allow_nan=False).encode()
+def _stamp(): return datetime.now(timezone.utc).isoformat()
+
+
+def _uuid(value):
+    if not isinstance(value, str) or str(UUID(value)) != value: raise ValueError()
+
+
+def validate_dispatch_record(row):
+    """Pure backup/import validator. Never opens a budget or executes transport."""
+    try:
+        document = json.loads(row['document']) if isinstance(row['document'], str) else row['document']
+        if set(document) != _FIELDS or row['state'] not in STATES: raise ValueError()
+        if document['schema_version'] != '0.1.0' or document['job_id'] != row['job_id'] or document['identity'] != row['identity']: raise ValueError()
+        _uuid(document['job_id']); _uuid(document['capture_id'])
+        for key in ('identity', 'package_id', 'package_sha256', 'source_sha256', 'image_sha256', 'mask_sha256', 'lock_sha256'):
+            if not isinstance(document[key], str) or not _HASH.fullmatch(document[key]): raise ValueError()
+        expected_identity=_hash(_canonical({key:document[key] for key in ('package_id','package_sha256',
+            'review_revision','seed','timeout_seconds','pipeline_version','lock_sha256')}))
+        if document['identity']!=expected_identity or document['job_id']!=str(uuid5(NAMESPACE_URL,'brivany:dispatch:'+expected_identity)): raise ValueError()
+        if not re.fullmatch('frame-[0-9]{4}', document['frame_id']): raise ValueError()
+        if not re.fullmatch('[a-z0-9._-]{1,80}', document['pipeline_version']): raise ValueError()
+        if type(document['review_revision']) is not int or document['review_revision'] < 1: raise ValueError()
+        if type(document['seed']) is not int or not 0 <= document['seed'] <= 2147483647: raise ValueError()
+        if type(document['timeout_seconds']) is not int or not 1 <= document['timeout_seconds'] <= 180: raise ValueError()
+        if document['transport_kind'] != 'test_stub' or document['origin'] != 'test_stub' or document['model_executed'] is not False: raise ValueError()
+        if type(document['actual_cost_known']) is not bool or type(document['cancel_requested']) is not bool: raise ValueError()
+        if document['actual_cost_known'] != (document['actual_billed_usd'] is not None): raise ValueError()
+        if document['actual_billed_usd'] is not None:
+            if not isinstance(document['actual_billed_usd'],str): raise ValueError()
+            micro_usd(document['actual_billed_usd'])
+        if document['error_code'] not in {None, 'transport_failed', 'artifact_invalid', 'storage_failed', 'dispatch_interrupted'}: raise ValueError()
+        for key in ('created_at', 'updated_at'): datetime.fromisoformat(document[key])
+        artifact = document['artifact']
+        if artifact is not None:
+            if set(artifact) != {'relative_path', 'sha256', 'size_bytes', 'format', 'structure_checks_passed', 'validation_scope', 'geometry_fidelity_verified', 'physical_realism_verified'}: raise ValueError()
+            if artifact['relative_path'] != 'dispatch-artifacts/'+document['job_id']+'.glb': raise ValueError()
+            if not _HASH.fullmatch(artifact['sha256']) or type(artifact['size_bytes']) is not int or not 32 <= artifact['size_bytes'] <= 32*1024*1024: raise ValueError()
+            if artifact['format'] != 'glb' or artifact['structure_checks_passed'] is not True or artifact['geometry_fidelity_verified'] is not False or artifact['physical_realism_verified'] is not False: raise ValueError()
+        if row['state'] == 'completed_test_stub' and artifact is None: raise ValueError()
+        if row['state'] in {'failed_unknown', 'cancelled_unknown'} and document['actual_cost_known']: raise ValueError()
+        if row['state'] in {'failed_known', 'cancelled_known'} and not document['actual_cost_known']: raise ValueError()
+        return document
+    except (ValueError, KeyError, TypeError, AttributeError, BudgetError):
+        raise DispatchError('dispatch_integrity', 'El registro de orquestación no es válido.') from None
+
+
+def _validated_package(reviews, capture_id, package_id, expected_revision):
+    with reviews.lock:
+        current = reviews.get(capture_id)
+        if type(expected_revision) is not int or current['revision'] != expected_revision:
+            raise DispatchError('dispatch_review_stale', 'La revisión cambió. Prepara de nuevo el objeto.')
+        raw, _mime, _name = reviews.package(capture_id, package_id)
+        info = _package_info(raw, package_id)
+        item = next((item for item in current['objects'] if item['id'] == info.get('object_id')), None)
+        if (item is None or item['mask_reviewed'] is not True or info.get('mask_reviewed') is not True or
+            info.get('capture_id') != capture_id or info.get('review_revision') != expected_revision or
+            info.get('source_sha256') != current['source_sha256'] or info.get('frame_id') != item['frame_id'] or
+            info.get('frame_sha256') != item['frame_sha256'] or info.get('rectangle') != item['rectangle'] or
+            info.get('label') != item['label'] or info.get('mask_sha256') != item['mask_sha256'] or
+            info.get('length_reference') != current['length_reference'] or info.get('schema_version') != '0.1.0' or
+            info.get('mask_kind') != 'manual_rectangle' or info.get('metric_scale_verified') is not False or
+            info.get('model_executed') is not False or info.get('status') != 'prepared_not_executed'):
+            raise DispatchError('dispatch_review_stale', 'El paquete no corresponde a la selección revisada vigente.')
+        with ZipFile(BytesIO(raw)) as package:
+            image, mask = package.read('image.png'), package.read('mask.png')
+        image_size = _png(image, MAX_INPUT, 'imagen'); mask_size = _png(mask, 2*1024*1024, 'máscara')
+        if image_size != mask_size or image_size != (item['width'], item['height']) or mask != rectangle_mask(*image_size, item['rectangle']):
+            raise DispatchError('dispatch_input', 'La imagen o máscara no coincide con la revisión.')
+        return info, image, mask, _hash(raw)
+
+
+def preflight_package(reviews, capture_id, package_id, *, expected_revision, seed=0, timeout_seconds=180, lock=None):
+    """Read-only preparation: no budget reservation, journal or transport call."""
+    if type(seed) is not int or not 0 <= seed <= 2147483647 or type(timeout_seconds) is not int or not 1 <= timeout_seconds <= 180:
+        raise DispatchError('dispatch_parameters', 'Revisa semilla y plazo del trabajo.', 422)
+    lock = read_lock() if lock is None else lock
+    state = readiness(lock)
+    info, image, mask, package_hash = _validated_package(reviews, capture_id, package_id, expected_revision)
+    lock_hash = _hash(_canonical(lock))
+    identity = _hash(_canonical({'package_id':package_id, 'package_sha256':package_hash,
+        'review_revision':expected_revision, 'seed':seed, 'timeout_seconds':timeout_seconds,
+        'pipeline_version':lock['pipeline_version'], 'lock_sha256':lock_hash}))
+    return {'schema_version':'0.1.0', 'job_id':str(uuid5(NAMESPACE_URL, 'brivany:dispatch:'+identity)),
+        'identity':identity, 'capture_id':capture_id, 'package_id':package_id, 'package_sha256':package_hash,
+        'review_revision':expected_revision, 'frame_id':info['frame_id'], 'source_sha256':info['source_sha256'],
+        'image_sha256':_hash(image), 'mask_sha256':_hash(mask), 'pipeline_version':lock['pipeline_version'],
+        'lock_sha256':lock_hash, 'seed':seed, 'timeout_seconds':timeout_seconds,
+        'dimensions':list(_png(image, MAX_INPUT, 'imagen')), 'configuration_ready':not state['pending'],
+        'pending':state['pending'] + ['real_transport_not_implemented'], 'remote_integration_implemented':False,
+        'reservation_created':False, 'external_calls':0, 'gpu_seconds':0}
+
+
+class SpatialDispatch:
+    def __init__(self, root, reviews: CaptureReviewService, budget: SpatialBudget, *, lock_path=None, transport: DispatchTransport | None=None):
+        self.root = Path(root).absolute()
+        if self.root.resolve() != self.root: raise DispatchError('dispatch_storage', 'La ruta local no puede redirigirse.')
+        self.root.mkdir(parents=True, exist_ok=True)
+        self.database = self.root/'dispatch.sqlite3'
+        if self.database.resolve() != self.database: raise DispatchError('dispatch_storage', 'El diario local no puede redirigirse.')
+        if budget.path != self.root/'budget.sqlite3': raise DispatchError('dispatch_storage', 'El presupuesto debe pertenecer al mismo almacenamiento local.')
+        self.reviews, self.budget, self.lock_path, self.transport = reviews, budget, lock_path, transport
+        self.lock = threading.RLock()
+        with self._connect() as db:
+            db.execute('CREATE TABLE IF NOT EXISTS dispatch_jobs(job_id TEXT PRIMARY KEY, identity TEXT UNIQUE NOT NULL, state TEXT NOT NULL, document TEXT NOT NULL)')
+
+    @contextmanager
+    def _connect(self):
+        db=sqlite3.connect(self.database,timeout=10,isolation_level=None);db.row_factory=sqlite3.Row
+        try:
+            db.execute('BEGIN IMMEDIATE'); yield db; db.execute('COMMIT')
+        except Exception:
+            if db.in_transaction: db.execute('ROLLBACK')
+            raise
+        finally: db.close()
+
+    @staticmethod
+    def _dto(row):
+        document=validate_dispatch_record(row)
+        return {**document, 'state':row['state'], 'remote_integration_implemented':False,
+            'external_calls':0, 'gpu_seconds':0, 'billing_basis':'local_transport_test_report',
+            'replay_allowed':False, 'consumption_uncertain':row['state'] in AMBIGUOUS or (row['state']=='completed_test_stub' and not document['actual_cost_known'])}
+
+    def inspect(self, job_id):
+        try: _uuid(job_id)
+        except (ValueError, TypeError, AttributeError): raise DispatchError('dispatch_job', 'Trabajo no disponible.', 404) from None
+        with self._connect() as db:
+            row=db.execute('SELECT * FROM dispatch_jobs WHERE job_id=?',(job_id,)).fetchone()
+            if row is None: raise DispatchError('dispatch_job', 'Trabajo no disponible.', 404)
+            return self._dto(row)
+
+    def _update(self, job_id, state, **changes):
+        with self._connect() as db:
+            row=db.execute('SELECT * FROM dispatch_jobs WHERE job_id=?',(job_id,)).fetchone()
+            document={**validate_dispatch_record(row), **changes, 'updated_at':_stamp()}
+            validate_dispatch_record({'job_id':job_id,'identity':row['identity'],'state':state,'document':document})
+            db.execute('UPDATE dispatch_jobs SET state=?,document=? WHERE job_id=?',(state,json.dumps(document),job_id))
+
+    def submit(self, capture_id, package_id, *, expected_revision, seed=0, timeout_seconds=180, execute=False):
+        if execute is not True: raise DispatchError('dispatch_explicit_execution', 'La ejecución requiere autorización explícita.')
+        locked=read_lock(self.lock_path); gates=readiness(locked)
+        if gates['pending']: raise DispatchError('dispatch_not_configured', 'Los controles de ejecución siguen cerrados.')
+        if self.transport is None or getattr(self.transport,'simulation',None) is not True:
+            raise DispatchError('dispatch_transport_pending', 'Sólo hay protocolo local; falta un transporte real validado.')
+        plan=preflight_package(self.reviews,capture_id,package_id,expected_revision=expected_revision,seed=seed,timeout_seconds=timeout_seconds,lock=locked)
+        job_id=plan['job_id']
+        with self.lock:
+            with self._connect() as db:
+                existing=db.execute('SELECT * FROM dispatch_jobs WHERE job_id=?',(job_id,)).fetchone()
+                if existing: return self._dto(existing)
+                if db.execute("SELECT 1 FROM dispatch_jobs WHERE state IN ('reserving','reserved','starting','started','failed_unknown','cancelled_unknown') LIMIT 1").fetchone():
+                    raise DispatchError('dispatch_unresolved', 'Hay un trabajo pendiente de terminar o conciliar.')
+                document={key:plan[key] for key in ('schema_version','job_id','identity','capture_id','package_id','package_sha256','review_revision','frame_id','source_sha256','image_sha256','mask_sha256','pipeline_version','lock_sha256','seed','timeout_seconds')}
+                document.update(created_at=_stamp(),updated_at=_stamp(),transport_kind='test_stub',origin='test_stub',model_executed=False,artifact=None,actual_billed_usd=None,actual_cost_known=False,error_code=None,cancel_requested=False)
+                db.execute('INSERT INTO dispatch_jobs VALUES(?,?,?,?)',(job_id,plan['identity'],'reserving',json.dumps(document)))
+            try:
+                estimate=self.budget.estimate(timeout_seconds)
+                config=self.budget.status(); money=locked['budget']
+                if any(micro_usd(str(money[key])) != micro_usd(config[field]) for key,field in (
+                    ('approved_total_usd','total_usd'),('approved_per_job_usd','per_job_usd'),
+                    ('gpu_rate_usd_per_second','rate_usd_per_gpu_second'),('non_gpu_reserve_per_job_usd','extra_reserve_usd'))):
+                    raise DispatchError('dispatch_budget_mismatch','El lock y el presupuesto local deben coincidir.')
+                receipt=self.budget.reserve(job_id,estimate['estimated_usd'])
+                if receipt['state'] != 'reserved': raise DispatchError('dispatch_budget_state','La reserva previa no permite comenzar.')
+                self._update(job_id,'reserved')
+                _info,image,mask,_digest=_validated_package(self.reviews,capture_id,package_id,expected_revision)
+                if _digest != plan['package_sha256']: raise DispatchError('dispatch_input','El paquete cambió antes de iniciar.')
+                request={'schema_version':'0.1.0','job_id':job_id,'capture_id':capture_id,'frame_id':plan['frame_id'],
+                    'image_png':image,'image_sha256':plan['image_sha256'],'mask_png':mask,'mask_sha256':plan['mask_sha256'],
+                    'mask_reviewed':True,'seed':seed,'timeout_seconds':timeout_seconds,'reserved_usd':float(Decimal(receipt['reserved_usd']))}
+                validate_request(request)
+                self._update(job_id,'starting')
+                self.budget.mark_started(job_id)
+                self._update(job_id,'started')
+            except Exception:
+                # No transport was called. Release only a reservation known not started.
+                try:
+                    self.budget.cancel_before_start(job_id)
+                    self._update(job_id,'cancelled_before_start',error_code='dispatch_interrupted')
+                except BudgetError as exc:
+                    if exc.code=='budget_reservation_missing':
+                        self._update(job_id,'cancelled_before_start',error_code='dispatch_interrupted')
+                    else:
+                        # Crossing the durable start marker is conservative even
+                        # when failure happened before this process called execute.
+                        self.budget.settle(job_id,None)
+                        self._update(job_id,'failed_unknown',error_code='dispatch_interrupted')
+                raise
+        # Cooperative cancellation barrier. Another process may request a stop
+        # immediately after this check; completion still checks the durable flag
+        # and suppresses artifact publication. This is not provider cancellation.
+        if self.inspect(job_id)['cancel_requested']:
+            with self.lock:
+                self.budget.settle(job_id,None)
+                self._update(job_id,'cancelled_unknown')
+            return self.inspect(job_id)
+        try:
+            result=self.transport.execute(request)
+        except Exception:
+            with self.lock:
+                self.budget.settle(job_id,None)
+                cancelled=self.inspect(job_id)['cancel_requested']
+                self._update(job_id,'cancelled_unknown' if cancelled else 'failed_unknown',error_code='transport_failed')
+            return self.inspect(job_id)
+        with self.lock:
+            actual=None
+            if isinstance(result,DispatchResult) and result.actual_billed_usd is not None:
+                try: actual=usd(micro_usd(result.actual_billed_usd))
+                except BudgetError: pass
+            self.budget.settle(job_id,actual)
+            changes={'actual_billed_usd':actual,'actual_cost_known':actual is not None}
+            if self.inspect(job_id)['cancel_requested']:
+                self._update(job_id,'cancelled_known' if actual is not None else 'cancelled_unknown',**changes)
+                return self.inspect(job_id)
+            try:
+                artifact=validate_glb(result.artifact_bytes)
+                directory=self.root/'dispatch-artifacts'
+                if directory.resolve()!=directory: raise OSError('unsafe output')
+                directory.mkdir(exist_ok=True); path=directory/(job_id+'.glb')
+                if path.resolve()!=path: raise OSError('unsafe output')
+                _publish(path,result.artifact_bytes)
+                artifact['relative_path']='dispatch-artifacts/'+job_id+'.glb'
+                self._update(job_id,'completed_test_stub',artifact=artifact,**changes)
+            except Exception:
+                self._update(job_id,'failed_known' if actual is not None else 'failed_unknown',error_code='artifact_invalid',**changes)
+            return self.inspect(job_id)
+
+    def cancel(self, job_id):
+        with self.lock:
+            current=self.inspect(job_id)
+            if current['state'] in {'reserving','reserved'}:
+                try: self.budget.cancel_before_start(job_id)
+                except BudgetError as exc:
+                    if exc.code!='budget_reservation_missing': raise
+                self._update(job_id,'cancelled_before_start',cancel_requested=True)
+            elif current['state'] in AMBIGUOUS:
+                # A cancellation request cannot prove that the provider stopped.
+                if current['state']=='starting': self.budget.mark_started(job_id)
+                self.budget.settle(job_id,None)
+                self._update(job_id,'cancelled_unknown',cancel_requested=True)
+            return self.inspect(job_id)
+
+    def reconcile(self, job_id, actual_usd):
+        """Explicit operator reconciliation; never estimates missing billing."""
+        actual_usd=usd(micro_usd(actual_usd))
+        with self.lock:
+            current=self.inspect(job_id)
+            if current['state'] not in AMBIGUOUS and not (current['state']=='completed_test_stub' and not current['actual_cost_known']):
+                raise DispatchError('dispatch_reconcile','Este trabajo no tiene consumo pendiente.')
+            if current['state']=='starting': self.budget.mark_started(job_id)
+            self.budget.settle(job_id,actual_usd)
+            state='cancelled_known' if current['cancel_requested'] else 'completed_test_stub' if current['artifact'] else 'failed_known'
+            self._update(job_id,state,actual_billed_usd=actual_usd,actual_cost_known=True)
+            return self.inspect(job_id)

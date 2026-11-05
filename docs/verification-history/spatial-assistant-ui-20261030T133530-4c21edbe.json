@@ -1,0 +1,18 @@
+{
+  "suite": "spatial-assistant-ui",
+  "started_at": "2026-10-30T13:35:30.000611+00:00",
+  "finished_at": "2026-10-30T13:35:42.242380+00:00",
+  "duration_seconds": 12.241769,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_spatial_assistant"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Real scene/HTTP/SQLite/browser text-assistant plumbing with simulated model.\",\r\n  \"checks\": [\r\n    \"opening the real scene performs no POST/provider request and microphone requires explicit consent\",\r\n    \"select, focus and label identification use saved objects without model requests or edits\",\r\n    \"move review preserves relative units, discard has no effect, explicit apply saves one revision and existing Undo restores the original\",\r\n    \"a concurrent edit invalidates the reviewed command instead of overwriting a newer scene\",\r\n    \"opt-in streamed conversation uses the current server-selected object, rejects forged context and never mutates geometry\",\r\n    \"contextual text and review controls fit desktop and 320/390/768 pixel layouts\"\r\n  ],\r\n  \"screenshots\": [\r\n    \"tmp/spatial-assistant/assistant-1440.png\",\r\n    \"tmp/spatial-assistant/assistant-390.png\"\r\n  ],\r\n  \"checked_at\": \"2026-10-30T13:35:41.927838+00:00\",\r\n  \"model_stub_calls\": 1,\r\n  \"external_calls\": 0,\r\n  \"model_executed\": false,\r\n  \"voice_hardware_tested\": false,\r\n  \"audible_latency_verified\": false,\r\n  \"limitations\": [\r\n    \"Actual scene GLB, HTTP, SQLite, edit history and browser; text-model response substituted.\",\r\n    \"No provider account, camera observation, geometry fidelity, physical collision or measured scale verified.\",\r\n    \"This text-focused check does not exercise Muse, TTS or a physical microphone.\"\r\n  ]\r\n}\r\n"
+}

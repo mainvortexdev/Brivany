@@ -1,0 +1,20 @@
+{
+  "checked_at": "2026-10-27T23:03:16.037Z",
+  "status": "passed",
+  "api": "real_local",
+  "entries": 13,
+  "chain_valid": true,
+  "evidence_sha256_matches": true,
+  "evidence_url": "/api/activity/c52f01e1-1954-465d-aedc-1a8dae43766c/evidence/0",
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "http_mutations": 0,
+  "physical_devices": false,
+  "screenshots": [
+    "tmp/ui/activity-local-1440.png",
+    "tmp/ui/activity-local-390.png"
+  ],
+  "limitations": [
+    "Verifica integración de lectura y hash; no reconstrucción 3D ni semántica de los informes."
+  ]
+}

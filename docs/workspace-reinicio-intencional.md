@@ -1,0 +1,28 @@
+# Reinicio de WorkSpace y acceso al navegador
+
+31 de octubre de 2026, hora de La Paz.
+
+El argumento `--island` inicia WorkSpace, pero ya no fuerza el panel Pantalla
+desplegado. El host empieza cerrado y conserva la apertura por interacción.
+La prueba existente de carga ahora usa también la opción de arranque WorkSpace
+y verifica el panel oculto, su altura inicial y el despliegue explícito.
+
+La suite local `work` pasó sus 26 pruebas con ventanas sustituidas, sin captura
+de pantalla, audio ni llamadas de inferencia. Evidencia:
+`docs/verification-history/work-20261101T012742-792cfc76.json`.
+
+Se inició la aplicación nativa real con `--island`. La inspección de sus propias
+ventanas confirmó la barra visible de 1280 × 40, la reserva superior de 40 píxeles
+y las superficies WorkSpace fuera de la barra de tareas. La inspección posterior
+encontró también el panel visible; no permite atribuir su apertura al arranque
+o a una interacción posterior. No se presenta como una prueba de ausencia de
+apertura espontánea durante toda la sesión. Evidencia:
+`tmp/workspace-startup/native.json`.
+
+El navegador integrado permitió leer la pantalla de bienvenida del proyecto
+ProjectFixtureAI en Google Cloud después de reintentar el acceso. No se crearon permisos,
+credenciales ni conexiones Google en esta comprobación. El tráfico del navegador
+y del arranque de Spotify no se midió; no se declara consumo externo cero.
+
+El objetivo general de control del ordenador figura pausado. El diagnóstico
+del corte de audio y la conexión real de Google siguen pendientes.

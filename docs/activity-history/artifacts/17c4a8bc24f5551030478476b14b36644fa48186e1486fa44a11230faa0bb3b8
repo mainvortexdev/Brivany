@@ -1,0 +1,29 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/ingest-ui/report.json",
+  "original_sha256": "212176ee273409d98f97cae528ef0c80a4d8bce8327f97565a5b1221700eed38",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "gpu_inference": false,
+    "real_reconstruction_verified": false,
+    "geometry_fidelity_verified": false,
+    "metric_scale_verified": false,
+    "physical_realism_verified": false,
+    "physical_devices_tested": false
+  },
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

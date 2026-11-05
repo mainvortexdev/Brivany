@@ -1,0 +1,146 @@
+# 36. Conexiones, plano guardado y catálogo de Sous
+
+29 de octubre de 2026, America/La_Paz. El objetivo integral permanece activo.
+Se añadieron recorridos funcionales locales; las cuentas, reconstrucción real,
+precisión profesional, hardware y retraso audible de 500 ms siguen pendientes.
+
+## Conexiones personales
+
+`/connections` ofrece configuración privada, permisos por servicio, autorización
+Google y revisión de operaciones. Abre la autorización en el navegador externo
+del sistema, no en la ventana embebida. Usa PKCE S256, estado de un solo uso,
+vencimiento y callback loopback. Las autorizaciones se guardan cifradas mediante
+DPAPI para el usuario actual de Windows y se pueden renovar tras reiniciar.
+La configuración de cliente/credenciales se guarda localmente sin devolverlas al
+cliente ni adjuntarlas a la bitácora. No se crean cuentas o clientes Google.
+
+Los permisos son independientes para Calendar, Gmail y Drive: las aplicaciones
+instaladas de Google no admiten autorización incremental de la forma usada por
+aplicaciones web. La interfaz distingue lectura y creación de eventos/borradores.
+Revocar puede afectar a todos los permisos del proyecto; se explica antes de
+retirar los grants locales y solicitar revocación. La conexión de un plugin de
+Codex no concede sus tokens ni permisos a la aplicación Brivany.
+
+Se implementaron transportes REST de agenda (lista/creación sin invitados), Gmail
+(búsqueda de identificadores y borradores MIME, sin enviar), Drive (búsqueda de
+metadatos por nombre, sin descargar contenido) y mensajes al WhatsApp propio con
+consentimiento. El identificador de un mensaje aceptado no acredita entrega.
+Los resultados de cuenta se devuelven para verlos sin conservar su contenido en
+el diario; se conservan identidades/hashes y estado de ejecución. Las operaciones
+se revisan y aprueban con parámetros exactos. Una acción incierta bloquea su
+repetición equivalente; una consulta nueva explícita sí puede repetirse después
+de un resultado conocido. No hay órdenes arbitrarias del sistema ni publicación
+de anuncios desde esta pantalla.
+
+Se corrigieron guardado concurrente y actualización de configuración entre
+instancias, validación de cliente antes de persistir y exclusión atómica de dos
+acciones equivalentes ya propuestas. Las pruebas HTTP usan `.env` temporal y no
+alteran el archivo privado real. Los valores nunca se imprimen.
+
+**Comprobado:** veinte pruebas OAuth (incluida protección DPAPI real con secretos
+sintéticos), nueve pruebas de REST sustituido, diez HTTP y siete controles del
+recorrido de Conexiones. Usan estados/PKCE/cifrado/SQLite/HTTP/navegador reales,
+pero intercambio OAuth y APIs sustituidos. **No hay cuenta real conectada ni
+correo, evento o mensaje real creado en esta entrega.** Keychain de macOS, OAuth
+móvil, verificación de APIs y consentimiento de cuentas reales están pendientes.
+
+Fuentes oficiales: [OAuth de escritorio](https://developers.google.com/identity/protocols/oauth2/native-app),
+[Calendar](https://developers.google.com/workspace/calendar/api/v3/reference/events/insert),
+[borradores Gmail](https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.drafts/create),
+[Drive](https://developers.google.com/workspace/drive/api/reference/rest/v3/files/list) y
+[mensajes WhatsApp de Meta](https://www.postman.com/meta/whatsapp-business-platform/folder/o48mro7/messages).
+
+## Receptor separado de WhatsApp
+
+`services.whatsapp_gateway` sirve exclusivamente `/webhook` y `/health` mediante
+un listener loopback separado. Valida firma HMAC sobre el cuerpo original,
+challenge, número propio permitido y consentimiento; no publica el servidor de
+Brivany. Requiere un proxy HTTPS y cuenta externos, todavía sin configurar.
+
+Sin `--allow-replies` recibe y deduplica sin llamar modelos ni responder.
+Ese permiso habilita una respuesta de texto acotada por mensaje del chat propio,
+un intento de modelo y uno de envío, con límite diario persistente (20 por defecto).
+El ACK no espera al modelo. La cola es acotada, el historial/texto expira en cinco
+minutos y el diario no contiene conversaciones, teléfonos ni credenciales.
+Se rechazan mensajes antiguos/fuera de orden y el reinicio no vuelve a ejecutar
+trabajos ambiguos. Retirar el consentimiento en configuración se comprueba de
+nuevo antes de responder. `--share-kitchen` es independiente y opcional.
+
+El modelo no tiene herramientas: este primer chat no ejecuta recordatorios,
+agenda, correo, pedidos, anuncios ni control del ordenador. El puente con esas
+acciones sigue pendiente; no basta haber preparado sus APIs separadas.
+Pasaron catorce pruebas con HTTP/firma/cola/SQLite reales y modelo/envío
+sustituidos. No se ejecutó el receptor con cuentas reales ni se enviaron mensajes.
+
+## Plano 2D de la geometría actual
+
+Espacios permite alternar 3D/Plano, seleccionar objetos en ambas vistas,
+desplazar/acercar, elegir tramos de referencia y exportar SVG autocontenido con
+revisión, procedencia e incertidumbre. Las huellas se calculan desde vértices GLB
+transformados y el corte arquitectónico desde triángulos a una altura explícita;
+no se inventa una planta rectangular ni se detectan puertas automáticamente.
+Las huellas convexas pueden cubrir huecos y sobreestimar el área ocupada.
+
+La primera vista de una escena relativa es **no métrica**. Las longitudes medidas
+que el usuario introduce ajustan una escala por mínimos cuadrados; siguen siendo
+declaradas. Dos o más referencias permiten mostrar residuales de consistencia,
+sin certificar precisión geométrica. Una sola medida no produce un residual
+independiente. El plano añade una zona global de geometría/cobertura sin verificar.
+El contrato admite anotaciones de aberturas y zonas inciertas con procedencia;
+su edición gráfica completa sigue pendiente.
+
+Guardar plano conserva referencias, anotaciones, zonas y altura de corte en
+`scene_plan_settings`, con revisión independiente y rechazo de cambios
+concurrentes. La escena no cambia por guardar una calibración. El respaldo local
+valida y conserva estos metadatos. Se comprueban referencias repetidas, valores
+no finitos y el identificador reservado de incertidumbre global.
+
+Los proyectos portátiles incluyen esa configuración opcional en sus versiones.
+Los proyectos anteriores siguen abriendo con configuración vacía; guardar plano
+crea una revisión de proyecto sin fingir cambios de geometría/historial. Desktop
+calcula usando los GLB de la carpeta verificada, no rutas enviadas por JavaScript.
+El ZIP conserva las versiones; una edición posterior conserva la calibración.
+
+Pasaron ocho controles del plano de aplicación y ocho del plano portátil con
+carpetas y GLB reales. Selectores/transporte pywebview se sustituyeron; no se
+verificó edición mediante ventana nativa ni precisión de una vivienda real.
+Las referencias de prueba son sintéticas y las escenas modeladas.
+
+## Sous: localidad declarada y compras
+
+Sous tiene tres propuestas escritas: huevos/verduras, quinua/verduras y
+lentejas/arroz. El usuario declara país/ciudad; no se consulta geolocalización ni
+se presupone residencia. Indicar Bolivia reordena la propuesta con quinua sin
+presentarla como plato tradicional autenticado. Preferencias y receta elegida
+persisten; restricciones incompatibles bloquean iniciar esa receta.
+
+Cada sesión conserva su receta y sus pasos. La conversación recibe la receta
+actual y localidad declarada desde el servidor, sin convertirlas en instrucciones.
+Se endurecieron los alias de inventario para no tratar harina de quinua como
+quinua seca, ni pan/productos sin huevo como huevos disponibles.
+
+La lista de compras guarda cantidades/unidades, permite añadir, revisar y quitar
+elementos y propone lo faltante de la receta. Los precios son desconocidos y no
+se inventan totales. No hay pedidos, tienda o envío WhatsApp automáticos.
+El recorrido de seis controles de navegador/HTTP/SQLite pasó sin proveedores;
+también pasaron las regresiones de visión y voz con transportes sustituidos.
+
+## Evidencias
+
+- `tmp/verification/python-20261029T144756-c3253f50.json`: 472 pruebas Python
+  aprobaron en ese estado; no acredita APIs o hardware reales.
+- `tmp/verification/google-oauth-20261029T114240-798840c0.json`: veinte pruebas.
+- `tmp/verification/personal-providers-20261029T114405-684da3b9.json`: nueve pruebas.
+- `tmp/verification/connections-http-20261029T144420-4abd1f9a.json`: diez pruebas.
+- `tmp/verification/connections-20261029T145317-1eeced8c.json`: siete controles.
+- `tmp/verification/whatsapp-gateway-20261029T144027-885e0622.json`: catorce pruebas.
+- `tmp/verification/floorplan-ui-20261029T144638-5aa85f8d.json`: ocho controles.
+- `tmp/verification/plan-settings-20261029T144027-45eea8ff.json`: cinco pruebas.
+- `tmp/portable-floorplan/report.json`: ocho controles de la versión final;
+  el informe `tools.verify` correspondiente queda en la bitácora.
+- `tmp/verification/sous-catalog-20261029T141118-b1053c99.json`: seis controles.
+
+Las capturas muestran cuentas, mediciones y recetas de prueba. Ninguna de estas
+pruebas ejecutó inferencia externa ni envió mensajes reales. La reconstrucción
+Meta/Modal, las pruebas físicas y las integraciones con cuentas siguen siendo
+puertas necesarias para cerrar el objetivo, junto con los casos aún pendientes.

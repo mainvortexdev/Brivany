@@ -1,0 +1,14 @@
+{
+  "suite": "account-preview",
+  "started_at": "2026-11-02T13:00:08.769347+00:00",
+  "finished_at": "2026-11-02T13:00:25.337562+00:00",
+  "duration_seconds": 16.568215,
+  "command": [
+    "node",
+    "scripts/check-account-preview.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"passed\":true,\"scope\":\"isolated_browser_fixture_not_physical_iPhone\",\"external_calls\":0,\"checks\":[\"conversation_ownership_during_async_reply\",\"parallel_job_monitoring\",\"multi_computer_selection\",\"voice_source_routing\",\"revoked_device_hidden\",\"login_fields_preserved\",\"account_history_isolation\"],\"errors\":[]}\n"
+}

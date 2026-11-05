@@ -1,0 +1,14 @@
+{
+  "suite": "ios-preview",
+  "started_at": "2026-11-02T11:42:41.520174+00:00",
+  "finished_at": "2026-11-02T11:42:47.585873+00:00",
+  "duration_seconds": 6.065699,
+  "command": [
+    "node",
+    "scripts/check-ios-preview.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"passed\":true,\"scope\":\"own_preview_only_not_native_iOS\",\"external_calls\":0,\"microphone\":false,\"composer\":\"ProjectFixture controls and proportions\",\"modules\":[\"Meta Glasses\",\"Traducción en vivo\",\"Human-skills\",\"Espacios\",\"Video\"],\"sizes\":[393,375,430],\"errors\":[]}\n"
+}

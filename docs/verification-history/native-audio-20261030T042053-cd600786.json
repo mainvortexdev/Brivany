@@ -1,0 +1,19 @@
+{
+  "suite": "native-audio",
+  "started_at": "2026-10-30T04:20:53.074888+00:00",
+  "finished_at": "2026-10-30T04:20:53.746912+00:00",
+  "duration_seconds": 0.672024,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_native_audio"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "..........\r\n----------------------------------------------------------------------\r\nRan 10 tests in 0.191s\r\n\r\nOK\r\n"
+}

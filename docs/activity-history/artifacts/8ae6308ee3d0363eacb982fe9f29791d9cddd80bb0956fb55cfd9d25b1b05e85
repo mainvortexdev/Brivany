@@ -1,0 +1,111 @@
+# 51. Traducción integrada en el proyecto principal de Brivany
+
+30 de octubre de 2026. Página principal: <http://127.0.0.1:8765/>.
+Recorrido canónico: <http://127.0.0.1:8765/dubbing>.
+
+## Sustitución implementada
+
+La página nueva de los hitos 48–50 ya existía dentro del repositorio, pero el
+recorrido normal seguía separado: `/dubbing` servía la interfaz anterior y
+Desktop arrancaba seis puentes sin el relay nuevo. Esta entrega sustituye esas
+conexiones reales del producto, además de la vista de prueba.
+
+- `/dubbing` y `/dubbing/` sirven la interfaz vigente Muse Voice Transcribe →
+  Muse Spark de Meta → Cartesia Sonic 3.6. `/translate` es un alias de la misma
+  página. Los enlaces anteriores con `provider=palabra` cargan esta interfaz;
+  sus parámetros antiguos no eligen un motor en el frontend nuevo.
+- `/api/dubbing/status` usa por defecto el relay nuevo. `provider=river` y
+  `/api/translation/status` dan el mismo estado y socket de esa instancia.
+- `start_application_bridges` es el único arranque compartido por el servidor
+  principal y `LocalDesktopServer`. Inicia **MuseBridge de Melodi y RiverBridge**,
+  no Palabra, ElevenLabs, Meta modular anterior, Gemini ni OpenAI Translate.
+  Cierra los puentes ya creados si falla el arranque del siguiente.
+- Los módulos anteriores y sus estados con parámetros explícitos permanecen
+  para diagnósticos/histórico; no se arrancan sus puentes en el producto y por
+  tanto no están disponibles para traducción. No hay fallback de motor oculto.
+- La portada tiene enlace de navegación y una sección con CTA «Abrir
+  traducción». Melodi enlaza a `/dubbing`; el enlace del visor dejó de solicitar
+  Palabra. El traductor muestra la navegación principal y la paleta de Brivany.
+- La caché del shell pasa a v38 e incluye los assets nuevos, sin precargar el JS
+  ni CSS de la interfaz de doblaje sustituida. No guarda respuestas de API.
+- La voz/conversación de Melodi, human-skills, Sous y Espacios mantienen sus
+  proveedores y funciones. No se incorpora Spaik Iris ni se afirma que las
+  integraciones espaciales pendientes estén terminadas.
+
+La instancia principal de 8765 fue reiniciada y comprobada por HTTP con el
+relay nuevo disponible y los puentes antiguos ausentes. La instancia temporal
+de 8767 se retiró. Para que su pestaña/enlace anterior no siga usando un backend
+obsoleto, ahora ese puerto ejecuta únicamente un redireccionador de páginas
+fijas hacia 8765, sin claves, WebSockets o proveedores. Rechaza hosts y rutas
+ajenos; no acepta un destino arbitrario del navegador. Es una transición de
+esta sesión, no un nuevo backend de producción. Arrancar Brivany en el futuro
+solo requiere el servidor habitual de 8765.
+
+## YouTube y archivos locales con la misma arquitectura
+
+Los tres botones son Iniciar, Idioma y Detener todo. Se conservan los idiomas
+español, inglés y francés, el selector de voces, Daniel masculino seleccionado,
+el ajuste de ritmo y la ausencia de cuotas de aplicación del hito 50.
+
+Se conserva la capacidad de archivo local de Brivany mediante un selector de
+origen: YouTube o Archivo de este equipo. `video-file-source.js` usa un object
+URL, el decodificador del navegador y el mismo AudioWorklet de captura. Solo el
+audio PCM va al mismo relay; el archivo de video no se sube. Para archivos no
+solicita captura de pantalla ni micrófono. No se introduce un límite de tamaño
+de producto; el formato debe poder decodificarse en el navegador y sigue estando
+sujeto a sus recursos disponibles.
+
+El grafo `MediaElementAudioSourceNode` se reutiliza entre inicios para evitar
+conectar el mismo elemento de video a dos nodos. Detener desactiva el worklet y
+suspende el contexto; abandonar la página revoca el URL y cierra el contexto.
+El audio del navegador pasa por una ganancia silenciosa para no duplicar la
+salida traducida nativa. La pausa por ritmo continúa dentro de la sesión y el
+final natural del archivo solicita terminar la cola. Las pausas manuales siguen
+deteniendo el recorrido.
+
+Se corrigió una carrera observada al detener e iniciar de nuevo: la UI podía
+permitir otro inicio mientras el worker anterior aún cerraba sus sockets. El
+estado local ahora informa `busy`; Iniciar permanece desactivado hasta que el
+relay libere su exclusión. Una consulta local de estado, acotada a diez segundos,
+comprueba la liberación. No vuelve a abrir conexiones de proveedor ni repite
+peticiones de inferencia. El error anterior se conserva en pantalla.
+
+## Comprobaciones y límites
+
+| Comprobación | Resultado y alcance |
+|---|---|
+| `tools.verify brivany-translation` | 5 pruebas correctas: rutas/aliases reales, API predeterminada, un solo relay, CSP, navegación y shell vigentes, disponibilidad busy, cierre tras fallo de arranque; ninguna sesión de proveedor |
+| `tools.verify http` | 23 pruebas correctas de API local; el estado por defecto refleja Meta/Cartesia |
+| `tools.verify desktop` | 21 pruebas correctas; arranque/cierre de dos puentes compartidos y ninguna llamada a factories retirados, con ventana/factories sustituidas |
+| `tools.verify river-ui` | recorrido completo desde portada a `/dubbing`; YouTube/captura sustituidos; luego MP4 sintético realmente decodificado y reenviado dos veces sin captura de pantalla/micrófono; Meta/Cartesia/salida de dispositivo sustituidos |
+| `tools.verify main-navigation` | portada y traductor principales reales a 1440 y 390 px, CTA, Daniel seleccionado y sin desbordamiento; cero sockets de proveedor o solicitudes externas al abrir |
+| HTTP de producción local | portada, ruta y estado nuevos, Palabra no disponible y redirección 8767 → 8765 comprobados |
+
+El recorrido de UI hizo **tres sesiones explícitas de prueba**, una de pestaña
+sustituida y dos de archivo local, con nueve traducciones sintéticas servidas
+por el sustituto. Son contadores de prueba, no consumo real. El MP4 aprobado se
+reutilizó; no se generaron medios nuevos ni se invocaron proveedores reales.
+
+Los fallos previos del recorrido quedan en la bitácora: una expectativa durante
+el reinicio detectó el estado busy todavía no representado; se corrigió la
+carrera. Un error de sintaxis en la instrumentación de diagnóstico también se
+registró y corrigió. Los resultados posteriores no reescriben esos registros.
+
+Las pruebas no acreditan audio físico, calidad bilingüe, captura real de YouTube
+ni compatibilidad física de WebView2/móviles. La arquitectura y el recorrido
+del proyecto real sí están conectados y comprobados dentro de este alcance.
+No se ejecutó una prueba pagada de producción durante esta integración.
+
+Evidencias sanitizadas: `tmp/brivany-main-translation.json`,
+`tmp/brivany-main-ui/report.json`, `tmp/river-ui/browser.json` e informes de
+`tmp/verification/`. Capturas de la portada y página vacía en
+`tmp/brivany-main-ui/`; las de streaming contienen exclusivamente la fixture
+sintética, no conversaciones ni medios del usuario.
+
+## Apertura de la web
+
+Se solicitó abrir 8765 con `open_in_codex` y el resultado quedó en cola. El
+control del navegador integrado estaba desactivado en Work. La apertura del
+navegador predeterminado fue rechazada por la revisión automática con el motivo
+`blocked by policy`; no se intentó eludirlo ni se puede confirmar apertura
+visible. La web está servida y lista en la dirección principal indicada arriba.

@@ -1,0 +1,47 @@
+{
+  "checked_at": "2026-10-29T17:23:49.908449+00:00",
+  "base_url": "http://127.0.0.1:8765",
+  "checks": [
+    {
+      "path": "/connections",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/spaces",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/sous",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/dubbing",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/social.js",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/reminders.js",
+      "http_status": 200,
+      "nonempty": true
+    },
+    {
+      "path": "/reconstruction-results.js",
+      "http_status": 200,
+      "nonempty": true
+    }
+  ],
+  "google_client_configured": false,
+  "social_accounts_connected": false,
+  "spatial_worker_status": "prepared_not_deployed",
+  "modal_configured": false,
+  "external_calls_in_this_check": 0,
+  "scope": "Read-only local HTTP availability; no account grants, GPU job, microphone, API inference or model quality verified."
+}

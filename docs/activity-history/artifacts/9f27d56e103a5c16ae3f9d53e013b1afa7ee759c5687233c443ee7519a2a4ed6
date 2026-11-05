@@ -1,0 +1,29 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/workspace-translation-pacing/report-20261102T025937.json",
+  "original_sha256": "085b8f6c7457de326195ef34f2433151fd0356b301054ee31903d9cd85e5dd6d",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "microphone_used": false,
+    "PCM_or_transcript_persisted": false,
+    "passed": true,
+    "native_output_substitute_received_audio": true,
+    "stopped": true,
+    "capture_thread_stopped": true
+  },
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": 35.09,
+    "billing_amount": 0,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

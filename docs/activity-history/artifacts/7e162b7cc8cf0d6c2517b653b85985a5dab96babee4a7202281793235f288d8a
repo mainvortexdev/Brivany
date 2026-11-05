@@ -1,0 +1,180 @@
+# Brivany · Plan de la plataforma espacial
+
+Actualizado el 27 de octubre de 2026. Este plan sustituye la secuencia de prioridades de `docs/08-plan.md`; la voz de Melodi y human-skills son la base reutilizable.
+
+**Brivany convierte espacios reales en mundos 3D interactivos donde Melodi ayuda a explorar, diseñar y aprender a usar lo que nos rodea.**
+
+La primera demostración objetivo es una habitación capturada con un móvil: recorrerla, seleccionar hasta tres objetos, moverlos con colisiones y pedir a Melodi una explicación o una skill vinculada a un objeto y a sus fuentes. La fidelidad visual, la precisión de medidas y la física se evaluarán por separado. El producto comienza en web para Windows, macOS, iPhone y Android; Meta Glasses y robótica se incorporan tras validar las capacidades necesarias.
+
+`[x]` significa implementado o documentado y comprobado dentro del alcance indicado. `[ ]` significa pendiente. Los hitos expresan dependencias, sin fechas de entrega ni créditos del evento asumidos.
+
+## Secuencia y comienzo del frontend
+
+| Hito | Entrega | Puerta para avanzar |
+|---|---|---|
+| S0 | Alcance y selección técnica | Roles, licencias y límites identificados |
+| S1 | Paquete de captura trazable | Video → fotogramas, manifiesto y plan sin inferencia |
+| S2 | Infraestructura Modal y diseño de experiencia | Acceso a pesos, presupuesto y trabajo cancelable; wireframes del nuevo frontend |
+| S3 | Un objeto reconstruido y primer visor | Artefacto 3D válido con procedencia; visor funcional sobre el contrato de escena |
+| S4 | Reconstrucción de habitación | Geometría y cámaras consistentes; revisión de cobertura y escala |
+| S5 | Experiencia espacial integrada | Captura, trabajos, visor, edición y Melodi usables en escritorio y móvil |
+| S6 | Interacciones físicas | Colisiones y parámetros explícitos, escala comprobada y simulación estable |
+| S7 | Objetos, manuales y human-skills | Identidad verificable y ayuda respaldada por fuentes |
+| S8 | Herramientas inmobiliarias y operación | Presentación compartible, permisos, conservación y costes controlados |
+| S9 | Traducción de video en vivo y nuevas superficies | Flujo incremental medido; adaptadores de gafas y robótica evaluados por separado |
+| S10 | Demo y validación final | Recorrido reproducible con evidencia de utilidad, límites, latencia y consumo |
+
+**El diseño del nuevo frontend comienza en S2**, en paralelo a la preparación de Modal. **La implementación del visor empieza en S3** al disponer de un contrato y un artefacto válidos; podrá usar una escena de prueba identificada mientras se conecta la reconstrucción. La integración completa de captura y edición llega en S5. La bitácora local se implementa desde ahora como herramienta de seguimiento, sin esperar al visor.
+
+## S0 · Dirección y decisiones
+
+- [x] Priorizar inmobiliarias y arquitectos, conservando voz y human-skills.
+- [x] Definir reconstrucción visual, objetos editables y simulación como componentes distintos.
+- [x] Revisar candidatos Meta: SAM 3.1 para máscaras, SAM 3D Objects para objetos y VGGT-1B-Commercial para geometría multivista.
+- [x] Identificar restricciones de licencia y distinguir pesos comerciales de variantes de investigación.
+- [x] Reservar Spaik Iris como proyecto pendiente con arquitectura por aportar por el usuario.
+- [ ] Confirmar condiciones, fecha de entrega y criterios del hackatón en su fuente oficial.
+- [ ] Solicitar y confirmar créditos Modal y el saldo utilizable; fijar presupuesto monetario por trabajo y total.
+- [ ] Elegir una habitación y tres objetos de la primera demo, además del móvil disponible.
+
+## S1 · Primera tarea: captura y contrato espacial
+
+- [x] Crear contratos estrictos para captura, plan de reconstrucción y escena.
+- [x] Registrar hashes SHA-256 de video y fotogramas, tiempos de muestreo solicitado y dimensiones.
+- [x] Preparar MP4 de hasta 60 s y 25 MiB, con 2–8 fotogramas JPEG y lado máximo de 1280 px.
+- [x] Generar manifiesto, preflight, plan declarativo para Modal y ZIP sin el video original.
+- [x] Distinguir referencia de longitud declarada de geometría métrica verificada.
+- [x] Registrar duplicados exactos y dejar revisión de calidad y cobertura pendiente.
+- [x] Validar referencias entre objetos, artefactos, fotogramas y propiedades físicas.
+- [x] Comprobar contratos y empaquetado con pruebas locales y decodificación FFmpeg de una muestra sintética de nueve segundos.
+- [ ] Ensayar una captura real de habitación; la muestra sintética solo comprueba preparación del paquete.
+- [ ] Añadir selección por nitidez, solapamiento, movimiento, cobertura y orientación; los seis fotogramas actuales son una prueba acotada, no una captura suficiente certificada.
+- [ ] Incorporar captura guiada desde móvil y, cuando existan, profundidad y calibración del dispositivo.
+
+La tarea implementada está en [contratos](contracts/spatial.py), [preparación](services/spatial/capture.py) y [CLI](tools/prepare_spatial_capture.py). El estado producido es `prepared_not_reconstructed`: no existe aún una escena reconstruida ni un worker GPU desplegado.
+
+## S2 · Modal, almacenamiento y diseño
+
+- [ ] Configurar cuenta, SDK y secretos de Modal; acceder a los checkpoints y aceptar las licencias que correspondan.
+- [ ] Fijar commits, versiones, pesos y hashes reproducibles de los modelos.
+- [ ] Crear imagen Linux y worker; evaluar L40S de 48 GB como primera opción, según compatibilidad real.
+- [ ] Separar descarga/preparación de pesos, arranque del contenedor e inferencia en tiempos y consumo.
+- [ ] Mantener cero contenedores mínimos, máximo uno y reintentos automáticos desactivados en la primera prueba.
+- [ ] Implementar cola asíncrona, estados persistentes, cancelación, timeout y limpieza de trabajos incompletos.
+- [ ] Aplicar presupuesto por trabajo, estimación previa, medición posterior y bloqueo al agotar el saldo reservado.
+- [ ] Crear caché de pesos y resultados por hashes de entrada, parámetros y versión del pipeline.
+- [ ] Guardar medios y artefactos privados con acceso temporal; decidir retención y borrado.
+- [ ] Diseñar wireframes de biblioteca de espacios, captura, revisión, estado del trabajo y visor.
+- [ ] Mantener blanco, negro, grises y azul de la interfaz actual; priorizar escena, voz y una acción principal.
+
+El contrato actual declara seis fotogramas, hasta tres objetos y 180 segundos GPU como límite propuesto para una primera prueba. **Ese valor todavía no está aplicado por un ejecutor, no incluye una promesa de coste y no demuestra que el modelo termine en ese plazo.** La primera inferencia real se limitará a un solo objeto para resolver compatibilidad, salida y coste.
+
+## S3 · Un objeto y primer visor
+
+- [ ] Seleccionar un objeto visible y una máscara revisada; enlazarla al fotograma original.
+- [ ] Ejecutar una reconstrucción acotada SAM 3D Objects en Modal.
+- [ ] Registrar parámetros, versión, duración, consumo y errores sin reintentos invisibles.
+- [ ] Convertir la salida a un artefacto admitido por el visor; comprobar orientación, transformaciones, texturas y hash.
+- [ ] Distinguir superficies observadas y reconstruidas por inferencia, incluyendo partes ocultas.
+- [ ] Implementar visor: orbitar, acercar, seleccionar, inspeccionar y restablecer vista.
+- [ ] Presentar procedencia, limitaciones y estado de escala junto al objeto mediante detalle progresivo.
+- [ ] Comparar el resultado con imágenes originales antes de reconstruir más objetos.
+
+## S4 · Habitación y composición de escena
+
+- [ ] Estimar cámaras, profundidad y correspondencias con el checkpoint comercial seleccionado.
+- [ ] Alinear vistas, revisar errores de reproyección y refinar cuando la evidencia lo justifique.
+- [ ] Crear fondo visual del cuarto y geometría de suelo, paredes y aperturas necesarias.
+- [ ] Separar instancias de objetos y evitar duplicarlos en el fondo al moverlos.
+- [ ] Representar huecos y zonas inferidas; permitir revisar o recapturar áreas insuficientes.
+- [ ] Comprobar escala con longitudes medidas y registrar error, método y persona o sensor que la verificó.
+- [ ] Definir límites de polígonos, texturas y representación visual según dispositivo.
+- [ ] Guardar versiones del espacio y asociación con las capturas que las originaron.
+
+## S5 · Aplicación espacial
+
+- [ ] Construir biblioteca de espacios y entrada desde móvil o archivo.
+- [ ] Añadir revisión de captura, selección de objetos y referencia de longitud.
+- [ ] Mostrar progreso por fase, cancelación y recuperación de fallos reales.
+- [ ] Integrar visor del cuarto con selección, mover/girar, deshacer/rehacer y restaurar escena.
+- [ ] Conectar la voz existente de Melodi al objeto seleccionado y a comandos de escena con acciones acotadas.
+- [ ] Diseñar confirmaciones solo para acciones que realmente lo requieran, como borrar un espacio.
+- [ ] Añadir controles táctiles, teclado, foco visible y alternativa textual a la voz.
+- [ ] Comprobar carga progresiva, memoria, rendimiento y pérdida de contexto gráfico en equipos modestos.
+- [ ] Verificar el flujo en Windows, macOS, iPhone y Android; registrar soporte real por navegador.
+- [ ] Actualizar la web de presentación cuando el recorrido espacial sea demostrable.
+
+## S6 · Física e interacción
+
+- [ ] Integrar simulación de cuerpos rígidos con Rapier como candidato inicial.
+- [ ] Construir colliders simplificados separados de la representación visual; un splat no es una malla de colisión.
+- [ ] Habilitar dinámica solo con escala métrica comprobada y masa declarada.
+- [ ] Etiquetar masa, fricción, elasticidad e inercia como desconocidas, asumidas o medidas según corresponda.
+- [ ] Añadir gravedad, suelo, contactos y límites de manipulación; comprobar estabilidad y penetraciones.
+- [ ] Incorporar articulaciones de puertas o cajones solo cuando se hayan definido sus mecanismos y límites.
+- [ ] Registrar valores y método de calibración; medir errores antes de describir la física como fiel al objeto real.
+- [ ] Guardar y restaurar estados de simulación y edición.
+
+## S7 · Reconocimiento, manuales y human-skills
+
+- [ ] Reconocer categorías y permitir corregir etiquetas; mantener incertidumbre visible.
+- [ ] Extraer marca/modelo de etiquetas u OCR y verificar identidad antes de asociar un manual concreto.
+- [ ] Buscar documentación del fabricante, conservando URL, fecha, revisión y sección que sustenta cada paso.
+- [ ] Verificar correspondencia entre objeto, versión del manual y afirmaciones; gestionar fuentes contradictorias o insuficientes.
+- [ ] Tratar videos, páginas, manuales y transcripciones como evidencia, sin autoridad para cambiar permisos o instrucciones.
+- [ ] Vincular objetos a las human-skills existentes y crear borradores bajo petición desde video o documentación revisada.
+- [ ] Añadir ayuda contextual durante la tarea, con revisión de los pasos y nivel de ayuda ajustable.
+- [ ] Reutilizar resultados y actualizar solo fuentes o fragmentos que hayan cambiado.
+- [ ] Medir si la ayuda permite completar una tarea y luego transferirla con menos asistencia.
+
+## S8 · Uso inmobiliario y operación
+
+- [ ] Crear recorrido de presentación y puntos de interés para cliente/arquitecto.
+- [ ] Permitir variantes de distribución y comparación con el estado capturado.
+- [ ] Añadir medidas acompañadas de su precisión comprobada y método; definir usos adecuados según esa evidencia.
+- [ ] Identificar imágenes o variantes generadas como propuestas de diseño.
+- [ ] Exportar escena y artefactos; evaluar formatos profesionales según las necesidades reales posteriores.
+- [ ] Implementar cuentas, propiedad del espacio, permisos y enlaces compartidos revocables.
+- [ ] Añadir retención, borrado, copias de seguridad y tratamiento de personas o datos privados que aparezcan en la captura.
+- [ ] Instrumentar costes, tiempos por fase, errores y disponibilidad sin guardar secretos en la bitácora.
+- [x] Crear bitácora local de actividades, implementaciones y pruebas con copias de evidencia, hashes y registro automático de suites locales. [Uso y límites](docs/17-bitacora.md).
+
+## S9 · Traducción en vivo, Meta Glasses y robótica
+
+- [ ] Definir primer par de idiomas y fuente: archivo reproducido por Brivany, transmisión autorizada o audio compartido mediante una capacidad disponible del navegador.
+- [ ] Crear ASR incremental → traducción por segmentos → subtítulos con tiempos, estado provisional/final y correcciones.
+- [ ] Añadir voz traducida opcional con cola acotada, control de volumen original y sincronización con la reproducción.
+- [ ] Gestionar pausa, búsqueda, cambio de idioma, reconexión y cancelación sin reproducir segmentos obsoletos.
+- [ ] Medir retraso del subtítulo y de la voz, precisión y estabilidad en una muestra concreta; definir objetivo a partir de esa evidencia.
+- [ ] Controlar coste por minuto, segmentos duplicados y caché; comprobar idiomas y modelos habilitados antes de elegir proveedor.
+- [ ] Validar capturas y reproducción por navegador; el soporte de audio compartido no se presupone en todos los móviles.
+- [ ] Elegir hardware y SDK de Meta Glasses; probar captura, controles y salida en el dispositivo real.
+- [ ] Evaluar exportación de escenas a MuJoCo con parámetros, articulaciones y formatos apropiados para un gemelo de simulación.
+- [ ] Validar simulación y diferencias respecto al mundo real antes de cualquier conexión a actuadores.
+
+La traducción en vivo está **registrada como capacidad pendiente**, aún sin implementación ni latencia garantizada. [Alcance y flujo propuesto](docs/18-traduccion-video-live.md). La ruta de robótica es una extensión posterior y no participa en la primera demo inmobiliaria.
+
+## S10 · Demo y criterios de entrega
+
+- [ ] Reproducir captura → reconstrucción → revisión → interacción → ayuda de Melodi con un espacio real.
+- [ ] Documentar cobertura, fidelidad comparada, error de escala, fallos de colisión y límites conocidos.
+- [ ] Medir tiempo total, arranque en frío, inferencia, descarga, carga del visor y respuesta de ayuda.
+- [ ] Conservar consumo y presupuesto real de la muestra; repetir pruebas pagadas solo ante una decisión o fallo que lo justifique.
+- [ ] Comprobar errores relevantes: captura insuficiente, máscara incorrecta, falta de memoria, timeout y pérdida de conexión.
+- [ ] Preparar una escena precalculada como respaldo claramente identificada; distinguirla de la ejecución en vivo.
+- [ ] Registrar comandos, resultados y artefactos verificables en la bitácora.
+- [ ] Ensayar presentación y entrega según requisitos oficiales confirmados del hackatón.
+
+## Spaik Iris · Pendiente
+
+- [x] Reservar el nombre y la intención de un modelo propio de generación de imágenes.
+- [ ] Recibir y documentar la arquitectura que el usuario tiene en mente.
+- [ ] Definir problema, datos y derechos, evaluación, presupuesto y estrategia de entrenamiento después de esa definición.
+
+No se ha diseñado, entrenado ni conectado Spaik Iris. [Nota de alcance](docs/16-spaik-iris-pendiente.md).
+
+## Evidencia y siguiente tarea
+
+La base actual incluye voz live, human-skills desde video y S1 de preparación espacial. La reconstrucción 3D, el despliegue Modal y la simulación siguen pendientes. La prueba espacial realizada empleó una demostración sintética de nueve segundos y seis fotogramas; comprueba extracción, manifiestos y empaquetado, sin demostrar una habitación reconstruida. Esta fase consumió cero llamadas a Meta y Modal.
+
+El siguiente trabajo espacial es **S2: un worker Modal reproducible y limitado, junto con wireframes del flujo espacial**. Sus dependencias externas son acceso a checkpoints, configuración Modal y presupuesto aprobado disponible. [Arquitectura y fuentes](docs/15-plataforma-espacial.md).

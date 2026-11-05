@@ -1,0 +1,77 @@
+# Carga del escritorio durante Traducción auditiva
+
+4 de noviembre de 2026. El usuario informó que el navegador y toda la pantalla
+se sentían lentos durante las pruebas de Traducción auditiva. Se midió el proceso
+Python del escritorio de Brivany en reposo para comprobar si mantenía trabajo
+de CPU entre sesiones de traducción.
+
+## Causa comprobada y corrección
+
+El PID 6536 había iniciado a las 14:42:39 UTC. En una muestra de 5,112 s acumuló
+10,188 s de CPU, equivalentes a 1,993 núcleos completos. La memoria residente
+observada fue de 168,9 MiB.
+
+Un volcado de pilas de `py-spy` sin variables locales encontró varios hilos del
+puente de WebView2 ejecutando esta ruta de estado.
+
+```text
+work_status / assistant_status
+  ComputerService.status
+    NativeRuntime.availability
+      verify_bundle
+        plain_path / Path.stat / is_symlink / is_junction / resolve
+```
+
+Cada consulta de estado podía recorrer y comprobar los archivos del backend
+nativo. Las consultas concurrentes de WorkSpace repetían ese trabajo y creaban
+hilos nuevos. Los hilos observados de música, conexión de cuenta y eventos
+estaban en espera en esa captura.
+
+`services/computer/runtime.py` conserva ahora la disponibilidad verificada
+durante un máximo de 30 s. Un cambio en los metadatos del manifiesto, los locks,
+el directorio o el ejecutable invalida ese estado. Un mutex comparte la revisión
+entre consultas simultáneas. Los puntos de entrada `start` y `call` solicitan
+una revisión actual antes de ejecutar trabajo nativo. El arranque mantiene la
+comprobación completa de hashes del bundle.
+
+La caché corresponde al estado que presenta la interfaz. Los cambios internos
+del bundle que no alteren los metadatos observados se comprueban al expirar el
+plazo o antes de ejecutar una acción nativa.
+
+## Mediciones y pruebas
+
+Con el bundle real y una instancia de diagnóstico que no abrió el ejecutor,
+la primera revisión tardó 2,6063 s de pared y 2,0781 s de CPU. Cien consultas
+posteriores, distribuidas entre seis hilos, tardaron 0,0503 s de pared y
+0,0469 s de CPU. El contador confirmó una sola revisión completa.
+
+Tras reiniciar el escritorio con el código corregido, el PID 8460 acumuló
+0,250 s de CPU en 5,022 s, equivalentes a 0,050 núcleos. El proceso respondió
+y usó 197,4 MiB de memoria residente. El informe conserva ambas muestras en
+`tmp/selected-video/native-status-cpu-20261104.json`.
+
+La suite `computer-bundle` terminó aprobada con 17 casos, de los que uno se
+omitió por la disponibilidad de enlaces simbólicos en este equipo. Las nuevas
+regresiones comprueban lo siguiente.
+
+- Veinticuatro consultas concurrentes comparten una sola verificación.
+- El plazo de caché expira y un cambio del manifiesto obliga a revisar.
+- Un payload alterado bloquea el arranque aunque exista un estado reciente.
+- Un archivo añadido bloquea el envío de una acción al ejecutor.
+
+Informe aprobado `docs/verification-history/computer-bundle-20261104T150349-aeb36c8d.json`.
+El primer ensayo nuevo falló porque una limpieza del fixture se había colocado
+en el caso equivocado. Se corrigió la prueba y se conserva el informe fallido
+`docs/verification-history/computer-bundle-20261104T150325-9e8a6a15.json`.
+
+## Alcance y consumo
+
+Las muestras de CPU y las regresiones fueron locales, con cero llamadas a
+proveedores de inferencia y cero segundos de GPU. `py-spy` 0.4.3 se instaló
+desde PyPI para leer las pilas sin variables. El número total de solicitudes
+de esa descarga no se contó. La herramienta de diagnóstico queda en el entorno
+virtual y no se añadió como dependencia de ejecución del producto.
+
+La comparación mide el proceso Python de Brivany en dos ventanas breves de
+reposo. La CPU de otras aplicaciones, la salida física de audio y la calidad
+del doblaje durante un video completo requieren sus propias comprobaciones.

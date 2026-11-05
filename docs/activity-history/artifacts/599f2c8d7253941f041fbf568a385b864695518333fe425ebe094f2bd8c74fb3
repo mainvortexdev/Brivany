@@ -1,0 +1,44 @@
+{
+  "status": "passed",
+  "scope": "real read-only Google calls through Brivany propose/approve/execute HTTP; latest user-selected account",
+  "account_contents_saved_in_report": false,
+  "reviewed_execution_enabled": true,
+  "write_operations": 0,
+  "provider_read_requests_expected": 4,
+  "provider_network_bytes_unknown": true,
+  "checks": [
+    {
+      "operation": "gmail.search",
+      "state": "succeeded",
+      "real_transport": true,
+      "error_code": null,
+      "items_returned": 20,
+      "payload_persisted": false,
+      "message_bodies_fetched": false
+    },
+    {
+      "operation": "drive.search",
+      "state": "succeeded",
+      "real_transport": true,
+      "error_code": null,
+      "items_returned": 0,
+      "payload_persisted": false,
+      "file_contents_fetched": false
+    },
+    {
+      "operation": "calendar.list",
+      "state": "succeeded",
+      "real_transport": true,
+      "error_code": null,
+      "items_returned": 0,
+      "payload_persisted": false
+    }
+  ],
+  "verification_correction": "Calendar payload uses items; initial checker expected events. One additional read confirmed the item count.",
+  "authorization_storage_encrypted": true,
+  "real_connectors_connected": [
+    "calendar",
+    "gmail",
+    "drive"
+  ]
+}

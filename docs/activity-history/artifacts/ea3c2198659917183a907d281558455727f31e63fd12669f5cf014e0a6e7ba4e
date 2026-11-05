@@ -1,0 +1,196 @@
+{
+  "type": "isolated_real_brave_extension_to_real_running_desktop_and_providers",
+  "passed": true,
+  "user_profile_used": false,
+  "source_owned_synthetic": true,
+  "microphone": false,
+  "original_media_attached": false,
+  "transcript_persisted": false,
+  "physical_listening_verified": false,
+  "billing_amount": null,
+  "provider_trial_max_seconds": 19,
+  "extension_id": "nodfjfneocgiebcbacckgocobcdlhpid",
+  "last_failure": null,
+  "native_audio": {
+    "available": true,
+    "translation_bytes": 215040,
+    "output_bytes": 215040,
+    "device_position_bytes": 215040,
+    "error_code": null,
+    "physical_listening_verified": false
+  },
+  "first_native_audio_seconds": 7.017,
+  "events": [
+    {
+      "type": "selected",
+      "textLength": 0,
+      "at": 1793769597503
+    },
+    {
+      "type": "translation-state",
+      "state": "starting",
+      "textLength": 0,
+      "at": 1793769597578
+    },
+    {
+      "type": "original-gain",
+      "textLength": 0,
+      "at": 1793769597580
+    },
+    {
+      "type": "translation-state",
+      "state": "listening",
+      "textLength": 0,
+      "at": 1793769598639
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 3,
+      "at": 1793769601252
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 10,
+      "at": 1793769601396
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 15,
+      "at": 1793769601623
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 24,
+      "at": 1793769602201
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 31,
+      "at": 1793769602677
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 38,
+      "at": 1793769602836
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 45,
+      "at": 1793769603172
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 46,
+      "at": 1793769603380
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 46,
+      "at": 1793769603380
+    },
+    {
+      "type": "transcript",
+      "source": "translation",
+      "textLength": 17,
+      "at": 1793769604221
+    },
+    {
+      "type": "translation-state",
+      "state": "translating",
+      "textLength": 0,
+      "at": 1793769604221
+    },
+    {
+      "type": "transcript",
+      "source": "translation",
+      "textLength": 18,
+      "at": 1793769605677
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 3,
+      "at": 1793769606281
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 8,
+      "at": 1793769606508
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 14,
+      "at": 1793769606696
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 21,
+      "at": 1793769606854
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 23,
+      "at": 1793769607406
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 27,
+      "at": 1793769607600
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 34,
+      "at": 1793769607885
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 35,
+      "at": 1793769609857
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 35,
+      "at": 1793769609858
+    },
+    {
+      "type": "translation-state",
+      "state": "listening",
+      "textLength": 0,
+      "at": 1793769609877
+    },
+    {
+      "type": "transcript",
+      "source": "translation",
+      "textLength": 35,
+      "at": 1793769611538
+    },
+    {
+      "type": "translation-state",
+      "state": "translating",
+      "textLength": 0,
+      "at": 1793769611538
+    }
+  ],
+  "selected_acknowledged": true,
+  "original_transcript": true,
+  "translated_transcript": true,
+  "original_ducking": true,
+  "elapsed_seconds": 19.021
+}

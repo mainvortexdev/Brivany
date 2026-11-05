@@ -1,0 +1,54 @@
+"""One explicit synthetic text translation; never retries or benchmarks other models."""
+from datetime import datetime, timezone
+import json
+import time
+from uuid import uuid4
+from services.activity import ActivityStore, ROOT
+from services.h1.server import load_local_config
+from packages.providers.translation import translate_text, text_translation_status, TranslationError
+from packages.providers.live_voice import VoiceError
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Una traducción de texto sintético con Meta M2M100 en Cloudflare.")
+    parser.add_argument("--allow-paid", action="store_true")
+    args = parser.parse_args()
+    if not args.allow_paid: parser.error("--allow-paid autoriza una única petición que puede consumir cuota de Cloudflare.")
+    load_local_config()
+    status = text_translation_status()
+    if not status["configured"]: parser.exit(2, "Cloudflare no está configurado; no se llamó al modelo.\n")
+    report = {"started_at": datetime.now(timezone.utc).isoformat(), "provider": "Cloudflare", "model_origin": "Meta",
+        "model": "@cf/meta/m2m100-1.2b", "source_language": "en", "target_language": "es",
+        "input": "The meeting starts at three. Please bring the room measurements.", "synthetic": True,
+        "status": "failed", "maximum_requests": 1, "automatic_retries": 0, "inference_ms": None,
+        "target_inference_ms": 500, "target_status": "unverified", "actual_billed_usd": None,
+        "request_ms": None, "attempt_elapsed_ms": None, "http_status": None, "provider_error_codes": [],
+        "limitations": ["Una petición corta no constituye un percentil ni un máximo garantizado.",
+            "Tiempo de petición incluye red y servicio; no inferencia interna.",
+            "No incluye ASR, contexto de segmentación, síntesis o reproducción; calidad pendiente de revisión."]}
+    attempt_started = time.monotonic()
+    try:
+        result = translate_text(report["input"], source="en", target="es")
+        report.update({"status": "passed", "translated_text": result["text"], "request_ms": result["request_ms"],
+                       "http_status": result.get("http_status"), "provider_error_codes": result.get("provider_error_codes", [])})
+    except TranslationError as error:
+        report.update(error.diagnostics()); report["error_code"] = error.code
+    except VoiceError as error:
+        report["error_code"] = error.code
+    report["attempt_elapsed_ms"] = round((time.monotonic()-attempt_started)*1000, 2)
+    report["finished_at"] = datetime.now(timezone.utc).isoformat()
+    directory = ROOT / "tmp" / "translation-measurements"; directory.mkdir(parents=True, exist_ok=True)
+    path = directory / (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S") + "-" + uuid4().hex[:8] + ".json")
+    path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    ActivityStore().add({"kind": "test", "status": report["status"], "title": "Meta M2M100 · ensayo de traducción de texto",
+        "summary": "Una petición sintética para decidir si el traductor especializado puede servir en la cadena modular. El tiempo de petición no es inferencia interna ni audio a doblaje completo. Sin reintentos.",
+        "external_calls": 1, "gpu_seconds": None}, [path])
+    print(json.dumps({"status": report["status"], "request_ms": report.get("request_ms"), "error_code": report.get("error_code"),
+                      "http_status": report["http_status"], "provider_error_codes": report["provider_error_codes"],
+                      "attempt_elapsed_ms": report["attempt_elapsed_ms"],
+                      "inference_ms": None, "target_status": "unverified", "report": path.relative_to(ROOT).as_posix()}, ensure_ascii=False))
+    return 0 if report["status"] == "passed" else 1
+
+
+if __name__ == "__main__": raise SystemExit(main())

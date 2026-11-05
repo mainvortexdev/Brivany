@@ -1,0 +1,18 @@
+{
+  "suite": "river-ui",
+  "started_at": "2026-10-30T15:49:04.696879+00:00",
+  "finished_at": "2026-10-30T15:49:18.732020+00:00",
+  "duration_seconds": 14.035141,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_river_ui"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"checks\": [\r\n    \"main homepage links to canonical /dubbing\",\r\n    \"exactly three controls\",\r\n    \"manual link loads without capture or autoplay\",\r\n    \"Spanish English French selection\",\r\n    \"real AudioWorklet sends 80 ms frames through loopback Muse, Meta Spark SSE and Cartesia WS\",\r\n    \"French tokens reach captions\",\r\n    \"backlog pauses source and resumes in the same session without releasing capture\",\r\n    \"stop pauses source and releases capture\",\r\n    \"no daily quota or fragment cap; active after 35 seconds on the client clock; masculine Daniel selected\",\r\n    \"real local file decoding and PCM through the same relay twice without tab capture or microphone\",\r\n    \"known 403 blocks paid pipeline\",\r\n    \"desktop and 390px mobile fit\"\r\n  ],\r\n  \"external_calls\": 0,\r\n  \"paid_inference\": false,\r\n  \"real_youtube_verified\": false,\r\n  \"physical_output_verified\": false,\r\n  \"translation_quality_verified\": false,\r\n  \"errors\": []\r\n}\r\n\r\n"
+}

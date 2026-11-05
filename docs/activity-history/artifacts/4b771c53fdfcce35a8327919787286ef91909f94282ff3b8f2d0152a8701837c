@@ -1,0 +1,21 @@
+{
+  "type": "real_brave_two_owned_video_elements_selected_capture_and_mocked_desktop",
+  "user_profile_used": false,
+  "test_copy_localhost_host_permission": true,
+  "browser_action_permission_verified": false,
+  "external_calls": 0,
+  "paid_calls": 0,
+  "microphone": false,
+  "media_persisted": false,
+  "passed": false,
+  "pin_mode_visible": true,
+  "selected_second_video": false,
+  "only_second_caption": false,
+  "pcm_seconds": 0,
+  "measured_hz": null,
+  "unselected_330hz_absent": false,
+  "no_new_player_window": true,
+  "errors": [],
+  "navigation_closed_capture": true,
+  "ui_text": ""
+}

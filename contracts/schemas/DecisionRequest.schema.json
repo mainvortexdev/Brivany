@@ -1,0 +1,26 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "action_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Action Sha256",
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "approve",
+        "decline"
+      ],
+      "title": "Decision",
+      "type": "string"
+    }
+  },
+  "required": [
+    "action_sha256",
+    "decision"
+  ],
+  "title": "DecisionRequest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:DecisionRequest:0.1.0"
+}

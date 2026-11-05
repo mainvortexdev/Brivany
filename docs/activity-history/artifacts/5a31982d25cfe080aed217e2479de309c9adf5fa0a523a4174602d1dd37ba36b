@@ -1,0 +1,16 @@
+{
+  "scope": "real Paint native Save As of the new synthetic drawing",
+  "result": {
+    "success": true,
+    "localPath": "<local-path>\\.local\\computer\\workspace\\paint\\Stacy-Paint-Guardado-1793377562153.png",
+    "message": "Dibujo abierto guardado en PNG.",
+    "verification": {
+      "success": true,
+      "method": "paint-saved-png",
+      "width": 768,
+      "height": 614
+    }
+  },
+  "external_calls": 0,
+  "original_user_media": false
+}

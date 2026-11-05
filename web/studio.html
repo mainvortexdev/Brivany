@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f5f5f7"><meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Brivany · Melodi</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/icon-192.png"><link rel="stylesheet" href="/studio.css">
+  <script src="/context-engine.js" defer></script><script src="/live-voice.js" defer></script><script src="/voice-engine.js" defer></script><script src="/studio.js" defer></script>
+<link rel="stylesheet" href="/palette.css"><link rel="stylesheet" href="/typography.css"></head>
+<body>
+  <a class="skip" href="#main">Ir a Melodi</a>
+  <header class="app-header"><a href="/" class="wordmark" aria-label="Brivany, inicio">brivany<span>.</span></a><span class="session-label"><span id="live-dot"></span><span id="session-label">Tu espacio</span></span><button class="icon-button" id="settings-open" aria-label="Abrir ajustes de voz">☷</button></header>
+  <main id="main" class="app-layout">
+    <section class="conversation" aria-label="Conversación con Melodi">
+      <div class="mode-switch" aria-label="Modo de acompañamiento"><button data-mode="practice" aria-pressed="true">Practicar</button><button data-mode="meeting" aria-pressed="false">Reunión</button><button data-mode="english" aria-pressed="false">Inglés</button></div>
+      <div class="voice-stage" id="voice-stage" data-state="idle">
+        <div class="orb-wrap" aria-hidden="true"><div class="orb-halo"></div><div class="orb" id="orb"><span></span><span></span><span></span><span></span><span></span></div></div>
+        <p class="eyebrow" id="voice-state">MELODI</p><h1 id="voice-title">Estoy aquí.</h1><p class="stage-caption" id="voice-caption">Una idea. Tu voz. Vamos a practicar.</p>
+        <p class="interim" id="interim" aria-live="off"></p>
+      </div>
+      <div class="voice-controls"><button class="round-control" id="voice-preview" aria-label="Escuchar a Melodi" title="Escuchar a Melodi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM17 8c3 2 3 6 0 8"/></svg></button><button class="primary-control" id="mic-toggle"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11v1a7 7 0 0 0 14 0v-1M12 19v3"/></svg><span id="mic-label">Comenzar</span></button><button class="round-control" id="interrupt" aria-label="Interrumpir a Melodi" title="Interrumpir" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button></div>
+      <p class="status-note" id="voice-notice" role="status">El micrófono está apagado.</p>
+      <p class="status-note">Al comenzar, Muse transcribe tu voz y Melodi responde con Meta y Cartesia. Puedes terminar cuando quieras.</p>
+      <form id="context-form" class="context-input"><label class="sr-only" for="context-text">Indica qué vas a hacer</label><input id="context-text" maxlength="500" placeholder="Voy a iniciar una reunión…" autocomplete="off"><button type="button" id="context-dictate" aria-label="Dictar mi contexto" title="Dictar mi contexto"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11v1a7 7 0 0 0 14 0v-1M12 19v3"/></svg></button><button type="submit" aria-label="Adaptar Melodi al contexto">↗</button></form>
+      <div class="bottom-links"><a href="/practice">Practicar frente a cámara <span>↗</span></a><span id="connection-label">Voz live · guía local</span></div>
+      <a href="/dubbing" class="text-button">Traducir la voz de un video ↗</a>
+      <a href="/spaces" class="text-button">Explorar mis espacios 3D ↗</a>
+      <a href="/human-skills" class="text-button">Crear una human-skill desde un video ↗</a>
+      <a href="/activity" class="text-button">Bitácora del proyecto ↗</a>
+    </section>
+
+    <aside class="companion-panel" aria-labelledby="panel-title">
+      <div class="panel-heading"><h2 id="panel-title">Un paso a la vez.</h2><button class="text-button" id="clear-session">Borrar sesión</button></div>
+      <section id="practice-panel">
+        <div class="note-card"><span class="card-kicker">TU PRÓXIMO INTENTO</span><p id="coach-message">Cuéntame una idea en un minuto. Dale un ejemplo y un cierre.</p><button class="text-button" id="coach-play">Escuchar guía ↗</button></div>
+        <div class="voice-metrics"><div><strong id="pause-count">—</strong><span>pausas observadas</span></div><div><strong id="filler-count">—</strong><span>posibles muletillas</span></div></div>
+        <p class="subtle" id="metric-note">Sin mediciones todavía.</p>
+        <details class="small-details"><summary>Presencia y claridad</summary><p>Revisa tu mirada, encuadre y gestos en el estudio de cámara. La presencia se trabaja con autoobservación; aquí no se puntúa automáticamente.</p><a href="/practice">Abrir estudio ↗</a></details>
+      </section>
+      <section id="meeting-panel" hidden>
+        <div class="silent-label"><span>◌</span> A tu lado, en silencio.</div>
+        <div id="meeting-preview" class="meeting-preview" hidden></div>
+        <div id="meeting-cards" class="meeting-cards"><p class="empty-note">El apoyo aparecerá mientras se formula la pregunta.</p></div>
+        <div id="prepared-context" class="prepared-context" hidden><h3>A mano.</h3><p class="subtle">Citas de la reunión · sin verificación externa</p><div id="prepared-items" class="prepared-items"></div></div>
+        <details class="small-details"><summary>Lo que se ha dicho</summary><ol id="meeting-digest" class="digest"><li>Aún no hay fragmentos.</li></ol></details>
+      </section>
+      <section id="english-panel" hidden><p class="subtle">Conversa con Melodi en inglés o escucha una frase de apoyo. La voz en inglés se genera con Cartesia.</p><div id="phrase-list" class="phrase-list"></div></section>
+      <div class="transcript-section"><label for="live-text" id="live-text-label">Tus palabras</label><textarea id="live-text" rows="4" maxlength="10000" placeholder="También puedes escribir aquí…"></textarea><div class="transcript-actions"><span id="transcript-origin">Texto manual</span><button class="text-button" id="submit-fragment">Revisar ↗</button></div></div>
+    </aside>
+  </main>
+
+  <dialog id="settings-dialog" class="settings-dialog"><form method="dialog" class="dialog-heading"><h2>A tu ritmo.</h2><button class="icon-button" aria-label="Cerrar ajustes">×</button></form>
+    <label class="setting-label" for="voice-select">Voz de Melodi</label><select id="voice-select"><option>Cargando voces…</option></select><p class="subtle" id="voice-availability"></p>
+    <div class="range-label"><label for="voice-rate">Ritmo</label><output id="rate-value">1.05×</output></div><input id="voice-rate" type="range" min="0.75" max="1.15" step="0.05" value="1.05">
+    <label class="setting-check"><input type="checkbox" id="quiet-output"><span>Voz baja <small>Usa auriculares. Bajar el volumen no garantiza privacidad ni sintetiza un susurro.</small></span></label>
+    <label class="setting-check"><input type="checkbox" id="auto-reply" checked><span>Responder tras mi pausa <small>En práctica e inglés, con transcripción. En reunión Melodi siempre permanece en silencio.</small></span></label>
+    <label class="setting-check"><input type="checkbox" id="model-replies" checked><span>Conversar con Melodi <small>Envía tu texto y los últimos turnos de esta sesión a Muse Spark de Meta. Desactívalo para usar la guía local.</small></span></label>
+    <div class="range-label"><label for="patience">Espera del reconocimiento del navegador</label><output id="patience-value">0.5 s</output></div><input id="patience" type="range" min="0.5" max="6" step="0.25" value="0.5"><p class="subtle">Muse detecta el final de tu intervención automáticamente.</p>
+    <hr><label class="setting-label" for="asr-provider">Transcripción</label><select id="asr-provider"><option value="muse">Muse Voice Transcribe · Meta</option><option value="browser">Reconocimiento del navegador</option></select>
+    <label class="setting-label" for="listen-language">Idioma de escucha</label><select id="listen-language"><option value="es-ES">Español</option><option value="en-US">English</option></select>
+    <p class="subtle" id="transcription-disclosure">Muse transcribe al pulsar Comenzar. El audio se envía a Meta durante la escucha; Brivany no lo guarda.</p>
+    <p class="subtle" id="recognition-status"></p>
+    <button type="button" id="meta-key-open" class="text-button">Conectar clave de Meta ↗</button>
+    <label class="setting-check"><input type="checkbox" id="meeting-consent"><span>Permitir escucha de esta reunión <small>He informado a los participantes y tengo permiso para captar esta conversación.</small></span></label>
+    <div class="range-label"><label for="audio-threshold">Umbral de actividad acústica</label><output id="threshold-value">0.025</output></div><input id="audio-threshold" type="range" min="0.01" max="0.08" step="0.005" value="0.025"><p class="subtle">Las pausas son aproximadas: el ruido y otras voces pueden influir.</p>
+    <button type="button" id="install-app" class="install-button" hidden>Instalar Brivany</button><p class="subtle">Windows y macOS: instalar desde el navegador. iPhone: Compartir → Añadir a pantalla de inicio. Android: Instalar aplicación. En móvil se requiere una dirección HTTPS.</p>
+  </dialog>
+  <dialog id="meta-key-dialog" class="settings-dialog" aria-labelledby="meta-key-title">
+    <form id="meta-key-form" autocomplete="off">
+      <div class="dialog-heading"><h2 id="meta-key-title">Conectar Meta.</h2><button type="button" id="meta-key-close" class="icon-button" aria-label="Cerrar conexión de Meta">×</button></div>
+      <p class="subtle">Pega tu clave aquí. Se guarda en el archivo .env de este equipo y no aparece en el chat.</p>
+      <label class="setting-label" for="meta-api-key">API key de Meta</label>
+      <input id="meta-api-key" type="password" name="meta-api-key" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="2048" required aria-describedby="meta-key-status">
+      <button type="submit" id="meta-key-save" class="install-button">Guardar y conectar</button>
+      <p id="meta-key-status" class="subtle" role="status">La clave permanece oculta mientras la pegas.</p>
+    </form>
+  </dialog>
+  <footer class="app-footer"><span>Tu contexto. Tu control.</span><a href="/#glasses">Camino a Meta Glasses ↗</a></footer>
+</body></html>

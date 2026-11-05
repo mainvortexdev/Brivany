@@ -1,0 +1,120 @@
+"""Bounded MT adapter checks; injected transport, no Cloudflare calls."""
+import io
+import json
+import os
+from pathlib import Path
+from contextlib import redirect_stdout
+from tempfile import TemporaryDirectory
+import unittest
+from unittest.mock import Mock, patch
+from urllib.error import HTTPError, URLError
+from packages.providers.translation import translate_text, text_translation_status, TranslationError, MODEL, MAX_RESPONSE_BYTES, MAX_ERROR_RESPONSE_BYTES
+from packages.providers.live_voice import VoiceError, NoRedirect
+
+
+class TranslationTests(unittest.TestCase):
+    def setUp(self):
+        self.environment = patch.dict(os.environ, {"BRIVANY_CLOUDFLARE_ACCOUNT_ID": "a"*32, "BRIVANY_CLOUDFLARE_API_TOKEN": "private-test-token"}, clear=True)
+        self.environment.start(); self.addCleanup(self.environment.stop)
+
+    @staticmethod
+    def reply(value, content_type="application/json"):
+        response = io.BytesIO(json.dumps(value).encode("utf-8") if not isinstance(value, bytes) else value)
+        response.headers = {"Content-Type": content_type}
+        return response
+
+    def test_specific_model_language_params_and_transport_budget(self):
+        opener = Mock(); opener.open.return_value = self.reply({"success": True, "result": {"translated_text": "Este es el salón."}})
+        result = translate_text(" This is the living room. ", opener=opener)
+        request = opener.open.call_args.args[0]
+        self.assertEqual(json.loads(request.data), {"text": "This is the living room.", "source_lang": "en", "target_lang": "es"})
+        self.assertEqual(opener.open.call_args.kwargs["timeout"], 5)
+        self.assertTrue(request.full_url.endswith("/ai/run/"+MODEL))
+        self.assertEqual(request.get_header("Authorization"), "Bearer private-test-token")
+        self.assertEqual(result["text"], "Este es el salón."); self.assertEqual(result["model_origin"], "Meta")
+        self.assertIsNone(result["inference_ms"]); self.assertGreaterEqual(result["request_ms"], 0)
+        self.assertNotIn("private-test-token", json.dumps(result)); opener.open.assert_called_once()
+
+    def test_bad_input_and_missing_configuration_never_call_transport(self):
+        opener = Mock()
+        for text in (None, "", " \n ", "x"*401, {}):
+            with self.assertRaises(VoiceError): translate_text(text, opener=opener)
+        for source, target in (("en", "en"), ("english", "es"), ("en", "fr"), ({}, "es")):
+            with self.assertRaises(VoiceError): translate_text("Hello", source, target, opener=opener)
+        with patch.dict(os.environ, {}, clear=True):
+            self.assertFalse(text_translation_status()["configured"])
+            with self.assertRaises(VoiceError): translate_text("Hello", opener=opener)
+        opener.open.assert_not_called()
+        self.assertFalse(text_translation_status()["inference_verified"])
+
+    def test_http_network_errors_are_sanitized_without_retry_or_redirect(self):
+        opener = Mock()
+        for failure in (HTTPError("https://upstream", 429, "private-test-token", {}, None), URLError("private-test-token"), TimeoutError("private-test-token")):
+            opener.reset_mock(); opener.open.side_effect = failure
+            with self.assertRaises(VoiceError) as error: translate_text("Hello", opener=opener)
+            self.assertNotIn("private-test-token", str(error.exception)); opener.open.assert_called_once()
+        self.assertIsNone(NoRedirect().redirect_request(None, None, 302, "", {}, "https://foreign"))
+
+    def test_refused_empty_oversized_and_wrong_shapes_are_rejected(self):
+        opener = Mock()
+        invalid = [self.reply({"success": False, "errors": [{"message": "private-test-token"}]}),
+            self.reply({"success": True, "result": {"translated_text": " "}}),
+            self.reply({"success": True, "result": {"translated_text": "x"*2401}}),
+            self.reply({"success": True, "result": []}), self.reply(b"not-json"),
+            self.reply(b"x"*(MAX_RESPONSE_BYTES+1)), self.reply({}, "text/html")]
+        for response in invalid:
+            opener.reset_mock(); opener.open.return_value = response
+            with self.assertRaises(VoiceError) as error: translate_text("Hello", opener=opener)
+            self.assertNotIn("private-test-token", str(error.exception)); opener.open.assert_called_once()
+
+    def test_http_diagnostics_only_copy_documented_numeric_codes_and_bounded_timing(self):
+        opener = Mock()
+        body = {"success": False, "errors": [{"code": 3036, "message": "private-test-token"},
+            {"code": "private-test-token"}, {"code": 999999}, {"code": 3036}, {"code": True}],
+            "messages": ["private-test-token"], "request": "private-test-token"}
+        failure = HTTPError("https://private-test-token", 429, "private-test-token", {"Authorization": "private-test-token"},
+                            io.BytesIO(json.dumps(body).encode()))
+        opener.open.side_effect = failure
+        with self.assertRaises(TranslationError) as raised: translate_text("Hello", opener=opener)
+        diagnostic = raised.exception.diagnostics()
+        self.assertEqual(diagnostic["http_status"], 429)
+        self.assertEqual(diagnostic["provider_error_codes"], [3036])
+        self.assertGreaterEqual(diagnostic["request_ms"], 0)
+        self.assertIsNone(diagnostic["inference_ms"])
+        self.assertNotIn("private-test-token", json.dumps(diagnostic) + str(raised.exception))
+        self.assertTrue(failure.closed); opener.open.assert_called_once()
+
+    def test_non_json_or_oversized_http_failure_preserves_status_without_raw_body(self):
+        opener = Mock()
+        for body in (b"private-test-token", b"x"*(MAX_ERROR_RESPONSE_BYTES+1)):
+            opener.reset_mock(); opener.open.side_effect = HTTPError("https://upstream", 403,
+                "private-test-token", {}, io.BytesIO(body))
+            with self.assertRaises(TranslationError) as raised: translate_text("Hello", opener=opener)
+            self.assertEqual(raised.exception.http_status, 403)
+            self.assertEqual(raised.exception.provider_error_codes, [])
+            self.assertNotIn("private-test-token", json.dumps(raised.exception.diagnostics()))
+            opener.open.assert_called_once()
+
+    def test_benchmark_failure_report_keeps_safe_diagnostics_and_no_inference_claim(self):
+        from tools import benchmark_translation
+        with TemporaryDirectory() as directory:
+            failure = TranslationError("mt_rejected", "Static sanitized failure", http_status=429,
+                                       provider_error_codes=[3036], request_ms=123.4)
+            with patch.object(benchmark_translation, "ROOT", Path(directory)), \
+                 patch.object(benchmark_translation, "load_local_config"), \
+                 patch.object(benchmark_translation, "text_translation_status", return_value={"configured": True}), \
+                 patch.object(benchmark_translation, "translate_text", side_effect=failure) as transport, \
+                 patch.object(benchmark_translation, "ActivityStore") as store, \
+                 patch("sys.argv", ["benchmark_translation", "--allow-paid"]), redirect_stdout(io.StringIO()) as output:
+                self.assertEqual(benchmark_translation.main(), 1)
+            report = json.loads(next((Path(directory)/"tmp"/"translation-measurements").glob("*.json")).read_text(encoding="utf-8"))
+            self.assertEqual(report["http_status"], 429); self.assertEqual(report["provider_error_codes"], [3036])
+            self.assertEqual(report["request_ms"], 123.4)
+            self.assertGreaterEqual(report["attempt_elapsed_ms"], 0)
+            self.assertIsNone(report["inference_ms"]); self.assertIsNone(report["actual_billed_usd"])
+            self.assertEqual(report["automatic_retries"], 0); self.assertEqual(report["target_status"], "unverified")
+            self.assertNotIn("private-test-token", output.getvalue() + json.dumps(report))
+            transport.assert_called_once(); store.return_value.add.assert_called_once()
+
+
+if __name__ == "__main__": unittest.main()

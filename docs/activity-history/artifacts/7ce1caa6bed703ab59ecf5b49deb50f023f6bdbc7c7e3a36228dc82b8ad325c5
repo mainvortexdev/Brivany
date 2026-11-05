@@ -1,0 +1,11 @@
+{
+  "purpose": "Check fallback public Lyrics.ovh HTTPS availability with a documented catalog fixture; do not save lyrics.",
+  "provider": "Lyrics.ovh",
+  "utc": "2026-10-31T22:03:48.954738+00:00",
+  "external_calls": 1,
+  "account_used": false,
+  "cost": "No key or paid inference; monetary cost not measured.",
+  "http_code": 200,
+  "has_lyrics": true,
+  "characters": 1188
+}

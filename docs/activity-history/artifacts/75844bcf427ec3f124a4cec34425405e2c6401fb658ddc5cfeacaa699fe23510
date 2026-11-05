@@ -1,0 +1,123 @@
+# 55. Melodi expresiva, bromas por turnos y escucha sin solapamiento
+
+30 de octubre de 2026. Implementado en `/app`, manteniendo el inicio con
+Comenzar y el ritmo del hito 54. Shell v42.
+
+## Expresividad y humor
+
+El prompt live conserva la identidad de Melodi y añade calidez, curiosidad,
+reconocimientos concretos y muletillas ocasionales —bueno, ajá, ya entiendo—
+sin repetirlas en todos los mensajes. Puede proponer un siguiente paso o una
+broma cuando encaje en la conversación. No se crean llamadas proactivas por
+reloj ni se habla durante fragmentos parciales. La expresión es simulada; no
+se afirma sentir emociones humanas ni deducir tono o estado emocional del audio.
+
+El comportamiento live se añade al prompt principal; Sous y el asistente
+espacial conservan sus instrucciones específicas. Sus suites locales pasan.
+
+`melodi_dialogue.py` añade un catálogo inicial de tres chistes de pregunta en
+español y dos en inglés. Para esos casos el control del turno es determinista,
+sin llamar a Meta: pregunta sola → espera → acierto, revelación solicitada o
+cambio de tema. En el ejemplo de la abeja, «zumba» o «zumbando» provoca una
+reacción cómplice sin repetir el remate. «Otro» elige uno no usado en el contexto
+disponible; al agotar el catálogo vuelve a Meta con las instrucciones generales.
+Los chistes abiertos del modelo dependen de su seguimiento del prompt, no de
+un verificador semántico universal. La iniciativa se produce dentro del turno
+solicitado por el usuario, no hablando de forma autónoma durante el silencio.
+
+El evento `done.await_user` indica que se espera al usuario. La UI muestra
+«Tu turno. Tómate tu tiempo» y no programa un remate. Peticiones como «déjame
+pensar», «un momento» y vacilaciones aisladas terminan con `done` silencioso:
+sin generación Meta ni síntesis. El siguiente turno conserva la pregunta.
+
+Se usa `[laughter]` junto a la frase en una sola síntesis, separado del texto
+visible en los turnos locales. La UI elimina el marcador de los mensajes del
+modelo. Se mantienen los IDs español e inglés proporcionados por el usuario.
+No se fuerza `generation_config.emotion` en español: la documentación lo
+describe como experimental y su soporte de etiquetas se limita al inglés.
+La entonación española se guía por el texto y la risa nativa documentada.
+[Fuente oficial](https://docs.cartesia.ai/build-with-cartesia/capability-guides/volume-speed-emotion).
+
+## Escuchar y tomar la palabra
+
+Durante la salida se sigue enviando silencio a Muse para evitar que responda
+a su propio audio. Si el navegador confirma `echoCancellation: true`, se
+habilita detección local de una entrada sostenida: tres frames de 80 ms por
+encima de un umbral adaptado al nivel anterior y al umbral acústico.
+El ruido estable anterior y un golpe aislado no bastan en las pruebas.
+
+Al detectar el inicio se aborta la respuesta y Cartesia, se detienen las fuentes
+Web Audio programadas y se vuelve a escuchar, sin reiniciar la sesión ASR.
+Un pre-roll de como máximo cuatro frames (320 ms, 15360 bytes) conserva el
+inicio en RAM y lo reenvía una vez. Se vacía al reanudar o parar; no se graba.
+El control loopback `resumeSpeech` nunca se envía al proveedor. El relay solo
+admite créditos de replay para esos frames tras silencio observado y una
+negociación de interrupción; evita acumular falsos errores de velocidad tras
+muchas interrupciones, conservando la protección contra audio a ráfagas.
+Cada interrupción puede añadir hasta 320 ms de entrada ASR facturable; no se
+afirma coste cero. No se abren nuevas sesiones por esta operación.
+
+Una coincidencia exacta de tres o más palabras con la salida reciente, durante
+los tres segundos siguientes a una interrupción acústica, se trata como probable
+eco y no dispara otra respuesta. Es una defensa local limitada, no identificación
+del hablante: una repetición intencionada idéntica en esa ventana podría omitirse.
+Las correcciones distintas, respuestas cortas y repeticiones posteriores siguen
+siendo elegibles. La cancelación de una solicitud ya enviada no garantiza que
+el proveedor no haya facturado parte de su procesamiento.
+
+Los parciales del usuario no inician voz. Muse finaliza el turno y solo entonces
+se puede responder. El texto de las frases de Melodi ya ofrecidas se incorpora
+al contexto antes de acabar su reproducción, por lo que una interrupción no
+borra la conversación. Esto no certifica qué palabras se oyeron físicamente.
+Se conserva el historial efímero existente de hasta doce mensajes enviados al
+modelo; no se añade memoria permanente ni contexto ilimitado. Pausar o detener
+la escucha no lo borra; Borrar sesión lo vacía. Recargar la página inicia otra
+sesión. No hay conservación de audio o conversación en la bitácora.
+
+Si no se confirma cancelación de eco, se mantiene la protección de mute y el
+botón Interrumpir, sin asumir separación acústica inexistente. La detección
+automática usa energía, no un VAD neuronal ni reconocimiento de identidad.
+Su calidad con micrófonos, altavoces y ruidos reales queda pendiente.
+
+## Verificaciones y evidencia
+
+Con `tools.verify`, proveedores/micrófono sustituidos, sin inferencia externa:
+
+- `melodi-cartesia`: 28 pruebas,
+  `tmp/verification/melodi-cartesia-20261030T140104-88d204f8.json`.
+  Pregunta sin remate, acierto sin repetir, negación/cambio de tema, pausa
+  silenciosa, dos idiomas, WS de replay local y ritmo/cancelación.
+- `javascript`: 49 pruebas,
+  `tmp/verification/javascript-20261030T140104-1639507c.json`.
+  Energía sostenida, ruido aislado, eco, pre-roll acotado y PCM cancelado.
+- `live-ui`: recorrido con AudioWorklet real y proveedores simulados,
+  `tmp/verification/live-ui-20261030T140130-8ecfcf01.json`; interrupción,
+  contexto tras respuesta cortada, pausa sin TTS y chiste con espera.
+- `app-ui`: once comprobaciones,
+  `tmp/verification/app-ui-20261030T135850-3ac29016.json`.
+- `http`: 23 pruebas,
+  `tmp/verification/http-20261030T135853-2710597b.json`.
+- `spatial-assistant`: 15 pruebas y `sous-voice`: ocho,
+  `tmp/verification/spatial-assistant-20261030T140107-7ba78d87.json` y
+  `tmp/verification/sous-voice-20261030T140110-1eeb7a3f.json`.
+
+Comprobación HTTP local real con tres turnos sintéticos conocidos, sin TTS ni
+Meta: `tmp/melodi-dialogue-local.json`. La pregunta, pausa y acierto devuelven
+los eventos esperados. No se guardan sus textos en ese informe.
+
+Los fallos de pruebas se conservan: «otro» se trataba inicialmente como un
+intento de adivinar; se corrigió su prioridad. Un timeout de UI procedía de la
+fixture que inyectaba un final extra en cada cierre y contaminaba la petición
+del chiste; se limitó al caso específico que verifica flush. No se presenta
+ese fallo del ensayo como una avería real del usuario.
+
+Una comprobación real separada `tools.check_melodi_speed_real --allow-paid
+--case laugh` hizo una sola síntesis con reacción sintética fija y `[laughter]`:
+HTTP 200, 119040 bytes PCM (2,48 s) con energía, primer PCM 750 ms, recepción
+1203 ms. Evidencia: `tmp/melodi-speed-real-20261030T135850042044+0000.json`.
+Una operación de inferencia externa, sin retries ni guardado del audio nuevo.
+Importe y GPU facturada desconocidos. Acredita aceptación y salida PCM, no
+calidad perceptiva de la risa. No se repitieron conversaciones Meta reales.
+
+Pendiente de prueba física: micrófono y AEC del navegador del usuario,
+sensibilidad de interrupción, altavoces y naturalidad de voz, humor y risas.

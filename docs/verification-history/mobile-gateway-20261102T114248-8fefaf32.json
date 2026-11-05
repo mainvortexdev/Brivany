@@ -1,0 +1,15 @@
+{
+  "suite": "mobile-gateway",
+  "started_at": "2026-11-02T11:42:48.647795+00:00",
+  "finished_at": "2026-11-02T11:42:48.964949+00:00",
+  "duration_seconds": 0.317154,
+  "command": [
+    "node",
+    "--test",
+    "workers/mobile-gateway/test/gateway.test.mjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ auth hashes fixed-size inputs and never returns the credential (38.8276ms)\n✔ health is passive; config is authenticated and does not claim remote tools (6.5626ms)\n✔ query tokens and browser origins are rejected, auth rate limit uses a hash (2.6444ms)\n✔ chat bounds roles, total history and request bytes before opening a provider (6.9714ms)\n✔ chat fixed provider and server persona stream UTF8 SSE into NDJSON (5.6504ms)\n✔ chat recognizes DONE without waiting for HTTP EOF and cancels provider body (2.7576ms)\n✔ provider payloads and tool calls are never forwarded as errors or actions (2.5037ms)\n✔ speech sends only text plus server voice to Cartesia, returns aligned PCM (1.6265ms)\n✔ speech bounds input and fails on incomplete PCM rather than inventing a sample (4.073ms)\n✔ cancel downstream chat aborts upstream request and cancels remaining body (1.6455ms)\n✔ ASR handshake is server-owned; raw provider credentials cannot reach client (2.4554ms)\n✔ ASR rejects malformed frames and floods; no PCM is sent before readiness (0.7005ms)\n✔ ASR rejects malicious start options before provider access, Stop cancels setup (0.5585ms)\n✔ ASR maximum lifetime is fifteen minutes and finish sends endStream (0.4546ms)\n✔ Muse sanitization ignores additive fields and refuses oversized provider messages (0.2509ms)\nℹ tests 15\nℹ suites 0\nℹ pass 15\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 206.1846\n"
+}

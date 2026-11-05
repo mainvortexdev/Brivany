@@ -1,0 +1,36 @@
+{
+  "checks": 19,
+  "passed": [
+    "provider transition blocks credential saving and sessions",
+    "local video preview with no upload, microphone or autoplay",
+    "local API key form clears password and avoids browser storage",
+    "explicit audio consent, real 40 ms PCM worklet and translated speech stream",
+    "text escaped and first audio never labelled provider inference",
+    "pause closes upstream and stops sending audio",
+    "language change cancels session",
+    "explicit source language and reversed direction; source change cancels",
+    "equal source and target languages blocked before connection",
+    "seek cancels obsolete output",
+    "stop during connection ignores late readiness",
+    "server deadline drains final translation instead of cancelling",
+    "bounded playback stops excessive queued audio",
+    "video end flushes final partial packet and drains translated tail",
+    "ElevenLabs selection saves its own key and requires a configured voice",
+    "Palabra configuration preserved with explicit consent after switching",
+    "late status for old provider cannot enable or overwrite current selection",
+    "provider switch cancels live socket, playback and capture without substitution",
+    "layout fits 320/390/768/1440 px"
+  ],
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "api": "simulated",
+  "audio_worklet": "real with synthetic video audio",
+  "physical_devices": false,
+  "packets": 102,
+  "finish_messages": 1,
+  "screenshots": [
+    "tmp/ui/dubbing-390.png",
+    "tmp/ui/dubbing-1440.png"
+  ],
+  "inference_500ms_verified": false
+}

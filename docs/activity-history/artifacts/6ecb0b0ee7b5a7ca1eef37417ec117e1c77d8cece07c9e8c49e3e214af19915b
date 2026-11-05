@@ -1,0 +1,8 @@
+{
+  "type": "local_disposable_activity_auditor_fixtures",
+  "passed": false,
+  "failure": "Fixture cleanup failed on Windows because SQLite context managers committed without closing the connections.",
+  "production_ledger_mutated": false,
+  "correction": "Explicit contextlib.closing in read-only audit and reconciliation, plus fixture connection.",
+  "external_calls": 0
+}

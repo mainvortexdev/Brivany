@@ -1,0 +1,36 @@
+{
+  "scope": "real Meta image and conceptual geometry",
+  "synthetic_only": true,
+  "external_cost_amount": null,
+  "physical_audio_verified": false,
+  "status": "passed",
+  "visual_reply": "A la izquierda se ve un rectángulo vertical naranja y a su derecha, un círculo azul.",
+  "model": {
+    "id": "dfd0026e-1bdf-4a47-8438-8afbf85210ca",
+    "kind": "model",
+    "state": "succeeded",
+    "phase": "Modelo conceptual disponible en Espacios",
+    "steps": 0,
+    "result": {
+      "scene_id": "0ece190c-ca42-42af-a584-68da85d09271",
+      "title": "Dos formas: rectángulo naranja y círculo azul",
+      "object_count": 2,
+      "conceptual": true,
+      "url": "/spaces?space=0ece190c-ca42-42af-a584-68da85d09271",
+      "representation": "3d",
+      "references_used": 1
+    },
+    "error": null,
+    "external_calls": 1,
+    "agent": "Agente espacial",
+    "reviewed": false
+  },
+  "requests_attempted": 3,
+  "visual_requests_attempted": 2,
+  "external_calls": 3,
+  "limits": [
+    "No automatic semantic or geometric fidelity certification.",
+    "Conceptual geometry, unverified scale.",
+    "Invoice amount unknown; no task retries."
+  ]
+}

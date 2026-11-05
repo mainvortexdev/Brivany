@@ -1,0 +1,330 @@
+{
+  "type": "actual_MediaRecorder_MediaSource_AudioWorklet_with_synthetic_source_and_substituted_relay",
+  "mode": "synchronized",
+  "provider_cue_ready_at_source_seconds": 3,
+  "external_calls": 0,
+  "microphone": false,
+  "user_audio_persisted": false,
+  "errors": [],
+  "states": [
+    "Preparando el búfer audiovisual…",
+    "En pausa",
+    "Conservando el margen de traducción…",
+    "Traduciendo"
+  ],
+  "cue_started": [
+    {
+      "id": "own-one",
+      "media": 0.980241,
+      "capture": 5.28,
+      "wall": 5509.399999991059,
+      "pitch_hz": [
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125
+      ],
+      "preserves_pitch": true
+    },
+    {
+      "id": "own-two",
+      "media": 3.28,
+      "capture": 7.6,
+      "wall": 7814.399999991059,
+      "pitch_hz": [
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125,
+        439.453125
+      ],
+      "preserves_pitch": true
+    }
+  ],
+  "snapshots": [
+    {
+      "lag": 0.64,
+      "reason": "paused",
+      "media": 0,
+      "capture": 0.64,
+      "processed": 0.64,
+      "ready_state": 1,
+      "paused": true,
+      "buffered": [
+        [
+          0,
+          0.613
+        ]
+      ],
+      "frames": 1
+    },
+    {
+      "lag": 1.6,
+      "reason": "paused",
+      "media": 0,
+      "capture": 1.6,
+      "processed": 1.6000000000000003,
+      "ready_state": 4,
+      "paused": true,
+      "buffered": [
+        [
+          0,
+          1.453
+        ]
+      ],
+      "frames": 4
+    },
+    {
+      "lag": 2.56,
+      "reason": "paused",
+      "media": 0,
+      "capture": 2.56,
+      "processed": 2.480000000000001,
+      "ready_state": 4,
+      "paused": true,
+      "buffered": [
+        [
+          0,
+          2.371
+        ]
+      ],
+      "frames": 4
+    },
+    {
+      "lag": 3.52,
+      "reason": "paused",
+      "media": 0,
+      "capture": 3.52,
+      "processed": 3.520000000000002,
+      "ready_state": 4,
+      "paused": true,
+      "buffered": [
+        [
+          0,
+          3.266
+        ]
+      ],
+      "frames": 4
+    },
+    {
+      "lag": 4.293359000000001,
+      "reason": null,
+      "media": 0.186641,
+      "capture": 4.48,
+      "processed": 4.480000000000002,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          0,
+          4.132
+        ]
+      ],
+      "frames": 10
+    },
+    {
+      "lag": 4.298710000000001,
+      "reason": null,
+      "media": 1.14129,
+      "capture": 5.44,
+      "processed": 5.440000000000003,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          0,
+          5.332
+        ]
+      ],
+      "frames": 30
+    },
+    {
+      "lag": 4.293459,
+      "reason": null,
+      "media": 2.106541,
+      "capture": 6.4,
+      "processed": 6.400000000000004,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          0,
+          6.251
+        ]
+      ],
+      "frames": 51
+    },
+    {
+      "lag": 4.322478,
+      "reason": null,
+      "media": 3.037522,
+      "capture": 7.36,
+      "processed": 7.280000000000005,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          0,
+          7.17
+        ]
+      ],
+      "frames": 72
+    },
+    {
+      "lag": 4.294595,
+      "reason": null,
+      "media": 4.025405,
+      "capture": 8.32,
+      "processed": 8.320000000000006,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          0,
+          8.051
+        ]
+      ],
+      "frames": 94
+    },
+    {
+      "lag": 4.322475999999999,
+      "reason": null,
+      "media": 4.957524,
+      "capture": 9.28,
+      "processed": 9.200000000000006,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          0,
+          8.97
+        ]
+      ],
+      "frames": 115
+    },
+    {
+      "lag": 4.299771,
+      "reason": null,
+      "media": 5.940229,
+      "capture": 10.24,
+      "processed": 10.240000000000007,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          0,
+          10.143
+        ]
+      ],
+      "frames": 136
+    },
+    {
+      "lag": 4.294369,
+      "reason": null,
+      "media": 6.905631,
+      "capture": 11.2,
+      "processed": 11.200000000000006,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          1.013,
+          11.05
+        ]
+      ],
+      "frames": 158
+    }
+  ],
+  "passed": true,
+  "stats": {
+    "epoch": 1,
+    "delay_seconds": 4,
+    "max_buffer_seconds": 30,
+    "processed_seconds": 11.920000000000009,
+    "turns": 0,
+    "hold_transitions": 2,
+    "max_observed_delay_seconds": 4.322524,
+    "recorder_gap_recoveries": 0,
+    "preparation_budget_ms": 6000,
+    "preparation_budget_exceeded": false,
+    "prepared_after_capture_ms": 4256.600000008941,
+    "first_audio_after_capture_ms": 5315.4000000059605,
+    "capture_seconds": 12,
+    "sent_seconds": 11.92,
+    "queued_PCM_seconds": 0.08,
+    "queued_encoded_bytes": 0,
+    "active_cue": null,
+    "translated_cues_buffered": 0,
+    "voice_gaps_ms": [
+      1503.1000000089407
+    ],
+    "video_time": 7.677663,
+    "closed": false,
+    "signaled_voices": 2,
+    "completed_voice_count": 2,
+    "completed_voices_with_signal": 2,
+    "first_signal_after_capture_ms": 5346.9000000059605,
+    "completed_voices": [
+      {
+        "source_start": 1,
+        "source_end": 1.8,
+        "category": null,
+        "provisional": false,
+        "speaker": null,
+        "rate": 1.25,
+        "audio_seconds": 1,
+        "wall_seconds": 0.8005999999940395,
+        "peak": 0.09155553579330444,
+        "signal_measured": true
+      },
+      {
+        "source_start": 3.3,
+        "source_end": 4.1,
+        "category": null,
+        "provisional": false,
+        "speaker": null,
+        "rate": 1.25,
+        "audio_seconds": 1,
+        "wall_seconds": 0.7942000000029802,
+        "peak": 0.09155553579330444,
+        "signal_measured": true
+      }
+    ]
+  },
+  "video_frames": 177,
+  "finished": true,
+  "owned_test_background_throttling_disabled": true
+}

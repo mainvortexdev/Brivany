@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "time": "2026-11-03T23:33:38.845906+00:00",
+  "native_process_id": 7072,
+  "windows": [
+    {
+      "surface": "Melodi WorkSpace · Panel",
+      "visible": true,
+      "width": 780,
+      "height": 404,
+      "tool_window": true,
+      "taskbar_app_style": false
+    },
+    {
+      "surface": "Melodi WorkSpace",
+      "visible": true,
+      "width": 1280,
+      "height": 40,
+      "tool_window": true,
+      "taskbar_app_style": false
+    },
+    {
+      "surface": "Melodi WorkSpace · Voz",
+      "visible": false,
+      "width": 764,
+      "height": 365,
+      "tool_window": true,
+      "taskbar_app_style": false
+    },
+    {
+      "surface": "Brivany",
+      "visible": false,
+      "width": 1104,
+      "height": 721,
+      "tool_window": false,
+      "taskbar_app_style": true
+    }
+  ],
+  "work_area": {
+    "top": 40,
+    "monitor_top": 0,
+    "reserved_top": 40
+  },
+  "account_device_online": true,
+  "external_calls": 1,
+  "external_purpose": "read-only device availability, no inference or actions",
+  "initial_probe": "Failed expectation that panels would still be hidden at inspection; an owned panel was visible. Not a startup quality conclusion and no forced panel closure. Bar/reservation passed. No network call in that first probe.",
+  "old_shutdown": "WM_QUIT ended UI but Python remained; verified old processes stopped after owned reservation cleanup",
+  "limits": "Own surface geometry and account metadata only; no user conversation, microphone or keyboard text captured."
+}

@@ -1,0 +1,24 @@
+{
+  "type": "real_native_adapters",
+  "model_calls": 0,
+  "success": true,
+  "capture": {
+    "verified": true,
+    "path": "<local-path>\\Desktop\\Evidencia Melodi\\ProjectFixture-20261101-044117.png",
+    "title": "ProjectFixture Trading Platform - Smart Trading",
+    "url": "http://127.0.0.1:64093/",
+    "width": 1144,
+    "height": 741,
+    "window_open": true,
+    "method": "isolated-local-browser-capture"
+  },
+  "notes": {
+    "verified": true,
+    "path": "<local-path>\\Desktop\\Evidencia Melodi\\Acciones-20261101-044117.txt",
+    "method": "observed-notepad-edit-ctrl-s",
+    "input_verified": true,
+    "file_content_verified": true
+  },
+  "server_url": "http://127.0.0.1:64093",
+  "source_commit": "57b3878cc09eaffab9789fdcc438753895995e08"
+}

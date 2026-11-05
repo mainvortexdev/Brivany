@@ -1,0 +1,103 @@
+{
+  "type": "real_isolated_brave_inline_sync_local_protocol_fixture",
+  "passed": true,
+  "source_owned_synthetic": true,
+  "encoded_video_source": true,
+  "owned_caption_track": false,
+  "provider_trial_max_seconds": 0,
+  "billing_amount": 0,
+  "user_profile_used": false,
+  "physical_listening_verified": false,
+  "cloning_enabled": false,
+  "error_message": "Muse interrumpió la transcripción en este ensayo.",
+  "cues": [
+    {
+      "speaker": 1,
+      "category": "masculine",
+      "source": 0.25,
+      "picture": 0.229333,
+      "recovered_gap": false,
+      "rate": 1,
+      "duration": 1,
+      "played": 1,
+      "wall": 1.0160999999940394,
+      "onset_ms": 4505,
+      "sync_error_ms": -21
+    }
+  ],
+  "no_new_window": true,
+  "protocol": [
+    {
+      "type": "ready",
+      "at": 0
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 250,
+      "end": 3250,
+      "at": 339
+    },
+    {
+      "type": "dub-cue",
+      "start": 250,
+      "end": 3250,
+      "speaker": 1,
+      "category": "masculine",
+      "at": 3294
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 6250,
+      "end": 9250,
+      "at": 6331
+    },
+    {
+      "type": "error",
+      "at": 6406
+    }
+  ],
+  "last_processed_ms": 6400,
+  "last_buffer": {
+    "lag": 4.182333,
+    "reason": null,
+    "media": 2.217667,
+    "capture": 6.4,
+    "processed": 6.4,
+    "paused": false,
+    "ready": 4,
+    "frames": 42,
+    "buffered": [
+      [
+        0,
+        0.522
+      ],
+      [
+        0.656,
+        6.089
+      ]
+    ]
+  },
+  "recorder_track": {
+    "width": 960,
+    "height": 540,
+    "frameRate": 24
+  },
+  "source_lifecycle": {
+    "events": [],
+    "connected": true,
+    "selected": false,
+    "paused": false,
+    "time": 6.695362
+  },
+  "browser_voice_played": 1,
+  "finished_after_source": false,
+  "correct_speaker_sequence": false,
+  "public_speaker_match_verified": false,
+  "workspace_stop_clean": false,
+  "original_restored_after_error": true,
+  "original_replayed_to": 0,
+  "one_session": true,
+  "drained_after_reset": false
+}

@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "checked_at": "2026-11-02T13:15:53.939520+00:00",
+  "type": "final_real_account_status_after_restart",
+  "same_account": true,
+  "desktop_auto_reconnected": true,
+  "preview_signed_in": true,
+  "online_desktops": 1,
+  "paid_inference_calls": 0,
+  "credentials_in_output": false,
+  "physical_iphone": false
+}

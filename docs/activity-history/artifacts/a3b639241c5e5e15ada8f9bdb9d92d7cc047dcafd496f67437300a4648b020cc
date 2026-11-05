@@ -1,0 +1,36 @@
+{
+  "public_video": true,
+  "extension_loaded": false,
+  "events": [
+    {
+      "type": "seeking",
+      "time": 24,
+      "ready": 1
+    },
+    {
+      "type": "waiting",
+      "time": 24,
+      "ready": 1
+    },
+    {
+      "type": "seeked",
+      "time": 24.029171,
+      "ready": 4
+    },
+    {
+      "type": "playing",
+      "time": 24.029519,
+      "ready": 4
+    },
+    {
+      "type": "emptied",
+      "time": 0,
+      "ready": 0
+    }
+  ],
+  "max_seconds": 45,
+  "position": 0,
+  "paused": true,
+  "ready": 0,
+  "player_error_visible": true
+}

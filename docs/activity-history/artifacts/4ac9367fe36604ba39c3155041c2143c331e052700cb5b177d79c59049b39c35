@@ -1,0 +1,123 @@
+/* Real video + AudioWorklet; mocked API and translation WebSocket. No provider or microphone. */
+const {chromium}=require(process.env.BRIVANY_PLAYWRIGHT_PATH || 'playwright');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const http=require('node:http'),root=path.resolve(__dirname,'..');
+let base,socketURL;
+const fixture=path.join(root,'tmp/dubbing-test/synthetic-video.mp4');
+if(!fs.existsSync(fixture)) throw Error('Missing synthetic fixture: tmp/dubbing-test/synthetic-video.mp4');
+const pcm=Buffer.alloc(4800);
+for(let i=0;i<pcm.length/2;i++) pcm.writeInt16LE(Math.round(Math.sin(i*.07)*2500),i*2);
+(async()=>{
+  // Worklet requests may bypass browser routing. Serve just that local script
+  // from a temporary loopback server while HTTP API and WS remain simulated.
+  const server=http.createServer((request,response)=>{
+    if(request.method!=='GET' || request.url!=='/dub-capture.js') { response.writeHead(404);response.end();return; }
+    response.writeHead(200,{'Content-Type':'text/javascript'});response.end(fs.readFileSync(path.join(root,'web/dub-capture.js')));
+  });
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  base='http://127.0.0.1:'+server.address().port;socketURL='ws://127.0.0.1:'+server.address().port+'/dub';
+  const browser=await chromium.launch({headless:true,channel:process.env.BRIVANY_BROWSER_CHANNEL || 'msedge'});
+  try {
+    const context=await browser.newContext({serviceWorkers:'block'}), page=await context.newPage();
+    const errors=[],checks=[],starts=[],packets=[]; let configured=false,keySaves=0,peer,connections=0,finishes=0,closed=0,readyDelay=0;
+    await context.addInitScript(()=>{
+      window.__micRequests=0;
+      if(navigator.mediaDevices) Object.defineProperty(navigator.mediaDevices,'getUserMedia',{value:async()=>{window.__micRequests++;throw Error('Microphone must not be requested');}});
+    });
+    page.on('pageerror',error=>errors.push(error.message));
+    await context.route('**/*',async route=>{
+      const request=route.request(),url=new URL(request.url());
+      if(url.origin!==base) return route.abort('blockedbyclient');
+      if(url.pathname==='/api/dubbing/status') return route.fulfill({json:{provider:'OpenAI',model:'gpt-realtime-translate',configured,available:true,websocket_url:socketURL,sample_rate:24000,target_inference_ms:500,inference_verified:false,max_seconds:60}});
+      if(url.pathname==='/api/config/dubbing') {
+        assert.equal(request.method(),'POST'); assert.equal(request.postDataJSON().key,'not-a-real-api-key-for-ui-tests');
+        keySaves++;configured=true;return route.fulfill({json:{saved:true}});
+      }
+      const name=url.pathname==='/dubbing'?'dubbing.html':url.pathname.slice(1);
+      if(!['dubbing.html','dubbing.css','dubbing.js','dub-capture.js','palette.css','icon.svg'].includes(name)) return route.fulfill({status:404,body:'not found'});
+      await route.fulfill({contentType:name.endsWith('.js')?'text/javascript':name.endsWith('.css')?'text/css':name.endsWith('.svg')?'image/svg+xml':'text/html',body:fs.readFileSync(path.join(root,'web',name))});
+    });
+    await context.routeWebSocket(socketURL,socket=>{
+      peer=socket;connections++;let responded=false;
+      socket.onClose(()=>closed++);
+      socket.onMessage(message=>{
+        if(typeof message==='string') {
+          const event=JSON.parse(message);
+          if(event.type==='start') { starts.push(event);setTimeout(()=>{try{socket.send(JSON.stringify({type:'ready',sample_rate:24000,max_seconds:60}));}catch{}},readyDelay); }
+          if(event.type==='finish') {
+            finishes++;socket.send(JSON.stringify({type:'audio',audio:pcm.toString('base64'),sample_rate:24000}));
+            socket.send(JSON.stringify({type:'transcript',text:' Fin del fragmento.',source:'translation'}));
+            socket.send(JSON.stringify({type:'done'}));socket.close();
+          }
+        } else {
+          packets.push(Buffer.from(message));assert.ok(message.length>0 && message.length<=1920 && message.length%2===0);
+          if(!responded) {
+            responded=true;socket.send(JSON.stringify({type:'audio',audio:pcm.toString('base64'),sample_rate:24000,elapsed_ms:200}));
+            socket.send(JSON.stringify({type:'transcript',text:'Una traducción <img src=x onerror=alert(1)>.',source:'translation',elapsed_ms:200}));
+            socket.send(JSON.stringify({type:'metrics',first_output_audio_ms:350,inference_ms:null,target_inference_ms:500}));
+          }
+        }
+      });
+    });
+    await page.goto(base+'/dubbing');
+    await page.waitForFunction(()=>document.querySelector('#provider-state').textContent.includes('sin clave'));
+    assert.equal(connections,0); assert.equal(await page.evaluate(()=>window.__micRequests),0);
+    await page.locator('#video-file').setInputFiles(fixture);
+    await page.waitForFunction(()=>document.querySelector('#dub-video').readyState>=1);
+    assert.equal(await page.locator('#start-dubbing').isDisabled(),true);
+    assert.equal(await page.evaluate(()=>document.querySelector('#dub-video').paused),true);
+    checks.push('local video preview with no upload, microphone or autoplay');
+    await page.locator('#configure-dubbing').click();assert.equal(await page.locator('#dubbing-key').getAttribute('type'),'password');
+    await page.locator('#dubbing-key').fill('not-a-real-api-key-for-ui-tests');await page.locator('#save-dubbing-key').click();
+    await page.waitForFunction(()=>document.querySelector('#provider-state').textContent.includes('guardada'));
+    assert.equal(keySaves,1);assert.equal(await page.locator('#dubbing-key').inputValue(),'');
+    assert.equal(await page.evaluate(()=>localStorage.length),0);checks.push('local API key form clears password and avoids browser storage');
+    assert.equal(await page.locator('#start-dubbing').isDisabled(),true);
+    await page.locator('#dub-consent').check();await page.locator('#start-dubbing').click();
+    await page.waitForFunction(()=>document.querySelector('#session-state').textContent==='Traduciendo',{},{timeout:6000}).catch(async exception=>{console.error({state:await page.locator('#session-state').textContent(),notice:await page.locator('#dub-notice').textContent(),error:await page.locator('#dub-error').textContent(),connections,starts:starts.length,errors});throw exception;});
+    await page.waitForFunction(()=>document.querySelector('#translation-caption').textContent.includes('Una traducción'));
+    assert.equal(starts.length,1);assert.equal(starts[0].consent,true);assert.equal(starts[0].target_language,'es');
+    assert.ok(packets.some(packet=>packet.some(value=>value!==0)));assert.ok(packets.some(packet=>packet.length===1920));
+    assert.equal(await page.locator('#translation-caption img').count(),0);
+    assert.match(await page.locator('#inference-ms').textContent(),/Sin dato/);
+    assert.match(await page.locator('#first-audio-ms').textContent(),/350 ms.*red y contexto/);
+    checks.push('explicit audio consent, real 40 ms PCM worklet and translated speech stream');
+    checks.push('text escaped and first audio never labelled provider inference');
+    await page.evaluate(()=>document.querySelector('#dub-video').pause());
+    await page.waitForFunction(()=>document.querySelector('#start-dubbing').disabled===false);
+    const before=packets.length;await page.waitForTimeout(180);assert.equal(packets.length,before);
+    assert.ok(closed>0);checks.push('pause closes upstream and stops sending audio');
+    await page.locator('#start-dubbing').click();await page.waitForFunction(()=>document.querySelector('#session-state').textContent==='Traduciendo');
+    await page.locator('#target-language').selectOption('en');await page.waitForFunction(()=>!document.querySelector('#start-dubbing').disabled);
+    assert.match(await page.locator('#dub-notice').textContent(),/Idioma cambiado/);checks.push('language change cancels session');
+    await page.locator('#start-dubbing').click();await page.waitForFunction(()=>document.querySelector('#session-state').textContent==='Traduciendo');
+    await page.evaluate(()=>{document.querySelector('#dub-video').currentTime=0;});
+    await page.waitForFunction(()=>document.querySelector('#dub-notice').textContent.includes('Cambiaste'));
+    checks.push('seek cancels obsolete output');
+    readyDelay=200;await page.locator('#start-dubbing').click();await page.locator('#stop-dubbing').click();
+    await page.waitForTimeout(300);assert.equal(await page.evaluate(()=>document.querySelector('#dub-video').paused),true);
+    checks.push('stop during connection ignores late readiness');readyDelay=0;
+    await page.locator('#start-dubbing').click();await page.waitForFunction(()=>document.querySelector('#session-state').textContent==='Traduciendo');
+    peer.send(JSON.stringify({type:'input-ended',reason:'session_limit'}));
+    await page.waitForFunction(()=>document.querySelector('#session-state').textContent==='Terminando');
+    assert.equal(await page.evaluate(()=>document.querySelector('#dub-video').paused),true);
+    peer.send(JSON.stringify({type:'audio',audio:pcm.toString('base64'),sample_rate:24000}));peer.send(JSON.stringify({type:'done'}));peer.close();
+    await page.waitForFunction(()=>document.querySelector('#dub-notice').textContent.includes('terminada'));
+    checks.push('server deadline drains final translation instead of cancelling');
+    await page.locator('#start-dubbing').click();await page.waitForFunction(()=>document.querySelector('#session-state').textContent==='Traduciendo');
+    peer.send(JSON.stringify({type:'audio',audio:Buffer.alloc(48000).toString('base64'),sample_rate:24000}));
+    await page.waitForFunction(()=>!document.querySelector('#dub-error').hidden);
+    assert.match(await page.locator('#dub-error').textContent(),/acumuló/);checks.push('bounded playback stops excessive queued audio');
+    await page.evaluate(()=>{document.querySelector('#dub-video').currentTime=0;});
+    await page.locator('#start-dubbing').click();await page.waitForFunction(()=>document.querySelector('#session-state').textContent==='Traduciendo');
+    await page.waitForFunction(()=>document.querySelector('#dub-notice').textContent.includes('terminada'),{},{timeout:7000});
+    assert.ok(finishes>0);assert.match(await page.locator('#translation-caption').textContent(),/Fin del fragmento/);
+    checks.push('video end flushes final partial packet and drains translated tail');
+    const dir=path.join(root,'tmp/ui');fs.mkdirSync(dir,{recursive:true});
+    for(const width of [320,390,768,1440]) { await page.setViewportSize({width,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);if([390,1440].includes(width))await page.screenshot({path:path.join(dir,`dubbing-${width}.png`),fullPage:true}); }
+    checks.push('layout fits 320/390/768/1440 px');
+    assert.deepEqual(errors,[]);assert.equal(await page.evaluate(()=>window.__micRequests),0);
+    const report={checks:checks.length,passed:checks,external_calls:0,gpu_seconds:0,api:'simulated',audio_worklet:'real with synthetic video audio',physical_devices:false,packets:packets.length,finish_messages:finishes,screenshots:['tmp/ui/dubbing-390.png','tmp/ui/dubbing-1440.png'],inference_500ms_verified:false};
+    fs.writeFileSync(path.join(dir,'dubbing-check.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));await context.close();
+  } finally { await browser.close();await new Promise(resolve=>server.close(resolve)); }
+})().catch(error=>{console.error(error);process.exitCode=1;});

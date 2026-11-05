@@ -1,0 +1,33 @@
+{
+  "type": "retrospective_lab_consumption_snapshot",
+  "recorded_at": "2026-11-04T16:27:13.125839+00:00",
+  "port": 49197,
+  "state": "passed",
+  "started_at": "2026-11-04T16:21:10.631101+00:00",
+  "finished_at": "2026-11-04T16:21:34.809348+00:00",
+  "report_file": "inline-sync-1793809294737.json",
+  "report_passed": true,
+  "source_error": null,
+  "consumption": {
+    "pipeline_ready_events_observed": 1,
+    "muse_live_input_started": 1,
+    "muse_live_session_acks_observed": 1,
+    "prefix_mt_attempts_observed": 0,
+    "live_mt_attempts_observed": 4,
+    "prefix_tts_requests_observed": 0,
+    "live_tts_requests_observed": 2,
+    "live_prosody_stages_started": 3,
+    "billing_amount": null,
+    "relay_sessions_started": 1,
+    "prefix_preparations_started": 0,
+    "prefix_muse_batch_attempts": 0,
+    "prefix_meta_prosody_attempts": 0,
+    "live_meta_prosody_attempts": 3,
+    "meta_caption_prefetch_attempts": 1
+  },
+  "relay_sessions_started": 1,
+  "prefix_preparations_started": 0,
+  "new_provider_inferences_for_snapshot": 0,
+  "billing_amount": null,
+  "original_media_attached": false
+}

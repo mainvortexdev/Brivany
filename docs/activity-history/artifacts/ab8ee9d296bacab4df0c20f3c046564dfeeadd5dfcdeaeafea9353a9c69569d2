@@ -1,0 +1,26 @@
+{
+  "type": "real_account_selection_with_simulated_second_host",
+  "physical_computers": 1,
+  "simulated_computers": 1,
+  "os_actions_executed_by_fixture": 0,
+  "calls": {
+    "chat": 1
+  },
+  "passed": true,
+  "connected_computers": 2,
+  "outcomes": [
+    {
+      "source": "chat",
+      "asked_before_delivery": true,
+      "target_matches_explicit_choice": true,
+      "fixture_result_simulated": true
+    },
+    {
+      "source": "voice",
+      "asked_before_delivery": true,
+      "target_matches_explicit_choice": true,
+      "fixture_result_simulated": true
+    }
+  ],
+  "fixture_revoked": true
+}

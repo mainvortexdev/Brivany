@@ -1,0 +1,26 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/computer-files-real/report.json",
+  "original_sha256": "d52c9bd6b89f256aef5690c4ff7beb1947e34e47e2f48c620b68b40888b21571",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "user_documents_modified": false,
+    "text_value_verified": true,
+    "ui_text_saved_to_disk": false
+  },
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

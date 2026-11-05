@@ -1,0 +1,57 @@
+# 39. Tiempo de respuesta de Melodi
+
+29 de octubre de 2026. Se separa primer texto, inicio de voz, respuesta completa y
+ejecución de una herramienta. El objetivo es empezar por información útil cuanto
+antes; no se promete el mismo plazo para conversación, cuentas o reconstrucción.
+
+## Lo observado
+
+Los ensayos reales anteriores de conversación sintetizada Muse → Spark → Celeste
+observaron primer texto aproximadamente entre 1,7 y 3,1 s en la medición inicial;
+la medición actualizada del 27 de octubre obtuvo 1,149/2,242/2,567 s, mediana 2,242 s.
+La voz actualizada se programó 2,909/4,155/4,243 s después del final acústico del
+mensaje; mediana 4,155 s. Se trata de programación Web Audio en navegador, sin
+micrófono ni altavoces físicos. No mide todos los idiomas, casos o entornos, no
+es latencia al oído ni un SLA. Se reutiliza la evidencia, sin repetir APIs pagadas.
+Fuentes: `tmp/conversation-after-fluency.json` y [voz live](13-voz-live.md).
+
+Una medición nueva de diez solicitudes por operación con HTTP loopback y SQLite
+temporales dio mediana/máximo: enfocar objeto 3,087/26,346 ms; guardar recordatorio
+10,470/300,329 ms; guardar nota 9,876/32,242 ms. Incluye la primera petición de
+cada grupo. Son tiempos del servidor local, sin pintado de pantalla, red móvil,
+proveedores ni sonido. No se presentan como tiempos de WhatsApp, Google o Meta.
+Informe: `tmp/request-latency-local.json`.
+
+## Espera acotada, sin reintentos
+
+Melodi principal, Sous y asistente espacial comparten `BrivanyLive.TurnBudget`:
+aviso de demora a los cuatro segundos sin texto, cancelación de la espera a los
+diez segundos sin primer texto y veinte segundos para completar el turno. Son
+límites de espera del cliente: **no aceleran al proveedor ni garantizan completitud
+en veinte segundos**. Pestañas suspendidas y temporizadores del sistema pueden
+retrasar su ejecución; no hay límite temporal duro del proveedor acreditado.
+
+La interfaz mantiene streaming y cancela la solicitud sin repetirla. Si recibió
+texto parcial lo marca como incompleto; no lo añade al historial como una
+respuesta terminada. Cancelar manualmente o terminar limpia los temporizadores.
+Los tiempos hasta primer texto quedan en atributos de diagnóstico sin guardar
+texto ni conversaciones. Los comandos locales evitan inferencia para seleccionar,
+enfocar o reconocer la etiqueta de un objeto guardado.
+
+Tres pruebas con reloj controlado comprueban silencio, primera respuesta,
+completitud interrumpida y cancelación; las cuarenta y cuatro pruebas JavaScript
+aprobaron. Los recorridos reales de navegador de Espacios y Sous comprobaron la
+integración con proveedores sustituidos. Hubo un fallo de enlace de `clearTimeout`
+detectado por navegador y corregido; los informes fallidos se conservan.
+
+## Evidencia
+
+- `tmp/verification/request-latency-local-20261029T213625-c1d209a4.json`.
+- `tmp/verification/javascript-20261029T213625-3d7d5152.json`.
+- `tmp/verification/spatial-assistant-ui-20261029T213455-0679492c.json`.
+- `tmp/verification/sous-voice-pipeline-20261029T213534-fccbc39a.json`.
+
+Esta comprobación nueva hizo cero llamadas externas y no consumió inferencia. Las
+mediciones históricas sí usaron proveedores reales y conservan sus límites y
+consumo desconocido. Reconstrucción GPU, búsquedas externas complejas y entrega
+WhatsApp necesitan sus propias mediciones; no están verificadas como instantáneas.

@@ -1,0 +1,72 @@
+{
+  "type": "production_robust_timbre_owned_profile",
+  "provider_calls": 0,
+  "source_audio_persisted": false,
+  "single_cpu_thread": true,
+  "import_wall_ms": 406.16,
+  "import_cpu_ms": 281.25,
+  "model_sha256": "a0934c2f8934878f264dd5072d07b1bbd176f051d285b2a7910dfaa173747695",
+  "rows": [
+    {
+      "fixture": "masculine",
+      "phase": "first",
+      "cpu_ms": 1250.0,
+      "voice_timbre": "masculine",
+      "timbre_confidence": 0.999075,
+      "available": true,
+      "local_model": "prithivMLmods/Common-Voice-Gender-Detection-ONNX@8d7fc28",
+      "windows": 1,
+      "latency_ms": 1219.02,
+      "confidence_threshold": 0.85,
+      "female_style_probability": 0.000925,
+      "window_start_ms": 0,
+      "window_duration_ms": 2480
+    },
+    {
+      "fixture": "masculine",
+      "phase": "warm",
+      "cpu_ms": 515.62,
+      "voice_timbre": "masculine",
+      "timbre_confidence": 0.999075,
+      "available": true,
+      "local_model": "prithivMLmods/Common-Voice-Gender-Detection-ONNX@8d7fc28",
+      "windows": 1,
+      "latency_ms": 521.47,
+      "confidence_threshold": 0.85,
+      "female_style_probability": 0.000925,
+      "window_start_ms": 0,
+      "window_duration_ms": 2480
+    },
+    {
+      "fixture": "feminine",
+      "phase": "first",
+      "cpu_ms": 421.88,
+      "voice_timbre": "feminine",
+      "timbre_confidence": 0.996175,
+      "available": true,
+      "local_model": "prithivMLmods/Common-Voice-Gender-Detection-ONNX@8d7fc28",
+      "windows": 1,
+      "latency_ms": 418.62,
+      "confidence_threshold": 0.85,
+      "female_style_probability": 0.996175,
+      "window_start_ms": 0,
+      "window_duration_ms": 2000
+    },
+    {
+      "fixture": "feminine",
+      "phase": "warm",
+      "cpu_ms": 421.88,
+      "voice_timbre": "feminine",
+      "timbre_confidence": 0.996175,
+      "available": true,
+      "local_model": "prithivMLmods/Common-Voice-Gender-Detection-ONNX@8d7fc28",
+      "windows": 1,
+      "latency_ms": 418.3,
+      "confidence_threshold": 0.85,
+      "female_style_probability": 0.996175,
+      "window_start_ms": 0,
+      "window_duration_ms": 2000
+    }
+  ],
+  "logit_reference_report": "tmp/selected-video/wav2vec-timbre-owned-20261104.json"
+}

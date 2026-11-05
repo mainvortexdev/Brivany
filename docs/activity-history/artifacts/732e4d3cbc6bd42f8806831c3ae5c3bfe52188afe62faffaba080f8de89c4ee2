@@ -1,0 +1,18 @@
+{
+  "suite": "room-ingest-ui",
+  "started_at": "2026-10-30T00:29:15.621916+00:00",
+  "finished_at": "2026-10-30T00:29:52.913091+00:00",
+  "duration_seconds": 37.291175,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_room_ingest_ui"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "page.waitForEvent: Timeout 30000ms exceeded while waiting for event \"download\"\r\n=========================== logs ===========================\r\nwaiting for event \"download\"\r\n============================================================\r\n    at <local-path>\\tools\\check_room_ingest_ui.cjs:58:46\r\n\r\n{\"modal_sdk_calls_added_by_ui\": 0, \"external_calls\": 0, \"gpu_inference\": false}\r\n"
+}

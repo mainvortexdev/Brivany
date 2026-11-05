@@ -1,0 +1,45 @@
+# Preparación de ambos transportes de traducción
+
+4 de noviembre de 2026. El ensayo real
+`tmp/selected-video/inline-sync-1793810199055.json` terminó siete intervenciones
+y cubrió 13,260 s, con señal medida en las siete. Falló el criterio de latencia:
+el retraso inicial fue 6,533333 s, el máximo 9,701346 s y el crecimiento
+3,168013 s. No hubo recuperación del original ni intervalos publicados sin
+reproducir dentro del tramo completado. Esto no demuestra calidad semántica,
+identidad de hablantes ni escucha física. El resultado fallido se conserva.
+
+La revisión de código encontró una asimetría concreta. El primer cliente MT
+preparaba su conexión TLS durante el arranque, pero el segundo se construía
+después de anunciar disponibilidad y abría su conexión al recibir su primera
+frase. Ahora ambos clientes se construyen antes de conectar ASR/TTS y preparan
+TLS en paralelo. El segundo conserva su registro para cancelación. La ruta
+sin traducción dentro de la pestaña mantiene un solo cliente MT.
+
+`MetaTranslationSession.prepare_transport` verifica TLS con un límite de dos
+segundos, sin solicitud HTTP, texto ni inferencia. Si no consigue preparar la
+conexión, la traducción conserva su manejo existente de transporte. La mejora
+elimina el trabajo frío evitable del segundo cliente; todavía no demuestra que
+los 4,5 s observados en una traducción fueran debidos a TLS ni que el retraso
+real ya cumpla los límites. No se ampliaron los umbrales de aceptación.
+
+Tres regresiones con transportes locales comprueban que los dos clientes
+comienzan a prepararse antes de recibir PCM y sin inferencia, que detener
+cierra los dos mientras se preparan y que la ruta sincronizada sin video en
+pestaña conserva un solo cliente. Una primera invocación usó por error el
+Python global sin `websockets` y no pudo importar el módulo. La ejecución con
+el entorno del proyecto aprobó las tres pruebas.
+
+Verificación registrada por `tools.verify`, con proveedores sustituidos
+localmente y cero llamadas a APIs externas de traducción:
+
+- `docs/verification-history/sync-relay-20261104T165304-9b86a830.json`: 72 pruebas
+  aprobadas, incluyendo las tres regresiones nuevas.
+- `docs/verification-history/river-translation-20261104T165304-1cddf794.json`: 59 pruebas
+  aprobadas. El servidor HTTP local imprimió un `ConnectionAbortedError`
+  durante una cancelación; la suite terminó correctamente.
+
+El consumo del ensayo real anterior permanece separado: una conexión Muse
+confirmada, doce intentos MT en vivo y diez solicitudes TTS observadas, más ocho
+etapas de prosodia iniciadas. El importe monetario es desconocido. La corrección
+requiere otro ensayo real del mismo tramo para medir su efecto; las pruebas
+locales no cierran el objetivo integral.

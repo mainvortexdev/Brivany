@@ -1,0 +1,73 @@
+# WorkSpace: corrección del envío de audio tras pausas
+
+1 de noviembre de 2026, America/La_Paz. Corrección del rechazo «El audio llegó
+más rápido que el tiempo real» observado por el usuario. El objetivo de
+terminal sigue pausado.
+
+## Causa y cambio
+
+Se comparó la captura de la app (`web/translate.js`) con el emisor nativo.
+La app produce bloques según el reloj de muestras del AudioWorklet y pausa
+su video ante contrapresión. WorkSpace captura un video externo y acumulaba
+plazos vencidos: una demora del planificador de 360 ms liberaba cuatro bloques
+de 80 ms juntos. El control de ritmo los rechazaba correctamente. El caso
+reproducido falló antes del cambio y se conserva como evidencia.
+
+`PCMFrameClock` conserva la fase frente a pequeñas variaciones, pero inicia
+una nueva fase tras perder un periodo. No intenta recuperar una pausa mediante
+una ráfaga. WorkSpace y el reproductor de fragmentos grabados comparten ese
+reloj. La pausa/reanudación reinicia la fase y conserva incluso el bloque
+que ya se había retirado de la cola: no se pierde ni cambia su orden.
+
+Además, River ahora valida el instante de **recepción** de cada bloque, no
+el instante en que el trabajador lo procesa. Una escritura lenta hacia ASR
+ya no convierte paquetes que llegaron espaciados en una aparente ráfaga.
+El límite permanece: bloques exactos de 3.840 bytes, 300 ms de crédito y
+15 ms de tolerancia; un envío real de cuatro bloques simultáneos se rechaza.
+
+Se mantienen la reducción del original al 12 %, su restauración al cerrar,
+la salida traducida separada y la cola limitada en memoria. No se añade
+reconexión automática ni se eliminan protecciones. La demora sigue siendo
+demora: WorkSpace no controla la reproducción del video externo y no promete
+recuperar tiempo perdido acelerando o descartando audio.
+
+## Comprobaciones
+
+- `workspace-translation`: 10 pruebas locales aprobadas, incluyendo la
+  reproducción del fallo de 360 ms con/sin pausa de flujo, conservación del
+  bloque pendiente y rechazo del envío verdaderamente acelerado.
+- `river-translation`: 14 pruebas aprobadas. Una escritura ASR demorada
+  artificialmente 280 ms conserva los nueve bloques que llegaron a ritmo
+  normal y permite completar la sesión.
+- `work`: 32 pruebas aprobadas; incluye el relleno del último bloque de
+  grabación. Total: 56 pruebas unitarias/de transporte locales.
+- Dos sesiones de 35 s con Muse WebSocket, Meta SSE y Cartesia WebSocket
+  sustituidos en localhost: una con fuente sintética y otra con captura real
+  WASAPI. Se provocaron siete demoras (110 a 1.200 ms), una pausa y una
+  reanudación. Ambas permanecieron activas, entregaron audio al sustituto de
+  salida y liberaron captura al cerrar, sin error de ritmo.
+- En la sesión WASAPI se enviaron 29,68 s de PCM dentro de los 35 s del ensayo;
+  no se presenta esa cifra como 35 s completos de contenido hablado. No se
+  persistieron PCM ni transcripciones. La salida TTS del ensayo fue sustituida.
+- `workspace-chat-native` pasó en ventanas WebView2 reales: inicio/parada de
+  traducción por el puente, sin navegar a la app, y regresiones de apertura,
+  geometría, chat, visualización y ondas; traducción/voz sustituidas.
+- Brivany reiniciado con `--island`; runtime confirma escritorio, bandeja y
+  WorkSpace activos. Traducción permanece sin iniciar hasta el clic del usuario.
+
+No hubo llamadas a proveedores externos ni nuevo consumo de inferencia en
+esta corrección. Estos ensayos verifican transporte, ritmo y ciclo de vida;
+no acreditan traducción semántica, sincronía acústica o escucha humana. El
+ensayo previo con APIs reales se documenta por separado en
+[traducción auditiva](workspace-traduccion-auditiva.md).
+
+## Evidencia conservada
+
+- Fallo inicial: `docs/verification-history/workspace-translation-20261102T020556-c0911a66.json`.
+- Unidad final: `docs/verification-history/workspace-translation-20261102T020857-0ae94fd1.json`.
+- River: `docs/verification-history/river-translation-20261102T021157-662bd114.json`.
+- Work: `docs/verification-history/work-20261102T020935-ee458b3c.json`.
+- Fuente sintética: `docs/verification-history/workspace-translation-pacing-20261102T020935-fc902553.json`.
+- WASAPI: `docs/verification-history/workspace-translation-pacing-hardware-20261102T021040-4c5f62a2.json`.
+- Nativo: `docs/verification-history/workspace-chat-native-20261102T021040-a7cbe817.json`.
+- Arranque: `tmp/workspace-translation-pacing/runtime-restarted-20261102.json`.

@@ -1,0 +1,17 @@
+{
+  "suite": "youtube-source",
+  "started_at": "2026-10-30T04:48:46.822143+00:00",
+  "finished_at": "2026-10-30T04:48:47.273933+00:00",
+  "duration_seconds": 0.45179,
+  "command": [
+    "node",
+    "--test",
+    "tests/youtube-source.test.cjs",
+    "tests/dub-audio-sink.test.cjs",
+    "tests/dub-tab-capture.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ client handshake requires exact popup, origin and random nonce; PCM transfers a copy (14.3813ms)\n✔ client cancellation before ready closes popup and rejects; blocked popup is actionable (7.2451ms)\n✔ client stop flushes generations, ignores late schedule and supports original volume (5.5836ms)\n✔ sink rejects wrong origin, wrong opener and nonce before constructing audio (15.5118ms)\n✔ autoplay denial asks for explicit activation and schedules no hidden audio (3.8062ms)\n✔ sink queue is bounded, source gain capped and stop prevents stale language audio (13.0635ms)\n✔ translation-only flush keeps original monitoring sources and pending acknowledgement alive (8.7607ms)\n✔ optional Capture Handle and settings metadata may be absent while an audio graph still delivers PCM (10.5558ms)\n✔ unconfirmed or false suppression permits capture and keeps browser and native original audio low (6.4682ms)\n✔ confirmed suppression preserves capture strength and delegates the requested original level (1.9674ms)\n✔ known monitor/window surfaces and mismatched Capture Handle reject before processing (13.7965ms)\n✔ missing or ended shared audio explains the audio toggle and releases the stream (6.0348ms)\n✔ permission arriving after cancellation releases all late tracks without a processing graph (3.9366ms)\n✔ AudioContext resumes before permission; a synchronous getDisplayMedia failure cleans it (2.1816ms)\n✔ ended tracks and changed known tab identity close exactly once and notify the caller (6.2787ms)\n✔ own-audio exclusion, unsupported capture and pre-cancelled requests never start processing (5.9133ms)\n✔ strict YouTube links normalize only a safe fixed video identity (5.0524ms)\n✔ constructing does not request YouTube or autoplay; explicit load creates origin-bound controlled iframe (6.661ms)\n✔ normalized states and video errors cannot arrive from a destroyed old player (2.3924ms)\n✔ API loads only after explicit load and cancelled initialization never inserts a stale iframe (2.6465ms)\n✔ playConfirmed waits for actual PLAYING, reuses pending confirmation and preserves the iframe when paused (3.524ms)\n✔ blocked playback rejects with a useful code and keeps the visible player ready for a manual retry (3.0821ms)\n✔ confirmed play timeout and embed errors never masquerade as successful playback or clear the video (16.6864ms)\n✔ pause, destroy and stale playback events cannot complete a waiting play confirmation (2.8731ms)\nℹ tests 24\nℹ suites 0\nℹ pass 24\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 286.8639\n"
+}

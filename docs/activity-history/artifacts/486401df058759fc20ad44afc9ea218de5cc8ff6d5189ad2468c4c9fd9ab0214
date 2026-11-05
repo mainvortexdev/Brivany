@@ -1,0 +1,59 @@
+{
+  "checked_at": "2026-10-28T11:54:22.060Z",
+  "status": "passed",
+  "provider": "Palabra",
+  "upstream": "real",
+  "api": "real_local",
+  "synthetic": true,
+  "source_sha256": "5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30",
+  "video_sha256": "f39da3ab2f132491528a0c8e9b11dbb709d03d0b2d6769061e0dbd0a7378c67d",
+  "fixture_regenerated_from_verified_source": true,
+  "target_audible_delay_ms": 500,
+  "physical_playback_measured": false,
+  "audible_delay_verified": false,
+  "external_calls": 1,
+  "output_timing_method": "same_audio_context_energy_windows_with_browser_device_timestamp_estimate",
+  "energy_window_ms": 20,
+  "energy_rms_threshold": 0.005,
+  "limitations": [
+    "Single synthetic phrase; no percentile, maximum guarantee, physical loopback or verified per-word semantic alignment.",
+    "The original reference is captured before its volume gain. Device output timestamps are estimates, and energy is not proof of intelligible translated speech."
+  ],
+  "timing": {
+    "scheduledBuffers": 67,
+    "microphoneRequests": 0,
+    "source": {
+      "first_energy_context": 3.090666666666667,
+      "last_energy_context": 4.570666666666667,
+      "record_start_context": 2.970666666666667,
+      "record_end_context": 5.333333333333335,
+      "frames": 56704,
+      "window_ms": 20,
+      "rms_threshold": 0.005
+    },
+    "translation": {
+      "first_energy_context": 5.669666666666667,
+      "last_energy_context": 8.089666666666668,
+      "record_start_context": 5.629666666666667,
+      "record_end_context": 8.269874999999997,
+      "frames": 63365,
+      "window_ms": 20,
+      "rms_threshold": 0.005
+    },
+    "onset_to_onset_ms": 2579,
+    "first_translation_after_last_source_energy_ms": 1099.0000000000002,
+    "tail_to_tail_ms": 3519.000000000001,
+    "first_translation_after_source_file_end_ms": 336.33333333333223,
+    "audio_context_state": "running",
+    "device_timestamp_valid": true,
+    "base_latency_seconds": 0.01,
+    "output_latency_seconds": 0.056,
+    "source_last_energy_device_estimate_ms": 5097.761666669646,
+    "translated_energy_device_estimate_ms": 6196.761666669647,
+    "device_clock_has_passed_first_energy": true
+  },
+  "estimated_onset_delay_within_target": false,
+  "original_volume_percent": 0,
+  "translation_volume_percent": 85,
+  "final_caption": "Esta habitación tiene dos ventanas. "
+}

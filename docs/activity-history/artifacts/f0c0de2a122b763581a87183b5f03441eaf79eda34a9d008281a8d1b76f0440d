@@ -1,0 +1,30 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/youtube-capture-real/report-20261030T045240435Z.json",
+  "original_sha256": "6cd16a0299d1e7e99a55b1201fa9358b6813028bd2a9d42390eb5481be2c0b77",
+  "new_test_execution": false,
+  "reported_result": "pending",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "paid_inference": false,
+    "translation_verified": false,
+    "audible_latency_verified": false,
+    "physical_audio_output_verified": false,
+    "echo_isolation_verified": false,
+    "original_media_saved": false,
+    "browser_test_capture_flags": true
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

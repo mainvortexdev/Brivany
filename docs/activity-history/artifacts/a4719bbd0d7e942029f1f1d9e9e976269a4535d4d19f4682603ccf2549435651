@@ -1,0 +1,21 @@
+{
+  "suite": "python",
+  "started_at": "2026-10-27T23:33:34.348295+00:00",
+  "finished_at": "2026-10-27T23:33:49.926661+00:00",
+  "duration_seconds": 15.578366,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "................................................................................................\r\n----------------------------------------------------------------------\r\nRan 96 tests in 14.611s\r\n\r\nOK\r\n"
+}

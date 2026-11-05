@@ -1,0 +1,24 @@
+{
+  "checked_at": "2026-10-30T00:58:30.125343+00:00",
+  "scope": "Local static HTTP availability only; no scene mutation, browser paint or external provider call.",
+  "checks": [
+    {
+      "route": "/spaces",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8"
+    },
+    {
+      "route": "/room-view.js",
+      "status": 200,
+      "content_type": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/reconstruction-results.js",
+      "status": 200,
+      "content_type": "text/javascript; charset=utf-8"
+    }
+  ],
+  "external_calls": 0,
+  "local_http_requests": 3,
+  "gpu_inference": false
+}

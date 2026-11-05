@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "time": "2026-11-04T00:17:42.488023+00:00",
+  "scope": "real Meta composition and answers with current Windows facts; questions not mapped to fixed answers",
+  "provider_requests": 4,
+  "billing_usd": null,
+  "native_input_sent": false,
+  "query_text_or_answer_saved": false,
+  "cases": [
+    {
+      "source_command": "Get-Process",
+      "source": "processes",
+      "rows": 3,
+      "aggregate": null,
+      "answer_based_on_current_facts": true,
+      "elapsed_seconds": 11.891
+    },
+    {
+      "source_command": "Get-Service",
+      "source": "services",
+      "rows": 6,
+      "aggregate": {
+        "property": null,
+        "op": "count",
+        "value": 6
+      },
+      "answer_based_on_current_facts": true,
+      "elapsed_seconds": 6.703
+    }
+  ]
+}

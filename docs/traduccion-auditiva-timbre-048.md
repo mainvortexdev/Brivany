@@ -1,0 +1,220 @@
+# Timbre local para Traducción auditiva
+
+El 4 de noviembre de 2026 se incorporó una clasificación acústica local para
+elegir voces de catálogo. La selección separa el registro grave o agudo del
+timbre que aproxima una voz sintética masculina o femenina. Un tono alto
+puede conservar una selección de timbre masculino. Estas etiquetas describen
+la correspondencia acústica de la salida y no acreditan la identidad de género
+de la persona que habla.
+
+El modelo es `syntropicsignal-ai/gender-voice-classifier`, publicado por
+Kamil Biduś / Syntropic Signal. Su ficha declara licencia MIT. Se conserva esa
+ficha en `desktop/assets/audio/voice-timbre-MODEL_CARD.md`, junto al manifiesto
+del modelo, para preservar autoría, parámetros de entrada y limitaciones.
+La revisión fijada es `248c10727b11388f40df95c0f27ef6a2a7f50436`, con
+670.311 bytes y SHA-256
+`e98f8bc6d7960a8a2169368fe4533636903e712790e96dbff81b679ede5de252`.
+El instalador `tools/setup_voice_timbre.py` verifica el hash antes de dejar el
+archivo disponible. El cargador comprueba también tamaño y hash. [Ficha y archivos de la revisión](https://huggingface.co/syntropicsignal-ai/gender-voice-classifier/tree/248c10727b11388f40df95c0f27ef6a2a7f50436).
+
+La inferencia usa ONNX Runtime 1.23.2 con CPU, un hilo de ejecución y un hilo
+entre operaciones. El procesamiento emplea NumPy 2.3.5, SciPy 1.18.1 y soxr
+1.1.0. Se analizan hasta tres ventanas de un máximo de tres segundos cada
+una, tomadas de una muestra de hasta ocho segundos. La entrada se remuestrea
+de 24 a 16 kHz y se convierte en 40 coeficientes MFCC normalizados a lo largo
+del tiempo. La implementación de producción evita cargar librosa y Numba.
+`warm_timbre()` prepara el modelo y las transformaciones fuera de la captura.
+
+La selección requiere una muestra de al menos un segundo, energía suficiente
+y confianza de al menos 0,8. Las ventanas con predicciones fuertes opuestas
+conservan `uncertain`. Una dependencia o un modelo ausente deja disponible el
+recorrido de traducción con evidencia de timbre no disponible. El filtro de
+habla y canciones debe preceder a esta selección. La confianza del modelo
+por sí sola no demuestra que una muestra contenga habla.
+
+Las dos voces sintéticas propias existentes se clasificaron como masculina
+y femenina con confianza 0,999822 y 0,999930. El procesamiento completo en
+caliente tardó 12,91 y 9,53 ms en la comparación de producción. En otro
+proceso nuevo, importar el módulo tardó 931,06 ms y la primera clasificación
+1.425,98 ms, frente a 15,72 ms en caliente. En ese proceso se confirmó que
+librosa y Numba no se habían importado. Son medidas locales de este equipo.
+Informes `tmp/selected-video/local-timbre-production-parity-20261104.json` y
+`tmp/selected-video/local-timbre-production-profile-20261104.json`.
+
+La comparación con el procesamiento de referencia de la ficha usó las dos
+voces propias y un tono armónico controlado. El error relativo de los logits
+fue de cero a `5,98e-7`, dentro del límite de `1e-3`. Ese tono también produjo
+una predicción de timbre de alta confianza y se conserva como evidencia de
+que hace falta la comprobación previa de habla. El prototipo que cargaba
+librosa tuvo un primer cálculo de 60,9 s y motivó el procesamiento ligero.
+Se conserva la medición inicial en
+`tmp/selected-video/local-timbre-owned-20261104.json` y la comparación final
+en `tmp/selected-video/local-timbre-production-parity-20261104.json`.
+
+La suite `translation-voices` pasó 18 pruebas locales, con puertas de
+incertidumbre, paridad de características y tratamiento de canciones.
+Informe `docs/verification-history/translation-voices-20261104T150618-58b0706d.json`.
+Estos ensayos usaron inferencia local y no abrieron solicitudes de proveedor.
+
+Se revisó sin repetir el ensayo
+`tmp/song-filter/report-1793805010064616000.json`. Sus cinco casos pasaron
+con inferencia YAMNet real local. Se conservaron como habla una voz sintética,
+una muestra de habla humana y diálogo sobre canción. Se omitieron dos tramos
+de canto. Las latencias registradas fueron de 12,1 a 46,96 ms. El canto de
+referencia procede de Derrick Coetzee (Dcoetzee), con licencia CC0. El informe
+declara cero solicitudes de inferencia pagada y un importe sin cuantificar.
+Su alcance es un banco controlado y no acredita detección universal de
+canciones. [Fuente del canto de referencia](https://commons.wikimedia.org/wiki/File:Twinkle_Twinkle_Little_Star_-_sung_with_full_lyrics.ogg).
+
+Antes del modelo local se hicieron dos solicitudes reales de análisis de
+audio a `muse-spark-1.2`, sin reintentos, para comprobar la capacidad de timbre
+con las voces propias. Ambas devolvieron emoción neutral con confianza cero,
+registro `uncertain` y timbre `uncertain`, también con confianza cero. La
+muestra masculina duró 2,48 s, la solicitud tardó 1.860 ms y declaró 690
+tokens. La muestra femenina duró 2 s, la solicitud tardó 1.828 ms y declaró
+708 tokens. Hubo dos solicitudes conocidas y 1.398 tokens declarados en
+total. Su importe y el uso remoto de GPU son desconocidos. El resultado no
+acreditó esa capacidad del proveedor. Informe
+`tmp/selected-video/voice-advisory-fixtures-20261104.json`.
+
+El clasificador local se eligió tras comprobar que el YAMNet instalado tiene
+521 etiquetas y carece de salidas de timbre masculino o femenino. Ese modelo
+sí protege el diálogo y filtra música. La comprobación de viabilidad queda
+en `tmp/selected-video/yamnet-timbre-feasibility-20261104.json`.
+
+Una captura local del video de Tecnonauta entre 24,13 y 29,44 s produjo
+predicciones fuertes opuestas en ventanas superpuestas. Esa muestra conserva
+la clasificación de mezcla o incertidumbre como límite de la correspondencia
+con los hablantes reales. El análisis se hizo en memoria y el informe guarda
+solo métricas. La precisión del modelo en español con ruido, voces mezcladas,
+acento particular o música de fondo requiere comprobación dentro de la sesión
+completa. Los resultados propios tampoco acreditan identidades ni calidad
+subjetiva de la voz. Informe
+`tmp/selected-video/local-timbre-public24-20261104.json`.
+
+En una escucha posterior, el usuario volvió a informar que la voz dominante
+del video era la de un chico y que el doblaje seguía asignando voces femeninas.
+Esta observación contradice la calidad esperada en ese caso. Las pruebas de
+las voces sintéticas y los valores de confianza del modelo compacto no
+resuelven esa correspondencia. Se mantiene pendiente la validación del timbre
+del hablante en el video real y se evalúa otra representación acústica con
+la misma fuente de audio.
+
+La evaluación local posterior de
+`prithivMLmods/Common-Voice-Gender-Detection-ONNX` usó su variante cuantizada
+de 95.387.498 bytes, revisión
+`8d7fc28d26889a8763098f9e49fed002b15d2d3f` y SHA-256
+`a0934c2f8934878f264dd5072d07b1bbd176f051d285b2a7910dfaa173747695`.
+La ficha declara licencia Apache-2.0 y entrenamiento en inglés. En las voces
+propias devolvió los timbres esperados, pero en una captura de 25,20 a
+37,31 s del video público devolvió estilo femenino en nueve de diez ventanas
+superpuestas. La clasificación restante tuvo confianza 0,663. El usuario
+había informado predominio de voz masculina, por lo que este ensayo tampoco
+acreditó una mejora de correspondencia. La carga del modelo tardó 859 ms y
+cada ventana pública de tres segundos requirió entre 790 y 1.011 ms con un
+hilo de CPU. La variante permanece como artefacto de evaluación. Se conservan
+solo resultados y metadatos en
+`tmp/selected-video/wav2vec-timbre-owned-20261104.json` y
+`tmp/selected-video/wav2vec-timbre-public24-20261104.json`.
+No se usaron proveedores pagados ni se guardó el audio capturado.
+[Ficha del modelo alternativo](https://huggingface.co/prithivMLmods/Common-Voice-Gender-Detection-ONNX).
+
+Una comprobación posterior precisó el alcance de esa conclusión: el comentario
+del usuario describe la voz dominante del video completo y no etiqueta cada
+segundo de 24 a 37 s. No se puede deducir de ese comentario que cada ventana
+temprana deba clasificarse masculina. Tampoco una imagen del presentador
+establece qué voz se oye. Se preservan los resultados anteriores como
+predicciones del modelo, con correspondencia humana pendiente.
+
+Se hicieron tres capturas independientes adicionales, sin extensión ni
+proveedores, con entrada de AudioContext e inputBuffer de 48 kHz. Antes y
+durante cada captura se exigieron los tres identificadores de video
+`sr_iLGKNsxU`, duración de 1.495,781 s concordante con el reproductor y la
+respuesta de YouTube de 1.496 s, tasa 1 y ausencia de `ad-showing` y
+`ad-interrupting`. Los fotogramas temporales de control corresponden al
+contenido tecnológico solicitado y no se adjuntan a la bitácora. La pista
+activa expuso Default, `id: und` e `isAutoDubbed: false`; la lista de pistas
+alternas estaba vacía. Esos datos no identifican al hablante.
+
+Cada captura produjo 336.000 muestras, exactamente 7 s a 48 kHz. Los avances
+del video fueron 7,037 s, 7,097 s y 7,076 s para los intervalos solicitados
+24–31, 300–307 y 900–907 s. Sus tiempos de pared fueron 7,089, 7,097 y
+7,137 s. No hubo un factor dos entre muestras y reloj de la fuente en estas
+capturas independientes. Eso comprueba este recorrido diagnóstico y no
+reemplaza la comprobación del remuestreo de la extensión. Un estimador YIN
+independiente sobre las muestras nativas obtuvo medianas de 256,19, 207,21 y
+205,59 Hz; el estimador de registro existente obtuvo 242, 200 y 200 Hz. Los
+controles propios conservaron sus resultados de timbre esperados.
+
+En las cinco ventanas superpuestas de tres segundos del tramo 300–307 s, el
+modelo q8 devolvió estilo masculino con confianza entre 0,974 y 0,999. En
+900–907 s lo hizo en cinco de cinco ventanas, entre 0,957 y 0,996. El modelo
+compacto alternó F/F/F/M/F y U/M/F/F/F en esos tramos, incluso con confianzas
+femeninas superiores a 0,999. La estabilidad del modelo compacto no quedó
+acreditada por sus dos controles sintéticos. En 24–31 s, q8 devolvió
+M/F/F/F/F, con confianza de 0,735 en la ventana central; ese caso conserva
+incertidumbre. Los tres informes contienen únicamente métricas:
+`tmp/selected-video/native-rate-target24-20261104.json`,
+`tmp/selected-video/native-rate-target300-20261104.json` y
+`tmp/selected-video/native-rate-target900-20261104.json`.
+
+Dos intentos previos de buscar 300 s tras abrir el video agotaron su plazo de
+carga antes de capturar audio. En el segundo, el elemento quedó en tiempo 0,
+duración no disponible y readyState 0. El inicio mediante el parámetro oficial
+`t=300s` permitió la comprobación posterior. Se conserva este fallo de fuente
+aislada y no se atribuye al clasificador ni a la extensión.
+
+Con esa evidencia se preparó `packages/providers/robust_voice_timbre.py` como
+advisory local principal para integrar con la continuidad de hablantes. Usa el
+modelo q8 antes evaluado, sin modificar sus pesos. Se preservan autoría,
+revisión y hash en `desktop/assets/audio/robust-voice-timbre-manifest.json`,
+la ficha original y una copia íntegra de la licencia Apache-2.0. El instalador
+`tools/setup_robust_voice_timbre.py` verifica el modelo y la ficha fijados y
+permite reutilizar sus archivos locales sin descargarlos otra vez. La copia
+de la licencia procede del [texto oficial de Apache](https://www.apache.org/licenses/LICENSE-2.0.txt).
+
+La interfaz acepta de uno a ocho segundos de PCM24k mono16 y analiza una sola
+ventana central de un máximo de tres segundos, con un hilo de CPU. Exige
+confianza 0,85; la ventana central de 24–31 s queda `uncertain`, mientras
+300–307 y 900–907 aportan evidencia masculina. Las dependencias o el modelo
+ausentes conservan un resultado no disponible. No se usa la altura tonal como
+identidad, ni se promete que el modelo detecte mezclas de hablantes. El filtro
+de canciones debe antecederlo; la continuidad y la caché pertenecen al
+seguimiento de voces y evitan ejecutar inferencia en cada frase.
+
+La interfaz nueva conservó exactamente las probabilidades de los controles
+propios anteriores: masculino 0,999075 y femenino 0,996175. En un proceso
+nuevo, importar el módulo tardó 406 ms y la primera clasificación masculina,
+incluida la carga, 1.219 ms; en caliente tardó 521 ms para 2,48 s de audio y
+418 ms para 2 s. Las ventanas públicas de tres segundos del diagnóstico
+tardaron de 585 a 756 ms. Se trata de tiempos de este equipo, no de una
+garantía de latencia. El informe local es
+`tmp/selected-video/robust-timbre-production-owned-20261104.json`.
+Seis pruebas unitarias de límites, incertidumbre, ventana central, fallo
+opcional y verificación de modelo pasaron. Estas comprobaciones adicionales
+no abrieron solicitudes de proveedor y no persistieron el audio original.
+La integración y la escucha real del resultado siguen siendo necesarias para
+acreditar calidad de doblaje y sincronización.
+
+La suite admitida `tools.verify translation-voices` se amplió con ese módulo
+de pruebas y pasó 24 casos en 6,118 s. Su informe es
+`docs/verification-history/translation-voices-20261104T154747-b55d0de6.json`.
+El archivo q8 ocupa exactamente 95.387.498 bytes y se reutilizó desde la
+descarga verificada del prototipo; esta preparación no volvió a descargar el
+modelo. La copia pública del texto de licencia ocupa 11.358 bytes. No se
+atribuyen importes monetarios a esas transferencias ni a la inferencia local.
+
+La integración asíncrona de River se comprobó después con dos pruebas locales
+en `tests/test_inline_timbre_pipeline.py`, reutilizando el constructor del banco
+de relay existente sin heredar ni volver a descubrir sus pruebas. Un modelo
+retenido por un evento permite comprobar que MT arranca durante su trabajo y
+que el primer TTS espera el resultado de timbre; la selección masculina se
+conserva aunque el registro simulado sea agudo. La segunda prueba detiene la
+sesión antes de liberar el modelo y verifica cero solicitudes TTS y ausencia
+de audio/cues o métricas de timbre tardíos. Ambos casos pasaron en 1,030 s.
+El primer ensayo había exigido exactamente dos paquetes TTS, pero ese texto
+completo produce uno válido en el fixture; se corrigió la expectativa a al
+menos una solicitud, sin cambiar producción. El módulo nuevo se añadió a la
+suite admitida `sync-relay`. No se ejecutaron proveedores ni modelos reales
+en estos dos casos. La caché de River conserva solo estilo, confianza y
+origen; las muestras quedan en el trabajo local acotado, no en esa caché.

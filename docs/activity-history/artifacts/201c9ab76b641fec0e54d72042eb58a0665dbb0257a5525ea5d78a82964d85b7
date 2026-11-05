@@ -1,0 +1,18 @@
+{
+  "suite": "floorplan-ui",
+  "started_at": "2026-10-29T14:11:18.962050+00:00",
+  "finished_at": "2026-10-29T14:11:37.294737+00:00",
+  "duration_seconds": 18.332687,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_floorplan_ui"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Actual browser + HTTP + SQLite + GLB projection; generated geometry and synthetic measurement declarations.\",\r\n  \"checks\": [\r\n    \"plan is generated from actual saved GLB geometry only on request, keeps relative units and does not mutate the scene\",\r\n    \"SVG keyboard selection, object inspector and 3D selection stay synchronized\",\r\n    \"two picked reference spans fit declared scale and expose disagreement residuals without marking metric verification\",\r\n    \"SVG download is self-contained and carries revision, origin, declared scale and uncertainty\",\r\n    \"numeric editing persists a real scene revision and recomputes the plan from saved transforms\",\r\n    \"plan controls fit desktop and 320/390/768 pixel layouts\",\r\n    \"manual-reference interior remains labeled unverified and switching scenes clears temporary calibration\"\r\n  ],\r\n  \"external_calls\": 0,\r\n  \"model_executed\": false,\r\n  \"gpu_inference\": false,\r\n  \"architectural_accuracy_verified\": false,\r\n  \"metric_scale_verified\": false,\r\n  \"physical_devices_tested\": false,\r\n  \"screenshots\": [\r\n    \"tmp/floorplan-ui/plan-1440.png\",\r\n    \"tmp/floorplan-ui/plan-390.png\",\r\n    \"tmp/floorplan-ui/interior-plan-1440.png\"\r\n  ]\r\n}\r\n\r\n"
+}

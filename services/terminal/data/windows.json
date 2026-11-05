@@ -1,0 +1,1849 @@
+[
+  {
+    "id": "windows.ps.bitstransfer.get-bitstransfer",
+    "name": "Get-BitsTransfer",
+    "module": "BitsTransfer",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/bitstransfer/get-bitstransfer?view=windowsserver2025-ps",
+    "git_blob": "3bcdad090fe3ea7c5bab2f52d87b48f735bd451f",
+    "documentation_path": "docset/winserver2025-ps/BitsTransfer/Get-BitsTransfer.md",
+    "availability": "requires_module_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.bitstransfer.start-bitstransfer",
+    "name": "Start-BitsTransfer",
+    "module": "BitsTransfer",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/bitstransfer/start-bitstransfer?view=windowsserver2025-ps",
+    "git_blob": "a24a1c2f890d1d15806c2ac19b9d9a6c51098534",
+    "documentation_path": "docset/winserver2025-ps/BitsTransfer/Start-BitsTransfer.md",
+    "availability": "requires_module_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.dnsclient.resolve-dnsname",
+    "name": "Resolve-DnsName",
+    "module": "DnsClient",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/dnsclient/resolve-dnsname?view=windowsserver2025-ps",
+    "git_blob": "0e6f93bd4552f67bd14503fa7d5767f6190b77c9",
+    "documentation_path": "docset/winserver2025-ps/DnsClient/Resolve-DnsName.md",
+    "availability": "requires_module_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.netadapter.get-netadapter",
+    "name": "Get-NetAdapter",
+    "module": "NetAdapter",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapter?view=windowsserver2025-ps",
+    "git_blob": "8c2c26ea70376ecb4945a17ba0bafd15a9419afb",
+    "documentation_path": "docset/winserver2025-ps/NetAdapter/Get-NetAdapter.md",
+    "availability": "requires_module_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.nettcpip.get-netipaddress",
+    "name": "Get-NetIPAddress",
+    "module": "NetTCPIP",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-netipaddress?view=windowsserver2025-ps",
+    "git_blob": "565df7285dfcaabe558d051fd3c35d2e9fa7aab7",
+    "documentation_path": "docset/winserver2025-ps/NetTCPIP/Get-NetIPAddress.md",
+    "availability": "requires_module_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.nettcpip.get-netipconfiguration",
+    "name": "Get-NetIPConfiguration",
+    "module": "NetTCPIP",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-netipconfiguration?view=windowsserver2025-ps",
+    "git_blob": "04b29be37c4fc95aceb67adf259603d5c37f0f03",
+    "documentation_path": "docset/winserver2025-ps/NetTCPIP/Get-NetIPConfiguration.md",
+    "availability": "requires_module_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.nettcpip.get-netroute",
+    "name": "Get-NetRoute",
+    "module": "NetTCPIP",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-netroute?view=windowsserver2025-ps",
+    "git_blob": "43e1ea3422dacf930cfd2c43106aaab888e1140b",
+    "documentation_path": "docset/winserver2025-ps/NetTCPIP/Get-NetRoute.md",
+    "availability": "requires_module_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.nettcpip.get-nettcpconnection",
+    "name": "Get-NetTCPConnection",
+    "module": "NetTCPIP",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-nettcpconnection?view=windowsserver2025-ps",
+    "git_blob": "4227ecb09fddc9073e4afb818f319cf93211c873",
+    "documentation_path": "docset/winserver2025-ps/NetTCPIP/Get-NetTCPConnection.md",
+    "availability": "requires_module_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.nettcpip.test-netconnection",
+    "name": "Test-NetConnection",
+    "module": "NetTCPIP",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/nettcpip/test-netconnection?view=windowsserver2025-ps",
+    "git_blob": "3a632f384d677592316d6f77a5e5d7bbb9258657",
+    "documentation_path": "docset/winserver2025-ps/NetTCPIP/Test-NetConnection.md",
+    "availability": "requires_module_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.storage.get-disk",
+    "name": "Get-Disk",
+    "module": "Storage",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/storage/get-disk?view=windowsserver2025-ps",
+    "git_blob": "3c77f8c8fbe1e518afe6349851d1a8bfe705e26d",
+    "documentation_path": "docset/winserver2025-ps/Storage/Get-Disk.md",
+    "availability": "requires_module_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.storage.get-partition",
+    "name": "Get-Partition",
+    "module": "Storage",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/storage/get-partition?view=windowsserver2025-ps",
+    "git_blob": "6acfac75cc1354f35c36911c62deef09c0a777bb",
+    "documentation_path": "docset/winserver2025-ps/Storage/Get-Partition.md",
+    "availability": "requires_module_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.storage.get-volume",
+    "name": "Get-Volume",
+    "module": "Storage",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/storage/get-volume?view=windowsserver2025-ps",
+    "git_blob": "e043f2ed3efd7f65deaa54dcbdee61e693c6e3f6",
+    "documentation_path": "docset/winserver2025-ps/Storage/Get-Volume.md",
+    "availability": "requires_module_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.arp",
+    "name": "arp",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/arp",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.attrib",
+    "name": "attrib",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/attrib",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.call",
+    "name": "call",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/call",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.cd",
+    "name": "cd",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cd",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.chcp",
+    "name": "chcp",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/chcp",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.chdir",
+    "name": "chdir",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/chdir",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.chkdsk",
+    "name": "chkdsk",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/chkdsk",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.choice",
+    "name": "choice",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/choice",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.clip",
+    "name": "clip",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/clip",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.cls",
+    "name": "cls",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cls",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.cmd",
+    "name": "cmd",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmd",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.color",
+    "name": "color",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/color",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.comp",
+    "name": "comp",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/comp",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.compact",
+    "name": "compact",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/compact",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.copy",
+    "name": "copy",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/copy",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.date",
+    "name": "date",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/date",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.del",
+    "name": "del",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/del",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.dir",
+    "name": "dir",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/dir",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.doskey",
+    "name": "doskey",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/doskey",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.driverquery",
+    "name": "driverquery",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/driverquery",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.echo",
+    "name": "echo",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/echo",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.exit",
+    "name": "exit",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/exit",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.expand",
+    "name": "expand",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/expand",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.fc",
+    "name": "fc",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/fc",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.find",
+    "name": "find",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/find",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.findstr",
+    "name": "findstr",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/findstr",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.for",
+    "name": "for",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/for",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.getmac",
+    "name": "getmac",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/getmac",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.help",
+    "name": "help",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/help",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.hostname",
+    "name": "hostname",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/hostname",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.ipconfig",
+    "name": "ipconfig",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ipconfig",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.label",
+    "name": "label",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/label",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.md",
+    "name": "md",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/md",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.mkdir",
+    "name": "mkdir",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/mkdir",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.mklink",
+    "name": "mklink",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/mklink",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.mode",
+    "name": "mode",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/mode",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.more",
+    "name": "more",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/more",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.move",
+    "name": "move",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/move",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.netstat",
+    "name": "netstat",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netstat",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.nslookup",
+    "name": "nslookup",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/nslookup",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.path",
+    "name": "path",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/path",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.pathping",
+    "name": "pathping",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/pathping",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.pause",
+    "name": "pause",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/pause",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.ping",
+    "name": "ping",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ping",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.popd",
+    "name": "popd",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/popd",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.powershell",
+    "name": "powershell",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powershell",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.print",
+    "name": "print",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/print",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.prompt",
+    "name": "prompt",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/prompt",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.pushd",
+    "name": "pushd",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/pushd",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.rd",
+    "name": "rd",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/rd",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.recover",
+    "name": "recover",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/recover",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.rem",
+    "name": "rem",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/rem",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.ren",
+    "name": "ren",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ren",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.rename",
+    "name": "rename",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/rename",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.replace",
+    "name": "replace",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/replace",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.rmdir",
+    "name": "rmdir",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/rmdir",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.robocopy",
+    "name": "robocopy",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/robocopy",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.setlocal",
+    "name": "setlocal",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/setlocal",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.shift",
+    "name": "shift",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/shift",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.sort",
+    "name": "sort",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/sort",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.start",
+    "name": "start",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/start",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.subst",
+    "name": "subst",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/subst",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.systeminfo",
+    "name": "systeminfo",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/systeminfo",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.taskkill",
+    "name": "taskkill",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/taskkill",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.tasklist",
+    "name": "tasklist",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/tasklist",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.time",
+    "name": "time",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/time",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.timeout",
+    "name": "timeout",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/timeout",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.title",
+    "name": "title",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/title",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.tracert",
+    "name": "tracert",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/tracert",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.tree",
+    "name": "tree",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/tree",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.type",
+    "name": "type",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/type",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.ver",
+    "name": "ver",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ver",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.verify",
+    "name": "verify",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/verify",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.vol",
+    "name": "vol",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/vol",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.where",
+    "name": "where",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/where",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.whoami",
+    "name": "whoami",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/whoami",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.cmd.xcopy",
+    "name": "xcopy",
+    "platform": "windows",
+    "kind": "windows_command",
+    "source": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/xcopy",
+    "availability": "requires_program_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.diagnostics.get-winevent",
+    "name": "Get-WinEvent",
+    "module": "Microsoft.PowerShell.Diagnostics",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.diagnostics/get-winevent?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.add-content",
+    "name": "Add-Content",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/add-content?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.copy-item",
+    "name": "Copy-Item",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/copy-item?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-childitem",
+    "name": "Get-ChildItem",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-childitem?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-clipboard",
+    "name": "Get-Clipboard",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-clipboard?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-computerinfo",
+    "name": "Get-ComputerInfo",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-computerinfo?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-content",
+    "name": "Get-Content",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-content?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-eventlog",
+    "name": "Get-EventLog",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-eventlog?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-hotfix",
+    "name": "Get-HotFix",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-hotfix?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-item",
+    "name": "Get-Item",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-item?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-itemproperty",
+    "name": "Get-ItemProperty",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-itemproperty?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-itempropertyvalue",
+    "name": "Get-ItemPropertyValue",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-itempropertyvalue?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-location",
+    "name": "Get-Location",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-location?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-process",
+    "name": "Get-Process",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-process?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-psdrive",
+    "name": "Get-PSDrive",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-psdrive?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-psprovider",
+    "name": "Get-PSProvider",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-psprovider?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-service",
+    "name": "Get-Service",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-service?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.get-timezone",
+    "name": "Get-TimeZone",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-timezone?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.join-path",
+    "name": "Join-Path",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/join-path?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.move-item",
+    "name": "Move-Item",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/move-item?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.new-item",
+    "name": "New-Item",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/new-item?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.remove-item",
+    "name": "Remove-Item",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/remove-item?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.rename-item",
+    "name": "Rename-Item",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/rename-item?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.resolve-path",
+    "name": "Resolve-Path",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/resolve-path?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.set-clipboard",
+    "name": "Set-Clipboard",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-clipboard?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.set-content",
+    "name": "Set-Content",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-content?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.split-path",
+    "name": "Split-Path",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/split-path?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.start-process",
+    "name": "Start-Process",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/start-process?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.stop-process",
+    "name": "Stop-Process",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/stop-process?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.test-connection",
+    "name": "Test-Connection",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/test-connection?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.test-path",
+    "name": "Test-Path",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/test-path?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.management.wait-process",
+    "name": "Wait-Process",
+    "module": "Microsoft.PowerShell.Management",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/wait-process?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.psresourceget.find-psresource",
+    "name": "Find-PSResource",
+    "module": "Microsoft.PowerShell.PSResourceGet",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.psresourceget/find-psresource?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.psresourceget.get-installedpsresource",
+    "name": "Get-InstalledPSResource",
+    "module": "Microsoft.PowerShell.PSResourceGet",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.psresourceget/get-installedpsresource?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.security.get-acl",
+    "name": "Get-Acl",
+    "module": "Microsoft.PowerShell.Security",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-acl?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.security.get-authenticodesignature",
+    "name": "Get-AuthenticodeSignature",
+    "module": "Microsoft.PowerShell.Security",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-authenticodesignature?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.security.get-executionpolicy",
+    "name": "Get-ExecutionPolicy",
+    "module": "Microsoft.PowerShell.Security",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-executionpolicy?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.threadjob.start-threadjob",
+    "name": "Start-ThreadJob",
+    "module": "Microsoft.PowerShell.ThreadJob",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.threadjob/start-threadjob?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.clear-variable",
+    "name": "Clear-Variable",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/clear-variable?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.compare-object",
+    "name": "Compare-Object",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/compare-object?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.convertfrom-csv",
+    "name": "ConvertFrom-Csv",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/convertfrom-csv?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.convertfrom-json",
+    "name": "ConvertFrom-Json",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/convertfrom-json?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.convertto-csv",
+    "name": "ConvertTo-Csv",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/convertto-csv?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.convertto-html",
+    "name": "ConvertTo-Html",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/convertto-html?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.convertto-json",
+    "name": "ConvertTo-Json",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/convertto-json?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.convertto-xml",
+    "name": "ConvertTo-Xml",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/convertto-xml?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.export-csv",
+    "name": "Export-Csv",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/export-csv?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.format-list",
+    "name": "Format-List",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/format-list?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.format-table",
+    "name": "Format-Table",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/format-table?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.format-wide",
+    "name": "Format-Wide",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/format-wide?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.get-alias",
+    "name": "Get-Alias",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-alias?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.get-culture",
+    "name": "Get-Culture",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-culture?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.get-date",
+    "name": "Get-Date",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-date?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.get-host",
+    "name": "Get-Host",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-host?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.get-random",
+    "name": "Get-Random",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-random?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.get-uiculture",
+    "name": "Get-UICulture",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-uiculture?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.get-unique",
+    "name": "Get-Unique",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-unique?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.get-variable",
+    "name": "Get-Variable",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-variable?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.group-object",
+    "name": "Group-Object",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/group-object?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.import-csv",
+    "name": "Import-Csv",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/import-csv?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.invoke-restmethod",
+    "name": "Invoke-RestMethod",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-restmethod?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.invoke-webrequest",
+    "name": "Invoke-WebRequest",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.measure-command",
+    "name": "Measure-Command",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/measure-command?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.measure-object",
+    "name": "Measure-Object",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/measure-object?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.new-variable",
+    "name": "New-Variable",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/new-variable?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.out-file",
+    "name": "Out-File",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/out-file?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.out-gridview",
+    "name": "Out-GridView",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/out-gridview?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.out-string",
+    "name": "Out-String",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/out-string?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.read-host",
+    "name": "Read-Host",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/read-host?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.remove-variable",
+    "name": "Remove-Variable",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/remove-variable?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.select-object",
+    "name": "Select-Object",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-object?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.select-string",
+    "name": "Select-String",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-string?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.select-xml",
+    "name": "Select-Xml",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-xml?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.set-variable",
+    "name": "Set-Variable",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/set-variable?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.sort-object",
+    "name": "Sort-Object",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/sort-object?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.start-sleep",
+    "name": "Start-Sleep",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/start-sleep?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.tee-object",
+    "name": "Tee-Object",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/tee-object?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.write-error",
+    "name": "Write-Error",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/write-error?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.write-host",
+    "name": "Write-Host",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/write-host?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.write-output",
+    "name": "Write-Output",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/write-output?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.write-progress",
+    "name": "Write-Progress",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/write-progress?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.write-warning",
+    "name": "Write-Warning",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/write-warning?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.packagemanagement.find-package",
+    "name": "Find-Package",
+    "module": "PackageManagement",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/packagemanagement/find-package?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.packagemanagement.get-package",
+    "name": "Get-Package",
+    "module": "PackageManagement",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/packagemanagement/get-package?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.packagemanagement.get-packageprovider",
+    "name": "Get-PackageProvider",
+    "module": "PackageManagement",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/packagemanagement/get-packageprovider?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.psreadline.get-psreadlinekeyhandler",
+    "name": "Get-PSReadLineKeyHandler",
+    "module": "PSReadLine",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/psreadline/get-psreadlinekeyhandler?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.psreadline.get-psreadlineoption",
+    "name": "Get-PSReadLineOption",
+    "module": "PSReadLine",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/psreadline/get-psreadlineoption?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.psreadline.set-psreadlineoption",
+    "name": "Set-PSReadLineOption",
+    "module": "PSReadLine",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/psreadline/set-psreadlineoption?view=powershell-5.1",
+    "availability": "installed",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.core.get-command",
+    "name": "Get-Command",
+    "module": "Microsoft.PowerShell.Core",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/get-command?view=powershell-5.1",
+    "availability": "requires_command_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.core.get-help",
+    "name": "Get-Help",
+    "module": "Microsoft.PowerShell.Core",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/get-help?view=powershell-5.1",
+    "availability": "requires_command_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.core.get-module",
+    "name": "Get-Module",
+    "module": "Microsoft.PowerShell.Core",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/get-module?view=powershell-5.1",
+    "availability": "requires_command_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.core.import-module",
+    "name": "Import-Module",
+    "module": "Microsoft.PowerShell.Core",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/import-module?view=powershell-5.1",
+    "availability": "requires_command_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.core.remove-module",
+    "name": "Remove-Module",
+    "module": "Microsoft.PowerShell.Core",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/remove-module?view=powershell-5.1",
+    "availability": "requires_command_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.core.where-object",
+    "name": "Where-Object",
+    "module": "Microsoft.PowerShell.Core",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/where-object?view=powershell-5.1",
+    "availability": "requires_command_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.core.foreach-object",
+    "name": "ForEach-Object",
+    "module": "Microsoft.PowerShell.Core",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/foreach-object?view=powershell-5.1",
+    "availability": "requires_command_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.core.get-history",
+    "name": "Get-History",
+    "module": "Microsoft.PowerShell.Core",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/get-history?view=powershell-5.1",
+    "availability": "requires_command_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.core.get-verb",
+    "name": "Get-Verb",
+    "module": "Microsoft.PowerShell.Core",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/get-verb?view=powershell-5.1",
+    "availability": "requires_command_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.get-filehash",
+    "name": "Get-FileHash",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-filehash?view=powershell-5.1",
+    "availability": "requires_command_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.utility.new-guid",
+    "name": "New-Guid",
+    "module": "Microsoft.PowerShell.Utility",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/new-guid?view=powershell-5.1",
+    "availability": "requires_command_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.archive.compress-archive",
+    "name": "Compress-Archive",
+    "module": "Microsoft.PowerShell.Archive",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.archive/compress-archive?view=powershell-5.1",
+    "availability": "requires_command_check",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.ps.microsoft.powershell.archive.expand-archive",
+    "name": "Expand-Archive",
+    "module": "Microsoft.PowerShell.Archive",
+    "platform": "windows",
+    "kind": "powershell",
+    "source": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.archive/expand-archive?view=powershell-5.1",
+    "availability": "requires_command_check",
+    "policy": "review_required"
+  }
+]

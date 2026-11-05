@@ -1,0 +1,17 @@
+{
+  "suite": "computer-native",
+  "started_at": "2026-11-01T19:20:32.948619+00:00",
+  "finished_at": "2026-11-01T19:20:37.066228+00:00",
+  "duration_seconds": 4.117609,
+  "command": [
+    "node",
+    "--test",
+    "tests/computer-native.test.cjs",
+    "tests/computer-browser.test.cjs",
+    "tests/computer-page-actions.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ Player hover keeps identity guards and injects movement only (37.9594ms)\n✔ Verification keeps the observed player visible without seeking or toggling (53.749ms)\n✔ YouTube playback requires two content advances, then pause and resume are verified (11.655ms)\n✔ Advertisement timer is not music; only the observed skip control is used (32.3671ms)\n✔ A frozen playing label never confirms audible content progress (34.276ms)\n✔ Unrelated timers and advertising cannot supply content progress (2.2295ms)\n✔ A result replaced during reasoning is never clicked (21.8826ms)\n✔ Browser search and login are typed actions; credentials are not tool parameters (15.8557ms)\n✔ Delayed accessible document is polled without repeating navigation (15.3356ms)\n✔ Changed foreground aborts before another read or action (23.47ms)\n✔ Wrong destination never becomes verified (14.011ms)\n✔ Login redirects stay within the requested origin and hand off without reading fields (3.7169ms)\n✔ YouTube UI refresh is accepted only with the same query and origin (1.734ms)\n✔ Unsafe navigation schemes and credentials never reach input (14.083ms)\n✔ Win32 editor fallback uses observed identity and literal data (75.7211ms)\n✔ Literal input cannot interpolate shell syntax or SendKeys commands (7.9174ms)\n✔ Only typed native actions; no code, invented control or shell entry (15.2863ms)\n✔ File scopes reject root modification, traversal, sibling prefixes and symlinks (125.5503ms)\n✔ Observed scroll is sent once and requires a changed percent on the same page (86.9494ms)\n✔ At a boundary no scroll input is sent (29.8553ms)\n✔ No scroll progress returns pending and never repeats uncertain input (24.88ms)\n✔ Changed document, selected tab or scroll position stops before input (18.5967ms)\n✔ A link must retain its observed ID, name, URL and document before invocation (18.8005ms)\n✔ Observed links verify their destination in the same tab or exactly one new tab (37.8661ms)\n✔ Unexpected navigation never repeats a link invocation (14.2031ms)\n✔ Login handoff observes native tabs only after opening, never page fields (20.416ms)\n✔ An unexpected login redirect is handed back without reading its fields (18.3388ms)\n✔ Page summaries omit complete queries, fragments and link destinations (28.2044ms)\n✔ Browser actions have exact typed parameters and reject unsafe schemes (25.9664ms)\n✔ Native scripts revalidate identity and encode page text as literal data (6.4053ms)\nℹ tests 30\nℹ suites 0\nℹ pass 30\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3233.4823\n"
+}

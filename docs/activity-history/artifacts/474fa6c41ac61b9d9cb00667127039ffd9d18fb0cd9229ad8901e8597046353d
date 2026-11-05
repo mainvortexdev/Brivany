@@ -1,0 +1,20 @@
+{
+  "utc": "2026-11-01T00:17:46.519747+00:00",
+  "worker": "brivany-site",
+  "domain": "brivany.example",
+  "version_id": "ec2dfae2-d9da-43fb-9cba-d4f81223e019",
+  "dry_run": "passed",
+  "deployment": "passed",
+  "added_scopes": [
+    "user-read-recently-played",
+    "streaming",
+    "user-read-private",
+    "user-read-email"
+  ],
+  "publisher_configured": true,
+  "source_sha256": {
+    "official-site/worker.mjs": "7a887417bd1fba7328e42bbb7ef5149bfb569e29871c5c0dbd0c012d4fc8f80c",
+    "official-site/spotify-oauth.mjs": "cd4c893aad56bab7c97c7f2d0f9b265067ca0d159ea4c033f0548caba0326a9a",
+    "official-site/wrangler.jsonc": "5d4b12c6c576b7db16891efb351193295eb5e160e94265bee0875621771175bd"
+  }
+}

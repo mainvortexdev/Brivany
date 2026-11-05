@@ -1,0 +1,114 @@
+# Verificación acotada 074–079 y control de consumo
+
+4 de noviembre de 2026. Se preservan los intentos fallidos. Esta continuación
+no acredita el video completo ni una asignación humana correcta de todas las
+voces. El objetivo de calidad sigue pendiente.
+
+## Reproducción y distribución 074
+
+El reproductor en la pestaña admite de 1 a 1,25×, conserva el tono y mantiene
+1× para intervalos diminutos. La ruta avanzada conserva sus límites previos.
+Seis casos ejercitan el inicio real del reproductor. La suite de extensión
+pasó 78 casos en `workspace-sync-extension-20261104T211401-321077a0.json`.
+
+Una comprobación local real de MediaRecorder, MediaSource y AudioWorklet,
+con dos tonos propios de un segundo y ventanas de 0,8 s, completó ambos
+a 1,25×: 0,8006 y 0,7942 s de pared. La frecuencia medida fue 439,453125 Hz
+y `preservesPitch` permaneció activo. No hubo llamadas a proveedores en ese
+caso. No prueba por sí sola naturalidad semántica de voz humana.
+Evidencia: `tmp/extension-sync-buffer/probe-2026-11-04T21-14-14-039Z.json`.
+
+El ZIP 0.4.9 y las tres carpetas de distribución, incluida la carpeta
+registrada 0.4.4, contienen los mismos veinte archivos actuales. Se conservó
+el ZIP anterior al cambio de velocidad. No cambiaron permisos ni ID.
+`tmp/selected-video/package-049-079.json` registra la integridad. El relay
+personal confirmó manifest 0.4.9 y trabajador `0.4.9-prefix-nav-070` tras la
+recarga indicada por el usuario; eso no demuestra qué módulo de reproducción
+conserva cada documento que ya estaba abierto.
+
+## Ensayo 075 y cuota 076
+
+El banco 49210 solicitó 120 s de cobertura, con un máximo de 150 s de
+observación. Se interrumpió antes por `cartesia_rejected`. Completó ocho voces
+con señal hasta 21,093333 s. El retraso llegó a 9,552861 s y creció 5,259528 s;
+se recuperaron 6,502018 s de audio original fuera de canciones. Tres voces
+publicadas dentro de la cobertura quedaron sin reproducir. La fuente no se
+interrumpió y recuperó el audio original durante el cierre.
+
+El prefijo capturó 7040 ms pero no obtuvo turnos cerrados; el flujo retomó
+desde 380 ms. Se conservan esta ausencia y el fallo, sin presentarlo como
+reutilización exacta. Hubo un batch ASR, un flujo ASR vivo, trece intentos MT
+en vivo, uno MT anticipado de subtítulos, trece solicitudes TTS y cuatro
+análisis de prosodia en vivo. No hubo MT, TTS ni prosodia del prefijo.
+Evidencia: `tmp/selected-video/lab-consumption-49210-075.json`.
+
+Una única solicitud posterior con una frase propia confirmó HTTP 402 y
+`quota_exceeded`, a las 21:19:17 UTC. Tardó 796 ms y no generó voz. Su evidencia
+es `tmp/selected-video/tts-health-076.json`. El código anterior no conservaba
+el estado HTTP del ensayo 075; no se atribuye retrospectivamente ese estado
+a aquel error. Se detuvieron los intentos TTS hasta que el usuario informó
+haber restablecido la cuota.
+
+## Diagnóstico seguro 077 y ensayo 078
+
+El relay distingue ahora cuota de Cartesia, límite de concurrencia y rechazo
+general mediante mensajes fijos. Conserva solamente un estado HTTP entero
+válido, sin exportar mensajes libres, texto ni identificadores del proveedor.
+Una prueba integrada exige una sola solicitud ante cuota, ninguna voz ni
+finalización satisfactoria y ausencia de campos privados. El banco muestra
+un mensaje específico para acumulación de entrada.
+
+Se ensayó ENDPOINTING en el prefijo y el flujo vivo para investigar la espera
+de diarización. Pasaron inicialmente 103 pruebas de protocolo local, después
+de corregir una expectativa del sustituto MT que seguía exigiendo 1.3 en la
+ruta de video que ya usa 1.2. El fallo previo está conservado en
+`sync-relay-20261104T212242-cbfd2689.json`; el pase está en
+`sync-relay-20261104T212754-688765fb.json`.
+
+Tras la confirmación de cuota se ejecutó un solo ensayo real nuevo, banco
+49211. Preparó siete segundos en 12,117 s, reutilizó el prefijo y continuó
+desde 7000 ms sin repetir inicios. El prefijo quedó fusionado en un solo
+turno de 0 a 6540 ms; no permite distinguir voces dentro de esa apertura.
+Trece voces completaron 31,9294 s con señal. El primer audio llegó en 5,21 s.
+El retraso máximo fue 9,569062 s y el crecimiento 4,635729 s: ambos fallaron
+los límites de 8 y 3 s. Se recuperaron 0,773333 s de original y no faltaron
+voces publicadas dentro de la cobertura completada. Finalmente apareció
+`ingress_backlog` a 42301 ms de protocolo; no fue pérdida de la fuente.
+
+Hubo un batch ASR, un flujo ASR vivo, un intento MT del prefijo, trece MT
+en vivo y uno anticipado de subtítulos; una solicitud TTS del prefijo y doce
+en vivo; una prosodia del prefijo y dos en vivo. La voz volvió a generarse,
+pero el resultado global fue fallido. Importe, GPU remota y tráfico total
+siguen siendo desconocidos. No se deduce una cantidad de créditos gastados
+del saldo de la captura aportada por el usuario.
+
+Evidencia: `tmp/selected-video/inline-sync-1793827755862.json` y
+`tmp/selected-video/lab-consumption-49211-078.json`. No se guardaron las
+conversaciones, las pistas originales ni el fragmento TTS en la bitácora.
+
+## Corrección posterior y perfil personal 079
+
+Se retiró el experimento ENDPOINTING: el prefijo y la ruta que solicita
+hablantes conservan DIARIZATION. No se atribuye una mejora de latencia a esa
+reversión ni se considera probado un nuevo recorrido real después de ella.
+Se mantienen el diagnóstico de cuota y el límite de reproducción 1,25×.
+
+Una pestaña nueva del perfil personal confirmó el cargador y el módulo de
+prefijo 0.4.9, pero indicó `unavailable`; el relay seguía con cero prefijos
+completos y cero sesiones de traducción. El atajo enviado a la página no
+mostró el indicador de traducción. Esto no acredita inicio satisfactorio.
+El acceso al control normal de WorkSpace falló por geometría no disponible.
+Al inspeccionar después la ventana de Brave, el control automático detuvo
+el uso del ordenador al no poder verificar su URL con confianza suficiente.
+No se intentó un mecanismo alternativo para eludir ese bloqueo.
+
+Por la petición de preservar créditos se detienen las nuevas síntesis de
+esta tanda y se reutilizan las evidencias. No se alteró el plan de Cartesia
+ni se habilitaron sobrecostes. La falta de atribución humana de las voces,
+el prefijo personal fallido y la continuidad completa siguen abiertos.
+
+La verificación local posterior a retirar ENDPOINTING aprobó 103 pruebas de
+`sync-relay` y 78 de `workspace-sync-extension`, sin llamadas externas.
+Informes: `docs/verification-history/sync-relay-20261104T213411-9e3c6cef.json` y
+`docs/verification-history/workspace-sync-extension-20261104T213411-b53fe47e.json`.
+Estos pases de protocolo no sustituyen los ensayos reales fallidos.

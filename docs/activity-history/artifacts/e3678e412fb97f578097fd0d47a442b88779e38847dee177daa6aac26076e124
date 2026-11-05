@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "main_url": "http://127.0.0.1:8765/",
+  "canonical_translation_url": "http://127.0.0.1:8765/dubbing",
+  "checks": [
+    "main homepage and canonical translation render at desktop/mobile sizes",
+    "home CTA opens the integrated translator",
+    "masculine Daniel selected; no daily quotas",
+    "opening main pages starts no provider socket or remote request"
+  ],
+  "websocket_connections": 0,
+  "external_calls": 0,
+  "provider_inference_calls": 0,
+  "physical_playback_verified": false,
+  "errors": []
+}

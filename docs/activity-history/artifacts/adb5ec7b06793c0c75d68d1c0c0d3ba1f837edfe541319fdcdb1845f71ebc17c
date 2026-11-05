@@ -1,0 +1,8 @@
+{
+  "checked_at": "2026-10-28T00:52:53.0263314Z",
+  "provider": "Google Gemini",
+  "model": "gemini-3.5-live-translate-preview",
+  "configured_after_server_restart": true,
+  "credential_contents_included": false,
+  "inference_calls": 0
+}

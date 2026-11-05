@@ -1,0 +1,14 @@
+{
+  "suite": "activity-local",
+  "started_at": "2026-10-27T23:03:14.039754+00:00",
+  "finished_at": "2026-10-27T23:03:19.225470+00:00",
+  "duration_seconds": 5.185716,
+  "command": [
+    "node",
+    "tools/check_activity_local.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"checked_at\": \"2026-10-27T23:03:16.037Z\",\n  \"status\": \"passed\",\n  \"api\": \"real_local\",\n  \"entries\": 13,\n  \"chain_valid\": true,\n  \"evidence_sha256_matches\": true,\n  \"evidence_url\": \"/api/activity/c52f01e1-1954-465d-aedc-1a8dae43766c/evidence/0\",\n  \"external_calls\": 0,\n  \"gpu_seconds\": 0,\n  \"http_mutations\": 0,\n  \"physical_devices\": false,\n  \"screenshots\": [\n    \"tmp/ui/activity-local-1440.png\",\n    \"tmp/ui/activity-local-390.png\"\n  ],\n  \"limitations\": [\n    \"Verifica integración de lectura y hash; no reconstrucción 3D ni semántica de los informes.\"\n  ]\n}\n"
+}

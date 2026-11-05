@@ -1,0 +1,11 @@
+{
+  "scope": "three consecutive read-only local status requests after the initial full bundle verification",
+  "cached_status_ms": [
+    266,
+    219,
+    234
+  ],
+  "bundle_verified": true,
+  "provider_requests_by_check": 0,
+  "limits": "One local machine and three samples; not a latency guarantee or a native-input test."
+}

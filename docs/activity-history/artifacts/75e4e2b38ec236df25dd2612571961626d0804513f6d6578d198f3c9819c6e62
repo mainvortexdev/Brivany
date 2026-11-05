@@ -1,0 +1,145 @@
+{
+  "started_at": "2026-10-30T05:26:04.698Z",
+  "scope": "Actual public YouTube iframe and native browser tab audio capture in an isolated headless Edge instance. No translation session.",
+  "investigation": "Remove Playwright headless --mute-audio default verified in installed coreBundle.js; observe explicit source play/unmute, HTML media state and eight seconds of PCM energy. No test-side player unmute override.",
+  "playwright_headless_mute_default_removed": true,
+  "video_id": "qGEPPNTTYmk",
+  "capture_attempt_limit": 1,
+  "pcm_observation_limit_seconds": 8,
+  "capture_requests": 1,
+  "microphone_requests": 0,
+  "websocket_attempts": 0,
+  "translation_provider_requests": 0,
+  "paid_inference": false,
+  "translation_verified": false,
+  "audible_latency_verified": false,
+  "physical_audio_output_verified": false,
+  "echo_isolation_verified": false,
+  "original_media_saved": false,
+  "browser_test_capture_flags": true,
+  "switch_reference": "https://chromium.googlesource.com/chromium/src/+/HEAD/chrome/common/chrome_switches.h",
+  "playback_before_play": {
+    "playing": false,
+    "ready_state": 0,
+    "has_dimensions": false,
+    "muted": false,
+    "default_muted": false,
+    "volume": 1,
+    "current_time": 0,
+    "audio_decoded_bytes": 0,
+    "audio_track_count": null
+  },
+  "playback_before_capture": {
+    "playing": true,
+    "ready_state": 4,
+    "has_dimensions": true,
+    "muted": false,
+    "default_muted": false,
+    "volume": 1,
+    "current_time": 0.00354,
+    "audio_decoded_bytes": 4767,
+    "audio_track_count": null
+  },
+  "youtube_audio_api_before_capture": {
+    "play_command": {
+      "before": {
+        "muted": false,
+        "volume": 100
+      },
+      "after_command": {
+        "muted": false,
+        "volume": 100
+      }
+    },
+    "current": {
+      "muted": false,
+      "volume": 100
+    }
+  },
+  "observation": {
+    "state": "observed",
+    "packets": 200,
+    "bytes": 384000,
+    "samples": 192000,
+    "nonzero_samples": 190517,
+    "peak": 1,
+    "ended": false,
+    "cleanup_complete": true,
+    "source": "own_browser_tab",
+    "original_playback_suppressed": true,
+    "audio_context_running": true,
+    "audio_track_count": 1,
+    "video_track_count": 1,
+    "browser_surface_reported": true,
+    "suppression_metadata_present": true,
+    "restrict_own_audio_reported": false,
+    "rms": 0.15946730381012594,
+    "energy_windows": [
+      {
+        "second": 1,
+        "samples": 24000,
+        "peak": 1,
+        "rms": 0.2633727057839881
+      },
+      {
+        "second": 2,
+        "samples": 24000,
+        "peak": 0.999969482421875,
+        "rms": 0.17419403353270327
+      },
+      {
+        "second": 3,
+        "samples": 24000,
+        "peak": 0.9888916015625,
+        "rms": 0.1360835883744522
+      },
+      {
+        "second": 4,
+        "samples": 24000,
+        "peak": 0.7950439453125,
+        "rms": 0.11403142725833829
+      },
+      {
+        "second": 5,
+        "samples": 24000,
+        "peak": 0.5806884765625,
+        "rms": 0.07972190387648591
+      },
+      {
+        "second": 6,
+        "samples": 24000,
+        "peak": 0.94525146484375,
+        "rms": 0.14707115501451776
+      },
+      {
+        "second": 7,
+        "samples": 24000,
+        "peak": 0.90142822265625,
+        "rms": 0.13342879940473093
+      },
+      {
+        "second": 8,
+        "samples": 24000,
+        "peak": 0.840911865234375,
+        "rms": 0.1625397301350394
+      }
+    ]
+  },
+  "playback_after_capture": {
+    "playing": true,
+    "ready_state": 4,
+    "has_dimensions": true,
+    "muted": false,
+    "default_muted": false,
+    "volume": 1,
+    "current_time": 8.158825,
+    "audio_decoded_bytes": 147514,
+    "audio_track_count": null
+  },
+  "youtube_audio_api_after_capture": {
+    "muted": false,
+    "volume": 100
+  },
+  "status": "nonzero_youtube_pcm_observed",
+  "finished_at": "2026-10-30T05:26:16.206Z"
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "0.1.0",
+  "capture_id": "cef455a9-230c-4ebe-8955-12fc4119c823",
+  "mode": "preview",
+  "execution_target": "modal",
+  "stages": [
+    "segmentation",
+    "camera_depth",
+    "object_reconstruction",
+    "scene_assembly"
+  ],
+  "max_frames": 6,
+  "max_objects": 3,
+  "gpu_seconds_limit": 180,
+  "requires_gpu": true,
+  "dispatch_enabled": false
+}

@@ -1,0 +1,8 @@
+{
+  "scope": "real native Office worker, new synthetic files only",
+  "external_calls": 0,
+  "results": [],
+  "user_documents_modified": false,
+  "status": "failed",
+  "failure": "El método o la propiedad HeadingFormat no están disponibles porque ha expirado la licencia para usar esta aplicación.."
+}

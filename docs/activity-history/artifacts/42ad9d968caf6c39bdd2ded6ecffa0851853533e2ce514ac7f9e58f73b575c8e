@@ -1,0 +1,37 @@
+import json
+from pathlib import Path
+import tempfile
+import unittest
+
+from tools.inline_translation_lab import Lab, PUBLIC_TRIAL, sanitize_report
+from tools.run_isolated_inline import trial_minimum_source_end
+
+
+class InlineTrialCoverageTests(unittest.TestCase):
+    def test_minimum_coverage_keeps_the_existing_observation_budget(self):
+        self.assertEqual(trial_minimum_source_end(12),12)
+        self.assertEqual(trial_minimum_source_end(20),20)
+        for value in (-1,21,121,True,float('nan'),float('inf')):
+            with self.assertRaises(ValueError):trial_minimum_source_end(value)
+        self.assertEqual(trial_minimum_source_end(),0)
+        self.assertEqual(trial_minimum_source_end(long_trial=True),31)
+        self.assertEqual(trial_minimum_source_end(extended=True),120)
+        self.assertEqual(trial_minimum_source_end(120,extended=True),120)
+
+    def test_deep_lab_reports_twelve_seconds_without_claiming_opening_preparation(self):
+        lab=Lab(position=300,target='en',minimum_source_end=12)
+        status=lab.status()
+        self.assertEqual(status['required_source_end_ms'],12000)
+        self.assertEqual(status['required_live_source_end_ms'],0)
+        self.assertEqual(status['observation_limit_seconds'],28)
+        self.assertFalse(status['prefix_requested'])
+        self.assertFalse(status['continuity_trial'])
+
+    def test_required_and_completed_coverage_survive_report_sanitization(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path=Path(temporary)/'inline-sync-owned.json'
+            path.write_text(json.dumps({'type':PUBLIC_TRIAL,'required_source_end_ms':12000,
+                                        'completed_source_end_ms':15250,'cues':[]}),encoding='utf-8')
+            safe=sanitize_report(path)
+        self.assertEqual(safe['required_source_end_ms'],12000)
+        self.assertEqual(safe['completed_source_end_ms'],15250)

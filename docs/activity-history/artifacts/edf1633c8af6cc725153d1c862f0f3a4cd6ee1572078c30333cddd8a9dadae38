@@ -1,0 +1,16 @@
+{
+  "routes": {
+    "/": 200,
+    "/app": 200,
+    "/dubbing": 200,
+    "/human-skills": 200,
+    "/sous": 200,
+    "/spaces": 200,
+    "/activity": 200,
+    "/api/activity": 200
+  },
+  "env_variables_documented": 26,
+  "private_config_files_absent": true,
+  "external_calls": 0,
+  "test_server_closed": true
+}

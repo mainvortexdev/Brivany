@@ -1,0 +1,42 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/youtube-dubbing-real/report-20261030T105535999Z.json",
+  "original_sha256": "22f4e64a10f563917b21513d21e1d82bec46b1e1276e78ffcaee4f579abb51a9",
+  "new_test_execution": false,
+  "reported_result": "pending",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "paid_inference_authorized": true,
+    "billing_verified": false,
+    "physical_speaker_output_verified": false,
+    "translation_semantics_verified": false,
+    "stutter_free_playback_verified": false,
+    "audible_latency_500ms_verified": false,
+    "original_media_saved": false,
+    "transcript_saved": false,
+    "playwright_headless_mute_default_removed": true,
+    "live_caption_seen": false,
+    "translation_caption_seen": false,
+    "streaming_state_seen": true,
+    "no_popup": true,
+    "capture_one_session": true,
+    "video_advanced": true,
+    "no_pause_while_streaming": true,
+    "actual_translated_output_submitted": false,
+    "nonzero_input_observed": true,
+    "browser_closed": true
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

@@ -1,0 +1,83 @@
+# Brivany · Videos con Melodi · 0.3.0
+
+Extensión MV3 para Brave/Chromium 116 o posterior. Brivany Desktop debe estar
+abierto. El clic no abre la app ni una ventana de reproducción.
+
+## Uso
+
+1. Carga esta carpeta desde `brave://extensions` → Modo de desarrollador →
+   Cargar descomprimida. Si ya está cargada, actualiza sus archivos y pulsa
+   Recargar en su tarjeta. El ID público ahora es estable entre carpetas.
+2. Abre el video y pulsa la extensión o `Alt+Shift+M`.
+3. En YouTube, un único video visible se selecciona automáticamente. Si hay
+   varios videos, o en otra web, aparece un pin: haz clic en el video elegido.
+   Escape cancela el selector. No se seleccionan videos ocultos.
+4. La transcripción se prepara en segundo plano y sin reproducir sonido propio.
+   Los subtítulos accesibles se importan sin llamar a ASR. Si no están disponibles,
+   Muse transcribe el audio que vaya reproduciéndose, con etiquetas anónimas de voz.
+5. Para escuchar la traducción, activa **Traducción auditiva** en WorkSpace.
+   Usa el audio del video seleccionado, el filtro de canciones y las voces
+   autorizadas opcionales configuradas. El original baja suavemente al 12 % y
+   se restaura al terminar. Seleccionar no inicia TTS ni micrófono.
+
+El indicador pequeño de la página permite **Detener**. Navegar, terminar el
+video, retirar su elemento o perder la conexión cierra la captura. Una selección
+nueva reemplaza la anterior y sus colas.
+
+## Conexión y captura
+
+La app prepara el enlace `127.0.0.1:48217`. `/connect` reconoce sólo el Origin
+exacto del ID público de esta extensión. Tokens en memoria, máximo ocho horas,
+ligados al Origin; revocarlos también deshabilita conexión automática hasta
+prepararla otra vez desde la app. Sin claves ni tokens en URLs o estado público.
+
+Se usan `activeTab` y `scripting` tras la acción del usuario, sin permisos
+persistentes de lectura de todas las webs. `web_accessible_resources` declara
+código estático, sin datos personales. No se solicita micrófono ni cámara.
+
+`video.captureStream()` obtiene exclusivamente el elemento marcado. AudioWorklet
+envía PCM16 mono/24 kHz/80 ms. Cuatro bloques máximos en vuelo, confirmaciones,
+ritmo limitado y colas acotadas. La salida de la captura propia tiene ganancia
+cero y no duplica el sonido del video. Audio y texto viven en memoria.
+
+## Anticipación y límites
+
+Las pistas HTML5 activas y los subtítulos que expone normalmente el reproductor
+YouTube se leen para el elemento elegido. Límite 1 MiB, 2.000 cues y 400 caracteres
+por cue. Se importan lotes confirmados de ocho, sin saturar la conexión.
+
+La posición actual permite preparar con Meta hasta tres frases de los próximos
+16 s; caché de 32 entradas durante 45 s. Sólo una coincidencia exacta de palabras,
+números, signos y unidades con ASR permite reutilizar la traducción. La preparación
+puede consumir API aunque no se use. Los nombres WebVTT son pistas, no identidades
+confirmadas. Diarización y clones requieren audio real. Las voces autorizadas
+se preparan en paralelo, se reutilizan por sesión y se adoptan en frases posteriores.
+
+Sin subtítulos se transcribe desde el punto actual, no audio pasado o futuro.
+Algunos iframes, videos protegidos y reproductores impiden esta ruta; se informa
+sin cambiar a la mezcla de toda la pestaña. No se extraen cookies ni se elude DRM.
+El pin no añade un nuevo búfer de imagen ni garantiza sincronización labial.
+
+El reproductor audiovisual 0.2.0 permanece como ruta avanzada (`player.html`),
+con los límites de `docs/workspace-traduccion-sincronizada.md`. Ya no se abre al
+pulsar el icono. La clonación se detalla en `docs/traduccion-canciones-y-voces-temporales.md`.
+
+## Pruebas
+
+```powershell
+node --test browser-extension/tests/*.test.mjs
+node browser-extension/tests/run-selected-video-probe.mjs
+.venv/Scripts/python.exe -X utf8 -B -m tools.verify selected-video
+```
+
+El ensayo usa Brave aislado y una copia temporal de la extensión con permisos
+sólo para fixtures propios de localhost y una página que simula el dominio YouTube.
+Dos videos emiten tonos diferentes. Verifica pin, audio separado, subtítulos,
+selección automática de un único YouTube, ausencia de ventanas y cierre al navegar.
+Servicio sustituido, sin perfil personal ni inferencia pagada. No certifica el
+gesto de la acción en el perfil personal, un video público, fidelidad o escucha física.
+
+Referencias: [scripting](https://developer.chrome.com/docs/extensions/reference/api/scripting),
+[ID público](https://developer.chrome.com/docs/extensions/reference/manifest/key),
+[captureStream](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/captureStream)
+y [subtítulos YouTube](https://developers.google.com/youtube/data/reference/rest/v3/captions/download).

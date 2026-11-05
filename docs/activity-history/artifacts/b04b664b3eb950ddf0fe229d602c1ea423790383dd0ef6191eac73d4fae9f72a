@@ -1,0 +1,26 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/google-setup/google-real-reads.json",
+  "original_sha256": "d1fbb04f3a246b488b91d1b223ceb727ffa74f56381eb3e5dda000b0bd721799",
+  "new_test_execution": false,
+  "reported_result": "failed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "account_contents_saved_in_report": false,
+    "reviewed_execution_enabled": true,
+    "provider_network_bytes_unknown": true
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

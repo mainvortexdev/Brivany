@@ -1,0 +1,27 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/meta-weather-account-real.json",
+  "original_sha256": "0a6e38353ea350d9c537b5e66e085d791532cca15045612f415d721b9c6cd1d7",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "passed": true,
+    "original_conversation_saved": false,
+    "answer_received": true,
+    "artifact_path_present": false
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": 65.0,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

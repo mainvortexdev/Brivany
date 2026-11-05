@@ -1,0 +1,159 @@
+{
+  "type": "retrospective_real_prefix_phase_audit",
+  "reviewed_at": "2026-11-04T18:19:34.638738+00:00",
+  "report": "tmp/selected-video/inline-sync-1793816151318.json",
+  "terminal_bank_report": "tmp/selected-video/lab-consumption-49204-062.json",
+  "new_provider_inference_requests_during_review": 0,
+  "accepted": false,
+  "prefix": {
+    "duration_ms": 7000,
+    "resume_from_ms": 7000,
+    "position_ms": 20,
+    "preparation_metrics": {
+      "content_gate_ms": 63,
+      "asr_ms": 2594,
+      "turn_classification_ms": 15,
+      "prosody_ms": 2344,
+      "local_timbre_ms": 1969,
+      "postprocess_ms": 2359,
+      "total_ms": 5016,
+      "capture_receive_ms": 7015
+    },
+    "pcm_sent_ms": 7040,
+    "elapsed_ms": 12059,
+    "turns": [
+      {
+        "start_ms": 140,
+        "end_ms": 2620,
+        "content": "speech"
+      },
+      {
+        "start_ms": 2620,
+        "end_ms": 3900,
+        "content": "speech"
+      },
+      {
+        "start_ms": 4060,
+        "end_ms": 6540,
+        "content": "speech"
+      }
+    ],
+    "error_code": null,
+    "prepared_before_activation": true,
+    "original_unchanged": true,
+    "video_seconds_before_activation": 12.279405,
+    "attached": true,
+    "activation_position_ms": 20,
+    "capture_anchor_ms": 20,
+    "used_duration_ms": 7000,
+    "live_asr_start_ms": 7000,
+    "exact_boundary": true,
+    "replay_overlap_ms": 0,
+    "repeated_cue_starts": 0,
+    "observed_prefix_cues": 3,
+    "observed_live_cues": 12,
+    "completed_live_cues": 12,
+    "required_live_cues": 4,
+    "completed_live_source_end_ms": 31700,
+    "required_live_source_end_ms": 31000,
+    "prepared_speech_played": true,
+    "songs_skipped": 0,
+    "prepared_songs": 0,
+    "songs_without_dub": null,
+    "verified": true
+  },
+  "completed_voices_with_signal": 15,
+  "completed_catalog_categories": {
+    "feminine": 14,
+    "masculine": 1
+  },
+  "completed_voice_sync_error_ms_range": [
+    -20,
+    7
+  ],
+  "completed_source_end_ms": 31700,
+  "required_source_end_ms": 31000,
+  "activation_to_first_signal_ms": 4803,
+  "preparation_ms_excluded_from_activation_latency": 12059,
+  "measured_local_plus_remote_ms": 4313,
+  "measured_postprocess_ms": 2359,
+  "overlap_lower_bound_ms_rounded": 1954,
+  "phase_sum_content_gate_asr_post_ms": 5016,
+  "capture_receive_plus_server_total_ms": 12031,
+  "browser_elapsed_minus_capture_server_ms": 28,
+  "prior_057_browser_elapsed_ms": 15673,
+  "observed_preparation_decrease_from057_ms": 3614,
+  "whole_decrease_attributed_to_overlap": false,
+  "media_lag": {
+    "initial_seconds": 4.288,
+    "maximum_seconds": 9.478528,
+    "final_seconds": 9.430528000000002,
+    "maximum_growth_seconds": 5.1905280000000005
+  },
+  "continuity_quality": {
+    "maximum_nonsong_fallback_seconds": 1,
+    "maximum_allowed_lag_seconds": 8,
+    "maximum_observed_lag_seconds": 9.478528,
+    "maximum_allowed_lag_growth_seconds": 3,
+    "maximum_observed_lag_growth_seconds": 5.1905280000000005,
+    "observed_nonsong_fallback_seconds": 0,
+    "verified_source_end_ms": 31700,
+    "unplayed_published_cues": 0,
+    "missing_intervals": [],
+    "passed": false
+  },
+  "original_fallback": {
+    "observed_seconds": 0,
+    "classified_song_seconds": 0,
+    "other_seconds": 0,
+    "intervals": []
+  },
+  "production_audio_diagnostics": {
+    "signaled_voices": 15,
+    "recorder_gap_recoveries": 0,
+    "completed_voice_count": 15,
+    "completed_voices_with_signal": 15,
+    "first_signal_after_capture_ms": 4640.899999991059
+  },
+  "sanitized_preparation_metrics": {
+    "content_gate_ms": 63,
+    "asr_ms": 2594,
+    "turn_classification_ms": 15,
+    "prosody_ms": 2344,
+    "local_timbre_ms": 1969,
+    "postprocess_ms": 2359,
+    "total_ms": 5016,
+    "capture_receive_ms": 7015
+  },
+  "observed_consumption": {
+    "pipeline_ready_events_observed": 1,
+    "muse_live_input_started": 1,
+    "muse_live_session_acks_observed": 1,
+    "prefix_mt_attempts_observed": 3,
+    "live_mt_attempts_observed": 16,
+    "prefix_tts_requests_observed": 3,
+    "live_tts_requests_observed": 15,
+    "live_prosody_stages_started": 5,
+    "billing_amount": null,
+    "relay_sessions_started": 1,
+    "prefix_preparations_started": 1,
+    "prefix_muse_batch_attempts": 1,
+    "prefix_meta_prosody_attempts": 2,
+    "live_meta_prosody_attempts": 5,
+    "meta_caption_prefetch_attempts": 1
+  },
+  "source_interrupted": false,
+  "physical_listening_verified": false,
+  "public_speaker_match_verified": false,
+  "singing_filter_exercised_in_this_trial": false,
+  "billing_amount": null,
+  "remote_gpu_seconds": null,
+  "limits": [
+    "isolated_profile",
+    "replayed_from_opening_anchor",
+    "first_signal_excludes_prefix_preparation",
+    "partial_asr_estimated_boundaries",
+    "provider_variation_uncontrolled",
+    "no_complete_video_coverage"
+  ]
+}

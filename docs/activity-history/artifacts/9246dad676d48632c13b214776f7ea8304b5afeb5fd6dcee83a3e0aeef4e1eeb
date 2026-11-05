@@ -1,0 +1,21 @@
+{
+  "type": "real account read-only query through owned native chat to running desktop",
+  "passed": true,
+  "external_calls": 7,
+  "microphone_used": false,
+  "OS_input_sent": false,
+  "appbar_reserved_by_test": false,
+  "phase": "real_account_adaptive_diagnostic_visible",
+  "closed_reply_glass": true,
+  "reply_height": 80,
+  "reply_click_through": true,
+  "reply_native_glass": true,
+  "real_account_result_delivered": true,
+  "observed_number": 7,
+  "old_fixed_phrase_absent": true,
+  "inference_requests": 3,
+  "conversation_saved": false,
+  "source_command": "Get-Service",
+  "aggregate_value": 7,
+  "local_model_requests": 2
+}

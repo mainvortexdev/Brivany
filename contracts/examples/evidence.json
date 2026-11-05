@@ -1,0 +1,16 @@
+{
+  "workspace_id": "f480ddd6-397a-53c4-9b25-4e34cee84bd6",
+  "session_id": "5ee63234-c9f7-5ec8-bdc8-cdb0532a6422",
+  "evidence_id": "37ce4d9d-8b8e-51c1-8d1f-2211dee21a8e",
+  "step_id": "dimensions",
+  "attempt": 1,
+  "observation_id": "3cbffebb-d25d-5574-ba07-af520de9c41f",
+  "origin": "derived",
+  "artifact_ids": [],
+  "signal_keys": [
+    "object.dimensions.x"
+  ],
+  "recorded_at": "2026-10-27T10:01:01Z",
+  "producer_id": "example-connector",
+  "note": "Ejemplo: lectura de dimensiones normalizada a metros"
+}

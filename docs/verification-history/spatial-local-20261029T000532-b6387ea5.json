@@ -1,0 +1,14 @@
+{
+  "suite": "spatial-local",
+  "started_at": "2026-10-29T00:05:32.708160+00:00",
+  "finished_at": "2026-10-29T00:05:36.155613+00:00",
+  "duration_seconds": 3.447453,
+  "command": [
+    "node",
+    "tools/check_spatial_local.cjs"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:8765/spaces\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:8765/spaces\", waiting until \"load\"\u001b[22m\n\n"
+}

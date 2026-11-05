@@ -1,0 +1,27 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/paint-adaptive-real-report.json",
+  "original_sha256": "6b6695315bf0e1074b543a1ed11017e75ccd524db73e6996b4b9f9d20216d27c",
+  "new_test_execution": false,
+  "reported_result": "failed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "passed": false,
+    "real_paint": true,
+    "real_meta": true,
+    "original_conversation_saved": false
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": 3,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": 28.69,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

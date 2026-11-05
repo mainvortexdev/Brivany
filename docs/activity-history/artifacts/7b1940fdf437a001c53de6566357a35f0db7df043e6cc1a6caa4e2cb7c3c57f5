@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "api": "real_local",
+  "upstream": "simulated",
+  "http_requests": 7,
+  "websocket_connections": 1,
+  "microphone_requests": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "final_caption_received": true,
+  "finished_idle": true,
+  "inference_ms": null,
+  "inference_500ms_verified": false,
+  "first_audio_label": "32 ms · red y contexto",
+  "first_playback_label": "77 ms · red y contexto",
+  "content_security_policy_checked": true,
+  "javascript_errors": [],
+  "screenshots": [
+    "tmp/ui/dubbing-pipeline-1440.png"
+  ],
+  "checked_at": "2026-10-27T23:37:40.447223+00:00",
+  "provider": "Palabra",
+  "provider_received": {
+    "pcm_packets": 51,
+    "pcm_bytes": 192768,
+    "nonzero_pcm": true,
+    "session_close_messages": 1,
+    "connections": 1
+  },
+  "limitations": [
+    "Loopback upstream simulation only; no translation model, inference latency, bilingual quality, or physical device was evaluated."
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "expected_revision": {
+      "minimum": 0,
+      "title": "Expected Revision",
+      "type": "integer"
+    },
+    "mode": {
+      "enum": [
+        "coach",
+        "demonstrate",
+        "assist",
+        "assess"
+      ],
+      "title": "Mode",
+      "type": "string"
+    }
+  },
+  "required": [
+    "expected_revision",
+    "mode"
+  ],
+  "title": "ModeRequest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:ModeRequest:0.1.0"
+}

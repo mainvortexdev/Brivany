@@ -1,0 +1,93 @@
+"""Native floating Work companion and explicit region selector."""
+import json
+import threading
+from urllib.parse import urlsplit
+from services.work.session import WorkSession
+
+
+class WorkBridge:
+    def _work(self):return self._work_factory()
+    def _keep_work_background(self):
+        if self._work().active:
+            self._window.hide()
+            if getattr(self,'_work_window',None):self._work_window.show()
+            return False
+    def _sync_work(self):
+        value=self._work().status()
+        state={'active':value['active'],'recording':value['translation_state']=='recording'}
+        self._window.evaluate_js('window.BrivanyWorkState='+json.dumps(state)+';window.BrivanyWorkActive='+json.dumps(state['active'])+';')
+        return value
+    def start_work(self):
+        self._trusted();self._work().start()
+        import webview
+        if getattr(self,'_work_window',None) is None:
+            screen=webview.screens[0] if webview.screens else None
+            width=min(360,screen.width-24) if screen else 360;height=min(370,screen.height-60) if screen else 370
+            self._work_window=webview.create_window('Melodi · Work',self._base+'/work-widget',js_api=self,width=width,height=height,
+                x=max(0,screen.width-width-20) if screen else None,y=max(0,screen.height-height-60) if screen else None,
+                frameless=True,easy_drag=False,on_top=True,resizable=True,min_size=(280,200),background_color='#f7f8f5')
+            def widget_closed():
+                self._work_window=None
+                if self._work().active:self._work().close();self._window.show();self._sync_work()
+            self._work_window.events.closed+=widget_closed
+        else:self._work_window.show()
+        self._sync_work();self._window.hide();return {'ok':True}
+    def return_to_chat(self):self._trusted();self._window.show();self._sync_work();return {'ok':True}
+    def stop_work(self):
+        self._trusted();self._work().close();self._sync_work();self._window.show()
+        window=getattr(self,'_work_window',None)
+        if window:window.destroy();self._work_window=None
+        return {'ok':True}
+    def work_status(self):self._trusted();return self._sync_work()
+    def work_audio(self,enabled,consent=False,target='es'):
+        self._trusted()
+        if type(enabled) is not bool:raise ValueError('Estado de audio no válido.')
+        if enabled:self._work().enable_audio(consent_to_asr=consent,target=target)
+        else:
+            work=self._work();work.capture_stop.set();work.detector_stop.set();work.monitoring=False
+            if work.monitor:work.monitor.close()
+        return self._sync_work()
+    def work_translation_decision(self,identifier,accept):
+        self._trusted()
+        if type(accept) is not bool:raise ValueError('Respuesta no válida.')
+        if accept:self._work().accept_translation(identifier)
+        else:self._work().decline_translation(identifier)
+        return self._sync_work()
+    def work_finish_translation(self):self._trusted();self._work().finish_translation();return self._sync_work()
+    def begin_work_region(self):
+        self._trusted()
+        import webview
+        self._work().start()
+        if getattr(self,'_capture_window',None):return {'ok':True}
+        # Hide our companion before grabbing; no original desktop frame is written to disk.
+        if getattr(self,'_work_window',None):self._work_window.hide()
+        import time
+        time.sleep(.15)
+        try:self._region_preview=self._work().screen_snapshot()
+        except Exception:
+            if getattr(self,'_work_window',None):self._work_window.show()
+            else:self._window.show()
+            raise
+        self._capture_window=webview.create_window('Seleccionar región · Melodi',self._base+'/work-capture',js_api=self,
+            fullscreen=True,frameless=True,easy_drag=False,on_top=True,background_color='#19231e')
+        def region_closed():
+            self._capture_window=None;self._work().cancel_snapshot();self._region_preview=None
+            if getattr(self,'_work_window',None):self._work_window.show()
+        self._capture_window.events.closed+=region_closed
+        return {'ok':True}
+    def work_region_preview(self):self._trusted();return self._region_preview
+    def cancel_work_region(self):
+        self._trusted();self._work().cancel_snapshot();self._region_preview=None
+        window=getattr(self,'_capture_window',None)
+        if window:window.destroy();self._capture_window=None
+        if getattr(self,'_work_window',None):self._work_window.show()
+        return {'ok':True}
+    def use_work_region(self,x,y,width,height,action):
+        self._trusted()
+        if action not in {'explain','translate'}:raise ValueError('Acción de región no válida.')
+        data=self._work().select_region(x,y,width,height)
+        reference=self._computer_factory().references.add(data)
+        value={**reference,'preview':data,'question':'Traduce al español el texto visible en esta región.' if action=='translate' else 'Explica lo que se ve en esta región de pantalla.'}
+        self.cancel_work_region();self._window.show()
+        self._window.evaluate_js("(()=>{const frame=document.querySelector('#module-frame');const value="+json.dumps(value,ensure_ascii=True)+";if(frame?.contentWindow?.BrivanyImageRequest?.attachFromWork){if(frame.contentWindow.BrivanyImageRequest.attachFromWork(value))frame.contentWindow.BrivanyChat.send(value.question);}else{window.BrivanyPendingWorkRegion=value;window.BrivanyNavigate('/app');}})()")
+        return {'ok':True}

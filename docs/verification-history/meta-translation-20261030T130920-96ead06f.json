@@ -1,0 +1,19 @@
+{
+  "suite": "meta-translation",
+  "started_at": "2026-10-30T13:09:20.685521+00:00",
+  "finished_at": "2026-10-30T13:09:22.085804+00:00",
+  "duration_seconds": 1.400283,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_meta_translation"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "..FF...................\r\n======================================================================\r\nFAIL: test_server_requested_close_does_not_reconnect (tests.test_meta_translation.MetaTranslationHTTPTests.test_server_requested_close_does_not_reconnect)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_meta_translation.py\", line 413, in test_server_requested_close_does_not_reconnect\r\n    with self.assertRaises(VoiceError) as raised: session(\"Again\")\r\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: VoiceError not raised\r\n\r\n======================================================================\r\nFAIL: test_tls_reader_reuses_connection_and_interrupts_a_blocked_body (tests.test_meta_translation.MetaTranslationHTTPTests.test_tls_reader_reuses_connection_and_interrupts_a_blocked_body)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_meta_translation.py\", line 429, in test_tls_reader_reuses_connection_and_interrupts_a_blocked_body\r\n    with self.assertRaises(VoiceError): session(\"No reconnect\")\r\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: VoiceError not raised\r\n\r\n----------------------------------------------------------------------\r\nRan 23 tests in 0.732s\r\n\r\nFAILED (failures=2)\r\n"
+}

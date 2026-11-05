@@ -1,0 +1,20 @@
+{
+  "type": "real_native_idle_cpu_after_status_cache_fix",
+  "before": {
+    "pid": 6536,
+    "elapsed_seconds": 5.112,
+    "cpu_seconds": 10.188,
+    "equivalent_cores": 1.993
+  },
+  "after": {
+    "pid": 8460,
+    "elapsed_seconds": 5.022,
+    "cpu_seconds": 0.25,
+    "equivalent_cores": 0.05,
+    "responding": true,
+    "working_set_mb": 197.4
+  },
+  "scope": "Brivany Python process idle. Source bundle verification identified by py-spy stack dump without locals. Other apps CPU not measured.",
+  "provider_calls": 0,
+  "gpu_seconds": 0
+}

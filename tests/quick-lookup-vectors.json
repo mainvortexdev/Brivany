@@ -1,0 +1,16 @@
+[
+  ["Puedes comprobar el clima hoy en Las Terrenas?", true],
+  ["¿Qué tiempo hará hoy en Las Terrenas?", true],
+  ["Melodi, busca en internet las noticias de hoy", true],
+  ["Busca en internet la documentación oficial de Python", true],
+  ["Revisa el pronóstico de mañana en Madrid", true],
+  ["¿Cuántos procesos hay?", false],
+  ["Por ejemplo: busca en internet el clima", false],
+  ["Busca en internet eso", false],
+  ["Abre Word y busca en internet una plantilla", false],
+  ["Busca en internet una factura y envíala", false],
+  ["Qué tiempo lleva encendido mi ordenador", false],
+  ["Si te pido busca en internet, qué haces", false],
+  ["No busques en internet el clima", false],
+  ["¿De dónde sacaste esa información?", false]
+]

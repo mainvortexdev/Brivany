@@ -1,0 +1,41 @@
+{
+  "checked_at": "2026-10-28T12:59:52.099232+00:00",
+  "kind": "goal_access_revalidation",
+  "providers": [
+    {
+      "provider": "openai",
+      "http_status": 200,
+      "configured": false,
+      "available": false,
+      "access_verified": false,
+      "audible_delay_verified": false
+    },
+    {
+      "provider": "elevenlabs",
+      "http_status": 200,
+      "configured": false,
+      "available": false,
+      "access_verified": false,
+      "audible_delay_verified": false
+    },
+    {
+      "provider": "palabra",
+      "http_status": 200,
+      "configured": true,
+      "available": true,
+      "access_verified": null,
+      "audible_delay_verified": false
+    },
+    {
+      "provider": "gemini",
+      "http_status": 200,
+      "configured": true,
+      "available": true,
+      "access_verified": false,
+      "audible_delay_verified": false
+    }
+  ],
+  "model_sessions_opened": 0,
+  "external_calls": 0,
+  "credential_values_included": false
+}

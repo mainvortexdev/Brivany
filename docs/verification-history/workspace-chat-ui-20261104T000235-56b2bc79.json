@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-chat-ui",
+  "started_at": "2026-11-04T00:02:35.804393+00:00",
+  "finished_at": "2026-11-04T00:03:23.040447+00:00",
+  "duration_seconds": 47.236054,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-chat"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('Ahora hay 247 procesos en ejecución en tu PC.', { exact: true }) to be visible\u001b[22m\n\n    at <local-path>\\tools\\check_workspace_chat.cjs:37:230 {\n  log: [\n    \"  - waiting for getByText('Ahora hay 247 procesos en ejecución en tu PC.', { exact: true }) to be visible\"\n  ],\n  name: 'TimeoutError'\n}\n"
+}

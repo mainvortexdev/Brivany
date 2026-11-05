@@ -1,0 +1,683 @@
+{
+  "$defs": {
+    "Check": {
+      "additionalProperties": false,
+      "properties": {
+        "check_id": {
+          "maxLength": 120,
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Check Id",
+          "type": "string"
+        },
+        "evaluator_kind": {
+          "enum": [
+            "deterministic",
+            "visual",
+            "expert"
+          ],
+          "title": "Evaluator Kind",
+          "type": "string"
+        },
+        "rubric": {
+          "minLength": 1,
+          "title": "Rubric",
+          "type": "string"
+        },
+        "capability": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Capability"
+        },
+        "signal_key": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Signal Key"
+        },
+        "comparison": {
+          "anyOf": [
+            {
+              "enum": [
+                "eq",
+                "present",
+                "gte",
+                "lte",
+                "within"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Comparison"
+        },
+        "expected": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected"
+        },
+        "parameter_ref": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parameter Ref"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "tolerance": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tolerance"
+        },
+        "on_missing": {
+          "const": "UNKNOWN",
+          "default": "UNKNOWN",
+          "title": "On Missing",
+          "type": "string"
+        }
+      },
+      "required": [
+        "check_id",
+        "evaluator_kind",
+        "rubric"
+      ],
+      "title": "Check",
+      "type": "object"
+    },
+    "Compatibility": {
+      "additionalProperties": false,
+      "properties": {
+        "application": {
+          "maxLength": 120,
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Application",
+          "type": "string"
+        },
+        "connector_profile": {
+          "maxLength": 120,
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Connector Profile",
+          "type": "string"
+        },
+        "tested_versions": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Tested Versions",
+          "type": "array"
+        },
+        "platforms": {
+          "items": {
+            "enum": [
+              "windows",
+              "macos",
+              "linux"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Platforms",
+          "type": "array"
+        },
+        "required_capabilities": {
+          "items": {
+            "maxLength": 120,
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Required Capabilities",
+          "type": "array"
+        }
+      },
+      "required": [
+        "application",
+        "connector_profile",
+        "tested_versions",
+        "platforms",
+        "required_capabilities"
+      ],
+      "title": "Compatibility",
+      "type": "object"
+    },
+    "ExpertReview": {
+      "additionalProperties": false,
+      "properties": {
+        "reviewer_id": {
+          "format": "uuid",
+          "title": "Reviewer Id",
+          "type": "string"
+        },
+        "reviewed_at": {
+          "format": "date-time",
+          "title": "Reviewed At",
+          "type": "string"
+        },
+        "decision": {
+          "enum": [
+            "approved",
+            "changes_requested"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "note": {
+          "minLength": 1,
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reviewer_id",
+        "reviewed_at",
+        "decision",
+        "content_sha256",
+        "note"
+      ],
+      "title": "ExpertReview",
+      "type": "object"
+    },
+    "ParameterSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "string",
+            "number",
+            "integer",
+            "boolean"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "title": "Default"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "minimum": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Minimum"
+        },
+        "maximum": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum"
+        }
+      },
+      "required": [
+        "type",
+        "description",
+        "default"
+      ],
+      "title": "ParameterSpec",
+      "type": "object"
+    },
+    "SkillManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "0.1.0",
+          "default": "0.1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "skill_id": {
+          "format": "uuid",
+          "title": "Skill Id",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "title": "Version",
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "domain": {
+          "enum": [
+            "public_speaking",
+            "video_editing",
+            "color_grading",
+            "cad",
+            "3d_modeling",
+            "physical"
+          ],
+          "title": "Domain",
+          "type": "string"
+        },
+        "objective": {
+          "minLength": 1,
+          "title": "Objective",
+          "type": "string"
+        },
+        "prerequisites": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Prerequisites",
+          "type": "array"
+        },
+        "compatibility": {
+          "$ref": "#/$defs/Compatibility"
+        },
+        "parameters": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_.-]*$": {
+              "$ref": "#/$defs/ParameterSpec"
+            }
+          },
+          "propertyNames": {
+            "maxLength": 120
+          },
+          "title": "Parameters",
+          "type": "object"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/Source"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/Step"
+          },
+          "minItems": 1,
+          "title": "Steps",
+          "type": "array"
+        },
+        "transfer_exercise": {
+          "$ref": "#/$defs/TransferExercise"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "workspace"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "lifecycle": {
+          "enum": [
+            "draft",
+            "in_review",
+            "published",
+            "deprecated",
+            "revoked"
+          ],
+          "title": "Lifecycle",
+          "type": "string"
+        },
+        "review": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExpertReview"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "content_sha256": {
+          "default": "",
+          "pattern": "^([a-f0-9]{64})?$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "is_example": {
+          "default": false,
+          "title": "Is Example",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "skill_id",
+        "version",
+        "title",
+        "domain",
+        "objective",
+        "compatibility",
+        "sources",
+        "steps",
+        "transfer_exercise",
+        "lifecycle"
+      ],
+      "title": "SkillManifest",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "maxLength": 120,
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "creator_recording",
+            "expert_note",
+            "manual_reference"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "artifact_id": {
+          "format": "uuid",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "license": {
+          "minLength": 1,
+          "title": "License",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "kind",
+        "artifact_id",
+        "sha256",
+        "license"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "SourceSpan": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "maxLength": 120,
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "start_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start Ms"
+        },
+        "end_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Ms"
+        }
+      },
+      "required": [
+        "source_id"
+      ],
+      "title": "SourceSpan",
+      "type": "object"
+    },
+    "Step": {
+      "additionalProperties": false,
+      "properties": {
+        "step_id": {
+          "maxLength": 120,
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Step Id",
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "intent": {
+          "minLength": 1,
+          "title": "Intent",
+          "type": "string"
+        },
+        "instruction": {
+          "minLength": 1,
+          "title": "Instruction",
+          "type": "string"
+        },
+        "requires": {
+          "items": {
+            "maxLength": 120,
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "title": "Requires",
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/SourceSpan"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/Check"
+          },
+          "minItems": 1,
+          "title": "Checks",
+          "type": "array"
+        },
+        "max_attempts": {
+          "default": 3,
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "recovery_guidance": {
+          "minLength": 1,
+          "title": "Recovery Guidance",
+          "type": "string"
+        }
+      },
+      "required": [
+        "step_id",
+        "title",
+        "intent",
+        "instruction",
+        "sources",
+        "checks",
+        "recovery_guidance"
+      ],
+      "title": "Step",
+      "type": "object"
+    },
+    "TransferExercise": {
+      "additionalProperties": false,
+      "properties": {
+        "goal": {
+          "minLength": 1,
+          "title": "Goal",
+          "type": "string"
+        },
+        "difference_from_example": {
+          "minLength": 1,
+          "title": "Difference From Example",
+          "type": "string"
+        },
+        "target_help_level": {
+          "enum": [
+            "guided",
+            "hinted",
+            "independent"
+          ],
+          "title": "Target Help Level",
+          "type": "string"
+        },
+        "expert_review_required": {
+          "title": "Expert Review Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "goal",
+        "difference_from_example",
+        "target_help_level",
+        "expert_review_required"
+      ],
+      "title": "TransferExercise",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "expected_revision": {
+      "minimum": 0,
+      "title": "Expected Revision",
+      "type": "integer"
+    },
+    "manifest": {
+      "$ref": "#/$defs/SkillManifest"
+    }
+  },
+  "required": [
+    "expected_revision",
+    "manifest"
+  ],
+  "title": "DraftRequest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:DraftRequest:0.1.0"
+}

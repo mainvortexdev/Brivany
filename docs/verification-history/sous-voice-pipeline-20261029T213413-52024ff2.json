@@ -1,0 +1,18 @@
+{
+  "suite": "sous-voice-pipeline",
+  "started_at": "2026-10-29T21:34:13.182266+00:00",
+  "finished_at": "2026-10-29T21:34:46.014672+00:00",
+  "duration_seconds": 32.832406,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_sous_voice"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Traceback (most recent call last):\r\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\r\n  File \"<frozen runpy>\", line 88, in _run_code\r\n  File \"<local-path>\\tools\\check_sous_voice.py\", line 73, in <module>\r\n    if __name__=='__main__':main()\r\n                            ^^^^^^\r\n  File \"<local-path>\\tools\\check_sous_voice.py\", line 60, in main\r\n    if completed.returncode:raise RuntimeError((completed.stdout+completed.stderr).decode('utf-8',errors='replace'))\r\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nRuntimeError: page.waitForFunction: Timeout 30000ms exceeded.\r\n    at <local-path>\\tools\\check_sous_voice.cjs:25:114\r\n\r\n"
+}

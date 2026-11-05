@@ -1,0 +1,14 @@
+{
+  "purpose": "Verify real WinMM reset/close cuts queued digital silence and prevents later output writes",
+  "external_calls": 0,
+  "paid_inference": false,
+  "source": "synthetic_digital_zero_no_recording",
+  "close_ms": 0.0,
+  "driver_closed": true,
+  "driver_pending_buffers": 0,
+  "worker_alive": false,
+  "output_frames_at_close": 6,
+  "output_frames_after_150ms": 6,
+  "physical_listening_verified": false,
+  "passed": true
+}

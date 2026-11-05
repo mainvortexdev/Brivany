@@ -1,0 +1,179 @@
+{
+  "type": "real_isolated_brave_inline_sync_local_protocol_fixture",
+  "passed": true,
+  "source_owned_synthetic": true,
+  "encoded_video_source": true,
+  "owned_caption_track": false,
+  "provider_trial_max_seconds": 0,
+  "billing_amount": 0,
+  "user_profile_used": false,
+  "physical_listening_verified": false,
+  "cloning_enabled": false,
+  "waited_without_provider": true,
+  "error_message": null,
+  "cues": [
+    {
+      "speaker": 1,
+      "category": "masculine",
+      "source": 0.25,
+      "picture": 0.250667,
+      "recovered_gap": false,
+      "rate": 1,
+      "duration": 1,
+      "played": 1,
+      "wall": 1.0145999999940396,
+      "onset_ms": 4726,
+      "sync_error_ms": 1
+    },
+    {
+      "speaker": 2,
+      "category": "feminine",
+      "source": 6.25,
+      "picture": 6.261333,
+      "recovered_gap": false,
+      "rate": 1,
+      "duration": 1,
+      "played": 1,
+      "wall": 0.9971000000014901,
+      "onset_ms": 10743,
+      "sync_error_ms": 11
+    },
+    {
+      "speaker": 1,
+      "category": "masculine",
+      "source": 12.25,
+      "picture": 12.250667,
+      "recovered_gap": false,
+      "rate": 1,
+      "duration": 1,
+      "played": 1,
+      "wall": 1.0142000000029803,
+      "onset_ms": 16725,
+      "sync_error_ms": 1
+    }
+  ],
+  "no_new_window": true,
+  "protocol": [
+    {
+      "type": "ready",
+      "at": 0
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 250,
+      "end": 3250,
+      "at": 329
+    },
+    {
+      "type": "dub-cue",
+      "start": 250,
+      "end": 3250,
+      "speaker": 1,
+      "category": "masculine",
+      "at": 3298
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 6250,
+      "end": 9250,
+      "at": 6341
+    },
+    {
+      "type": "dub-cue",
+      "start": 6250,
+      "end": 9250,
+      "speaker": 2,
+      "category": "feminine",
+      "at": 9289
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 12250,
+      "end": 15250,
+      "at": 12328
+    },
+    {
+      "type": "dub-cue",
+      "start": 12250,
+      "end": 15250,
+      "speaker": 1,
+      "category": "masculine",
+      "at": 15299
+    },
+    {
+      "type": "done",
+      "at": 16008
+    }
+  ],
+  "last_processed_ms": 16000,
+  "last_buffer": {
+    "lag": 0.10733300000000057,
+    "reason": null,
+    "media": 15.892667,
+    "capture": 16,
+    "processed": 16,
+    "paused": false,
+    "ready": 4,
+    "frames": 376,
+    "buffered": [
+      [
+        5.198,
+        16.002
+      ]
+    ]
+  },
+  "recorder_track": {
+    "width": 640,
+    "height": 360,
+    "frameRate": 24
+  },
+  "source_lifecycle": {
+    "events": [
+      {
+        "type": "pause",
+        "time": 0.016629,
+        "selected": false,
+        "ready": 4
+      },
+      {
+        "type": "play",
+        "time": 0.042667,
+        "selected": false,
+        "ready": 4
+      },
+      {
+        "type": "playing",
+        "time": 0.042667,
+        "selected": false,
+        "ready": 4
+      },
+      {
+        "type": "pause",
+        "time": 16,
+        "selected": true,
+        "ready": 4
+      },
+      {
+        "type": "ended",
+        "time": 16,
+        "selected": true,
+        "ready": 4
+      }
+    ],
+    "connected": true,
+    "selected": false,
+    "paused": true,
+    "time": 16
+  },
+  "browser_voice_played": 3,
+  "finished_after_source": true,
+  "correct_speaker_sequence": true,
+  "public_speaker_match_verified": false,
+  "workspace_stop_clean": false,
+  "original_replayed_to": 0,
+  "one_session": true,
+  "drained_after_reset": false
+}

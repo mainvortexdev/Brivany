@@ -1,0 +1,11 @@
+{
+  "type": "real_cartesia_owned_health_probe",
+  "observed_at": "2026-11-04T21:19:17.071084+00:00",
+  "attempts": 1,
+  "billing_amount": null,
+  "gpu_seconds": null,
+  "passed": false,
+  "provider_code": "quota_exceeded",
+  "provider_status": 402,
+  "elapsed_ms": 796
+}

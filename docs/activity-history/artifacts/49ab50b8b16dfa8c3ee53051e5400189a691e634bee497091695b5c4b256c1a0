@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-10-31T03:05:44.276971+00:00",
+  "finished_at": "2026-10-31T03:06:11.114144+00:00",
+  "duration_seconds": 26.837173,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"status\": \"passed\",\n  \"checks\": [\n    \"shared WorkSpace panel and keyboard-safe inert content\",\n    \"full-width 40px toolbar with separate floating panel surface\",\n    \"proximity opens; premature exit waits; re-entry cancels collapse; sustained exit closes\",\n    \"occasional gaze follows a substituted coarse cursor direction and returns to center\",\n    \"three native size presets, transparency control and four tabs\",\n    \"real-state contract: running, completed, live and translation offer\",\n    \"audio consent preserved; start does not capture\",\n    \"five viewports: bounds, readable navigation and panel scrolling\",\n    \"clearly labelled animation preview without agent dispatch\",\n    \"Escape collapse and reduced-motion support\"\n  ],\n  \"native_bridge\": \"substituted\",\n  \"providers\": \"not called\",\n  \"physical_audio_verified\": false,\n  \"external_calls\": 0,\n  \"errors\": []\n}\n"
+}

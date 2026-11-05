@@ -1,0 +1,11 @@
+{
+  "kind": "local_fake_relay_and_loopback_http",
+  "command": ".\\.venv\\Scripts\\python.exe -X utf8 -B -m unittest tests.test_personal_translation_lab",
+  "exit_code": 0,
+  "tests_run": 14,
+  "observed_stdout": "..............\n----------------------------------------------------------------------\nRan 14 tests in 1.619s\n\nOK\n",
+  "external_provider_calls": 0,
+  "browser_automation_performed": false,
+  "question": "Do diagnostics distinguish acknowledged selection without capture from failed selection and active capture without frontend proof? Does the personal page avoid a false zero start position?",
+  "limits": "Local substitutes only; does not diagnose why the prior real observation received no PCM or certify real playback."
+}

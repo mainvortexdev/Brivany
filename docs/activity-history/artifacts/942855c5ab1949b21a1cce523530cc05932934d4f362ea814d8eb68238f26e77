@@ -1,0 +1,96 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict');
+const {PcmEnergyClock,summarize}=require('../web/dub-timing.js');
+const rate=24000;
+const pcm=(seconds,value=0)=>new Float32Array(Math.round(seconds*rate)).fill(value);
+const near=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-7,`${actual} != ${expected}`);
+
+test('long source silence cannot be mistaken for a low dubbing onset delay',()=>{
+  const source=new PcmEnergyClock(),translated=new PcmEnergyClock();
+  source.observe(pcm(.12),rate,0).observe(pcm(1.48,.2),rate,.12).observe(pcm(.744208333333),rate,1.6).finish();
+  translated.observe(pcm(.06),rate,2.55).observe(pcm(2,.2),rate,2.61).finish();
+  const snapshot=source.snapshot(),metrics=summarize(snapshot,translated.snapshot());
+  near(snapshot.first_energy_context,.12); near(snapshot.last_energy_context,1.6);
+  near(snapshot.record_end_context,56261/rate);
+  near(metrics.onset_to_onset_ms,2490);
+  near(metrics.first_translation_after_last_source_energy_ms,1010);
+  near(metrics.first_translation_after_source_file_end_ms,265.7916666666667);
+  near(metrics.tail_to_tail_ms,3010);
+  assert.equal(Object.keys(metrics).length,4);
+});
+
+test('RMS windows continue across differently sized packets',()=>{
+  const samples=new Float32Array(2400);
+  samples.fill(.05,350,1020);
+  const whole=new PcmEnergyClock().observe(samples,rate,1).finish();
+  const sliced=new PcmEnergyClock(); let offset=0;
+  for(const length of [17,463,1,220,899,800]) {
+    sliced.observe(samples.subarray(offset,offset+length),rate,1+offset/rate); offset+=length;
+  }
+  sliced.finish();
+  const actual=sliced.snapshot(),expected=whole.snapshot();
+  for(const key of ['first_energy_context','last_energy_context','record_start_context','record_end_context']) near(actual[key],expected[key]);
+  assert.equal(actual.frames,expected.frames);
+});
+
+test('gaps discard an incomplete window instead of merging separate fragments',()=>{
+  const clock=new PcmEnergyClock();
+  clock.observe(pcm(.01,.02),rate,0);
+  clock.observe(pcm(.02),rate,.1).finish();
+  assert.equal(clock.snapshot().first_energy_context,null);
+  assert.equal(clock.snapshot().frames,720);
+  near(clock.snapshot().record_end_context,.12);
+});
+
+test('one-frame timestamp jitter preserves a continuous RMS window',()=>{
+  const clock=new PcmEnergyClock();
+  clock.observe(pcm(.01,.02),rate,0).observe(pcm(.01,.02),rate,.01+1/rate).finish();
+  near(clock.snapshot().first_energy_context,0); near(clock.snapshot().last_energy_context,.02);
+});
+
+test('sample-rate changes reset a partial RMS window',()=>{
+  const clock=new PcmEnergyClock();
+  clock.observe(pcm(.01,.02),rate,0).observe(new Float32Array(960),48000,.01).finish();
+  assert.equal(clock.snapshot().first_energy_context,null);
+  near(clock.snapshot().record_end_context,.03);
+});
+
+test('finish can evaluate a final partial window and is idempotent',()=>{
+  const clock=new PcmEnergyClock().observe(pcm(.005,.1),rate,3);
+  assert.equal(clock.snapshot().first_energy_context,null);
+  clock.finish(); const first=clock.snapshot(); clock.finish();
+  assert.deepEqual(clock.snapshot(),first);
+  near(first.first_energy_context,3); near(first.last_energy_context,3.005);
+});
+
+test('silence and empty clocks leave energy metrics unknown',()=>{
+  const empty=new PcmEnergyClock(),silent=new PcmEnergyClock().observe(pcm(.5),rate,2).finish();
+  assert.equal(silent.snapshot().first_energy_context,null);
+  assert.deepEqual(summarize(empty.snapshot(),silent.snapshot()),{
+    onset_to_onset_ms:null,first_translation_after_last_source_energy_ms:null,
+    tail_to_tail_ms:null,first_translation_after_source_file_end_ms:null
+  });
+  assert.deepEqual(summarize({},{}),summarize(empty.snapshot(),silent.snapshot()));
+});
+
+test('invalid PCM and timing inputs fail before altering state',()=>{
+  const clock=new PcmEnergyClock().observe(pcm(.02,.1),rate,0),before=clock.snapshot();
+  for(const [samples,sampleRate,start] of [
+    [new Float32Array([.2,NaN]),rate,.02],[new Float32Array([Infinity]),rate,.02],
+    [new Float32Array([1.01]),rate,.02],[new Int16Array([1]),rate,.02],
+    [pcm(.02),0,.02],[pcm(.02),rate,Infinity],[pcm(.02),rate,-1]
+  ]) { assert.throws(()=>clock.observe(samples,sampleRate,start),TypeError); assert.deepEqual(clock.snapshot(),before); }
+  assert.throws(()=>new PcmEnergyClock({windowMs:0}),TypeError);
+  assert.throws(()=>new PcmEnergyClock({rmsThreshold:NaN}),TypeError);
+});
+
+test('overlapping translation can produce a negative end-to-first metric without a pass badge',()=>{
+  const metrics=summarize({first_energy_context:1,last_energy_context:4,record_end_context:5},
+    {first_energy_context:2,last_energy_context:6});
+  assert.deepEqual(metrics,{onset_to_onset_ms:1000,first_translation_after_last_source_energy_ms:-2000,
+    tail_to_tail_ms:2000,first_translation_after_source_file_end_ms:-3000});
+  assert.deepEqual(summarize({first_energy_context:NaN},{first_energy_context:2}),{
+    onset_to_onset_ms:null,first_translation_after_last_source_energy_ms:null,
+    tail_to_tail_ms:null,first_translation_after_source_file_end_ms:null
+  });
+});

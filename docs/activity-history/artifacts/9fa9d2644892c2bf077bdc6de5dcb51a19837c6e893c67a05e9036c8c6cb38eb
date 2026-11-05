@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "native_bridge": "substituted",
+  "renderer": "real WebGL; software permitted",
+  "physical_gpu_verified": false,
+  "microphone_activated": false,
+  "model_scene_matches": true,
+  "object_count": 5,
+  "mic_in_desktop_viewport": false,
+  "live_dimensions": {
+    "width": 875,
+    "height": 645
+  },
+  "horizontal_margins": [
+    1120,
+    768,
+    390,
+    320
+  ],
+  "errors": [],
+  "external_requests": []
+}

@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "checks": {
+    "five_parts": true,
+    "round_top_dimensions": true,
+    "top_center_height": true,
+    "four_leg_positions": true,
+    "legs_touch_nominal_ground": true,
+    "legs_touch_tabletop": true
+  },
+  "scope": "analytic checks of this previously generated synthetic scene in nominal model coordinates",
+  "physical_scale_verified": false,
+  "physical_strength_verified": false,
+  "new_provider_calls": 0,
+  "visual_review": "Round tabletop and four legs visible in the rendered image; procedural appearance."
+}

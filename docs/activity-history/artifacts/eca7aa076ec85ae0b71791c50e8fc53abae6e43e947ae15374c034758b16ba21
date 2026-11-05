@@ -1,0 +1,89 @@
+(() => {
+ if(!['/app','/computer'].includes(location.pathname))return;
+ let owner;
+ try{owner=parent.location.origin===location.origin?parent:window;}catch{owner=window;}
+ const session=owner.BrivanyComputerSession ||= {token:null};
+ const originalFetch=window.fetch.bind(window);
+ const mount=document.getElementById('computer-mount')||document.querySelector('main');
+ const live=location.pathname==='/app';if(live)mount.classList.add('computer-live');
+ const panel=document.createElement('section');panel.className='computer-panel';panel.setAttribute('aria-label','Control del ordenador de Melodi');
+ panel.innerHTML='<div class="computer-bar"><div class="computer-heading"><h2>Ordenador y creación 3D</h2><p class="computer-state" role="status">Control desactivado.</p></div><div class="computer-actions"><button type="button" data-enable>Activar control</button><button type="button" class="computer-stop" data-stop>Detener tareas</button></div></div><p class="computer-privacy">Al activar, Melodi puede enviar a Meta los controles observados y capturas de Paint. No guarda las capturas ni tu voz.</p><div class="computer-current" hidden><span></span><button type="button" data-current-model hidden>Ver modelo</button></div><details class="computer-options"><summary>Tareas y opciones</summary><div class="computer-options-body"><p>El permiso dura esta sesión. Puedes detener las tareas cuando quieras. Las capturas de Paint y los controles observados pueden enviarse a Meta.</p><button type="button" data-folder>Elegir carpeta</button><div class="computer-roots"></div><form class="computer-task-form"><label><span class="sr-only">Tipo de tarea</span><select aria-label="Tipo de tarea"><option value="desktop">Ordenador</option><option value="model">Modelo 3D</option></select></label><input aria-label="Instrucción para Melodi" maxlength="2000" required placeholder="Pídele a Melodi que haga algo…"><button type="submit">Iniciar tarea</button></form><ul class="computer-jobs" aria-label="Tareas de Melodi"></ul></div></details>';
+ mount.prepend(panel);
+ const preview=document.createElement('section');preview.className='computer-preview';preview.setAttribute('aria-label','Modelo junto a Melodi');(live?mount:panel).append(preview);
+ const $=selector=>panel.querySelector(selector),state=$('.computer-state'),list=$('.computer-jobs');
+ const options=$('.computer-options');options.open=!live;
+ if(live){$('.computer-heading h2').textContent='Ordenador y 3D';$('.computer-bar').append(options);options.querySelector('summary').textContent='Opciones';options.querySelector('summary').setAttribute('aria-label','Tareas y opciones');}
+ let latestModel=null,jobsSnapshot='';
+ const closePreview=()=>{preview.replaceChildren();mount.classList.remove('computer-has-preview','computer-context-open');mount.querySelector('.computer-context-toggle')?.setAttribute('aria-expanded','false');};
+ const showPreview=model=>{
+  if(!model?.scene_id)return;closePreview();mount.classList.add('computer-has-preview');options.open=false;
+  const heading=document.createElement('div');heading.className='computer-preview-heading';const title=document.createElement('strong');title.textContent=model.title||'Tu modelo conceptual';
+  const close=document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','Cerrar vista del modelo');close.title='Cerrar vista del modelo';close.onclick=closePreview;heading.append(title,close);
+  const viewer=document.createElement('iframe');viewer.title='Modelo conceptual creado por Melodi';viewer.src='/spaces?space='+encodeURIComponent(model.scene_id)+'&embedded=melodi';
+  const note=document.createElement('p');note.className='computer-preview-note';note.textContent='Modelo conceptual · Medidas y física sin verificar';preview.append(heading,viewer,note);
+ };
+ $('[data-current-model]').onclick=()=>showPreview(latestModel);
+ if(live){
+  const toggle=document.createElement('button');toggle.type='button';toggle.className='computer-context-toggle';toggle.textContent='Notas y contexto';toggle.setAttribute('aria-expanded','false');
+  const companion=mount.querySelector('.companion-panel');if(companion){companion.id ||= 'computer-context';toggle.setAttribute('aria-controls',companion.id);}
+  toggle.onclick=()=>{const open=mount.classList.toggle('computer-context-open');toggle.setAttribute('aria-expanded',String(open));};
+  if(companion){const close=document.createElement('button');close.type='button';close.className='computer-context-close';close.textContent='Cerrar notas y contexto';close.onclick=()=>{mount.classList.remove('computer-context-open');toggle.setAttribute('aria-expanded','false');toggle.focus();};companion.prepend(close);}
+  mount.querySelector('.voice-controls')?.before(toggle);
+  document.addEventListener('click',event=>{if(options.open&&!options.contains(event.target))options.open=false;if(mount.classList.contains('computer-context-open')&&event.target!==toggle&&!companion?.contains(event.target)){mount.classList.remove('computer-context-open');toggle.setAttribute('aria-expanded','false');}});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'){options.open=false;mount.classList.remove('computer-context-open');toggle.setAttribute('aria-expanded','false');}});
+ }
+ const statusNames={queued:'En cola',planning:'Preparando',running:'En curso',succeeded:'Finalizada',failed:'Detenida con error',cancelled:'Cancelada',interrupted:'Interrumpida al cerrar',awaiting_user:'Necesita tu intervención'};
+ async function request(url,body){
+  const response=await originalFetch(url,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json','X-Brivany-Control':session.token||''},cache:'no-store',...(body===undefined?{}:{body:JSON.stringify(body)})});
+  if(!response.ok)throw Error('No se pudo completar la solicitud. Activa el control y revisa el estado.');
+  return response.json();
+ }
+ window.fetch=(input,init={})=>{
+  const url=new URL(typeof input==='string'?input:input.url,location.href);
+  if(url.origin===location.origin&&url.pathname==='/api/voice/turn'&&session.token){
+   const headers=new Headers(init.headers);headers.set('X-Brivany-Control',session.token);
+   return originalFetch('/api/computer/turn',{...init,headers});
+  }
+  return originalFetch(input,init);
+ };
+ async function refresh(){
+  try{
+   const data=await request('/api/computer/status');
+   panel.dataset.enabled=String(data.enabled);
+   if(!data.enabled)session.token=null;
+   state.textContent=live?(data.enabled?'Control activo':'Control desactivado'):(data.enabled?'Control activo · habla con Melodi o escribe una tarea.':'Control desactivado · actívalo desde la ventana de escritorio.');
+   $('[data-enable]').textContent=data.enabled?'Desactivar control':'Activar control';
+   $('[data-folder]').disabled=!data.enabled;$('[type=submit]').disabled=!data.enabled;
+   $('.computer-roots').textContent=data.roots?.length?'Carpetas autorizadas: '+data.roots.join(' · '):'';
+   const jobs=data.jobs||[],current=jobs.at(-1),banner=$('.computer-current');banner.hidden=!current;banner.dataset.state=current?.state||'';
+   banner.querySelector('span').textContent=current?(current.kind==='model'?'Modelo 3D':'Ordenador')+' · '+statusNames[current.state]:'';
+   latestModel=jobs.slice().reverse().find(job=>job.result?.scene_id)?.result||null;$('[data-current-model]').hidden=!latestModel;
+   const snapshot=JSON.stringify(jobs);if(snapshot===jobsSnapshot)return;jobsSnapshot=snapshot;
+   const expanded=new Set([...list.querySelectorAll('li:has(details[open])')].map(row=>row.dataset.jobId));
+   list.replaceChildren();
+   for(const job of (data.jobs||[]).slice().reverse()){
+    const row=document.createElement('li'),label=document.createElement('strong'),detail=document.createElement('p');row.dataset.jobId=job.id;
+    label.textContent=(job.kind==='model'?'Modelo 3D':'Ordenador')+' · '+statusNames[job.state];detail.textContent=job.phase;row.append(label,detail);
+    if(job.error){const error=document.createElement('p');error.textContent=job.error;row.append(error);}
+    if(job.result?.receipts?.length){const details=document.createElement('details'),summary=document.createElement('summary');details.open=expanded.has(job.id);summary.textContent='Ver acciones y resultados';details.append(summary);
+     for(const receipt of job.result.receipts){const text=document.createElement('p');text.textContent=receipt.action+' · '+(receipt.result.path||receipt.result.destination||receipt.result.localPath||(receipt.result.text_value_verified?'Texto comprobado en el campo':receipt.result.verified?'Acción comprobada':'Entrada enviada; revisa su efecto'));details.append(text);}row.append(details);}
+    if(job.result?.scene_id){const link=document.createElement('a');link.textContent='Ver modelo en Espacios';link.href='/spaces?space='+encodeURIComponent(job.result.scene_id);row.append(link);
+     if(live){const inline=document.createElement('button');inline.type='button';inline.textContent='Ver junto a la voz';inline.onclick=()=>showPreview(job.result);row.append(inline);}
+    }
+    if(['queued','planning','running'].includes(job.state)){const button=document.createElement('button');button.type='button';button.textContent='Cancelar';button.onclick=()=>request('/api/computer/cancel',{id:job.id}).then(refresh).catch(error=>state.textContent=error.message);row.append(button);}
+    list.append(row);
+   }
+  }catch{state.textContent='El servicio de control todavía no está disponible en esta ventana.';}
+ }
+ $('[data-enable]').onclick=async()=>{
+  try{
+   if(session.token){await request('/api/computer/disarm',{});session.token=null;}
+   else{const api=owner.pywebview?.api;if(!api?.authorize_computer)throw Error('Abre Brivany Desktop para habilitar el control.');const result=await api.authorize_computer();if(!result.ok)throw Error('No se pudo habilitar el control.');session.token=result.token;}
+   await refresh();
+  }catch(error){state.textContent=error.message;}
+ };
+ $('[data-folder]').onclick=async()=>{try{await owner.pywebview.api.choose_computer_folder();await refresh();}catch{state.textContent='No se eligió ninguna carpeta.';}};
+ $('[data-stop]').onclick=async()=>{try{await request('/api/computer/disarm',{});session.token=null;await refresh();}catch(error){state.textContent=error.message;}};
+ $('form').onsubmit=async event=>{event.preventDefault();try{await request('/api/computer/jobs',{kind:$('select').value,goal:$('input').value});$('input').value='';await refresh();}catch(error){state.textContent=error.message;}};
+ const timer=setInterval(refresh,1500);window.addEventListener('pagehide',()=>clearInterval(timer),{once:true});refresh();
+})();

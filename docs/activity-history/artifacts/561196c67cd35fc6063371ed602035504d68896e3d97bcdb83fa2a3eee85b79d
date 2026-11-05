@@ -1,0 +1,14 @@
+{
+  "purpose": "One anonymous HTTPS request to verify documented LRCLIB matching and native transport; no user account or Spotify token.",
+  "provider": "LRCLIB",
+  "utc": "2026-10-31T22:03:03.255947+00:00",
+  "http_codes": [
+    502
+  ],
+  "status": "error",
+  "synced": false,
+  "line_count": 0,
+  "external_calls": 1,
+  "cost": "Anonymous public API; no key or paid inference. Monetary cost not measured.",
+  "limits": "Transport and availability of one public catalog fixture only; not coverage or semantic accuracy. No lyrics or user music metadata saved."
+}

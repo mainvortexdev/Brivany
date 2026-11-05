@@ -1,0 +1,64 @@
+---
+workflow: product-launch-video
+flow: companion
+storyboard: yes
+status: script_draft_for_review
+duration_seconds: 180
+---
+
+# Brivany · A tu ritmo
+
+## Intent
+
+Película representativa de tres minutos: problema humano, nacimiento de Brivany,
+Melodi como acompañante, traducción auditiva como eje, casos de uso, arquitectura
+comprensible, complejidad técnica y cantidad de pruebas con evidencia.
+Primero se entrega el guion completo y la investigación visual; todavía no se
+crean medios, narración ni un render. El texto es una propuesta editorial que
+reestructura la introducción del usuario, no una transcripción literal.
+
+## Confirmado por la solicitud
+
+- Duración final de tres minutos.
+- Inicio emocional sobre presión productiva, sobrecarga y contexto de IA.
+- Datos reales que sostengan el problema.
+- Melodi debe sentirse cercana, atractiva y presente en el día a día.
+- Escena de reunión e idioma como motivo narrativo.
+- Mostrar casos de uso, tecnologías, arquitectura, complejidad y pruebas.
+- Investigar herramientas visuales en paralelo al guion.
+- Revisar el guion antes de crear el video.
+
+## Propuesta editorial y valores por confirmar antes de producción
+
+- 1920 × 1080, 16:9, 30 fps: adecuado para presentación y reproducción completa.
+- Voz española original de Melodi, conservando su identidad; sin nueva clonación.
+- Personaje original, tonos blancos satinados, negro y azul de Brivany.
+- Tono comercial seguro y acabado pulido, por revisión editorial posterior.
+  Se omite una narración de incidencias sin afirmar perfección o inventar éxitos.
+- Película continua con motion graphics, interfaces reales seleccionadas y
+  representaciones conceptuales identificadas. No una sucesión de diapositivas.
+- Música y efectos por decidir; no se ha comprado, generado ni descargado música.
+- Ruta principal propuesta: HyperFrames + GSAP + Three.js + FFmpeg locales.
+- Composición nueva de 180 s. El compositor histórico de Brivany limitado a
+  18/24/30 s no se presenta como capaz de producir esta película sin adaptación.
+
+## Afirmaciones y material
+
+Las cifras están en FUENTES_Y_EVIDENCIAS.md. La escena de reunión presencial,
+la clonación y la reconstrucción de espacios reales se identifican como visión;
+la traducción de video, como prototipo en desarrollo. No se promete traducción
+perfecta, latencia fija, reconocimiento universal ni clonación instantánea.
+No se afirma exclusividad absoluta frente a otros asistentes.
+
+Los recursos de identidad proceden del proyecto: wordmark original,
+desktop/experience/character.css y motion-studio/src/premium.js como referencia.
+No se amplía un screenshot de 40 × 32 píxeles para representar a Melodi en grande.
+No se captura el navegador personal bloqueado mediante otro mecanismo.
+
+## Estado y consumo
+
+Guion y plan visual escritos. No se ha sintetizado locución, generado imágenes
+o clips ni iniciado exportación. La lectura de uso de HyperFrames informó la
+cuota del entorno Codex, no un saldo de Cartesia ni una cantidad de renders.
+La duración de locución y de render sigue sin medirse. Los tiempos del guion
+definen 180 s editoriales; las pausas se ajustarán a la narración real.

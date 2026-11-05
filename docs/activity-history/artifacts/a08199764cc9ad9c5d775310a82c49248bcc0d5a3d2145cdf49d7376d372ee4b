@@ -1,0 +1,36 @@
+{
+  "type": "retrospective metadata; not a new execution",
+  "original_conversations_saved": false,
+  "failures": [
+    {
+      "report": "computer-20261103T234850-08fc20db",
+      "finding": "Discovery was initially rejected by the orchestrator-only parent constraint; corrected with a read-only scoped desktop child."
+    },
+    {
+      "report": "application-learning-native-20261103T235201-7d5ff33b",
+      "finding": "Foreground identity lacked PID; reusable steps now join the current observed window by its handle."
+    },
+    {
+      "report": "application-learning-native-20261103T235402-a2345551",
+      "finding": "Intermediate run stopped after focus; no conclusive diagnosis. A later full native run passed."
+    },
+    {
+      "report": "workspace-chat-ui-20261104T000342-f7f5099e",
+      "finding": "The fixture intercepted the wrong URL. Corrected to the image-aware computer/chat-turn route, then verified result delivery."
+    },
+    {
+      "finding": "First manual account-native harness used an incompatible method signature. Its request counter did not finish; traffic is not declared zero."
+    },
+    {
+      "report": "system-diagnostics-20261104T001543-661d58ee",
+      "finding": "Intent guard treated a state adjective as an imperative; corrected without enabling mutations."
+    },
+    {
+      "report": "workspace-chat-ui-20261104T002958-f85d54bf",
+      "finding": "Strict floating pixel assertion failed; bounded with half-pixel tolerance and native size checks."
+    },
+    {
+      "finding": "Old HUD checks measured its region and CSS but omitted physical HWND size. User observed backdrop outside the card. Glass hosts are now physically compact; real reply viewport verified at 420 by 80."
+    }
+  ]
+}

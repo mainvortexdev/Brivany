@@ -1,0 +1,38 @@
+{
+  "type": "local_nonprefix_capture_anchor_regression",
+  "simulation": true,
+  "model_api_calls": 0,
+  "fixture_report": "inline-sync-1793808128093.json",
+  "source_capture_anchor_ms": 123,
+  "source_playback_rate": 1,
+  "numeric_rate_one_intervals": [
+    {
+      "relative_start_seconds": 0.25,
+      "relative_end_seconds": 3.25,
+      "absolute_start_ms_at_rate_one": 373.0,
+      "absolute_end_ms_at_rate_one": 3373.0
+    },
+    {
+      "relative_start_seconds": 6.25,
+      "relative_end_seconds": 9.25,
+      "absolute_start_ms_at_rate_one": 6373.0,
+      "absolute_end_ms_at_rate_one": 9373.0
+    },
+    {
+      "relative_start_seconds": 12.25,
+      "relative_end_seconds": 15.25,
+      "absolute_start_ms_at_rate_one": 12373.0,
+      "absolute_end_ms_at_rate_one": 15373.0
+    }
+  ],
+  "checks": {
+    "fixture_passed": true,
+    "without_prefix": true,
+    "finite_anchor": true,
+    "sanitizer_preserves_anchor": true,
+    "completed_three_cues": true
+  },
+  "passed": true,
+  "semantic_alignment_verified": false,
+  "physical_listening_verified": false
+}

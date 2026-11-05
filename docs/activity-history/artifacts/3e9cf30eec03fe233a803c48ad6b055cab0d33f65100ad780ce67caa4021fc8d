@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-chat-ui",
+  "started_at": "2026-11-03T23:26:39.915446+00:00",
+  "finished_at": "2026-11-03T23:27:17.914894+00:00",
+  "duration_seconds": 37.999448,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-chat"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Escribir a Melodi', exact: true }) to be visible\u001b[22m\n\n    at <local-path>\\tools\\check_workspace_chat.cjs:30:138 {\n  log: [\n    \"  - waiting for getByRole('button', { name: 'Escribir a Melodi', exact: true }) to be visible\"\n  ],\n  name: 'TimeoutError'\n}\n"
+}

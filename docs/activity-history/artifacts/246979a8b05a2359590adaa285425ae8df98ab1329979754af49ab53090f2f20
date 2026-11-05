@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "scope": "local Worker fetch handler; no remote requests",
+  "checks": [
+    "landing page title and preparation response",
+    "HEAD has no body",
+    "POST rejected",
+    "no public desktop OAuth endpoint"
+  ],
+  "external_calls": 0
+}

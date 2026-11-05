@@ -1,0 +1,25 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/motion-design/ef46c001-267b-43d4-bf37-6004e4aba066/render-report.json",
+  "original_sha256": "72204b874a93059866303604ac9d8e9ef615e8b5330cc4f702e7120a846d1f34",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "passed": true,
+    "deterministic_seek": true
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": 6.2884332,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

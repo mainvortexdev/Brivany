@@ -1,0 +1,6 @@
+{
+  "local_connection_before": true,
+  "local_connection_after": false,
+  "authorization_file_remaining": false,
+  "remote_revocation_confirmed": false
+}

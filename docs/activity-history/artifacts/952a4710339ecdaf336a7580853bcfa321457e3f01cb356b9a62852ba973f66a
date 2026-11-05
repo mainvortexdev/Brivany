@@ -1,0 +1,20 @@
+{
+  "suite": "computer",
+  "started_at": "2026-11-04T01:00:45.665614+00:00",
+  "finished_at": "2026-11-04T01:00:53.443322+00:00",
+  "duration_seconds": 7.777708,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_computer_control",
+    "tests.test_quick_applications"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "................................\r\n----------------------------------------------------------------------\r\nRan 32 tests in 6.102s\r\n\r\nOK\r\n"
+}

@@ -1,0 +1,95 @@
+# Continuidad audible y voces de los hablantes
+
+1 de noviembre de 2026, America/La_Paz. La corrección anterior del ritmo PCM
+no acreditaba continuidad audible. Se conserva el fallo y se comprueba ahora
+el recorrido con APIs y salida de Windows reales.
+
+## Cambios comprobados
+
+- MT/TTS se anticipan con hasta dos contextos ordenados, aunque los paquetes
+  lleguen intercalados. Límites: 16 cláusulas, 30 s de PCM por contexto y 240 ms
+  de cola NativeMixer; Stop cancela ambos contextos, sin descartar PCM.
+- La entrada nativa es continua, sin pausar ASR mientras el video externo sigue
+  avanzando. Se conserva el control de ritmo. El reloj de silencio WASAPI ya no
+  acumula el retraso de cada espera de Windows.
+- Cartesia recibe `max_buffer_delay_ms: 0` al usar agrupación propia de texto;
+  evita una segunda espera de hasta tres segundos.
+  [Contrato oficial](https://docs.cartesia.ai/use-the-api/tts-websocket/buffering).
+- Meta podía enviar contenido, `finish_reason: stop` y `[DONE]` pero no cerrar
+  HTTP, causando timeout después de una traducción completa. Se reprodujo en TLS
+  local y se corrigió: inspección breve de cola y descarte de transporte si falta
+  EOF, sin repetir la inferencia. El siguiente fragmento usa un transporte nuevo.
+- River permite una recuperación MT ante timeout/transporte no disponible sólo
+  antes de cualquier delta. Máximo dos intentos con configuración idéntica;
+  salida parcial, 4xx, rechazo, formato inválido y Stop nunca se repiten. Esto
+  sustituye cero reintentos MT; ASR/TTS conservan cero reconexiones automáticas.
+- WorkSpace solicita diarización real de Muse. Labels locales Hablante 1/2 y
+  primera categoría confiable fijan voces estables Daniel/Jace o Skylar/Tessa.
+  A→B→A mantiene A; sin label se indica voz sin identificar. No son nombres,
+  identidades ni certificación de sexo/género. Conexiones Muse/Cartesia paralelas.
+
+## Evidencia real y consumo
+
+Los diez ensayos están inventariados, sin transcripciones, en
+`tmp/workspace-translation-continuity/assessment-20261102.json`.
+
+La muestra propia de 35,84 s reprodujo antes del cambio cuatro huecos estimados
+por 7.735 ms, máximo 2.819 ms, y rechazo ASR. El primer pipeline anticipado
+completó 15 segmentos, cinco conceptos esperados y hueco máximo 402 ms. Los
+ensayos posteriores con video revelaron otras pausas y timeouts; se conservan.
+
+Dos voces sintéticas existentes A→B→A completaron tres segmentos: labels 1→2→1,
+voces masculina/femenina/masculina estables. Cursor WinMM y bytes entregados
+coincidieron en 326.400. No se certifica diarización universal.
+
+Un ensayo de 90 s encontró casi todo silencio: terminó el protocolo, pero se
+clasifica como fuente insuficiente, no éxito de continuidad. El arnés ahora mide
+energía sin guardar PCM y rechaza esa condición. Otro ensayo reprodujo la muestra
+propia por la salida del sistema; la fuente externa pudo reanudarse durante él.
+
+Ensayo final con el usuario reanudando el video: sesión de 90 s, 90,00 s PCM
+enviados, 31,68 s de bloques con energía por encima del umbral, 19 MT/TTS y
+40,96 s PCM traducido. Terminó sin error ni recuperación MT. Cola de captura
+aproximadamente 0,4–0,56 s durante la entrega. Primer PCM traducido a 4.859 ms
+del primer bloque de entrada; no es latencia por palabra ni arranque instantáneo.
+Mayor hueco estimado entre entregas: 378 ms. Cursor WinMM consumió los 1.966.080
+bytes entregados. Sesión sin mute, volumen 1,0, pico 0,724. El usuario confirmó
+durante ese ensayo fluidez y voces distinguibles.
+
+Los huecos estimados pueden incluir pausas naturales. Picos/cursor no prueban
+por sí solos escucha humana; ésta se distingue de la confirmación del usuario.
+La captura final observó cuatro discontinuidades del dispositivo: no se afirma
+exactitud total palabra por palabra ni ausencia universal de pérdidas. Original
+al 12 % durante traducción, salida traducida separada y restauración al cerrar.
+
+Consumo conocido: 10 ASR, 128 solicitudes MT, 125 contextos TTS traducidos
+iniciados y un TTS para la muestra continua propia, reutilizada. Cero recuperaciones
+automáticas observadas en estos ensayos. Importe monetario desconocido. No se
+adjuntaron audio ni conversaciones del usuario a la bitácora.
+
+## Comprobaciones locales
+
+118 pruebas aprobadas: River 32, Meta 27, NativeAudio 15, WorkSpace 12 y Work 32.
+UI a cinco anchuras con etiqueta del hablante y WebView2 real con puente/voz
+sustituidos. Se conserva el fallo inicial de UI por Playwright no resuelto;
+se reutilizó la instalación del runtime. WASAPI 35 s con siete demoras y
+proveedores sustituidos: activo sin error de ritmo, cero pausas ASR y cierre limpio.
+
+Informes: `docs/verification-history/river-translation-20261102T024931-93416aa7.json`,
+`meta-translation-20261102T024702-48b1ae2f.json`,
+`native-audio-20261102T025015-e4e76337.json`,
+`workspace-translation-20261102T025828-5eedbba5.json`,
+`work-20261102T025900-cdc611e7.json`,
+`workspace-translation-ui-20261102T024807-fcbc33b2.json`,
+`workspace-chat-native-20261102T025456-76be1bdc.json` y
+`workspace-translation-pacing-hardware-20261102T025900-f6184d1b.json`.
+
+## Dirección siguiente
+
+El usuario pide sincronía con anticipación: preproducción inicial de cinco
+segundos y extensión del navegador, con búfer A/V inicial de cuatro segundos.
+Estas pruebas de continuidad no acreditan sincronización A/V. Se implementa como
+recorrido separado con reloj de fuente, etiquetas por turno y reproducción
+retardada; la captura directa actual sólo conoce audio presente. Meta no ofrece
+en ASR detección de emociones ni tiempos por palabra; cualquier análisis adicional
+se debe probar y etiquetar según su origen. Terminal continúa pausado.

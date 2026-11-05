@@ -1,0 +1,90 @@
+{
+  "schema_version": "0.1.0",
+  "pipeline_version": "spatial-room-vggt-observed-surface-0.2.0",
+  "checked_on": "2026-10-29",
+  "remote_dispatch_enabled": false,
+  "deployment_verified": false,
+  "modal": {
+    "sdk_version": "1.6.3",
+    "sdk_wheel_sha256": "31e8952c8908740f3fbc666191fec78ff5fadecb7a48a29d40aed90b39531ffe",
+    "gpu": "L40S",
+    "minimum_vram_gb": 32,
+    "min_containers": 0,
+    "max_containers": 1,
+    "buffer_containers": 0,
+    "retries": 0,
+    "timeout_seconds": 180,
+    "startup_timeout_seconds": 600,
+    "scaledown_window_seconds": 2,
+    "weight_volume_name": "brivany-spatial-room-weights",
+    "result_volume_name": "brivany-spatial-room-results"
+  },
+  "runtime": {
+    "platform": "linux/amd64",
+    "python": "3.11",
+    "candidate_base_image": "nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04",
+    "base_image_digest": null,
+    "dependency_lock_complete": false,
+    "build_verified": false,
+    "cuda_compatibility_verified": false,
+    "model_root": "/opt/vggt",
+    "weights_root": "/weights/vggt-commercial",
+    "checkpoint_filename": "model.safetensors",
+    "checkpoint_manifest": []
+  },
+  "model": {
+    "repository": "https://github.com/facebookresearch/vggt",
+    "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+    "checkpoint_repository": "facebook/VGGT-1B-Commercial",
+    "checkpoint_revision": "ebb29a532abe92960eeb6903a5530f16990ef4ab",
+    "checkpoint_hashes_verified": false,
+    "license_reviewed_by_user": false,
+    "access_granted_by_provider": false,
+    "input_resolution": 518,
+    "camera_convention": "opencv_camera_from_world",
+    "checkpoint_note": "Public repository metadata is pinned; gated checkpoint contents have not been downloaded or verified."
+  },
+  "budget": {
+    "approved_per_job_usd": null,
+    "approved_total_usd": null,
+    "gpu_rate_usd_per_second": null,
+    "non_gpu_reserve_per_job_usd": null
+  },
+  "source_files": {
+    "demo_colmap.py": {"sha256": "c1aaebd123ad66ee85d46e6b629f1e02c8e60a897682fc2e9afcde65937818ce"},
+    "LICENSE.txt": {"sha256": "b94e46746792d1adfa0ebdbccada5d4576d244ae230be9de8a46b5868fff001b"},
+    "vggt/models/vggt.py": {"sha256": "dbc92d6214882161d9042b1bc60cc932a9fd6bb609fc913d14906328f7833607"},
+    "vggt/utils/load_fn.py": {"sha256": "d57b7a16c2e04333a2e68d365aa21f1dd61759e984f744cbcbe6b66d787f37ef"},
+    "vggt/utils/pose_enc.py": {"sha256": "845fc3a46cb851bebf0720b8fc2b9f34334ae8e11f1982376ba59f90ff18f22b"},
+    "vggt/utils/geometry.py": {"sha256": "c6f505182e4e926629c04adbdf633eb80238da3a3c87eb8337b6f130ab01ab93"},
+    "requirements.txt": {"sha256": "171720da9f30387a5232065fd7848d767cc6cb9fafca2da928aa686cb79923f2"}
+  },
+  "limits": {
+    "min_frames": 2,
+    "max_frames": 8,
+    "max_image_bytes": 8388608,
+    "max_total_image_bytes": 33554432,
+    "max_image_side": 1280,
+    "max_output_glb_bytes": 31457280,
+    "max_vertices": 180000,
+    "max_triangles": 300000
+  },
+  "sources": [
+    "https://huggingface.co/facebook/VGGT-1B-Commercial",
+    "https://huggingface.co/api/models/facebook/VGGT-1B-Commercial",
+    "https://github.com/facebookresearch/vggt/blob/a288dd0f14786c93483e45524328726ab7b1b4ce/demo_colmap.py",
+    "https://github.com/facebookresearch/vggt/blob/a288dd0f14786c93483e45524328726ab7b1b4ce/vggt/utils/geometry.py",
+    "https://github.com/facebookresearch/vggt/blob/a288dd0f14786c93483e45524328726ab7b1b4ce/vggt/utils/load_fn.py",
+    "https://github.com/facebookresearch/vggt/blob/a288dd0f14786c93483e45524328726ab7b1b4ce/LICENSE.txt",
+    "https://modal.com/docs/guide/retries",
+    "https://modal.com/docs/guide/scale"
+  ],
+  "limitations": [
+    "Prepared adapter only: no checkpoint, CUDA image build, Modal deployment or real multiview inference has been verified.",
+    "Only image-supported inferred depth surfaces are triangulated; unknown room boundaries and holes remain open.",
+    "Depth confidence is an uncalibrated model score, not a probability or professional measurement certificate.",
+    "Relative coordinates, up direction, scale, duplicate surfaces, completeness and geometric accuracy remain unverified.",
+    "No cross-view fusion, bundle adjustment, object segmentation, watertight walls, colliders or physics is inferred.",
+    "Timeout and retries=0 do not cap provider startup, storage or crash rescheduling charges."
+  ]
+}

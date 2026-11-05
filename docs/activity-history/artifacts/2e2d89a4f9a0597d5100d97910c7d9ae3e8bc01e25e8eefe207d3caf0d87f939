@@ -1,0 +1,48 @@
+{
+  "status": "failed",
+  "native_windows": "real",
+  "screen_capture": false,
+  "audio_capture": false,
+  "inference_calls": 0,
+  "background_network_consumption_known": false,
+  "baseline_work_area": {
+    "left": 0,
+    "top": 40,
+    "right": 1280,
+    "bottom": 994
+  },
+  "reserved_bar": {
+    "left": 0,
+    "top": 40,
+    "right": 1280,
+    "bottom": 80
+  },
+  "maximized_fixture_visible_bounds": {
+    "left": 0,
+    "top": 80,
+    "right": 1280,
+    "bottom": 994
+  },
+  "newly_maximized_fixture_bounds": {
+    "left": 0,
+    "top": 80,
+    "right": 1280,
+    "bottom": 994
+  },
+  "last_anchor_check": {
+    "expected": {
+      "width": 620,
+      "height": 232,
+      "clip_left": 52,
+      "host_width": 680,
+      "revision": 6
+    },
+    "css": {
+      "left": 336,
+      "width": 336
+    },
+    "host_now": "music"
+  },
+  "error": "RuntimeError: El panel CSS no coincide con la región nativa anclada.",
+  "cleanup_work_area_restored": true
+}

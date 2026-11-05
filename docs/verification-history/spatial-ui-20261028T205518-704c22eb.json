@@ -1,0 +1,18 @@
+{
+  "suite": "spatial-ui",
+  "started_at": "2026-10-28T20:55:18.917849+00:00",
+  "finished_at": "2026-10-28T20:55:44.275870+00:00",
+  "duration_seconds": 25.358021,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_spatial_ui"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "page.evaluate: TypeError: Cannot redefine property: getUserMedia\r\n    at Object.defineProperty (<anonymous>)\r\n    at eval (eval at evaluate (:311:30), <anonymous>:3:14)\r\n    at UtilityScript.evaluate (<anonymous>:313:16)\r\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\r\n    at <local-path>\\tools\\check_spatial_ui.cjs:110:16 {\r\n  log: []\r\n}\r\n\r\n"
+}

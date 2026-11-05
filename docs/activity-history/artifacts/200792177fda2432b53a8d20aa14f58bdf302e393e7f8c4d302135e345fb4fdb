@@ -1,0 +1,25 @@
+{
+  "checked_at": "2026-10-28T12:53:42.1898643Z",
+  "kind": "read_only_audio_measurement_capability_audit",
+  "windows_version": "10.0.19045",
+  "windows_build": 19045,
+  "architecture": "64 bits",
+  "powershell": "7.6.5",
+  "runtime": ".NET 10.0.11",
+  "published_process_loopback_minimum_build": 20348,
+  "meets_published_minimum": false,
+  "activation_tested": false,
+  "isolated_loopback_validated": false,
+  "microphone_requested": false,
+  "audio_captured": false,
+  "audio_played_by_audit": false,
+  "external_calls": 0,
+  "physical_playback_measured": false,
+  "audible_delay_verified": false,
+  "reference": "https://learn.microsoft.com/en-us/windows/win32/api/audioclientactivationparams/ne-audioclientactivationparams-audioclient_activation_type",
+  "limits": [
+    "Metadata audit only; no Activate/Initialize/Start calls.",
+    "Published minimum is not an activation test; absence of support is not proven.",
+    "Digital loopback would still not measure speaker, Bluetooth or acoustic ear delay."
+  ]
+}

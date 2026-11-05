@@ -1,0 +1,114 @@
+# WorkSpace: conversación, ondas y recuperación de música
+
+Petición del 1 de noviembre de 2026, con comprobaciones que continúan el 2 de
+noviembre UTC. Se conserva la voz y el motor Live existentes. No se modifica
+el objetivo de terminal que permanece en pausa.
+
+## Cambios implementados
+
+- Al acercarse a Melodi se ofrecen dos botones redondeados: escribir y hablar.
+  El selector no tiene encabezado ni X; la ventana nativa recorta también el
+  espacio entre botones. Se conservan apertura por intención y salida tolerante.
+- Chat compacto oscuro con apariencia de cristal, entrada de texto y respuestas
+  del controlador real de conversación. Cerrar conserva la conversación de la
+  sesión en memoria; no se añade un archivo de historial ni otro micrófono.
+- Live se inicia desde el selector o el chat, con errores visibles y plazo de
+  inicio. El gesto explícito se transmite al controlador nativo de WebView2.
+  Una superficie de voz de 560 × 72 usa 48 grupos de picos del analizador ya
+  existente, extremos degradados y pulso del personaje mientras responde.
+  No intercepta clics ni aparece en la barra de tareas; el chat se desplaza
+  debajo de la onda cuando está abierta la escucha.
+- Las nuevas ventanas privadas de WebView2 borraban las cookies compartidas.
+  Esto hacía aparecer una respuesta HTTP 410 clara en vez del contenido. Cada
+  vista recibe ahora la capacidad efímera por una cabecera añadida en la capa
+  nativa, sólo a su origen local exacto. No se entrega a JavaScript ni a Spotify.
+  Los navegadores ordinarios siguen recibiendo 410 para la interfaz retirada.
+- Spotify consulta periódicamente la sesión de la cuenta aunque el SDK local
+  publique estados frecuentes. Una sesión observada en el móvil tiene prioridad
+  sobre estados viejos del SDK. Se conservan datos válidos frente a fallos de
+  consulta de dispositivos; caché de biblioteca y plazos Retry-After persistentes
+  evitan insistir durante una limitación 429.
+- FxSound se excluye como salida mezclada: incluye la música propia y causaba
+  realimentación en la detección. El navegador original sigue provocando ducking.
+  El nivel temporal final es **12 % del volumen elegido**, con bajada de 650 ms,
+  espera de silencio de 1,5 s y recuperación gradual de 1.500 ms. Se conserva la
+  exclusión de juegos y el ajuste desde la aplicación.
+- Un único punto de recuperación de música protegido con DPAPI conserva canción,
+  posición, contexto y hasta 50 siguientes temas disponibles en el SDK. Se
+  actualiza como máximo cada dos segundos y al cambiar canción/pausa. No es un
+  archivo de historial. Al desvincular se elimina; caduca a los 30 días.
+  Si Spotify no tiene sesión actual, se presenta esa canción en pausa y Play
+  solicita su URI y posición exactas. Si hay sesión activa, incluida la del móvil,
+  ésta prevalece. No se usa una canción de escuchas recientes como sustituto.
+  Una instantánea inicial vieja del SDK no puede sobrescribir la recuperación.
+  Antes de este cambio no existía ese punto: no se puede reconstruir con certeza
+  una escucha anterior ya perdida. No se promete restaurar una cola remota que
+  Spotify no haya entregado ni reanudar audio automáticamente al arrancar.
+- Las ondas de música permanecen cinco minutos tras pausar, con salida gradual;
+  el punto de recuperación conserva la última actividad para el nuevo arranque.
+  Hay diagnóstico local de banderas visuales y ganancia, sin textos de chat,
+  canciones ni credenciales en esa respuesta.
+
+## Evidencia y límites
+
+Las suites se ejecutan con `tools.verify`; sus fallos previos permanecen en la
+bitácora. Se incluyen política del puente, cinco anchuras de 280 a 780 px,
+historial al cerrar/abrir, un solo propietario de micrófono, ondas/pulso y
+movimiento reducido. UI usa flujo local real y sustituye proveedor, captura y
+salida de voz. La prueba nativa crea las ventanas reales de WebView2 y verifica
+ida y vuelta del chat, cabecera después de borrar cookies, selector sin
+encabezado, píxeles de la onda de voz y ondas de música visibles. Sus mensajes
+y señales son sintéticos; no captura micrófono ni envía entrada al SO.
+
+Pruebas unitarias de Spotify cubren prioridad móvil, 429 persistente, biblioteca
+conservada, recuperación entre dos instancias y petición de reproducción con
+posición/cola correctas. Pruebas de ducking cubren FxSound más navegador, juegos,
+silencio y la rampa al 12 %. Estas pruebas no requieren inferencia pagada.
+
+Comprobación real acotada: cuatro GET explícitos iniciales de Spotify devolvieron
+reproducción móvil y biblioteca con 6 playlists, 158 canciones y 0 álbumes. Cero
+álbumes guardados no equivale a un error de biblioteca. Se hicieron además
+lecturas de cuenta para guardar el punto previo al reinicio, sin mutaciones de
+reproducción en esos diagnósticos. Las peticiones rutinarias del reproductor
+durante la sesión no se contabilizaron globalmente; no se declara consumo cero.
+Importe externo desconocido. La inspección de sesiones de Windows sólo lee
+metadatos de picos, sin PCM. La medición del reproductor en ejecución confirmó
+ganancia 0,25 y base 0,5 → nivel 0,125 antes del último ajuste pedido al 12 %.
+
+Se conservan el primer fallo por dependencia Playwright ausente, un timeout de
+la suite UI y los fallos iniciales del arnés de cookies. La repetición UI aislada
+pasó. No se atribuyen esos intentos fallidos a una capacidad aprobada. El acceso
+visual a Brave se detuvo al no poder verificar la URL: no se intentó otro
+mecanismo de entrada. La escucha física Live y la validación en macOS/Linux no
+quedan certificadas por estas pruebas.
+
+Referencias de protocolo:
+[estado del SDK](https://developer.spotify.com/documentation/web-playback-sdk/reference),
+[reanudar con contexto, URI y posición](https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback).
+
+Los informes concretos y el estado final se agregan al registro de actividad
+del hito; no se adjuntan credenciales, conversación privada ni medios originales.
+
+## Cierre comprobado
+
+- `workspace-chat`: 3 pruebas; `work`: 29; `desktop-ui-session`: 5.
+- `workspace-chat-ui`: pasó conversación/Live sustituido y cinco anchuras.
+- `workspace-chat-native`: pasó ida/vuelta real del puente, despacho nativo de
+  inicio Live sustituido, cookies, píxeles de ondas, forma del selector y estilos
+  de ventana. No abrió un micrófono real. Se conserva un intento anterior del
+  arnés que falló por una aserción sin detalle; el último intento pasó.
+- `spotify`: 36; `spotify-sync`: 22; `spotify-resume`: 23. Las suites de sync y
+  recuperación incluyen pruebas base repetidas: estas cantidades no se suman
+  como casos distintos. Recuperación también cubre un arranque limitado por 429.
+- `music-ducking`: 9; `music-ducking-volume`: 3 con factor 0,12;
+  `javascript`: 49; `island-ui`: pasó con el nuevo nivel en el SDK sustituido.
+  Se conserva el fallo previo de esa suite porque esperaba el antiguo 25 %.
+- Antes del reinicio final, dos GET explícitos verificaron que el punto real
+  protegido se reabre con la misma canción y posición. Tras iniciar la nueva
+  versión quedaron activos bandeja, WorkSpace y monitor de ducking; la onda de
+  música de la barra confirmó opacidad 1 durante la pausa. No se forzó audio,
+  transferencia a otro dispositivo ni micrófono para esa comprobación final.
+
+El menor nivel está cargado; su rampa se comprobó con SDK sustituido. La medición
+real anterior al último reinicio acreditó el 25 %, no el 12 %. La próxima escucha
+real permite valorar si el nuevo nivel resulta cómodo; no se inventa esa escucha.

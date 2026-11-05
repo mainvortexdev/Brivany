@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "scope": "Local HTTP and served HTML only",
+  "provider": "Muse · Meta Spark · Cartesia",
+  "model": "muse-spark-1.3",
+  "continuous": true,
+  "available": true,
+  "application_quotas": {
+    "max_seconds": null,
+    "daily_sessions": null,
+    "sessions_remaining": null,
+    "max_segments": null,
+    "max_characters": null
+  },
+  "voice_modes": [
+    "auto",
+    "masculine",
+    "feminine"
+  ],
+  "provider_inference_calls": 0,
+  "physical_voice_match_verified": false
+}

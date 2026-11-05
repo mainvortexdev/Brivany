@@ -1,0 +1,22 @@
+{
+  "checked_at": "2026-10-28T12:09:19.214481+00:00",
+  "status": "passed",
+  "kind": "local_synthetic_fixture_validation",
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "manifests": [
+    "tmp/stream-dubbing/build-1134363a063d4d9b90035981703cdf7d/manifest.json",
+    "tmp/stream-dubbing/build-a8bdd536098a4ce188eb79566e5e644f/manifest.json"
+  ],
+  "checks": [
+    "build 1: WAV/PCM hashes, exact source slices, concatenation and energy offsets verified",
+    "build 2: WAV/PCM hashes, exact source slices, concatenation and energy offsets verified",
+    "two independent offline Zira preparations produced identical combined WAV and PCM bytes",
+    "silent source rejected by energy detection and trimming"
+  ],
+  "limits": [
+    "No translation provider or audible delay was evaluated.",
+    "Reproducibility applies to this installed offline voice version, not all operating systems.",
+    "RMS energy offsets are not forced speech or semantic alignment."
+  ]
+}

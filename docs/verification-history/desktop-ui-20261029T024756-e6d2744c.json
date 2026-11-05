@@ -1,0 +1,18 @@
+{
+  "suite": "desktop-ui",
+  "started_at": "2026-10-29T02:47:56.908686+00:00",
+  "finished_at": "2026-10-29T02:48:06.468555+00:00",
+  "duration_seconds": 9.559869,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_desktop_ui"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Real browser + loopback HTTP Handler + DesktopBridge + portable files; pywebview transport and native chooser substituted.\",\r\n  \"checks\": [\r\n    \"browser saves the local scene into a new portable folder using the real DesktopBridge and project writer\",\r\n    \"numeric object editing persists a new portable revision and updates the real scene\",\r\n    \"cancelled open keeps the current folder, transforms and media grant\",\r\n    \"cancelled export creates no file; confirmed export writes a complete ZIP with assets and saved revisions\",\r\n    \"reopening reads saved transforms and revokes the previous session asset URLs\",\r\n    \"a real revision conflict reaches JavaScript as status 409 and reloads the authoritative portable revision\"\r\n  ],\r\n  \"chooser_calls\": [\r\n    {\r\n      \"kind\": 20,\r\n      \"choice\": \"parent\"\r\n    },\r\n    {\r\n      \"kind\": 20,\r\n      \"choice\": \"cancel\"\r\n    },\r\n    {\r\n      \"kind\": 30,\r\n      \"choice\": \"cancel\"\r\n    },\r\n    {\r\n      \"kind\": 30,\r\n      \"choice\": \"zip\"\r\n    },\r\n    {\r\n      \"kind\": 20,\r\n      \"choice\": \"current\"\r\n    }\r\n  ],\r\n  \"external_calls\": 0,\r\n  \"gpu_inference\": false,\r\n  \"native_window_started\": false,\r\n  \"physical_gpu_tested\": false,\r\n  \"macos_verified\": false,\r\n  \"final_revision\": 3,\r\n  \"screenshots\": [\r\n    \"tmp/desktop-ui/portable-project.png\"\r\n  ]\r\n}\r\n\r\n"
+}

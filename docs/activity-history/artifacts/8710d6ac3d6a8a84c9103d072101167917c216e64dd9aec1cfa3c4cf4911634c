@@ -1,0 +1,89 @@
+# Medios, soporte y siguiente web pública
+
+Dirección del usuario, 1 de noviembre de 2026.
+
+El usuario considera suficientes los comandos y atajos existentes y pide pasar
+a videos, extracción de audio a carpetas indicadas, traducción, lectura de
+manuales y búsqueda/instalación de controladores, incluidas impresoras. No se
+continúa ampliando o ejecutando la checklist. Tiene 65 comandos aprobados;
+`clip` no se certificó: Windows negó crear el entorno aislado antes de ejecutarlo.
+El portapapeles interactivo permaneció intacto y se retiró ese adaptador
+experimental. No se presentan los comandos restantes, macOS ni 2.000 entradas
+como ejecutados. El recibo anterior se conserva.
+
+## Implementación en curso
+
+- Agente independiente `media`, desde chat y voz, con selección nativa de archivos.
+  Extracción completa WAV/MP3/M4A por FFmpeg, sin sobrescribir destinos existentes.
+  Las carpetas Documentos/Escritorio deben corresponder al destino literal pedido.
+- Traducción con el motor existente Muse → Meta → Cartesia y remultiplexado MKV;
+  sólo se publica cuando se confirma haber procesado toda la pista de entrada.
+  No se certifica traducción semántica ni sincronización labial. No se corta una
+  voz más larga para forzarla a la duración original.
+- Análisis visual de cuatro fotogramas con tiempos explícitos. No equivale a
+  observar continuamente cada segundo ni analizar el audio del video.
+- Agente `support` para descubrir fuentes oficiales, leer HTML/PDF y responder
+  con citas a páginas realmente extraídas. PDF sin texto requiere OCR pendiente.
+- Controladores mediante la búsqueda de aplicabilidad de Windows Update y una
+  instalación de IDs observados por sus APIs, con elevación normal. Sin registro,
+  desinstalación de controladores, firmware/BIOS, aceptación automática de EULA ni
+  reinicio forzoso. La instalación real de un dispositivo sigue por verificar;
+  tener un controlador instalado no demuestra impresión física.
+
+## Evidencia obtenida
+
+`tools.verify media`: nueve pruebas locales con videos propios y FFmpeg real;
+planes/proveedor de traducción sustituidos. Prueba real separada por enrutador y
+colas de Melodi: extracción WAV, visión y video traducido de un video propio de
+4,44 segundos; `tmp/media-real/latest.json`. Se conservaron 106.532 fotogramas de
+audio PCM de entrada y el proveedor confirmó todos los bytes enviados. El
+original quedó sin cambios. Las llamadas y síntesis usaron servicios reales;
+importe desconocido, sin audio original en la bitácora de desarrollo.
+
+Windows detectó un controlador EPSON L3250 Series ya instalado, además de las
+impresoras virtuales. Se identificaron manual PDF y soporte oficial de Epson.
+La lectura completa y respuesta por Melodi, búsqueda real de Windows Update,
+verificación final del chat/voz y reinicio con estas capacidades están pendientes
+de concluir. La ausencia de actualizaciones no se considerará una instalación.
+
+Comprobación posterior: el enrutador y agente reales leyeron el PDF oficial de
+237 páginas y respondieron sobre el escaneo con los botones, citando la página
+94. Se contrastó la respuesta con esa página: conexión USB/software, colocación
+del original, botones ByN/color simultáneos y guardado PDF. Este caso pasó;
+no certifica comprensión de cualquier manual ni lectura de diagramas. Evidencia
+`tmp/support-real/manual-latest.json`; cuatro llamadas de modelo entre ruta y
+agente, importe desconocido, además de la descarga pública del manual.
+
+La consulta real de Windows Update terminó con ResultCode 2 y no encontró
+dispositivos con error. Ofreció un controlador Apple Mobile Device que requiere
+interacción; no se descargó ni instaló. El controlador Epson existente no se
+sustituyó. `tmp/support-real/drivers.json` conserva los metadatos y recibo, sin
+clave ni identificador de serie. La instalación está implementada y probada con
+sustitutos y validación del script por el analizador real de PowerShell; una
+instalación física nueva sigue sin certificarse. Se permite la elevación normal
+del sistema, sin aceptarla ni omitir licencias automáticamente.
+
+Las ocho pruebas `support` incluyen rechazo de fuentes falsas, direcciones
+privadas, citas a páginas no leídas, instalaciones no pedidas y resultados
+forjados/incompletos. Se conservó un fallo inicial de búsqueda por tratar la
+palabra genérica «manual» como coincidencia de producto; se corrigió el índice.
+`media-ui` pasó con puentes/modelos sustituidos: adjuntar/quitar el medio,
+resultados, apertura por ID, cita oficial, anchuras 1120/390/320 y conservación
+del nodo del micrófono. No se activó un micrófono real en esa prueba.
+
+## Web pública autorizada después de estas pruebas
+
+El usuario pide terminar primero las capacidades anteriores y después construir
+y publicar la web de Brivany. Estilo Apple, Georgia con Segoe UI, animaciones
+suaves, interfaz limpia y minimalista, sin textos de relleno. Tarjetas con
+acciones reales; experiencias 3D profesionales de gafas, móvil y ordenador que
+expliquen el producto mediante interacción. Se conserva el dominio
+`brivany.example`, sus páginas legales y retornos OAuth. No publicar capacidades
+pendientes como si ya estuvieran disponibles. Esta fase aún no comenzó.
+
+Actualización posterior del 1 de noviembre: las pruebas de medios/documentación
+descritas arriba concluyeron y Brivany se reinició con WorkSpace visible, panel
+oculto y ventanas dentro del área de trabajo. La web de presentación está
+construida, comprobada y publicada. La instalación física de un controlador nuevo
+sigue sin certificarse; no se fuerza una actualización innecesaria.
+[Web, interacciones, evidencia y límites](web-oficial-interactiva.md).

@@ -1,0 +1,18 @@
+{
+  "suite": "portable-presentation",
+  "started_at": "2026-10-29T22:34:52.981216+00:00",
+  "finished_at": "2026-10-29T22:35:02.454030+00:00",
+  "duration_seconds": 9.472814,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_portable_presentation"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "page.evaluate: Error: Ya hay una operación de proyecto en curso.\r\n    at Module.desktopCall (http://127.0.0.1:52878/desktop-client.js:8:21)\r\n    at async <anonymous>:337:30\r\n    at call (<local-path>\\tools\\check_portable_presentation.cjs:8:37)\r\n    at <local-path>\\tools\\check_portable_presentation.cjs:10:38\r\n\r\n"
+}

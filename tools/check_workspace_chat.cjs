@@ -1,0 +1,119 @@
+'use strict';
+const {chromium}=require(process.env.BRIVANY_PLAYWRIGHT_PATH||'playwright'),assert=require('node:assert/strict'),fs=require('node:fs');
+(async()=>{
+ const base=process.env.BRIVANY_TEST_URL,dir='tmp/workspace-chat-ui';fs.mkdirSync(dir,{recursive:true});
+ const browser=await chromium.launch({channel:'msedge',headless:true});let main,popup,bar,wave,sequence=0;
+ let state={messages:[],pending:false,listening:false,speaking:false,starting:false,level:0,samples:[]};const errors=[],commands=[];let visibilityMode="auto",externalTyping=false,chatOpen=false;
+ try{
+  const context=await browser.newContext({viewport:{width:1280,height:800}});
+  await context.route('**/*',async route=>{
+   const url=new URL(route.request().url());if(url.origin!==base)return route.abort();
+   if(url.pathname==='/api/status')return route.fulfill({json:{voice:{asr:{available:true},tts:{configured:true},websocket_url:'ws://fixture'}}});
+   if(url.pathname==='/voice-engine.js')return route.fulfill({contentType:'application/javascript',body:`window.BrivanyVoice={Microphone:class{constructor(options){Object.assign(this,options);window.__mic=this;}async start(){if(window.__micFailure){const e=window.__micFailure;window.__micFailure=null;throw e;}this.active=true;window.__micStarts=(window.__micStarts||0)+1;return true;}stop(){this.active=false;}async finish(){if(window.__rejectFinish)throw Error('Incomplete fixture ASR');if(window.__finishTranscript)this.onTranscript({id:'finish-tail',final:true,text:window.__finishTranscript});window.__finishTranscript='';this.stop();}suspend(value){this.suspended=value;}},VoiceOutput:class{constructor(onState){this.onState=onState;this.speaking=false;this.remote={player:{prepare:async()=>{if(window.__rejectPlayback)throw Error('Playback is unavailable');}}};}cancel(){this.speaking=false;this.onState(false);window.__releaseSpeech?.();}async speak(parts){this.speaking=true;this.onState(true);for await(const part of parts){}await new Promise(resolve=>window.__releaseSpeech=resolve);this.speaking=false;this.onState(false);}}};`});
+   return route.continue();
+  });
+  const deliver=async value=>{state={...state,...value};await Promise.all([popup,bar,wave].filter(p=>p&&!p.isClosed()).map(p=>p.evaluate(s=>window.BrivanyWorkspace?.receive(s),value)));};
+  await context.exposeBinding('__publish',async(_source,value)=>{await deliver(value);return {ok:true};});
+  await context.exposeBinding('__snapshot',()=>state);
+  await context.exposeBinding('__continueTask',async(_source,id)=>{
+   assert.equal(id,'00000000-0000-4000-8000-000000000001');
+   commands.push('continue');
+   await deliver({messages:[{role:'assistant',text:'Continué la tarea.'}]});
+   return {state:'queued'};
+  });
+  await context.exposeBinding('__visibility',(_source,mode)=>{if(mode)visibilityMode=mode;return {mode:visibilityMode,supported:true};});
+  await context.exposeBinding('__pointer',()=>{if(!chatOpen)return null;const hide=chatOpen&&visibilityMode==='auto'&&externalTyping;externalTyping=false;return {near:false,keep_open:chatOpen,hide_chat:hide};});
+  await context.exposeBinding('__command',async(_source,action,text)=>{commands.push(action);const frame=main.frames().find(f=>new URL(f.url()).pathname==='/app');await frame.evaluate(request=>window.BrivanyChat.workspaceCommand(request),{id:String(++sequence),action,text});return {accepted:true};});
+  await context.exposeBinding('__layout',async(source,open,_size,view,_motion,_manual,x,chatHeight)=>{
+   chatOpen=open&&view==='chat';const width={melodi:250,chat:388,music:336}[view]||336,height=view==='chat'?chatHeight||148:({melodi:104,music:212}[view]||232),meta={expanded:open,panel:view,width,height,host_height:404,clip_left:(780-width)/2,anchor_x:x,revision:++sequence};
+   await Promise.all([popup,bar].filter(p=>p&&!p.isClosed()).map(p=>p.evaluate(m=>window.BrivanyIsland?.receiveLayout(m),meta)));return meta;
+  });
+  await context.addInitScript(()=>{window.pywebview={api:{account_command_status:async()=>({command:{state:'succeeded',result:{output:{verified:true,message:'Ahora hay 247 procesos en ejecución en tu PC.'}}}}),workspace_chat_publish:value=>window.__publish(value),workspace_live_signal:value=>window.__publish(value),workspace_chat_state:()=>window.__snapshot(),workspace_chat_command:(...args)=>window.__command(...args),work_status:async()=>({active:true,jobs:[],schedules:[],live:{}}),work_island_pointer:()=>window.__pointer(),workspace_chat_visibility:(...args)=>window.__visibility(...args),work_island_keyboard:async()=>({ok:true}),work_island_layout:(...args)=>window.__layout(...args),work_island_gaze:async()=>({x:0,y:0}),spotify_status:async()=>({connected:false,configured:true}),music_voice_active:async()=>({ok:true}),music_media_active:async()=>({ok:true})}};});
+  main=await context.newPage();main.on('pageerror',e=>errors.push(e.message));await main.goto(base+'/brivany-shell');await main.frameLocator('#module-frame').locator('#chat-message').waitFor();
+  bar=await context.newPage();bar.on('pageerror',e=>errors.push(e.message));await bar.goto(base+'/work-widget?surface=bar');
+  popup=await context.newPage();await popup.setViewportSize({width:780,height:404});popup.on('pageerror',e=>errors.push(e.message));await popup.goto(base+'/work-widget?surface=panel');
+  wave=await context.newPage();await wave.setViewportSize({width:780,height:72});wave.on('pageerror',e=>errors.push(e.message));await wave.goto(base+'/work-voice');
+  await bar.getByRole('button',{name:'Melodi',exact:true}).hover();await popup.getByRole('button',{name:'Escribir a Melodi',exact:true}).waitFor();
+  assert.equal(await popup.locator('.panel-top').isVisible(),false);assert.equal(await popup.getByRole('button',{name:'Escribir a Melodi',exact:true}).evaluate(el=>getComputedStyle(el).borderRadius),'999px');await popup.screenshot({path:dir+'/melodi-pills.png'});
+  await popup.getByRole('button',{name:'Escribir a Melodi',exact:true}).click();await popup.waitForFunction(()=>document.querySelector('#island-content').offsetHeight===148);await popup.screenshot({path:dir+'/compact-empty-chat.png'});await popup.getByLabel('Escribir a Melodi',{exact:true}).fill('Hola, mensaje sintético de prueba');await popup.getByRole('button',{name:'Enviar a Melodi'}).click();
+  await popup.getByText('Podemos seguir hablando.',{exact:true}).waitFor();assert.equal(await popup.locator('.workspace-bubble[data-role=user]').count(),1);assert.equal(await popup.locator('.workspace-bubble[data-role=assistant]').count(),1);
+  await popup.waitForFunction(()=>{const h=document.querySelector('#island-content').offsetHeight;return h>148&&h<404});await popup.screenshot({path:dir+'/growing-chat.png'});
+  const composer=popup.getByLabel('Escribir a Melodi',{exact:true});await composer.fill('Línea de prueba\n'.repeat(10));await popup.waitForTimeout(300);assert(await composer.evaluate(el=>el.clientHeight>80&&el.clientHeight<=138&&getComputedStyle(el).scrollbarWidth==='none'));assert(await composer.evaluate(el=>el.scrollWidth<=el.clientWidth+1));await popup.screenshot({path:dir+'/expanded-input.png'});await composer.fill('');
+  await context.route('**/api/computer/chat-turn',route=>route.fulfill({contentType:'application/x-ndjson',body:[{type:'computer_job',command:{id:'own-command'}},{type:'delta',text:'Voy a comprobarlo.'},{type:'done'}].map(e=>JSON.stringify(e)+'\n').join('')}));
+  await composer.fill('Cuántos procesos tengo corriendo en mi pc ahora mismo?');await popup.getByRole('button',{name:'Enviar a Melodi'}).click();await popup.getByText('Ahora hay 247 procesos en ejecución en tu PC.',{exact:true}).waitFor({timeout:5000}).catch(async error=>{console.log(JSON.stringify({fixture_errors:errors,fixture_state:state,fixture_chat:await main.frames().find(f=>new URL(f.url()).pathname==='/app').evaluate(()=>({tasks:parent.BrivanyChatSession.tasks,messages:parent.BrivanyChatSession.messages,state:document.querySelector('#chat-state').textContent,api:typeof parent.pywebview?.api?.account_command_status}))}));throw error});assert.equal(await popup.getByText('Claro, lo haré.',{exact:true}).count(),0);await context.unroute('**/api/computer/chat-turn');
+  const beforeIntervention=state.messages;
+  await main.evaluate(()=>{
+   const prior=window.pywebview.api.account_command_status;
+   window.pywebview.api.account_command_status=id=>id==='own-research'
+    ?Promise.resolve({command:{state:'succeeded',result:{output:{verified:true,web_search_verified:true,message:'La búsqueda encontró un pronóstico de prueba.',sources:[{title:'Pronóstico de prueba',url:'https://example.org/pronostico'},{title:'Enlace inválido',url:'javascript:alert(1)'}]}}}})
+    :prior(id);
+   window.pywebview.api.open_research_source=async()=>({ok:true});
+  });
+  await popup.evaluate(()=>{window.pywebview.api.open_research_source=async url=>{window.__openedSource=url;return {ok:true};};});
+  await context.route('**/api/computer/chat-turn',route=>route.fulfill({contentType:'application/x-ndjson',body:[{type:'computer_job',command:{id:'own-research'}},{type:'delta',text:'Voy a buscar.'},{type:'done'}].map(e=>JSON.stringify(e)+'\n').join('')}));
+  await composer.fill('Busca el pronóstico de prueba');await popup.getByRole('button',{name:'Enviar a Melodi'}).click();
+  await popup.locator('.workspace-bubble[data-role=assistant]').filter({hasText:'La búsqueda encontró un pronóstico de prueba.'}).waitFor();
+  const sourceButton=popup.getByRole('button',{name:'Pronóstico de prueba ↗',exact:true});
+  assert.equal(await sourceButton.count(),0);
+  assert.equal(await main.frameLocator('#module-frame').getByRole('button',{name:'Pronóstico de prueba ↗',exact:true}).count(),0);
+  await context.unroute('**/api/computer/chat-turn');
+  await context.route('**/api/voice/turn',()=>{throw Error('A source follow-up must use retained provenance, not call a model.');});
+  await composer.fill('¿De dónde sacaste esa información?');await popup.getByRole('button',{name:'Enviar a Melodi'}).click();
+  await popup.locator('.workspace-bubble[data-role=assistant]').filter({hasText:'Lo consulté mediante la búsqueda web de Meta.'}).waitFor({timeout:5000});
+  await sourceButton.click();
+  assert.equal(await popup.evaluate(()=>window.__openedSource),'https://example.org/pronostico');
+  assert.equal(await popup.getByRole('button',{name:'Enlace inválido ↗',exact:true}).count(),0);
+  assert.equal(await main.frameLocator('#module-frame').getByRole('button',{name:'Pronóstico de prueba ↗',exact:true}).count(),1);
+  await context.unroute('**/api/voice/turn');
+  await popup.evaluate(()=>{window.pywebview.api.continue_assistant_job=id=>window.__continueTask(id);});
+  await deliver({messages:[...beforeIntervention,{role:'assistant',text:'Cierra el diálogo y pulsa Continuar.',continuation:'00000000-0000-4000-8000-000000000001'}]});
+  await popup.getByRole('button',{name:'Continuar',exact:true}).click();
+  await popup.getByText('Continué la tarea.',{exact:true}).waitFor();
+  assert.equal(await popup.getByRole('button',{name:'Continuar',exact:true}).count(),0);
+  await deliver({messages:beforeIntervention});
+  await popup.evaluate(()=>window.BrivanyIsland.expand('chat'));await popup.locator('#island-content').dispatchEvent('pointerleave');await popup.waitForTimeout(1600);assert.equal(await popup.locator('body').getAttribute('data-expanded'),'true');
+  await popup.getByLabel('Escribir a Melodi',{exact:true}).fill('Texto que permanece mientras escribo');await popup.locator('#island-content').dispatchEvent('pointerleave');await popup.waitForTimeout(1400);assert.equal(await popup.locator('body').getAttribute('data-expanded'),'true');
+  const settings=await context.newPage();settings.on('pageerror',e=>errors.push(e.message));await settings.goto(base+'/settings');await settings.getByRole('button',{name:'Melodi WorkSpace',exact:true}).click();
+  await settings.locator('[name=workspace-chat-visibility][value=auto]').waitFor();await settings.setViewportSize({width:560,height:780});assert(await settings.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await settings.screenshot({path:dir+'/chat-visibility-settings.png'});await settings.locator('[name=workspace-chat-visibility][value=manual]').check();assert.equal(visibilityMode,'manual');
+  externalTyping=true;await popup.waitForTimeout(500);assert.equal(await popup.locator('body').getAttribute('data-expanded'),'true');
+  await settings.locator('[name=workspace-chat-visibility][value=auto]').check();externalTyping=true;await popup.waitForFunction(()=>document.body.dataset.expanded==='false');await settings.close();
+  await deliver({reply_visible:true,reply_text:'Respuesta compacta de prueba para leer debajo de Melodi. '.repeat(12)});
+  for(const width of [780,460,390,320,280]){await wave.setViewportSize({width,height:80});await wave.evaluate(()=>window.BrivanyWorkspace.overlayLayout({width:Math.min(420,innerWidth-16),clip_left:Math.max(8,(innerWidth-420)/2)}));await wave.waitForTimeout(240);const box=await wave.locator('#workspace-reply').boundingBox();assert(box.width<=420.5&&Math.abs(box.height-80)<.5&&box.x>=-.5&&box.x+box.width<=width+.5,JSON.stringify({width,box}));assert.equal(await wave.locator('#workspace-reply-text').evaluate(el=>getComputedStyle(el).webkitLineClamp),'3');assert.notEqual(await wave.locator('#workspace-reply').evaluate(el=>getComputedStyle(el).backdropFilter),'none');if(width===390)await wave.screenshot({path:dir+'/reply-preview-glass-390.png'});}
+  await deliver({reply_visible:false,reply_text:''});await wave.setViewportSize({width:780,height:72});await wave.evaluate(()=>window.BrivanyWorkspace.overlayLayout({width:560,clip_left:110}));
+
+  await bar.getByRole('button',{name:'Melodi',exact:true}).click();await popup.getByRole('button',{name:'Escribir a Melodi',exact:true}).click();await popup.getByText('Podemos seguir hablando.',{exact:true}).waitFor();
+  const chat=main.frames().find(f=>new URL(f.url()).pathname==='/app'),dictate=popup.getByRole('button',{name:'Dictar mensaje',exact:true});
+  const beforeDictation=await main.evaluate(()=>window.BrivanyChatSession.messages.length);await composer.fill('Mi borrador');await chat.evaluate(()=>window.__rejectPlayback=true);
+  await dictate.click();await popup.waitForFunction(()=>document.body.dataset.dictationPhase==='recording');
+  assert.equal(await chat.evaluate(()=>window.__micStarts),1);assert.equal(state.listening,false);
+  await chat.evaluate(()=>{window.__mic.onLevel({rms:.08,active:true,samples:Array.from({length:48},(_,i)=>i<5||i>42?0:(i%7)/14)});window.__mic.onTranscript({id:'dictation-1',final:true,text:'Una frase dictada'});window.__mic.onTranscript({id:'dictation-1',final:true,text:'Una frase dictada'});window.__finishTranscript='y su final.';});
+  await popup.waitForTimeout(250);assert.equal(state.messages.length,beforeDictation);
+  await popup.screenshot({path:dir+'/dictation-recording.png'});
+  const wavePixels=await popup.locator('#workspace-dictation-wave').evaluate(c=>{const a=c.getContext('2d').getImageData(0,0,c.width,c.height).data;return [...a].some((v,i)=>i%4===3&&v>0&&Math.floor(i/4/c.width)<c.height/2-4)});if(!wavePixels)console.log(JSON.stringify({wave_fixture:{level:state.level,samples:state.samples,errors,canvas:await popup.locator('#workspace-dictation-wave').evaluate(c=>({width:c.width,height:c.height,clientWidth:c.clientWidth,clientHeight:c.clientHeight,phase:document.body.dataset.dictationPhase}))}}));assert(wavePixels,'The recorder must draw microphone peaks, not a flat placeholder.');
+  await popup.screenshot({path:dir+'/dictation-recording.png'});
+  for(const width of [390,320,280]){await popup.setViewportSize({width,height:404});await popup.evaluate(revision=>window.BrivanyIsland.receiveLayout({expanded:true,panel:'chat',width:Math.min(388,innerWidth-16),height:404,clip_left:8,revision}),++sequence);const box=await popup.locator('#workspace-dictation').boundingBox();assert(box.x>=0&&box.x+box.width<=width&&box.height<=46);assert.equal(await popup.locator('#workspace-chat-input').isVisible(),false);assert(await popup.getByRole('button',{name:'Enviar dictado'}).isVisible());}
+  await popup.getByRole('button',{name:'Detener dictado',exact:true}).click();await popup.waitForFunction(()=>document.body.dataset.dictationPhase==='idle');assert.equal(await composer.inputValue(),'Mi borrador Una frase dictada y su final.');assert.equal(state.messages.length,beforeDictation);assert.equal(await chat.evaluate(()=>window.__mic.active),false);
+  await dictate.click();await popup.waitForFunction(()=>document.body.dataset.dictationPhase==='recording');await chat.evaluate(()=>window.__mic.onTranscript({id:'discarded',final:true,text:'Esto se descarta'}));await popup.getByRole('button',{name:'Cancelar dictado'}).click();await popup.waitForFunction(()=>document.body.dataset.dictationPhase==='idle');assert.equal(await composer.inputValue(),'Mi borrador Una frase dictada y su final.');await chat.evaluate(()=>window.__mic.onTranscript({id:'late-discarded',final:true,text:'Resultado tardío'}));assert.equal(state.messages.length,beforeDictation);
+  await composer.fill('');await dictate.click();await popup.waitForFunction(()=>document.body.dataset.dictationPhase==='recording');await chat.evaluate(()=>window.__mic.onTranscript({id:'send-dictation',final:true,text:'Mensaje dictado de prueba'}));await popup.getByRole('button',{name:'Enviar dictado'}).click();await popup.locator('.workspace-bubble[data-role=user]').filter({hasText:'Mensaje dictado de prueba'}).waitFor();assert.equal(await composer.inputValue(),'');assert.equal(await chat.evaluate(()=>window.__mic.active),false);
+  await chat.evaluate(()=>window.__micFailure=Object.assign(new Error('Permission denied'),{name:'NotAllowedError'}));await dictate.click();await popup.locator('#workspace-chat-status').filter({hasText:'Permite el acceso al micrófono para dictar.'}).waitFor();assert.equal(await popup.locator('body').getAttribute('data-dictation-phase'),'idle');assert.equal(await chat.evaluate(()=>window.__mic.active),false);await chat.evaluate(()=>window.__rejectPlayback=false);
+  const usersBeforeIncomplete=await main.evaluate(()=>window.BrivanyChatSession.messages.filter(m=>m.role==='user').length);await dictate.click();await popup.waitForFunction(()=>document.body.dataset.dictationPhase==='recording');await chat.evaluate(()=>{window.__rejectFinish=true;window.__mic.onTranscript({id:'incomplete-dictation',final:false,text:'Un dictado por revisar'});});await popup.getByRole('button',{name:'Enviar dictado'}).click();await popup.locator('#workspace-chat-status').filter({hasText:'La transcripción no terminó.'}).waitFor();assert.equal(await composer.inputValue(),'Un dictado por revisar');assert.equal(await main.evaluate(()=>window.BrivanyChatSession.messages.filter(m=>m.role==='user').length),usersBeforeIncomplete);assert.equal(await chat.evaluate(()=>window.__mic.active),false);await chat.evaluate(()=>window.__rejectFinish=false);await composer.fill('');
+  fs.writeFileSync(dir+'/dictation-report.json',JSON.stringify({passed:true,scope:'real interface with synthetic microphone and ASR events',samples_drive_waveform:true,no_automatic_sending:true,stop_restores_editable_draft:true,cancel_discards_new_speech:true,duplicate_and_late_transcripts_ignored:true,send_explicit:true,tts_unavailable_does_not_block_input:true,permission_error_recovers:true,incomplete_transcription_preserves_draft_without_sending:true,widths:[390,320,280],physical_microphone_used:false,external_calls:0},null,2));
+  await bar.getByRole('button',{name:'Melodi',exact:true}).click();await popup.getByRole('button',{name:'Hablar con Melodi',exact:true}).click();await bar.waitForFunction(()=>document.body.dataset.liveListening==='true');assert.equal(await chat.evaluate(()=>window.__micStarts),5);
+  await chat.evaluate(()=>window.__mic.onLevel({rms:.08,active:true,samples:Array.from({length:48},(_,i)=>Math.abs(Math.sin(i))*.4)}));
+  await wave.waitForFunction(()=>document.body.dataset.liveListening==='true');assert.notEqual(await wave.locator('#voice-wave').evaluate(el=>getComputedStyle(el).maskImage),'none');await wave.screenshot({path:dir+'/listening-wave.png'});
+  await chat.evaluate(()=>window.__mic.onTranscript({id:'synthetic-final-1',final:true,text:'Una respuesta sintética por voz'}));await bar.waitForFunction(()=>document.body.dataset.liveSpeaking==='true');
+  assert.equal(await bar.locator('.eye-bay').evaluate(el=>getComputedStyle(el,'::after').animationName),'melodi-voice-pulse');await bar.screenshot({path:dir+'/speaking-pulse.png'});await chat.evaluate(()=>window.__releaseSpeech());
+  await popup.evaluate(()=>window.BrivanyWorkspace.command('stop'));await bar.waitForFunction(()=>document.body.dataset.liveListening==='false');assert.equal(await chat.evaluate(()=>window.__mic.active),false);
+  await popup.evaluate(()=>window.BrivanyIsland.expand('chat'));
+  const savedConversation=state.messages;await deliver({pending:true,messages:[{role:'user',text:'Consulta sintética'},{role:'assistant',text:''}]});await popup.getByText('Pensando…',{exact:true}).waitFor();await deliver({pending:true,messages:[{role:'user',text:'Consulta sintética'},{role:'assistant',text:'Respuesta que empieza a aparecer.'}]});assert.equal(await popup.getByText('Pensando…',{exact:true}).count(),0);await deliver({pending:false,messages:savedConversation});
+  const conversation=state.messages;await deliver({messages:Array.from({length:12},(_,i)=>({role:i%2?'assistant':'user',text:'Contenido sintético largo para comprobar el límite vertical y su desplazamiento. '.repeat(5)}))});await popup.waitForFunction(()=>document.querySelector('#island-content').offsetHeight===404);assert(await popup.locator('#workspace-chat-messages').evaluate(el=>el.scrollHeight>el.clientHeight&&el.scrollWidth<=el.clientWidth+1));await popup.screenshot({path:dir+'/maximum-chat.png'});await deliver({messages:[]});await popup.waitForFunction(()=>document.querySelector('#island-content').offsetHeight===148);await deliver({messages:conversation});
+  for(const width of [780,460,390,320,280]){
+   await popup.setViewportSize({width,height:404});await popup.evaluate(()=>window.BrivanyIsland.receiveLayout({expanded:true,panel:'chat',width:Math.min(388,innerWidth-16),height:404,clip_left:8,revision:10000}));
+   assert(await popup.getByRole('button',{name:'Enviar a Melodi'}).isVisible());assert(await popup.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+   const bounds=await popup.locator('#workspace-chat-form').boundingBox();assert(bounds.x>=0&&bounds.x+bounds.width<=width&&bounds.y+bounds.height<=404);
+   if(width===390)await popup.screenshot({path:dir+'/glass-chat-390.png'});
+  }
+  await bar.emulateMedia({reducedMotion:'reduce'});await deliver({speaking:true});assert.equal(await bar.locator('.eye-bay').evaluate(el=>getComputedStyle(el,'::after').animationName),'none');
+  assert.deepEqual(errors,[]);fs.writeFileSync(dir+'/report.json',JSON.stringify({passed:true,type:'real_chat_UI_and_local_turn_stream_with_substituted_native_broker_microphone_and_TTS',widths:[780,460,390,320,280],typed_and_transcribed_messages:true,input_grows_without_scrollbar:true,compact_glass_reply_preview:true,reply_preview_widths:[780,460,390,320,280],computer_task_result_delivered_to_chat:true,chat_ignores_pointer_exit:true,chat_hides_only_for_external_typing:true,settings_auto_manual_verified:true,history_survives_close:true,one_microphone_owner:true,wave_uses_synthetic_samples:true,physical_microphone_used:false,external_calls:0,commands},null,2));console.log('Workspace chat, Live dispatch, waveform, pulse, close/reopen and five widths passed.');
+ }finally{await browser.close();}
+})().catch(error=>{console.error(error);process.exitCode=1;});

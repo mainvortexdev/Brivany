@@ -1,0 +1,41 @@
+{
+  "purpose": "Verify repaired CDN acceptance and real cover decoding/palette extraction, read-only.",
+  "utc": "2026-11-01T00:12:53.349520+00:00",
+  "current_track_reported": false,
+  "active_devices": 0,
+  "image_host": "mosaic.scdn.co",
+  "palette_available": true,
+  "requests": [
+    {
+      "kind": "Spotify API",
+      "path": "/v1/me/player",
+      "code": 204
+    },
+    {
+      "kind": "Spotify API",
+      "path": "/v1/me/player/currently-playing",
+      "code": 204
+    },
+    {
+      "kind": "Spotify API",
+      "path": "/v1/me/player/devices",
+      "code": 200
+    },
+    {
+      "kind": "Spotify API",
+      "path": "/v1/me/playlists",
+      "code": 200
+    },
+    {
+      "kind": "public cover CDN",
+      "host": "mosaic.scdn.co",
+      "image_bytes": 71860
+    }
+  ],
+  "external_calls": 5,
+  "account_mutations": 0,
+  "screen_audio_capture": false,
+  "saved_cover_or_track_metadata": false,
+  "cost": "Not measured; no paid model inference.",
+  "limits": "CDN transport/decoding, not physical playback or account SDK registration."
+}

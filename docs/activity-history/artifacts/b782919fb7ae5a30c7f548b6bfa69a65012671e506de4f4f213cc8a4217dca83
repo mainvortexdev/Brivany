@@ -1,0 +1,27 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/desktop-ui/report.json",
+  "original_sha256": "9c83d552a423a32338f5937379f6c49321fa40d68ba722f2f1941d59fe9d1136",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "gpu_inference": false,
+    "native_window_started": false,
+    "physical_gpu_tested": false,
+    "macos_verified": false
+  },
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

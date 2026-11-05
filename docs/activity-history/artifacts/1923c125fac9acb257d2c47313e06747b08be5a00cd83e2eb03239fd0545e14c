@@ -1,0 +1,61 @@
+/* WorkSpace views the existing chat and Live; it never owns a second microphone. */
+(() => {
+ 'use strict';
+ const $=s=>document.querySelector(s),body=document.body;
+ let state={messages:[],pending:false,listening:false,speaking:false,starting:false,level:0,samples:[]},signature='',gone=false,wantedLive=false,thoughtTimer=0,thinking=false,wasBottom=true;
+ const api=()=>window.pywebview?.api;
+ let fitFrame=0;
+ function fit(){if(gone||fitFrame)return;fitFrame=requestAnimationFrame(()=>{fitFrame=0;if(body.dataset.surface!=='bar'&&body.dataset.panel==='chat'&&body.dataset.expanded==='true')window.BrivanyIsland?.resizeChat();});}
+ function chatHeight(){
+  const panel=$('#island-content'),section=$('[data-view=chat]'),header=panel?.querySelector('.panel-top'),list=$('#workspace-chat-messages');
+  if(!panel||!section||!header||!section.getBoundingClientRect().width)return 148;
+  const number=value=>parseFloat(value)||0,edges=style=>number(style.paddingTop)+number(style.paddingBottom)+number(style.borderTopWidth)+number(style.borderBottomWidth),margins=style=>number(style.marginTop)+number(style.marginBottom);
+  const visible=[...section.children].filter(item=>getComputedStyle(item).display!=='none');
+  const height=item=>{const style=getComputedStyle(item);if(item!==list)return item.getBoundingClientRect().height+margins(style);const bubbles=[...list.children];return edges(style)+bubbles.reduce((sum,bubble)=>sum+bubble.getBoundingClientRect().height,0)+Math.max(0,bubbles.length-1)*number(style.rowGap);};
+  const total=edges(getComputedStyle(panel))+header.getBoundingClientRect().height+margins(getComputedStyle(header))+visible.reduce((sum,item)=>sum+height(item),0)+Math.max(0,visible.length-1)*number(getComputedStyle(section).rowGap);
+  return Math.max(148,Math.min(404,Math.ceil(total)));
+ }
+ function render(){
+  body.dataset.liveListening=String(state.listening);body.dataset.liveSpeaking=String(state.speaking);body.dataset.liveStarting=String(state.starting);
+  body.dataset.livePending=String(state.pending);
+  if(state.listening||state.speaking||state.starting||state.pending){window.BrivanyIsland?.wake();body.dataset.sleeping='false';body.dataset.characterState='attentive';}
+  const talk=$('#companion-talk'),mic=$('#workspace-chat-mic');
+  if(talk){talk.textContent=state.starting?'Conectando…':state.listening?'Terminar Live':'Hablar con Melodi';talk.disabled=state.starting;}
+  if(mic){mic.setAttribute('aria-label',state.listening?'Terminar Live':'Hablar con Melodi');mic.setAttribute('aria-pressed',String(state.listening));}
+  if($('#workspace-chat-send'))$('#workspace-chat-send').disabled=state.pending;
+  for(const id of ['companion-error','workspace-chat-status'])if($('#'+id))$('#'+id).textContent=state.error||'';
+  const messages=state.messages.filter(m=>m.text?.trim()),waiting=state.pending&&state.messages.at(-1)?.role==='assistant'&&!state.messages.at(-1)?.text?.trim();
+  if(waiting&&!thinking&&!thoughtTimer)thoughtTimer=setTimeout(()=>{thoughtTimer=0;thinking=true;render()},300);
+  if(!waiting){clearTimeout(thoughtTimer);thoughtTimer=0;thinking=false;}
+  body.dataset.chatEmpty=String(!messages.length&&!thinking);fit();
+  const list=$('#workspace-chat-messages');if(!list)return;
+  const next=JSON.stringify([messages,thinking]);if(next===signature)return;signature=next;
+  wasBottom=list.scrollHeight-list.scrollTop-list.clientHeight<70;const nodes=[...list.children];
+  messages.forEach((message,i)=>{let bubble=nodes[i];if(!bubble||bubble.classList.contains('workspace-thinking')){bubble=document.createElement('div');list.insertBefore(bubble,nodes[i]||null);}bubble.className='workspace-bubble';bubble.dataset.role=message.role;bubble.textContent=message.text;});
+  while(list.children.length>messages.length)list.lastElementChild.remove();
+  if(thinking){const indicator=document.createElement('div');indicator.className='workspace-thinking';indicator.setAttribute('role','status');indicator.textContent='Pensando…';list.append(indicator);}
+  if(wasBottom)list.scrollTop=list.scrollHeight;
+ }
+ function receive(value){if(!value||gone)return;state={...state,...value};render();if(wantedLive&&state.error){wantedLive=false;window.BrivanyIsland?.showNotice(state.error);}if(state.listening&&wantedLive){wantedLive=false;if(body.dataset.panel==='melodi')window.BrivanyIsland?.reopen();}}
+ async function command(action,text=''){
+  try{if(!api()?.workspace_chat_command)throw Error('Abre Melodi desde Brivany Desktop.');receive({error:''});if(action==='send')receive({pending:true});if(action==='start'){wantedLive=true;receive({starting:true});}await api().workspace_chat_command(action,text);}
+  catch(error){receive({pending:false,starting:false,error:error.message||'No se pudo conectar con Melodi.'});}
+ }
+ if($('#companion-write'))$('#companion-write').onclick=()=>{window.BrivanyIsland?.expand('chat');setTimeout(()=>$('#workspace-chat-input')?.focus(),100);};
+ if($('#companion-talk'))$('#companion-talk').onclick=()=>command(state.listening?'stop':'start');
+ if($('#workspace-chat-mic'))$('#workspace-chat-mic').onclick=()=>command(state.listening?'stop':'start');
+ if($('#workspace-chat-form'))$('#workspace-chat-form').onsubmit=event=>{event.preventDefault();const input=$('#workspace-chat-input'),text=input.value.trim();if(!text||state.pending)return;input.value='';command('send',text);};
+ if($('#workspace-chat-input'))$('#workspace-chat-input').onkeydown=event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();$('#workspace-chat-form').requestSubmit();}};
+ function pull(){if(api()?.workspace_chat_state)api().workspace_chat_state().then(receive).catch(()=>{});}
+ const canvas=$('#voice-wave'),ctx=canvas?.getContext('2d');let frame=0,amplitude=0;
+ function draw(){if(gone||!ctx)return;const dpr=Math.min(2,devicePixelRatio||1),w=canvas.clientWidth,h=canvas.clientHeight;
+  if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+  amplitude+=(Math.min(1,state.level*9)-amplitude)*.18;const samples=state.samples||[],count=150,step=(w-32)/count;
+  for(let i=0;i<count;i++){const x=16+(i+.5)*step,p=i/(count-1),edge=Math.pow(Math.sin(Math.PI*p),1.5),sample=samples[Math.min(samples.length-1,Math.floor(p*samples.length))]||0,height=1+edge*Math.min(h-10,amplitude*28+sample*130);ctx.fillStyle=`rgba(230,241,243,${.12+edge*.76})`;ctx.beginPath();ctx.roundRect(x,h/2-height/2,Math.max(1,step*.46),height,1);ctx.fill();}
+  frame=requestAnimationFrame(draw);
+ }
+ window.BrivanyWorkspace={receive,command,chatHeight,dispose:()=>{gone=true;cancelAnimationFrame(frame);cancelAnimationFrame(fitFrame);clearTimeout(thoughtTimer);}};
+ const resizeObserver=new ResizeObserver(()=>{if(wasBottom&&$('#workspace-chat-messages'))$('#workspace-chat-messages').scrollTop=$('#workspace-chat-messages').scrollHeight});if($('#island-content'))resizeObserver.observe($('#island-content'));window.addEventListener('pagehide',()=>resizeObserver.disconnect(),{once:true});
+ window.addEventListener('brivany-island-layout',fit);window.addEventListener('resize',fit);
+ window.addEventListener('pywebviewready',pull);window.addEventListener('pagehide',()=>window.BrivanyWorkspace.dispose(),{once:true});render();pull();if(ctx)draw();
+})();

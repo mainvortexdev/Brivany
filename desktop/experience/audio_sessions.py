@@ -1,0 +1,140 @@
+"""Windows render-session peak metadata. Never opens a PCM capture stream."""
+import ctypes as C
+from ctypes import wintypes as W
+import os
+import time
+import uuid
+from pathlib import PureWindowsPath
+
+
+class GUID(C.Structure):
+    _fields_=[('data',C.c_ubyte*16)]
+    def __init__(self,value):super().__init__((C.c_ubyte*16).from_buffer_copy(uuid.UUID(value).bytes_le))
+
+
+def invoke(pointer,index,result,*types):
+    table=C.cast(pointer,C.POINTER(C.POINTER(C.c_void_p))).contents
+    return C.WINFUNCTYPE(result,C.c_void_p,*types)(table[index])
+
+
+def call(pointer,index,*arguments):
+    types=tuple(kind for kind,value in arguments)
+    status=invoke(pointer,index,C.c_long,*types)(pointer,*(value for kind,value in arguments))
+    if status<0:raise OSError('No se pudo consultar una sesión de audio de Windows.')
+    return status
+
+
+def release(pointer):
+    if pointer:invoke(pointer,2,C.c_ulong)(pointer)
+
+
+def query(pointer,identifier):
+    value=C.c_void_p();guid=GUID(identifier)
+    call(pointer,0,(C.POINTER(GUID),C.byref(guid)),(C.POINTER(C.c_void_p),C.byref(value)))
+    return value
+
+
+class ProcessEntry(C.Structure):
+    _fields_=[('size',W.DWORD),('usage',W.DWORD),('pid',W.DWORD),('heap',C.c_size_t),('module',W.DWORD),('threads',W.DWORD),('parent',W.DWORD),('priority',W.LONG),('flags',W.DWORD),('exe',W.WCHAR*260)]
+
+
+class WindowsSessionMeter:
+    def __init__(self,owner_pid=None):
+        if os.name!='nt':raise OSError('El medidor de sesiones requiere Windows.')
+        self.owner_pid=owner_pid or os.getpid();self.processes={};self.processes_at=0
+        self.ole=C.WinDLL('ole32');self.ole.CoInitializeEx.argtypes=[C.c_void_p,W.DWORD];self.ole.CoInitializeEx.restype=C.c_long
+        if self.ole.CoInitializeEx(None,0)<0:raise OSError('No se pudo preparar el medidor de audio.')
+        self.initialized=True
+        self.ole.CoCreateInstance.argtypes=[C.POINTER(GUID),C.c_void_p,W.DWORD,C.POINTER(GUID),C.POINTER(C.c_void_p)]
+        self.ole.CoCreateInstance.restype=C.c_long
+        self.enumerator=C.c_void_p();cls=GUID('BCDE0395-E52F-467C-8E3D-C4579291692E');iid=GUID('A95664D2-9614-4F35-A746-DE8DB63617E6')
+        if self.ole.CoCreateInstance(C.byref(cls),None,1,C.byref(iid),C.byref(self.enumerator))<0:self.close();raise OSError('No hay medidor de audio disponible.')
+        self.kernel=C.WinDLL('kernel32',use_last_error=True)
+        self.kernel.CreateToolhelp32Snapshot.argtypes=[W.DWORD,W.DWORD];self.kernel.CreateToolhelp32Snapshot.restype=W.HANDLE
+        self.kernel.Process32FirstW.argtypes=[W.HANDLE,C.POINTER(ProcessEntry)];self.kernel.Process32NextW.argtypes=[W.HANDLE,C.POINTER(ProcessEntry)]
+        self.kernel.OpenProcess.argtypes=[W.DWORD,W.BOOL,W.DWORD];self.kernel.OpenProcess.restype=W.HANDLE
+        self.kernel.QueryFullProcessImageNameW.argtypes=[W.HANDLE,W.DWORD,W.LPWSTR,C.POINTER(W.DWORD)]
+        self.kernel.CloseHandle.argtypes=[W.HANDLE]
+
+    def _processes(self):
+        if time.monotonic()-self.processes_at<2:return
+        snapshot=self.kernel.CreateToolhelp32Snapshot(2,0)
+        if snapshot==C.c_void_p(-1).value:raise OSError('No se pudo identificar la procedencia del audio.')
+        values={};entry=ProcessEntry();entry.size=C.sizeof(entry)
+        try:
+            ok=self.kernel.Process32FirstW(snapshot,C.byref(entry))
+            while ok:
+                values[entry.pid]={'parent':entry.parent,'path':entry.exe}
+                ok=self.kernel.Process32NextW(snapshot,C.byref(entry))
+        finally:self.kernel.CloseHandle(snapshot)
+        self.processes=values;self.processes_at=time.monotonic()
+
+    def _identity(self,pid):
+        if pid and pid not in self.processes:self.processes_at=0;self._processes()
+        if pid and pid not in self.processes:return True,[]
+        value=self.processes.get(pid,{});current=pid;seen=set();owned=False;family=[]
+        while current and current not in seen:
+            seen.add(current)
+            if current==self.owner_pid:
+                # Programs opened by Melodi remain foreign audio sources. Only
+                # our process and its WebView2 hosts need the feedback exclusion.
+                owned=pid==self.owner_pid or bool(family and PureWindowsPath(family[0]).name.casefold()=='msedgewebview2.exe')
+                break
+            item=self.processes.get(current,{})
+            path=item.get('full_path')
+            if path is None:
+                path=item.get('path','');handle=self.kernel.OpenProcess(0x1000,False,current)
+                if handle:
+                    try:
+                        buffer=C.create_unicode_buffer(32768);size=W.DWORD(len(buffer))
+                        if self.kernel.QueryFullProcessImageNameW(handle,0,buffer,C.byref(size)):path=buffer.value
+                    finally:self.kernel.CloseHandle(handle)
+                item['full_path']=path
+            if path:family.append(path)
+            current=item.get('parent',0)
+        return owned,family
+
+    def read(self,include_inactive=False):
+        self._processes();collection=C.c_void_p();rows=[]
+        call(self.enumerator,3,(C.c_int,0),(W.DWORD,1),(C.POINTER(C.c_void_p),C.byref(collection)))
+        try:
+            count=W.UINT();call(collection,3,(C.POINTER(W.UINT),C.byref(count)))
+            for i in range(count.value):
+                device=C.c_void_p();manager=C.c_void_p();sessions=C.c_void_p()
+                try:
+                    call(collection,4,(W.UINT,i),(C.POINTER(C.c_void_p),C.byref(device)))
+                    identifier=C.c_void_p();call(device,5,(C.POINTER(C.c_void_p),C.byref(identifier)))
+                    try:endpoint=C.wstring_at(identifier)
+                    finally:
+                        self.ole.CoTaskMemFree.argtypes=[C.c_void_p];self.ole.CoTaskMemFree(identifier)
+                    iid=GUID('77AA99A0-1BD6-484F-8BC7-2C654C9A9B6F')
+                    call(device,3,(C.POINTER(GUID),C.byref(iid)),(W.DWORD,23),(C.c_void_p,None),(C.POINTER(C.c_void_p),C.byref(manager)))
+                    call(manager,5,(C.POINTER(C.c_void_p),C.byref(sessions)))
+                    size=C.c_int();call(sessions,3,(C.POINTER(C.c_int),C.byref(size)))
+                    for j in range(size.value):
+                        control=C.c_void_p();extended=C.c_void_p();meter=C.c_void_p();volume=C.c_void_p()
+                        try:
+                            call(sessions,4,(C.c_int,j),(C.POINTER(C.c_void_p),C.byref(control)))
+                            state=C.c_int();call(control,3,(C.POINTER(C.c_int),C.byref(state)))
+                            if state.value!=1 and not (include_inactive and state.value==0):continue
+                            extended=query(control,'BFB7FF88-7239-4FC9-8FA2-07C950BE9C6D');pid=W.DWORD()
+                            call(extended,14,(C.POINTER(W.DWORD),C.byref(pid)))
+                            owned,family=self._identity(pid.value)
+                            if owned:continue
+                            meter=query(control,'C02216F6-8C67-4B5B-9D00-D008E73E0064');peak=C.c_float()
+                            call(meter,3,(C.POINTER(C.c_float),C.byref(peak)))
+                            volume=query(control,'87CE5498-68D6-44E5-9215-6DA47EF883D8');muted=W.BOOL();level=C.c_float()
+                            call(volume,6,(C.POINTER(W.BOOL),C.byref(muted)));call(volume,4,(C.POINTER(C.c_float),C.byref(level)))
+                            rows.append({'pid':pid.value,'family':family,'peak':peak.value,'muted':bool(muted.value),'volume':level.value,'endpoint':endpoint,'active':state.value==1})
+                        except OSError:continue
+                        finally:
+                            for pointer in (volume,meter,extended,control):release(pointer)
+                except OSError:continue
+                finally:
+                    for pointer in (sessions,manager,device):release(pointer)
+            return rows
+        finally:release(collection)
+
+    def close(self):
+        release(getattr(self,'enumerator',None));self.enumerator=None
+        if getattr(self,'initialized',False):self.ole.CoUninitialize();self.initialized=False

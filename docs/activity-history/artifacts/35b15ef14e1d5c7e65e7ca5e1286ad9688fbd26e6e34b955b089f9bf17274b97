@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "runtime": {
+    "ui_mode": "desktop-only",
+    "tray": {
+      "supported": true,
+      "active": true,
+      "closed": false,
+      "name": "Brivany",
+      "actions": [
+        "open",
+        "workspace",
+        "exit"
+      ]
+    },
+    "workspace_active": true
+  },
+  "ordinary_browser_pages": {
+    "/": 410,
+    "/connections": 410
+  },
+  "scope": "real process, native window metadata and local read-only runtime; rendered UI interactions tested separately with substituted bridge",
+  "external_data_reads": 0,
+  "background_external_traffic": "not measured"
+}

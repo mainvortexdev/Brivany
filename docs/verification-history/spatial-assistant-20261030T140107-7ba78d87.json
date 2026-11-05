@@ -1,0 +1,23 @@
+{
+  "suite": "spatial-assistant",
+  "started_at": "2026-10-30T14:01:07.548188+00:00",
+  "finished_at": "2026-10-30T14:01:09.972369+00:00",
+  "duration_seconds": 2.424181,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_spatial_assistant.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "...............\r\n----------------------------------------------------------------------\r\nRan 15 tests in 1.869s\r\n\r\nOK\r\n"
+}

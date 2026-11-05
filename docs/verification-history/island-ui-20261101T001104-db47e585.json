@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-11-01T00:11:04.922363+00:00",
+  "finished_at": "2026-11-01T00:11:17.148945+00:00",
+  "duration_seconds": 12.226582,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Failure view {\n  panel: 'Música',\n  spotify: { configured: true, connected: true, pending: false },\n  body: {\n    expanded: 'true',\n    sleeping: 'false',\n    surface: 'preview',\n    motion: 'true',\n    translationBusy: 'true',\n    translationFocus: 'true',\n    musicPlaying: 'true',\n    musicView: 'player'\n  }\n}\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'rgb(245, 245, 245)'\n- 'rgb(255, 255, 255)'\n        ^\n\n    at <local-path>\\tools\\check_island_ui.cjs:41:76\n"
+}

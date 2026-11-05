@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "native_window_title": "Brivany",
+  "shell_http_ok": true,
+  "control_initially_disabled": true,
+  "backend_available": true,
+  "source_mode": "bundled",
+  "bundle_verified": true,
+  "source_lock_matches": true,
+  "status_read_ms": 1640,
+  "input_sent": false,
+  "provider_requests_by_check": 0
+}

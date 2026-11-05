@@ -1,0 +1,124 @@
+"""Small synchronous MT requests with Meta M2M100 hosted by Cloudflare.
+
+Input/output language codes follow the current official parameter schema, which
+uses ISO codes despite older prose examples using English language names.
+No conversation, tools, retry, fallback, or persistence is involved.
+"""
+from __future__ import annotations
+import json
+import os
+import re
+import time
+from http.client import HTTPException
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, build_opener
+from packages.providers.live_voice import NoRedirect, VoiceError, cloudflare_token
+
+MODEL = "@cf/meta/m2m100-1.2b"
+MAX_TEXT_CHARACTERS = 400
+MAX_RESPONSE_BYTES = 65536
+TIMEOUT_SECONDS = 5
+MAX_ERROR_RESPONSE_BYTES = 8192
+# Documented Workers AI errors; unknown codes aren't copied to diagnostics.
+# https://developers.cloudflare.com/workers-ai/platform/errors/
+SAFE_PROVIDER_ERROR_CODES = frozenset({3003, 3006, 3007, 3008, 3023, 3036, 3039,
+    3040, 3041, 3042, 5004, 5005, 5007, 5016, 5018, 5019, 5035})
+
+
+def _provider_error_codes(value):
+    errors = value.get("errors", []) if isinstance(value, dict) else []
+    if not isinstance(errors, list): return []
+    codes = []
+    for item in errors[:32]:
+        code = item.get("code") if isinstance(item, dict) else None
+        if type(code) is int and code in SAFE_PROVIDER_ERROR_CODES and code not in codes:
+            codes.append(code)
+    return codes[:8]
+
+
+class TranslationError(VoiceError):
+    """Only bounded timing, HTTP status and documented numeric codes are public."""
+    def __init__(self, code, message, *, http_status=None, provider_error_codes=(), request_ms=None):
+        super().__init__(code, message)
+        self.http_status = http_status if type(http_status) is int and 100 <= http_status <= 599 else None
+        self.provider_error_codes = _provider_error_codes({"errors": [{"code": item} for item in provider_error_codes]})
+        self.request_ms = request_ms
+
+    def diagnostics(self):
+        return {"http_status": self.http_status, "provider_error_codes": list(self.provider_error_codes),
+                "request_ms": self.request_ms, "inference_ms": None}
+
+
+def _http_error_codes(error):
+    """Never retain response messages, headers, raw body, URLs or request text."""
+    try:
+        body = error.read(MAX_ERROR_RESPONSE_BYTES + 1)
+        if len(body) > MAX_ERROR_RESPONSE_BYTES: return []
+        return _provider_error_codes(json.loads(body))
+    except (OSError, ValueError, TypeError, HTTPException):
+        return []
+    finally:
+        error.close()
+
+
+def text_translation_status():
+    account = os.environ.get("BRIVANY_CLOUDFLARE_ACCOUNT_ID", "").strip()
+    return {"provider": "Cloudflare", "model_origin": "Meta", "model": MODEL,
+        "configured": bool(re.fullmatch(r"[a-fA-F0-9]{32}", account) and cloudflare_token()),
+        "max_text_characters": MAX_TEXT_CHARACTERS, "languages": ["en", "es"],
+        "streaming": False, "inference_ms": None, "target_inference_ms": 500, "inference_verified": False}
+
+
+def translate_text(text, source="en", target="es", *, opener=None):
+    """Translate one bounded segment; request_ms includes transport and service.
+
+    The injected opener is for local transport tests. Production always creates
+    an opener that refuses redirects; credentials never enter a URL or result.
+    """
+    if not isinstance(text, str) or not text.strip() or len(text) > MAX_TEXT_CHARACTERS:
+        raise VoiceError("mt_input_limit", "Traduce un fragmento de entre 1 y 400 caracteres.")
+    if not isinstance(source, str) or not isinstance(target, str) or source not in {"en", "es"} or target not in {"en", "es"} or source == target:
+        raise VoiceError("mt_languages", "Elige idiomas distintos: inglés y español.")
+    account = os.environ.get("BRIVANY_CLOUDFLARE_ACCOUNT_ID", "").strip()
+    if not re.fullmatch(r"[a-fA-F0-9]{32}", account):
+        raise VoiceError("mt_not_configured", "Configura la cuenta y autorización de Cloudflare para traducir.")
+    token = cloudflare_token(refresh=True)
+    if not token: raise VoiceError("mt_not_configured", "Configura la autorización de Cloudflare para traducir.")
+    payload = {"text": text.strip(), "source_lang": source, "target_lang": target}
+    request = Request(f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/run/{MODEL}",
+        data=json.dumps(payload, ensure_ascii=True).encode("utf-8"), method="POST",
+        headers={"Authorization": "Bearer " + token, "Content-Type": "application/json", "Accept": "application/json"})
+    started = time.monotonic()
+    try:
+        with (opener or build_opener(NoRedirect())).open(request, timeout=TIMEOUT_SECONDS) as response:
+            http_status = getattr(response, "status", None)
+            if not response.headers.get("Content-Type", "").lower().startswith("application/json"):
+                raise TranslationError("mt_invalid_response", "Cloudflare no devolvió una traducción JSON válida.",
+                    http_status=http_status, request_ms=round((time.monotonic()-started)*1000, 2))
+            body = response.read(MAX_RESPONSE_BYTES + 1)
+        request_ms = round((time.monotonic()-started)*1000,2)
+        if len(body) > MAX_RESPONSE_BYTES:
+            raise TranslationError("mt_output_limit", "La traducción excedió el límite de respuesta.",
+                http_status=http_status, request_ms=request_ms)
+        result = json.loads(body)
+        if not isinstance(result, dict) or result.get("success") is not True or not isinstance(result.get("result"), dict):
+            raise TranslationError("mt_invalid_response", "Cloudflare no confirmó una traducción válida.",
+                http_status=http_status, provider_error_codes=_provider_error_codes(result), request_ms=request_ms)
+        translated = result["result"].get("translated_text")
+        if not isinstance(translated, str) or not translated.strip() or len(translated) > 2400:
+            raise TranslationError("mt_invalid_response", "Cloudflare devolvió una traducción vacía o fuera del límite.",
+                http_status=http_status, request_ms=request_ms)
+        return {"text": translated.strip(), "model": MODEL, "provider": "Cloudflare", "model_origin": "Meta",
+            "source_language": source, "target_language": target, "request_ms": request_ms, "inference_ms": None,
+            "http_status": http_status if type(http_status) is int else None, "provider_error_codes": []}
+    except HTTPError as exc:
+        status = exc.code; codes = _http_error_codes(exc)
+        raise TranslationError("mt_rejected", f"Cloudflare rechazó la traducción (HTTP {status}). Revisa acceso, cuota y credenciales.",
+            http_status=status, provider_error_codes=codes,
+            request_ms=round((time.monotonic()-started)*1000, 2)) from None
+    except (URLError, TimeoutError, OSError, HTTPException):
+        raise TranslationError("mt_unavailable", "La conexión de traducción se interrumpió. No se reintentó automáticamente.",
+            request_ms=round((time.monotonic()-started)*1000, 2)) from None
+    except (ValueError, KeyError, TypeError, UnicodeError):
+        raise TranslationError("mt_invalid_response", "La respuesta de traducción no tiene un formato válido.",
+            request_ms=round((time.monotonic()-started)*1000, 2)) from None

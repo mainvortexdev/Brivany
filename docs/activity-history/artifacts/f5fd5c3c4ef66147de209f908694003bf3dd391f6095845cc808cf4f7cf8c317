@@ -1,0 +1,20 @@
+{
+  "suite": "terminal",
+  "started_at": "2026-11-01T19:06:40.325744+00:00",
+  "finished_at": "2026-11-01T19:06:48.778501+00:00",
+  "duration_seconds": 8.452757,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_terminal",
+    "tests.test_terminal_system_office"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "..........................................\r\n----------------------------------------------------------------------\r\nRan 42 tests in 5.529s\r\n\r\nOK\r\n"
+}

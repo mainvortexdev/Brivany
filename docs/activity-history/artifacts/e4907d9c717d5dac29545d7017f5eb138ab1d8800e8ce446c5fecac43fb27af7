@@ -1,0 +1,23 @@
+{
+  "suite": "chat-requests",
+  "started_at": "2026-10-29T21:31:34.268656+00:00",
+  "finished_at": "2026-10-29T21:31:37.101072+00:00",
+  "duration_seconds": 2.832416,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_chat_requests.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "...............\r\n----------------------------------------------------------------------\r\nRan 15 tests in 2.142s\r\n\r\nOK\r\n"
+}

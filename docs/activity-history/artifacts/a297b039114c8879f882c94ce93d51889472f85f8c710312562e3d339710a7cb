@@ -1,0 +1,124 @@
+{
+  "scope": "new isolated Chrome profile; local synthetic pages",
+  "provider_calls": 0,
+  "browser_background_network_unknown": true,
+  "checks": [
+    "observed browser window and tabs",
+    "observed document scrolled down and up; boundary produced no input",
+    "real observed control click changed local page state",
+    "new local URL verified without replacing original tab",
+    "observed link destinations verified once in same/new tab while preserving original tabs",
+    "original observed tab restored and tab count preserved",
+    "login page handoff returns to user; no credentials or submissions"
+  ],
+  "page_control_shape": {
+    "scrollables": [
+      {
+        "y": 97,
+        "height": 879,
+        "id": "42.10291682.4.6.1.9",
+        "x": 18,
+        "vertical_view_size": 20.34722222222222,
+        "role": "ControlType.Document",
+        "name": "Melodi browser fixture 08fce703 A",
+        "width": 1034,
+        "vertical_percent": 0
+      }
+    ],
+    "links": [
+      {
+        "name": "Abrir informe de prueba",
+        "role": "ControlType.Hyperlink",
+        "destination_origin": "http://127.0.0.1:51557",
+        "destination_observed": true
+      },
+      {
+        "name": "Abrir informe en otra pestaña",
+        "role": "ControlType.Hyperlink",
+        "destination_origin": "http://127.0.0.1:51557",
+        "destination_observed": true
+      },
+      {
+        "name": "Enlace de prueba sin destino HTTP",
+        "role": "ControlType.Hyperlink",
+        "destination_origin": null,
+        "destination_observed": true
+      }
+    ],
+    "bounds": {
+      "y": 97,
+      "width": 1034,
+      "height": 879,
+      "x": 18
+    }
+  },
+  "scroll_results": {
+    "boundary": {
+      "verified": true,
+      "scrolled": false,
+      "at_boundary": true,
+      "method": "observed-scroll-boundary",
+      "input_count": 0
+    },
+    "down": {
+      "verified": true,
+      "scrolled": true,
+      "input_count": 1,
+      "method": "observed-scroll-percent",
+      "before_percent": 0,
+      "after_percent": 25.544899738448127
+    },
+    "up": {
+      "verified": true,
+      "scrolled": true,
+      "input_count": 1,
+      "method": "observed-scroll-percent",
+      "before_percent": 25.544899738448127,
+      "after_percent": 0
+    }
+  },
+  "button_point": {
+    "y": 221,
+    "x": 113
+  },
+  "click_receipt": {
+    "input_sent": true,
+    "semantic_verification": false
+  },
+  "local_button_events": 1,
+  "followed_link": {
+    "verified": true,
+    "method": "observed-link-destination",
+    "input_count": 1,
+    "tabs_preserved": true,
+    "new_tab": false,
+    "destination_origin": "http://127.0.0.1:51557"
+  },
+  "new_tab_link": {
+    "verified": true,
+    "method": "observed-link-destination",
+    "input_count": 1,
+    "tabs_preserved": true,
+    "new_tab": true,
+    "destination_origin": "http://127.0.0.1:51557"
+  },
+  "status": "passed",
+  "navigation_diagnostics": [
+    {
+      "event": "diagnostic",
+      "phase": "browser-navigation",
+      "origin": "http://127.0.0.1:51557",
+      "pathname": "/b",
+      "query_keys": [],
+      "requested_query_preserved": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser-navigation",
+      "origin": "http://127.0.0.1:51557",
+      "pathname": "/login-fixture",
+      "query_keys": [],
+      "requested_query_preserved": true
+    }
+  ]
+}

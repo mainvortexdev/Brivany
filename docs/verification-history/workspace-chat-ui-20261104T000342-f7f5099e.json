@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-chat-ui",
+  "started_at": "2026-11-04T00:03:42.819394+00:00",
+  "finished_at": "2026-11-04T00:04:06.961358+00:00",
+  "duration_seconds": 24.141964,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-chat"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"fixture_errors\":[],\"fixture_state\":{\"messages\":[{\"role\":\"user\",\"text\":\"Hola, mensaje sintético de prueba\"},{\"role\":\"assistant\",\"text\":\"Podemos seguir hablando.\"},{\"role\":\"user\",\"text\":\"Cuántos procesos tengo corriendo en mi pc ahora mismo?\"}],\"pending\":false,\"listening\":false,\"speaking\":false,\"starting\":false,\"level\":0,\"samples\":[],\"error\":\"Esta acción requiere la ventana de Brivany Desktop.\"},\"fixture_chat\":{\"tasks\":[],\"messages\":[{\"role\":\"user\",\"text\":\"Hola, mensaje sintético de prueba\",\"references\":0},{\"role\":\"assistant\",\"text\":\"Podemos seguir hablando.\",\"references\":0},{\"role\":\"user\",\"text\":\"Cuántos procesos tengo corriendo en mi pc ahora mismo?\",\"references\":0}],\"state\":\"Esta acción requiere la ventana de Brivany Desktop.\",\"api\":\"function\"}}\nlocator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('Ahora hay 247 procesos en ejecución en tu PC.', { exact: true }) to be visible\u001b[22m\n\n    at <local-path>\\tools\\check_workspace_chat.cjs:37:230 {\n  log: [\n    \"  - waiting for getByText('Ahora hay 247 procesos en ejecución en tu PC.', { exact: true }) to be visible\"\n  ],\n  name: 'TimeoutError'\n}\n"
+}

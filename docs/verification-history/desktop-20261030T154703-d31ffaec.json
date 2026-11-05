@@ -1,0 +1,23 @@
+{
+  "suite": "desktop",
+  "started_at": "2026-10-30T15:47:03.349984+00:00",
+  "finished_at": "2026-10-30T15:47:23.946178+00:00",
+  "duration_seconds": 20.596194,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_desktop.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".....................\r\n----------------------------------------------------------------------\r\nRan 21 tests in 17.950s\r\n\r\nOK\r\n"
+}

@@ -1,0 +1,119 @@
+{
+  "status": "failed",
+  "checks": {
+    "multi_track_queue": {
+      "passed": true,
+      "queued_distinct": 20
+    },
+    "pause": {
+      "passed": true,
+      "confirmed_ms": 156
+    },
+    "resume": {
+      "passed": true,
+      "confirmed_ms": 156
+    },
+    "next": {
+      "passed": true,
+      "confirmed_ms": 172
+    },
+    "previous": {
+      "passed": true,
+      "confirmed_ms": 156
+    }
+  },
+  "screen_audio_capture": false,
+  "cost": "No paid inference; API/SDK/CDN cost not measured.",
+  "checking": "seek",
+  "error": "Spotify restringe este control.",
+  "failure_snapshot": {
+    "playing": true,
+    "progress_ms": 0,
+    "duration_ms": 214274,
+    "volume": 50,
+    "shuffle": false,
+    "repeat": "off"
+  },
+  "failure_health": {
+    "available": true,
+    "muted": false,
+    "document_audio": false,
+    "visible": true
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/v1/me/player",
+      "code": 204,
+      "ms": 219
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/currently-playing",
+      "code": 204,
+      "ms": 172
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 172
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/recently-played",
+      "code": 200,
+      "ms": 343
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/tracks",
+      "code": 200,
+      "ms": 391
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 157
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 156
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player",
+      "code": 204,
+      "ms": 156
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 188
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/play",
+      "code": 204,
+      "ms": 328
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/shuffle",
+      "code": 200,
+      "ms": 453
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/repeat",
+      "code": 200,
+      "ms": 390
+    }
+  ],
+  "known_native_api_calls": 12,
+  "sdk_network_calls": "not measured"
+}

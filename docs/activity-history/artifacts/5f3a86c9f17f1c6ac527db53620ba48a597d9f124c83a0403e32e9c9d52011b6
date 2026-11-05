@@ -1,0 +1,92 @@
+{
+  "scope": "read-only metadata of selected Brivany PID; no GUI input, screenshot, audio or inference",
+  "windows": [
+    {
+      "title": "Melodi WorkSpace",
+      "native_handle": 3934368,
+      "visible": true,
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1280,
+        "bottom": 40
+      },
+      "clip_bounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1280,
+        "bottom": 40
+      },
+      "region_type": 2,
+      "empty_region": false,
+      "tool_window": true,
+      "app_window": false,
+      "alpha": 255
+    },
+    {
+      "title": "Melodi WorkSpace · Panel",
+      "native_handle": 3738258,
+      "visible": true,
+      "bounds": {
+        "left": 250,
+        "top": 46,
+        "right": 1030,
+        "bottom": 450
+      },
+      "clip_bounds": null,
+      "region_type": 1,
+      "empty_region": true,
+      "tool_window": true,
+      "app_window": false,
+      "alpha": 255
+    },
+    {
+      "title": "Melodi WorkSpace · Voz",
+      "native_handle": 4981342,
+      "visible": false,
+      "bounds": {
+        "left": 250,
+        "top": 46,
+        "right": 1014,
+        "bottom": 411
+      },
+      "clip_bounds": null,
+      "region_type": 1,
+      "empty_region": true,
+      "tool_window": true,
+      "app_window": false,
+      "alpha": 255
+    },
+    {
+      "title": "Brivany",
+      "native_handle": 13044192,
+      "visible": false,
+      "bounds": {
+        "left": 80,
+        "top": 132,
+        "right": 1184,
+        "bottom": 853
+      },
+      "clip_bounds": null,
+      "region_type": 0,
+      "empty_region": false,
+      "tool_window": false,
+      "app_window": true,
+      "alpha": null
+    }
+  ],
+  "work_area": {
+    "left": 0,
+    "top": 40,
+    "right": 1280,
+    "bottom": 994
+  },
+  "type": "owned_native_metadata_and_loopback_bootstrap",
+  "passed": true,
+  "single_visible_workspace": true,
+  "stable_extension_bootstrap": true,
+  "personal_browser_reloaded": false,
+  "external_calls": 0,
+  "audio_captured": false,
+  "providers_started": false
+}

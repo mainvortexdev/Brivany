@@ -1,0 +1,23 @@
+{
+  "type": "real account read-only query through owned native chat to running desktop",
+  "passed": true,
+  "external_calls": 3,
+  "microphone_used": false,
+  "OS_input_sent": false,
+  "appbar_reserved_by_test": false,
+  "phase": "real_account_query_result_visible",
+  "closed_reply_glass": true,
+  "reply_height": 80,
+  "reply_click_through": true,
+  "reply_native_glass": true,
+  "physical_reply_viewport": [
+    420,
+    80
+  ],
+  "backdrop_window_matches_card": true,
+  "real_account_result_delivered": true,
+  "observed_number": 261,
+  "old_fixed_phrase_absent": true,
+  "inference_requests": 0,
+  "conversation_saved": false
+}

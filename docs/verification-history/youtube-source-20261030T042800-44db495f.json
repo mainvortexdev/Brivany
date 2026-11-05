@@ -1,0 +1,17 @@
+{
+  "suite": "youtube-source",
+  "started_at": "2026-10-30T04:28:00.025715+00:00",
+  "finished_at": "2026-10-30T04:28:00.312292+00:00",
+  "duration_seconds": 0.286577,
+  "command": [
+    "node",
+    "--test",
+    "tests/youtube-source.test.cjs",
+    "tests/dub-audio-sink.test.cjs",
+    "tests/dub-tab-capture.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ client handshake requires exact popup, origin and random nonce; PCM transfers a copy (7.4946ms)\n✔ client cancellation before ready closes popup and rejects; blocked popup is actionable (4.5737ms)\n✔ client stop flushes generations, ignores late schedule and supports original volume (2.3958ms)\n✔ sink rejects wrong origin, wrong opener and nonce before constructing audio (10.5898ms)\n✔ autoplay denial asks for explicit activation and schedules no hidden audio (3.7508ms)\n✔ sink queue is bounded, source gain capped and stop prevents stale language audio (9.9441ms)\n✔ translation-only flush keeps original monitoring sources and pending acknowledgement alive (4.8417ms)\n✔ capturing a monitor or another tab rejects before any audio processing and closes tracks (5.8362ms)\n✔ playback suppression must be observed rather than assumed from requested constraints (1.471ms)\n✔ permission arriving after cancellation immediately releases every late track (2.733ms)\n✔ unsupported capture is actionable and never opens a provider connection (1.4652ms)\n✔ strict YouTube links normalize only a safe fixed video identity (4.2904ms)\n✔ constructing does not request YouTube or autoplay; explicit load creates origin-bound controlled iframe (8.1537ms)\n✔ normalized states and video errors cannot arrive from a destroyed old player (2.0757ms)\n✔ API loads only after explicit load and cancelled initialization never inserts a stale iframe (1.3808ms)\n✔ playConfirmed waits for actual PLAYING, reuses pending confirmation and preserves the iframe when paused (1.8359ms)\n✔ blocked playback rejects with a useful code and keeps the visible player ready for a manual retry (2.5354ms)\n✔ confirmed play timeout and embed errors never masquerade as successful playback or clear the video (16.9912ms)\n✔ pause, destroy and stale playback events cannot complete a waiting play confirmation (1.6641ms)\nℹ tests 19\nℹ suites 0\nℹ pass 19\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 183.217\n"
+}

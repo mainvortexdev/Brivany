@@ -1,0 +1,8 @@
+{
+  "kind": "manual user observation",
+  "utc": "2026-11-01T00:43:10.142404+00:00",
+  "audible_on_usual_output": true,
+  "status": "passed",
+  "audio_recorded": false,
+  "limits": "User confirmed audibility after the fix; not a calibrated acoustic measurement. No conversation text saved."
+}

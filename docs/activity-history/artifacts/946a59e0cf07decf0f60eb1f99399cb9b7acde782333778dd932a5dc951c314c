@@ -1,0 +1,141 @@
+{
+  "providers_called": 0,
+  "scope": "owned synthetic sources only",
+  "revision": "minimum 1.8s independent consistency windows",
+  "warm": true,
+  "warm_ms": 773.09,
+  "observations": {
+    "masculine": {
+      "available": true,
+      "reason": "speech_embedding",
+      "windows": 1,
+      "latency_ms": 45.06
+    },
+    "feminine": {
+      "available": true,
+      "reason": "speech_embedding",
+      "windows": 1,
+      "latency_ms": 37.07
+    },
+    "masculine_gain": {
+      "available": true,
+      "reason": "speech_embedding",
+      "windows": 1,
+      "latency_ms": 44.27
+    },
+    "feminine_gain": {
+      "available": true,
+      "reason": "speech_embedding",
+      "windows": 1,
+      "latency_ms": 36.88
+    },
+    "long_a_1": {
+      "available": true,
+      "reason": "speech_embedding",
+      "windows": 1,
+      "latency_ms": 53.19
+    },
+    "long_a_2": {
+      "available": true,
+      "reason": "speech_embedding",
+      "windows": 1,
+      "latency_ms": 53.01
+    },
+    "long_a_3": {
+      "available": true,
+      "reason": "speech_embedding",
+      "windows": 1,
+      "latency_ms": 51.28
+    },
+    "long_a_6s": {
+      "available": true,
+      "reason": "speech_embedding",
+      "windows": 2,
+      "latency_ms": 115.44
+    }
+  },
+  "cosine": {
+    "masculine": {
+      "masculine": 1.0,
+      "feminine": 0.2452,
+      "masculine_gain": 0.9985,
+      "feminine_gain": 0.2423,
+      "long_a_1": 0.816,
+      "long_a_2": 0.8447,
+      "long_a_3": 0.7697,
+      "long_a_6s": 0.8702
+    },
+    "feminine": {
+      "masculine": 0.2452,
+      "feminine": 1.0,
+      "masculine_gain": 0.2429,
+      "feminine_gain": 0.9971,
+      "long_a_1": 0.21,
+      "long_a_2": 0.2183,
+      "long_a_3": 0.2471,
+      "long_a_6s": 0.1996
+    },
+    "masculine_gain": {
+      "masculine": 0.9985,
+      "feminine": 0.2429,
+      "masculine_gain": 1.0,
+      "feminine_gain": 0.2405,
+      "long_a_1": 0.8169,
+      "long_a_2": 0.8447,
+      "long_a_3": 0.7681,
+      "long_a_6s": 0.8721
+    },
+    "feminine_gain": {
+      "masculine": 0.2423,
+      "feminine": 0.9971,
+      "masculine_gain": 0.2405,
+      "feminine_gain": 1.0,
+      "long_a_1": 0.2084,
+      "long_a_2": 0.2143,
+      "long_a_3": 0.2408,
+      "long_a_6s": 0.1976
+    },
+    "long_a_1": {
+      "masculine": 0.816,
+      "feminine": 0.21,
+      "masculine_gain": 0.8169,
+      "feminine_gain": 0.2084,
+      "long_a_1": 1.0,
+      "long_a_2": 0.8683,
+      "long_a_3": 0.8107,
+      "long_a_6s": 0.9499
+    },
+    "long_a_2": {
+      "masculine": 0.8447,
+      "feminine": 0.2183,
+      "masculine_gain": 0.8447,
+      "feminine_gain": 0.2143,
+      "long_a_1": 0.8683,
+      "long_a_2": 1.0,
+      "long_a_3": 0.8309,
+      "long_a_6s": 0.9364
+    },
+    "long_a_3": {
+      "masculine": 0.7697,
+      "feminine": 0.2471,
+      "masculine_gain": 0.7681,
+      "feminine_gain": 0.2408,
+      "long_a_1": 0.8107,
+      "long_a_2": 0.8309,
+      "long_a_3": 1.0,
+      "long_a_6s": 0.8366
+    },
+    "long_a_6s": {
+      "masculine": 0.8702,
+      "feminine": 0.1996,
+      "masculine_gain": 0.8721,
+      "feminine_gain": 0.1976,
+      "long_a_1": 0.9499,
+      "long_a_2": 0.9364,
+      "long_a_3": 0.8366,
+      "long_a_6s": 1.0
+    }
+  },
+  "idle_wall_seconds": 5.0002,
+  "idle_cpu_seconds": 0.0
+}

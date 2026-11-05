@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "checks": [
+    "main homepage links to canonical /dubbing",
+    "exactly three controls",
+    "manual link loads without capture or autoplay",
+    "Spanish English French selection",
+    "real AudioWorklet sends 80 ms frames through loopback Muse, Meta Spark SSE and Cartesia WS",
+    "French tokens reach captions",
+    "backlog pauses source and resumes in the same session without releasing capture",
+    "stop pauses source and releases capture",
+    "no daily quota or fragment cap; active after 35 seconds on the client clock; masculine Daniel selected",
+    "real local file decoding and PCM through the same relay twice without tab capture or microphone",
+    "known 403 blocks paid pipeline",
+    "desktop and 390px mobile fit"
+  ],
+  "external_calls": 0,
+  "paid_inference": false,
+  "real_youtube_verified": false,
+  "physical_output_verified": false,
+  "translation_quality_verified": false,
+  "errors": [],
+  "upstream_counts": {
+    "muse": 3,
+    "cartesia": 3,
+    "meta": 9,
+    "tts_messages": 27,
+    "cancel": 3
+  },
+  "all_mixers_closed": true
+}

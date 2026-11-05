@@ -1,0 +1,15 @@
+{
+  "type": "public_youtube_isolated_brave_inline_sync",
+  "passed": false,
+  "source_owned_synthetic": false,
+  "encoded_video_source": false,
+  "owned_caption_track": false,
+  "provider_trial_max_seconds": 28,
+  "billing_amount": null,
+  "user_profile_used": false,
+  "physical_listening_verified": false,
+  "cloning_enabled": false,
+  "public_source_playing": true,
+  "requested_video_position": 24,
+  "error": "page.waitForFunction: Timeout 5000ms exceeded."
+}

@@ -1,0 +1,18 @@
+{
+  "type": "extension_release_package_integrity",
+  "passed": true,
+  "version": "0.4.1",
+  "files": 16,
+  "zip": "dist/Brivany-Traduccion-Brave-0.4.1.zip",
+  "sha256": "e89c476502198901c543bd0816dda9ddcb833d4d8caaaee03fd59f0d836218b5",
+  "source_matches_all_targets": true,
+  "updated_unpacked_targets": [
+    "dist/Brivany-Traduccion-Brave-0.4.1",
+    "dist/Brivany-Traduccion-Brave",
+    "dist/Brivany-Traduccion-Brave-0.4.0",
+    "dist/Brivany-Traduccion-Brave-0.3.0"
+  ],
+  "previous_zips_preserved": true,
+  "personal_browser_reloaded": false,
+  "external_calls": 0
+}

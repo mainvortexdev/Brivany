@@ -1,0 +1,48 @@
+"""Run one chosen local suite and persist its actual output and result in the ledger."""
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import subprocess
+import sys
+from uuid import uuid4
+from services.activity import ActivityStore, ROOT
+
+SUITES = {
+    "python": [sys.executable, "-X", "utf8", "-B", "-m", "unittest", "discover", "-s", "tests"],
+    "spatial": [sys.executable, "-X", "utf8", "-B", "-m", "unittest", "discover", "-s", "tests", "-p", "test_spatial*.py"],
+    "javascript": ["node", "--test", "tests/context-engine.test.cjs", "tests/voice-engine.test.cjs", "tests/live-voice.test.cjs"],
+    "contracts": [sys.executable, "-X", "utf8", "-B", "tools/validate_contracts.py"],
+    "activity-ui": ["node", "tools/check_activity_ui.cjs"],
+    "app-ui": ["node", "tools/check_ui.cjs"],
+}
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Verificar y registrar una suite local sin inferencia pagada")
+    parser.add_argument("suite", choices=SUITES)
+    args = parser.parse_args()
+    command = SUITES[args.suite]
+    start = datetime.now(timezone.utc)
+    try:
+        result = subprocess.run(command, cwd=ROOT, capture_output=True, timeout=180, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+        returncode, output = result.returncode, (result.stdout + result.stderr).decode("utf-8", errors="replace")
+    except (subprocess.TimeoutExpired, OSError):
+        returncode, output = 1, "No se completó la suite: proceso no disponible o límite de 180 segundos."
+    finish = datetime.now(timezone.utc)
+    report = {"suite": args.suite, "started_at": start.isoformat(), "finished_at": finish.isoformat(),
+              "duration_seconds": (finish-start).total_seconds(), "command": command, "exit_code": returncode,
+              "external_calls": 0, "gpu_seconds": 0, "output": output[:100000]}
+    directory = ROOT / "tmp" / "verification"; directory.mkdir(parents=True, exist_ok=True)
+    path = directory / f'{args.suite}-{start.strftime("%Y%m%dT%H%M%S")}-{uuid4().hex[:8]}.json'
+    path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    ActivityStore().add({"kind": "test", "status": "passed" if returncode == 0 else "failed",
+        "title": "Verificación · " + args.suite,
+        "summary": f'Suite local ejecutada; código de salida {returncode}. El informe conserva comando, duración y salida. No mide hardware físico ni precisión de reconstrucción.',
+        "external_calls": 0, "gpu_seconds": 0.0}, [path])
+    print(output)
+    print(f"Informe guardado: {path.relative_to(ROOT).as_posix()}")
+    return returncode
+
+
+if __name__ == "__main__": sys.exit(main())

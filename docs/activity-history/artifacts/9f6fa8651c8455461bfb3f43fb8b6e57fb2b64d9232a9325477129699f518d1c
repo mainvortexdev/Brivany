@@ -1,0 +1,28 @@
+"""Native Spotify actions; credentials never cross into the renderer."""
+import webbrowser
+from services.spotify import SpotifyError
+
+
+class MusicBridge:
+    def _music(self):self._trusted();return self._spotify_factory()
+    def spotify_status(self):return self._music().status()
+    def spotify_configure(self,client_id):return self._music().configure(client_id)
+    def spotify_connect(self):
+        url=self._music().begin()
+        if not webbrowser.open(url):
+            self._music().cancel_link();raise SpotifyError('No se pudo abrir el navegador para vincular Spotify.')
+        return {'ok':True}
+    def spotify_disconnect(self):return self._music().disconnect()
+    def spotify_playback(self):return self._music().playback()
+    def spotify_command(self,action,value=None):return self._music().command(action,value)
+    def spotify_open(self):
+        url=(self._music().playback().get('playback') or {}).get('url')
+        if not url:url='https://open.spotify.com'
+        return {'ok':bool(webbrowser.open(url))}
+    def spotify_dashboard(self):
+        self._trusted();return {'ok':bool(webbrowser.open('https://developer.spotify.com/dashboard'))}
+    def spotify_library(self,kind='playlists',page=0):return self._music().library(kind,page)
+    def spotify_play_item(self,uri,device_id=None):return self._music().play_item(uri,device_id)
+    def spotify_lyrics(self):return self._music().current_lyrics()
+    def spotify_lyrics_source(self,provider='LRCLIB'):
+        self._trusted();return {'ok':bool(webbrowser.open('https://lyrics.ovh' if provider=='Lyrics.ovh' else 'https://lrclib.net'))}

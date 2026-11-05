@@ -1,0 +1,18 @@
+# Dominio de Brivany
+
+Preparación de `https://brivany.example` mediante un Worker propio y un Custom
+Domain de Cloudflare en la zona `example.com`. El Custom Domain administra su registro
+DNS y certificado. No se modifica el sitio principal ni otros subdominios.
+
+`worker.mjs` muestra solo una página temporal de preparación. El desarrollo de la
+web oficial será otro hito. No hay formularios, cuentas, cookies, secretos ni
+integración OAuth en esta página; no se publican servicios locales del escritorio.
+
+Configuración declarativa: `wrangler.jsonc`. Despliegue con Wrangler autenticado
+en la cuenta propietaria: `wrangler deploy --config official-site/wrangler.jsonc`.
+Validación previa: el mismo comando con `--dry-run`.
+
+Para el registro de Spotify, Website es `https://brivany.example`. El Redirect
+URI del escritorio sigue siendo `http://127.0.0.1/spotify/callback`; no se sustituye
+por una ruta de esta web. La integración actual usa Web API y PKCE, sin Web
+Playback SDK, Client Secret, Ads API ni SDKs de iOS/Android.

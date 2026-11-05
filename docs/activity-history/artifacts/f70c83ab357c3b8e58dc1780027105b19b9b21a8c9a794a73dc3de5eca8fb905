@@ -1,0 +1,20 @@
+{
+  "suite": "work",
+  "started_at": "2026-10-31T02:22:41.574501+00:00",
+  "finished_at": "2026-10-31T02:22:44.291237+00:00",
+  "duration_seconds": 2.716736,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_work_mode",
+    "tests.test_work_bridge"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "................\r\n----------------------------------------------------------------------\r\nRan 16 tests in 0.736s\r\n\r\nOK\r\n"
+}

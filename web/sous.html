@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff"><title>Sous · Brivany</title>
+  <link rel="icon" href="/icon.svg"><link rel="stylesheet" href="/sous.css"><link rel="stylesheet" href="/palette.css">
+  <script type="module" src="/sous.js"></script>
+<link rel="stylesheet" href="/typography.css"></head>
+<body>
+  <a class="skip" href="#main">Ir a Sous</a>
+  <header class="sous-header"><a href="/" class="wordmark" aria-label="Brivany, inicio">brivany<span>.</span></a><nav aria-label="Brivany"><a href="/spaces">Espacios</a><a href="/app">Melodi</a><a href="/connections">Conexiones</a><a href="/human-skills">Human skills</a><a href="/sous" aria-current="page">Sous</a><a href="/activity">Bitácora</a></nav><span class="local-label">En este equipo</span></header>
+  <main id="main" class="sous-shell">
+    <header class="intro"><p class="eyebrow">HUMAN SKILL 01 · SOUS</p><h1>De lo que tienes,<br>a lo que puedes hacer.</h1><p>Tu cocina. Un paso a la vez.</p></header>
+    <p id="notice" class="notice" role="status" aria-live="polite">Abriendo tu cocina…</p>
+    <section id="sous-conversation" class="sous-conversation" aria-labelledby="sous-conversation-title" data-state="idle">
+      <div class="conversation-heading"><div><p class="eyebrow">MELODI · EN TU COCINA</p><h2 id="sous-conversation-title">Hablemos mientras cocinas.</h2></div><button id="sous-mic-toggle" class="primary" type="button" aria-pressed="false">Hablar con Melodi</button></div>
+      <p id="sous-voice-status" class="subtle" role="status">Preparando conversación…</p>
+      <div class="conversation-response"><p id="sous-last-question" class="subtle"></p><p id="sous-reply" aria-live="polite">Pregunta por tus ingredientes o por el paso actual.</p><p id="sous-interim" class="subtle"></p></div>
+      <div class="conversation-bottom"><span id="sous-voice-origin" class="subtle">Contexto de Sous · sin acciones automáticas</span><button id="sous-interrupt" class="text-button" type="button" disabled>Interrumpir</button></div>
+      <p id="sous-voice-error" class="error-text" role="alert"></p>
+      <details class="conversation-options"><summary>Texto y permiso de voz</summary>
+        <label class="check"><input id="sous-voice-consent" type="checkbox"><span>Al iniciar, autorizo enviar mi voz a Meta y las respuestas a Cartesia para escucharlas. Puedo detener la conversación.</span></label>
+        <p class="subtle">Melodi consulta tu inventario y el paso actual. Los cambios y las comprobaciones se revisan en Sous. El micrófono se silencia durante la respuesta; pulsa Interrumpir para hablar.</p>
+        <form id="sous-message-form"><label class="field">Tu mensaje<input id="sous-message" type="text" maxlength="1200" placeholder="Por ejemplo, explícame este paso" autocomplete="off" required></label><label class="check"><input id="sous-text-consent" type="checkbox"><span>Enviar este mensaje y el contexto de cocina a Meta.</span></label><button id="sous-send-message" class="secondary" type="submit">Enviar a Melodi →</button></form>
+      </details>
+    </section>
+    <div id="page-error" class="error" role="alert" hidden><p id="page-error-message"></p><button id="retry" class="text-button" type="button">Volver a intentar</button></div>
+    <div class="workspace" id="pantry-view">
+      <section class="pantry" aria-labelledby="inventory-title">
+        <div class="section-heading"><div><p class="eyebrow">EL PUNTO DE PARTIDA</p><h2 id="inventory-title">Tu cocina.</h2></div><button id="add-item" class="secondary" type="button">Añadir ingrediente <span aria-hidden="true">+</span></button></div>
+        <p id="inventory-summary" class="subtle">Los ingredientes que registres se guardan aquí.</p>
+        <details class="vision-panel"><summary>Observar una foto con Meta <span id="vision-status">Comprobando configuración…</span></summary>
+          <p class="subtle">Una foto, una lectura. Tú revisas los ingredientes y su cantidad antes de guardarlos.</p>
+          <label class="field">Foto de tu cocina<input id="inventory-vision-file" type="file" accept="image/png,image/jpeg" capture="environment"></label>
+          <label class="check"><input id="inventory-vision-consent" type="checkbox"><span>Autorizo enviar esta foto a Meta para identificar ingredientes. Puede consumir créditos.</span></label>
+          <button id="inventory-vision-send" class="secondary" type="button">Observar esta foto</button>
+          <p id="inventory-vision-message" class="subtle" role="status"></p><p id="inventory-vision-error" class="error-text" role="alert"></p>
+          <div id="vision-candidates" class="vision-candidates" aria-live="polite"></div>
+        </details>
+        <div id="inventory" class="inventory" aria-live="polite"><p class="empty">Cargando inventario…</p></div>
+        <details class="small-details"><summary>Lo que sabe Sous</summary><p>El inventario y las fechas son datos que tú introduces o confirmas. Una estimación de categoría no equivale a una fecha del envase. Una imagen no permite certificar frescura ni seguridad alimentaria.</p><p>Meta sólo recibe la foto que decidas enviar. El inventario manual funciona sin inferencias.</p></details>
+        <details class="small-details activity-details"><summary>Actividad de tu cocina <span id="event-count"></span></summary><ol id="kitchen-events" class="kitchen-events"><li>Aún no hay movimientos.</li></ol></details>
+      </section>
+      <aside class="recipe-panel" aria-labelledby="recipe-title">
+        <div class="recipe-mark" aria-hidden="true"><span>01</span><svg viewBox="0 0 120 110"><ellipse cx="53" cy="55" rx="34" ry="28"/><ellipse cx="53" cy="55" rx="26" ry="20"/><path d="m85 49 28-8 3 9-29 6"/><circle cx="47" cy="54" r="6"/><path d="m62 43 7 5m-10 16 8-3m-31 0 3-8"/></svg></div>
+        <p class="eyebrow">TU PRÁCTICA</p><h2 id="recipe-title">Huevos y verduras.</h2><p id="recipe-description" class="recipe-description">Una receta sencilla. Preparar, observar y comprobar.</p>
+        <label class="field recipe-picker">Elige una práctica<select id="recipe-choice"><option value="eggs-vegetables-v1">Huevos con verduras</option></select></label>
+        <div class="recipe-meta"><span id="catalog-count">Receta de práctica</span><span>4 pasos con guía</span></div>
+        <button id="plan-meal" class="primary" type="button">Preparar mi práctica <span aria-hidden="true">↗</span></button>
+        <p id="plan-status" class="plan-status" role="status">Revisaremos los ingredientes que confirmaste.</p>
+        <ul id="missing-ingredients" class="missing-list" hidden></ul>
+        <button id="start-session" class="primary wide" type="button" hidden>Empezar a cocinar →</button>
+        <details class="small-details recipe-details"><summary>Localidad, preferencias y procedencia</summary><div class="field-row"><label class="field">País <span class="optional">Opcional</span><input id="locality-country" type="text" maxlength="80" placeholder="Por ejemplo, Bolivia" list="locality-countries"><datalist id="locality-countries"><option value="Bolivia"></datalist></label><label class="field">Ciudad <span class="optional">Opcional</span><input id="locality-city" type="text" maxlength="80" placeholder="Declarada por ti"></label></div><p id="locality-note">No usamos tu ubicación automáticamente.</p><label class="check"><input id="vegetarian" type="checkbox" checked><span>Vegetariano</span></label><label class="check"><input id="vegan" type="checkbox"><span>Vegano</span></label><label class="field">Alergias o ingredientes a excluir<input id="allergens" type="text" maxlength="200" placeholder="Por ejemplo, huevo"></label><button id="save-preferences" type="button" class="text-button">Guardar preferencias</button><p id="preferences-status" role="status"></p><p id="recipe-source">Receta de práctica predefinida en Brivany. No generada por IA.</p><p>Son propuestas escritas para Brivany; no platos tradicionales autenticados. No se realizan compras ni se consultan precios.</p></details>
+      </aside>
+    </div>
+    <section id="cooking-view" class="cooking" aria-labelledby="cooking-title" hidden>
+      <div class="cooking-toolbar"><button id="back-pantry" class="text-button" type="button">← Tu cocina</button><span id="session-mode" class="source-label">Revisión humana · local</span></div>
+      <header class="cooking-heading"><p id="cooking-recipe-label" class="eyebrow">HUEVOS Y VERDURAS · CON GUÍA</p><h2 id="cooking-title">A tu ritmo.</h2><p id="session-status" class="subtle">Comprueba cada paso antes de continuar.</p></header>
+      <ol id="step-progress" class="step-progress" aria-label="Pasos de la práctica"></ol>
+      <div id="active-step" class="cooking-layout">
+        <article class="step-content"><p class="eyebrow" id="step-counter"></p><h3 id="step-title"></h3><p id="step-criterion" class="criterion"></p><p id="step-instruction" class="subtle"></p><div class="observation-note"><span class="note-symbol" aria-hidden="true">◇</span><p>Observa antes de avanzar.<small>Esta comprobación la haces tú; Sous registra tu criterio.</small></p></div><p id="step-state" class="source-label"></p></article>
+        <form id="verify-form" class="verify-panel"><div class="section-heading"><h3>Tu comprobación.</h3><span id="evidence-count" class="subtle">Sin foto</span></div>
+          <label class="photo-picker" for="evidence-file"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="8" width="24" height="19" rx="3"/><path d="m10 8 2-4h8l2 4"/><circle cx="16" cy="17" r="5"/></svg><strong>Añadir una foto</strong><small>Opcional · sólo se envía con tu permiso</small><input id="evidence-file" type="file" accept="image/png,image/jpeg,image/webp" capture="environment"></label>
+          <div id="evidence-preview" class="evidence-preview" hidden><img id="evidence-image" alt="Foto elegida para tu comprobación"><div><span id="evidence-label"></span><small>Huella registrada; imagen sin enviar.</small></div><button id="remove-evidence" class="text-button" type="button" aria-label="Quitar foto">Quitar</button></div>
+          <p id="photo-error" class="error-text" role="alert"></p>
+          <label class="field">¿Qué observas?<textarea id="observation" rows="3" maxlength="600" required placeholder="Describe lo que has comprobado."></textarea></label>
+          <fieldset class="verdict"><legend>Tu criterio</legend><label><input type="radio" name="verdict" value="ready" required><span>Lo he comprobado</span></label><label><input type="radio" name="verdict" value="uncertain"><span>No estoy seguro</span></label></fieldset>
+          <label class="check confirmation"><input id="human-confirmed" type="checkbox"><span>Yo revisé este paso antes de marcarlo listo.</span></label>
+          <p id="verification-notice" class="verification-notice">La comprobación manual registra tu criterio. Una confirmación no certifica inocuidad alimentaria.</p>
+          <button id="verify-step" class="primary wide" type="submit">Registrar comprobación →</button>
+          <p id="verification-error" class="error-text" role="alert"></p>
+          <details class="cooking-vision"><summary>Pedir una observación a Meta</summary><p class="subtle">Usa la foto elegida arriba. Dos lecturas «listo» consecutivas de fotos distintas permiten avanzar; no verifican temperatura ni inocuidad.</p>
+            <label class="check"><input id="cooking-vision-consent" type="checkbox"><span>Autorizo enviar esta foto a Meta. Puede consumir créditos.</span></label>
+            <button id="cooking-vision-send" class="secondary wide" type="button">Observar este paso</button>
+            <p id="cooking-vision-message" class="subtle" role="status"></p><p id="cooking-vision-error" class="error-text" role="alert"></p>
+          </details>
+        </form>
+      </div>
+      <section id="session-complete" class="complete" hidden><span class="complete-symbol" aria-hidden="true">✓</span><p class="eyebrow">PRÁCTICA REGISTRADA</p><h3>Un paso más tuyo.</h3><p>Has recorrido la guía y registrado tus comprobaciones.</p><p class="subtle">Registro personal de práctica; no certifica dominio ni seguridad del plato.</p><button id="finish-session" class="primary" type="button">Volver a mi cocina</button></section>
+      <details class="small-details session-ledger"><summary>Tus observaciones <span id="observation-count"></span></summary><ol id="observations-list" class="kitchen-events"></ol></details>
+    </section>
+    <section class="shopping-section" aria-labelledby="shopping-title"><details id="shopping-panel"><summary><span id="shopping-title">Tu lista de compras.</span><span id="shopping-count" class="subtle">En este equipo</span></summary><div class="shopping-content"><div class="section-heading"><p class="subtle">Editable y guardada aquí. Sin pedidos ni precios.</p><button id="shopping-from-plan" type="button" class="secondary">Añadir lo que falta</button></div><p id="shopping-status" class="subtle" role="status"></p><p id="shopping-error" class="error-text" role="alert"></p><ul id="shopping-items" class="shopping-items"></ul><form id="shopping-form" class="shopping-add"><label class="field">Ingrediente<input id="shopping-label" type="text" maxlength="120" required placeholder="Añadir a la lista"></label><label class="field">Cantidad<input id="shopping-quantity" type="number" min="0.001" max="1000000" step="any" value="1" required></label><label class="field">Unidad<select id="shopping-unit"><option value="unit">ud.</option><option value="g">g</option><option value="kg">kg</option><option value="ml">ml</option><option value="l">l</option></select></label><button type="submit" class="secondary">Añadir</button></form></div></details></section>
+    <footer><a href="/human-skills">Tus human-skills ↗</a><span>Aprender empieza por observar.</span><a href="/spaces">Volver a Espacios ↗</a></footer>
+  </main>
+  <dialog id="item-dialog"><form id="item-form"><div class="dialog-heading"><div><p class="eyebrow">INVENTARIO LOCAL</p><h2 id="item-dialog-title">Añadir ingrediente.</h2></div><button id="close-item" class="icon-button" type="button" aria-label="Cerrar">×</button></div>
+    <label class="field">Ingrediente<input id="item-label" type="text" maxlength="120" required autocomplete="off" placeholder="Por ejemplo, huevos"></label>
+    <div class="field-row"><label class="field">Cantidad<input id="item-quantity" type="number" min="0.001" max="100000" step="any" value="1" required></label><label class="field">Unidad<select id="item-unit"><option value="unit">unidades</option><option value="g">g</option><option value="kg">kg</option><option value="ml">ml</option><option value="l">l</option></select></label></div>
+    <div class="field-row"><label class="field">Fecha en el envase<input id="item-expiry" type="date"></label><label class="field">De dónde sale la fecha<select id="item-expiry-source"><option value="unknown">Sin verificar</option><option value="printed_label">Etiqueta del envase</option><option value="user_confirmed">Confirmada por mí</option><option value="category_estimate">Estimación de categoría</option></select></label></div>
+    <label class="field">Referencia <span class="optional">Para etiqueta o estimación</span><input id="item-reference" type="text" maxlength="160" placeholder="Por ejemplo, etiqueta de la caja"></label>
+    <label class="field">Confianza en el dato<select id="item-confidence"><option value="1">Dato que introduzco manualmente · alta</option><option value="0.5">Dato incierto · requiere revisión</option></select></label>
+    <label class="check"><input id="item-confirmed" type="checkbox" checked><span>He revisado el ingrediente y su cantidad.</span></label>
+    <p id="item-origin-note" class="dialog-note">Las fechas estimadas se distinguen de las del envase. Confirma tú la cantidad antes de guardar.</p><p id="item-error" class="error-text" role="alert"></p><button id="save-item" class="primary wide" type="submit">Guardar ingrediente</button>
+  </form></dialog>
+  <dialog id="event-dialog"><form id="event-form"><div class="dialog-heading"><div><p class="eyebrow">MOVIMIENTO DEL INVENTARIO</p><h2 id="event-title">Registrar uso.</h2></div><button id="close-event" class="icon-button" type="button" aria-label="Cerrar">×</button></div>
+    <label class="field">Movimiento<select id="event-kind"><option value="consumed">Lo utilicé</option><option value="discarded">Lo descarté</option></select></label><label class="field">Cantidad <span id="event-unit"></span><input id="event-amount" type="number" min="0.001" step="any" required></label>
+    <label class="check"><input id="event-saved" type="checkbox"><span>Considero que evité desperdiciar esta cantidad.</span></label><label class="field">Precio estimado por unidad · USD <span class="optional">Opcional, declarado por ti</span><input id="event-price" type="number" min="0" step="0.01" placeholder="Sin estimar"></label><p class="dialog-note">Es un registro manual, sin precios de mercado ni compras.</p><p id="event-error" class="error-text" role="alert"></p><button id="save-event" class="primary wide" type="submit">Registrar movimiento</button>
+  </form></dialog>
+</body>
+</html>

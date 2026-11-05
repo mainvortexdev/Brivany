@@ -1,0 +1,9 @@
+{
+  "model": "prithivMLmods/Common-Voice-Gender-Detection-ONNX",
+  "revision": "8d7fc28d26889a8763098f9e49fed002b15d2d3f",
+  "license_declared": "Apache-2.0",
+  "size_bytes": 95387498,
+  "sha256": "a0934c2f8934878f264dd5072d07b1bbd176f051d285b2a7910dfaa173747695",
+  "source": "https://huggingface.co/prithivMLmods/Common-Voice-Gender-Detection-ONNX/resolve/8d7fc28d26889a8763098f9e49fed002b15d2d3f/onnx/model_quantized.onnx",
+  "provider_calls": 0
+}

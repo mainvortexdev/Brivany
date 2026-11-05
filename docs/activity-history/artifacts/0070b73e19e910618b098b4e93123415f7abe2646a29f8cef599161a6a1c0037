@@ -1,0 +1,9 @@
+{
+  "scope": "actual_account_chat_greeting_own_test",
+  "passed": true,
+  "reintroduction_present": false,
+  "response_characters": 47,
+  "provider_requests": 1,
+  "actions_created": false,
+  "content_recorded": false
+}

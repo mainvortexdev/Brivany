@@ -1,0 +1,18 @@
+{
+  "suite": "gemini-pipeline",
+  "started_at": "2026-10-28T00:39:53.488002+00:00",
+  "finished_at": "2026-10-28T00:40:01.450422+00:00",
+  "duration_seconds": 7.96242,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_gemini_pipeline"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"provider\": \"gemini\",\r\n  \"api\": \"real_local\",\r\n  \"asr\": \"simulated\",\r\n  \"translation\": \"simulated\",\r\n  \"tts\": \"simulated\",\r\n  \"audio_worklet\": \"real\",\r\n  \"external_calls\": 0,\r\n  \"gpu_seconds\": 0,\r\n  \"microphone_requests\": 0,\r\n  \"websocket_connections\": 1,\r\n  \"captions_deduplicated\": true,\r\n  \"finished_idle\": true,\r\n  \"inference_ms\": null,\r\n  \"inference_500ms_verified\": false,\r\n  \"javascript_errors\": [],\r\n  \"screenshots\": [\r\n    \"tmp/ui/gemini-pipeline-1440.png\"\r\n  ],\r\n  \"checked_at\": \"2026-10-28T00:40:01.353964+00:00\",\r\n  \"provider_received\": {\r\n    \"connections\": 1,\r\n    \"pcm_packets\": 41,\r\n    \"pcm_bytes\": 128340,\r\n    \"end_messages\": 1\r\n  },\r\n  \"provider_input_rate\": 16000,\r\n  \"limitations\": [\r\n    \"Simulated Gemini only: no Google model, latency, bilingual quality or real access evaluated.\"\r\n  ]\r\n}\r\n"
+}

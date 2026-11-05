@@ -1,0 +1,86 @@
+# Web oficial interactiva de Brivany
+
+Publicada el 1 de noviembre de 2026 en https://brivany.example. La publicación
+fue solicitada expresamente por el usuario después de las comprobaciones de
+medios y documentación. No recupera la edición local de navegador retirada:
+es la presentación pública, con una demostración local de extracción de audio.
+
+## Diseño y acciones
+
+Georgia en títulos y Segoe UI en lectura y controles, identidad `brivany.` con
+punto azul, fondo claro, materiales neutros y transiciones breves. Se respetan
+las preferencias de movimiento reducido. No hay fuentes remotas ni analítica.
+
+El estudio Three.js permite girar los modelos directamente, elegir ordenador,
+móvil o gafas y operar controles concretos: abrir/cerrar el ordenador, cambiar
+la pantalla del móvil entre habitación y plano, plegar las gafas y explorar una
+habitación de ejemplo. Sus objetos se seleccionan y la silla se mueve hasta el
+límite de la mesa. Este límite usa cajas de contorno; no demuestra simulación
+física ni fidelidad de una habitación real. La vista se exporta como PNG.
+
+La tarjeta de WorkSpace prepara instrucciones editables y permite copiarlas.
+La tarjeta de audio decodifica un archivo seleccionado en el navegador, genera
+PCM16 WAV mediante un Worker local y ofrece descarga y escucha. No envía ese
+archivo al servidor. La demo admite hasta 128 MiB y cinco minutos, según los
+códecs del navegador; la app usa su servicio FFmpeg para archivos mayores.
+El WAV se resamplea a 44.100 Hz; no se afirma identidad binaria con el original.
+
+Windows aparece como aplicación en desarrollo. Móvil y gafas están identificados
+como conceptos, sin anunciar integración de hardware disponible. Solicitar acceso
+abre un correo a la dirección pública indicada por el usuario; no se presenta un
+instalador público inexistente.
+
+## Validación y correcciones
+
+- Interacción real mediante el navegador integrado: bisagra del ordenador,
+  patillas, habitación, primer movimiento de silla aceptado y segundo limitado,
+  plano del móvil, PNG descargado e inspeccionado, instrucción de manual copiada
+  y pestañas mediante ArrowRight. No son animaciones ligadas al hover del ratón.
+- Revisión de anchos 320, 390, 768 y 1280 sin desbordamiento horizontal. Capturas
+  de escritorio y móvil conservadas. No equivale a probar todo navegador/GPU.
+- MP4 propio de 4,44 s procesado en localhost y en el dominio publicado. Descarga
+  real: WAV mono, 44.100 Hz, PCM16, 195.752 fotogramas, 4,438821 s. Se verificó el
+  encabezado y la duración; no se certificó escucha física en este ensayo web.
+- Dos pruebas binarias del codificador WAV: cabecera, entrelazado estéreo,
+  recuento completo de muestras, límites y valores no finitos. Sintaxis/build
+  correctos. HTTP en producción: portada y recursos, páginas legales, HEAD,
+  ausencia de cookies públicas, CSP, redirecciones, 404/405 y callback privado.
+- `tools.verify spotify-relay`: 34 comprobaciones aisladas con Miniflare, SQLite,
+  proveedores sustituidos y sin cuentas reales ni solicitudes a Spotify. Su
+  compatibilidad local es 2026-09-04; no se modifica la fecha de producción.
+- La primera exportación PNG no produjo una descarga verificable en el navegador
+  integrado. Se sustituyó el enlace efímero data URL por un enlace descargable
+  Blob y se comprobó el archivo real. También se corrigió el diseño para mantener
+  controles/modelo juntos en escritorio, la vuelta mediante caché de navegación
+  y el tipo de sombra retirado en la versión actual de Three.js.
+
+## Publicación
+
+Se conserva el Worker `brivany-site` y su dominio personalizado. Se añaden
+recursos estáticos con binding ASSETS; la raíz se resuelve internamente a
+`index.html`. Se conservan Durable Object, límites y rutas OAuth de Spotify,
+secreto remoto existente, enlaces de privacidad/condiciones y alias canónicos.
+Los logs/traces generales siguen desactivados para no registrar parámetros OAuth.
+No se publican servicios locales, credenciales, videos ni audios originales.
+
+Wrangler 4.156.0, Three.js 0.187.0 y esbuild 0.28.2 fijados con lockfile. El
+runtime local disponible admite 2026-10-30; sólo el comando de desarrollo usa esa
+fecha. La configuración y el despliegue real conservan 2026-10-31. El dry-run
+pasó y la publicación devolvió versión `56d6bdd7-4979-49af-9ab8-895fa3b007dd`.
+
+Evidencia: `tmp/official-site/deployment.json`, `production-http.json`,
+`wav-test.txt`, `published-desktop.jpg` y `published-mobile.jpg`; suite OAuth
+`tmp/verification/spotify-relay-20261101T143504-869810fe.json`.
+La comprobación web no usa modelos ni proveedores de traducción. No se midió el
+importe de tráfico/Cloudflare; las pruebas reales previas de Melodi sí usaron
+modelos, ASR, traducción y síntesis, con coste desconocido.
+
+## Límites anteriores conservados
+
+La app quedó ejecutándose con WorkSpace visible y sin panel abierto. Los agentes
+de medios y soporte están cargados; selección de archivo y resultados se probaron
+con puentes sustituidos, sin activar un micrófono real. El manual Epson se leyó
+y contrastó realmente. La búsqueda real de Windows Update pasó, pero no se
+instaló un controlador nuevo: Epson ya estaba instalado y la única actualización
+Apple exigía interacción. No se certifica impresión/escaneo físico ni instalación
+universal de drivers. Ver `melodi-medios-documentacion-y-web.md`.

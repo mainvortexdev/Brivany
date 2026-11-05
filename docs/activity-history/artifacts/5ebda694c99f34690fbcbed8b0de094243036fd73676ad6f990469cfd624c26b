@@ -1,0 +1,15 @@
+{
+  "provider": "SyncLRC",
+  "http_code": 200,
+  "returned_type": "synced",
+  "lyrics_type": "str",
+  "synced": true,
+  "line_count": 104,
+  "timed_count": 104,
+  "duration_matches": true,
+  "title_matches": true,
+  "artist_matches": false,
+  "provider_requests": 1,
+  "spotify_reads": 1,
+  "text_saved": false
+}

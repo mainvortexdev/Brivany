@@ -1,0 +1,36 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/palabra-quality-real/en-fr-20261030T054650/report.json",
+  "original_sha256": "e368a421afb6326ae0857f69e3da31e4717bea9bbd5f3c8cc6264093b0733d50",
+  "new_test_execution": false,
+  "reported_result": "pending",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "source_synthetic": true,
+    "transcripts_persisted": false,
+    "translated_synthetic_audio_saved_locally": true,
+    "source_user_media_used": false,
+    "physical_speaker_capture": false,
+    "human_listening_verified": false,
+    "translation_quality_verified": false,
+    "full_youtube_capture_verified": false,
+    "audible_latency_verified": false,
+    "native_monitoring_requested": false,
+    "provider_profile_verified": false,
+    "provider_done": true,
+    "receive_timing_is_not_physical_playback_timing": true
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

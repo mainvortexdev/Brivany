@@ -1,0 +1,23 @@
+{
+  "type": "actual_owned_WebView2_windows_with_synthetic_conversation",
+  "passed": true,
+  "external_calls": 0,
+  "microphone_used": true,
+  "OS_input_sent": false,
+  "appbar_reserved_by_test": false,
+  "phase": "native_microphone_input",
+  "voice_window_hidden_on_startup": true,
+  "real_capture": {
+    "active": true,
+    "tracks": [
+      "live"
+    ],
+    "context": "running",
+    "fft": 2048
+  },
+  "samples": 48,
+  "main_window_hidden": true,
+  "transcription_disabled": true,
+  "audio_persisted": false,
+  "microphone_released_on_cancel": true
+}

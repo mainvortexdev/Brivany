@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "scope": "real unauthenticated Spotify transport; invalid synthetic grant, no user account or credentials",
+  "endpoint": "https://accounts.spotify.com/api/token",
+  "http_status": 400,
+  "provider_error": "unsupported_grant_type",
+  "tls_verification": true,
+  "hostname_verification": true,
+  "context_certificate_mode": 2,
+  "previous_failure": "Default Python SSL context rejected issuer; Windows curl verified TLS and returned 405; adding certifi verified TLS and returned 405.",
+  "spotify_post_requests_in_this_check": 1,
+  "real_user_tokens_requested": false,
+  "billing_amount_known": false
+}

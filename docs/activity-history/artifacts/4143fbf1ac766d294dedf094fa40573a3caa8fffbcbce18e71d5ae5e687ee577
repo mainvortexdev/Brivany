@@ -1,0 +1,37 @@
+# Entregar una voz lista mientras se resuelve la anterior
+
+En el ensayo real 065 hubo tres frases con una espera medida de más de 10 ms
+entre el fin de síntesis y la publicación. Fueron 340 ms para el tramo que
+empezaba en 2,700 s, 984 ms para el de 14,954 s y 251 ms para el de 31,460 s.
+En el ensayo corto 067, los diez pares medidos quedaron dentro de 10 ms.
+Estas esperas no equivalen directamente a retraso audible. Durante ellas, la
+frase terminada retenía uno de los dos contextos y retrasaba el comienzo del
+siguiente trabajo. [Ensayo de 31 s](traduccion-auditiva-ensayo-065.md) y
+[ensayo corto](traduccion-auditiva-sintesis-real-067.md).
+
+El relay puede entregar la segunda frase cuando su síntesis y traducción
+están completas, mientras la primera sigue pendiente. Así libera un puesto
+para empezar la tercera. Permite un solo adelanto por frase pendiente.
+El reproductor ya ordena por posición de origen y espera en el inicio de la
+primera frase antes de reproducir cualquiera de las dos. La cola mantiene
+dos contextos de proveedor y la ruta de salida nativa mantiene su entrega
+ordenada. Los plazos, la cancelación y el límite de voces del navegador se
+conservan.
+
+Un escenario local con cuatro frases retiene la primera hasta que la segunda
+se publique y termine de sintetizarse la tercera. La cuarta sigue esperando
+un puesto. Después se publican las restantes y hay una voz por tramo. La
+prueba del reloj de reproducción entrega primero la segunda frase y exige
+que se escuche la primera antes de ella. El banco conserva únicamente un
+indicador booleano de publicación anticipada en su medición de cada frase.
+`sync-relay` pasó 96 pruebas y `workspace-sync-extension` pasó 76.
+Informes `tmp/verification/sync-relay-20261104T193355-bdcf1940.json` y
+`tmp/verification/workspace-sync-extension-20261104T193355-05724fd5.json`.
+Las suites usaron protocolos locales. Se hicieron junto a la
+[guía de duración de las frases](traduccion-auditiva-guia-lexica-068.md).
+
+También se revisó la opción de acelerar los huecos entre voces. Las coberturas
+065 y 067 tienen 1 s de huecos medidos cada una. Tras descontar el espacio ya
+utilizado por voces largas y los márgenes de inicio, acelerar a 1,25× podría
+ahorrar como máximo unos 60 ms por ensayo. Se descartó ese cambio como respuesta
+al crecimiento de varios segundos.

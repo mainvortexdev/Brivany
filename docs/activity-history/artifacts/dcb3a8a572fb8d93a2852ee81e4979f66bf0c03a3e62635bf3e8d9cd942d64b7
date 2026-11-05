@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "relay_https": "real",
+  "spotify_api": "substituted",
+  "user_account_accessed": false,
+  "spotify_requests": 0,
+  "tokens_persisted": false,
+  "checks": [
+    "normal TLS and domain callback",
+    "secure redirect to Spotify inspected without following it",
+    "browser cookie bound to the synthetic flow",
+    "authorization returned via HTTPS relay to isolated native service",
+    "token exchange substituted; local state updated",
+    "acknowledgement removed synthetic authorization; later poll rejected"
+  ],
+  "redirect_uri": "https://brivany.example/spotify/callback"
+}

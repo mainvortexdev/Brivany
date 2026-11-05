@@ -1,0 +1,47 @@
+{
+  "status": "passed",
+  "scope": "native Windows launch and loopback metadata, no inference",
+  "window_observed": {
+    "title": "Brivany",
+    "pid": 21448,
+    "responding": true
+  },
+  "base_url": "http://127.0.0.1:55295",
+  "configured_services": [
+    {
+      "name": "Conversación Meta",
+      "configured": true
+    },
+    {
+      "name": "Escucha Muse live",
+      "configured": true
+    },
+    {
+      "name": "Voz Melodi · Cartesia",
+      "configured": true
+    },
+    {
+      "name": "Traducción · Muse / Meta / Cartesia",
+      "configured": true
+    }
+  ],
+  "runtime": {
+    "available": true,
+    "source_lock_matches": true,
+    "source_mode": "bundled",
+    "bundle_verified": true,
+    "backend": "cognira-windows",
+    "platforms_verified": [],
+    "native_input_verified": false
+  },
+  "native": true,
+  "control_enabled": false,
+  "agent_kinds": [
+    "desktop",
+    "model",
+    "document",
+    "personal"
+  ],
+  "external_calls": 0,
+  "physical_audio_verified": false
+}

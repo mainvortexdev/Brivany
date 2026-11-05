@@ -1,0 +1,44 @@
+{
+  "type": "retrospective_verification_inventory_for_film",
+  "files_scanned": 1217,
+  "recognized_verification_reports": 1215,
+  "reports_exit_zero": 1030,
+  "reports_nonzero": 185,
+  "reports_with_count": 763,
+  "reported_case_executions_including_repeated_regressions": 26665,
+  "latest_four_suites": [
+    {
+      "file": "workspace-sync-extension-20261104T214713-d7d7ccfe.json",
+      "suite": "workspace-sync-extension",
+      "started_at": "2026-11-04T21:47:13.306606+00:00",
+      "exit_code": 0,
+      "reported_cases": 83
+    },
+    {
+      "file": "translation-voices-20261104T214340-37e6f3a6.json",
+      "suite": "translation-voices",
+      "started_at": "2026-11-04T21:43:40.283075+00:00",
+      "exit_code": 0,
+      "reported_cases": 26
+    },
+    {
+      "file": "river-translation-20261104T214340-eaa20328.json",
+      "suite": "river-translation",
+      "started_at": "2026-11-04T21:43:40.284072+00:00",
+      "exit_code": 0,
+      "reported_cases": 70
+    },
+    {
+      "file": "sync-relay-20261104T214713-4931304e.json",
+      "suite": "sync-relay",
+      "started_at": "2026-11-04T21:47:13.332539+00:00",
+      "exit_code": 0,
+      "reported_cases": 104
+    }
+  ],
+  "latest_four_reported_cases": 283,
+  "scope": "Stored reports only; repeated suites and case executions are included. A passing local case does not certify all real-world behavior. No new tests or provider requests.",
+  "verification_reports_referenced_by_ledger": 1215,
+  "last_four_referenced_by_ledger": true,
+  "observed_on": "2026-11-04"
+}

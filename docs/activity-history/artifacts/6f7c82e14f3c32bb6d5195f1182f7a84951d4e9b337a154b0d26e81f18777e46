@@ -1,0 +1,118 @@
+# 25. Integridad de la traducción y revisión sintética
+
+27 de octubre de 2026, informes UTC del 28. Una sesión que entrega PCM y cierra
+localmente no demuestra que toda la frase se tradujo. Esta revisión cubre esa
+diferencia antes de presentar el doblaje como terminado.
+
+## Muestra fija y límites
+
+El audio de prueba dice **“This room has two windows.”** Se sintetizó localmente
+con la voz de prueba Windows, no contiene una conversación privada y dura
+2,344208 s. SHA-256:
+`5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30`.
+
+La opción de línea de comandos `--review-synthetic` solo admite esa ruta, hash,
+formato y número de muestras. No habilita guardar audio de otros usuarios.
+Conserva la voz generada y texto observado en
+`tmp/synthetic-dubbing-review/<uuid>/`, fuera de la bitácora; el registro de
+construcción conserva informes y hashes. No hay reconocimiento ni calificación
+semántica automáticos en el colector, ni almacenamiento de claves.
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.measure_dubbing tmp/modular-dubbing/english-room.wav --provider gemini --source en --target es --allow-paid --review-synthetic
+```
+
+Este comando ejecuta una sesión real potencialmente facturable. No pertenece
+a las suites locales sin inferencias.
+
+## Hallazgo concreto
+
+Una única revisión real, informe
+`tmp/dubbing-measurements/20261028T012406-a9cecd91.json`, produjo:
+
+- Original observado: **“This room has two windows.”**
+- Traducción observada: **“Esta habitación tiene”**.
+- Primer PCM: 3359 ms desde el primer envío.
+- Salida: 10,2 s PCM; ventanas por encima de RMS 0.005 sumaron 0,72 s.
+
+La comparación textual muestra una **traducción incompleta**: falta la referencia
+a las dos ventanas. No se deduce calidad acústica a partir de ese texto, ni se
+presenta la duración PCM como duración de habla. El audio queda disponible para
+escucha; todavía no se realizó valoración auditiva humana.
+
+Artefactos: `tmp/synthetic-dubbing-review/d12ca425-789e-4af0-ae42-ed52844d54e9/`.
+El estado `passed` del medidor solo describe transporte y cierre local; no
+convierte este resultado en traducción íntegra. `full_translation_verified` y
+`semantic_accuracy_verified` permanecen falsos.
+
+## Hipótesis y experimento acotado
+
+La traducción continua podría necesitar recibir una pausa después de una frase
+breve para emitir su final. No existe en las fuentes oficiales consultadas una
+garantía de que añadir silencio resuelva ese caso. La API Live genérica documenta
+`audioStreamEnd` para vaciar audio cacheado al detener la entrada, pero el ejemplo
+dedicado no certifica traducción completa ni un EOF por palabra.
+[Guía Live](https://ai.google.dev/gemini-api/docs/live-api/capabilities),
+[ejemplo de traducción](https://github.com/google-gemini/gemini-live-api-examples/blob/main/command-line/python/translate.py).
+
+Se implementó una opción experimental por sesión:
+`tail_silence_seconds: 2`, **desactivada por defecto**. Tras el último PCM original
+envía veinte bloques de silencio de 100 ms a 16 kHz, a ritmo real. Después manda
+el control de fin y aplica el drenaje local acotado. Pausar/cancelar detiene ese
+envío. El audio original, el padding y el total de entrada al proveedor tienen
+contadores separados; el silencio puede consumir cuota y se incluye en la
+estimación de coste.
+
+La referencia de latencia conserva el inicio y fin del audio original; no se
+desplaza al final del silencio añadido para fabricar una cifra menor. Esta opción
+afecta el final de la sesión, no demuestra inferencia inferior a 500 ms.
+
+El siguiente ensayo debe reutilizar la misma muestra y cambiar solo esta opción,
+comprobar la frase traducida y conservar la salida sintética para revisión.
+Un éxito en esa frase no garantiza integridad en otros contenidos.
+
+## Resultado del experimento con pausa final
+
+Después de las comprobaciones locales se hizo **una sola sesión** con la misma
+fixture y `--gemini-tail-silence 2`. El texto observado fue:
+**“Esta habitación tiene dos ventanas.”** Conserva en esta comparación textual
+el cuarto, la cantidad dos y las ventanas; no equivale a una revisión auditiva
+de la voz ni a una evaluación bilingüe de otros videos.
+
+| Dato | Sin pausa adicional | Con 2 s adicionales |
+|---|---|---|
+| Texto observado | Esta habitación tiene | Esta habitación tiene dos ventanas. |
+| Primer PCM desde el inicio original | 3359 ms | 3297 ms |
+| Primer PCM desde el fin original | 1000 ms después | 953 ms después |
+| PCM recibido | 10,2 s | 12 s |
+| Silencio de entrada añadido | 0 s | 2 s / 64000 bytes a 16 kHz |
+| Fin de entrada original hasta cierre local | 12063 ms | 14219 ms |
+| Estimación de coste a tarifas publicadas | $0.005562 | $0.006684; cargos reales desconocidos |
+
+Informes `tmp/dubbing-measurements/20261028T012406-a9cecd91.json` y
+`tmp/dubbing-measurements/20261028T013411-7d825576.json`. La última estimación usa
+139014 bytes realmente enviados al proveedor, incluido el padding, y la duración
+PCM recibida. El máximo de 500 ms de inferencia interna **sigue sin verificar**;
+los 953 ms se refieren al fin de la fuente, no al fin del silencio añadido.
+No se atribuye la diferencia de 62 ms a una mejora de latencia: es una muestra
+por configuración, no una distribución controlada de tiempos.
+
+La opción sigue experimental y desactivada por defecto. El texto completo en
+una frase apoya probar el mecanismo; no garantiza que siempre libere una cola
+completa. El proveedor no confirmó consumo final y Brivany cerró por presupuesto
+local de recepción.
+
+Salida completa y metadatos de revisión:
+`tmp/synthetic-dubbing-review/1cbba689-9bf3-4f4e-9420-237d0bcaa589/`.
+`translated.wav` conserva todo el PCM original. `listening-preview.wav` quita
+únicamente muestras digitales exactamente cero al final y conserva 100 ms de
+margen; no elimina pausas internas, no normaliza voz ni cambia las mediciones.
+Dura 2,811 s. Su hash y transformación están en `listening-preview.json`.
+
+Las últimas comprobaciones pasaron **180 pruebas Python** y **31 escenarios UI**.
+La primera ejecución de Python tuvo dos abortos locales WinError 10053; ambas
+pruebas afectadas pasaron aisladas, y una repetición sin navegador concurrente
+pasó la suite completa. Se conserva también el informe fallido; no se ocultó
+como si nunca hubiera ocurrido. Evidencia vigente:
+`tmp/verification/python-20261028T013228-3b75710e.json` y
+`tmp/verification/dubbing-ui-20261028T013012-d76a0978.json`.

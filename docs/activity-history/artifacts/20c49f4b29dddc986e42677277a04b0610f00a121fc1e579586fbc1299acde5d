@@ -1,0 +1,21 @@
+{
+  "suite": "work",
+  "started_at": "2026-11-03T23:14:41.726559+00:00",
+  "finished_at": "2026-11-03T23:14:44.004466+00:00",
+  "duration_seconds": 2.277907,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_work_mode",
+    "tests.test_work_bridge",
+    "tests.test_appbar"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".................................\r\n----------------------------------------------------------------------\r\nRan 33 tests in 0.959s\r\n\r\nOK\r\n"
+}

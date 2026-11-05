@@ -1,0 +1,21 @@
+{
+  "purpose": "Exercise implemented provider failover using a public documented fixture, without a user account or Spotify tokens.",
+  "utc": "2026-10-31T22:05:51.936720+00:00",
+  "requests": [
+    {
+      "provider": "LRCLIB",
+      "http_code": 502
+    },
+    {
+      "provider": "Lyrics.ovh",
+      "http_code": 200
+    }
+  ],
+  "external_calls": 2,
+  "status": "ready",
+  "provider": "Lyrics.ovh",
+  "synced": false,
+  "line_count": 46,
+  "cost": "Anonymous public APIs; no key or paid inference. Monetary cost not measured.",
+  "limits": "One catalog fixture; not full coverage or semantic accuracy. No lyrics or user music metadata saved."
+}

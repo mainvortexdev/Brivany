@@ -1,0 +1,58 @@
+{
+  "ui_mode": "desktop-only",
+  "tray": {
+    "supported": true,
+    "active": true,
+    "closed": false,
+    "name": "Brivany",
+    "actions": [
+      "open",
+      "workspace",
+      "exit"
+    ]
+  },
+  "workspace_active": true,
+  "music_ducking": {
+    "supported": true,
+    "enabled": true,
+    "ducked": false,
+    "monitoring": true,
+    "error": "",
+    "excluded": []
+  },
+  "spotify_audio": {
+    "local_state": "ready",
+    "snapshot_age": null,
+    "local_playing": false,
+    "gain": null
+  },
+  "workspace_visuals": {
+    "bar": {
+      "playing": "false",
+      "ambience": "true",
+      "motion": "true",
+      "listening": "false",
+      "speaking": "false",
+      "waveOpacity": "1",
+      "voiceCanvas": null
+    },
+    "work": {
+      "playing": "false",
+      "ambience": "false",
+      "motion": "true",
+      "listening": "false",
+      "speaking": "false",
+      "waveOpacity": "0",
+      "voiceCanvas": null
+    },
+    "voice": {
+      "listening": "false",
+      "speaking": "false",
+      "waveOpacity": null,
+      "voiceCanvas": {
+        "width": 560,
+        "height": 72
+      }
+    }
+  }
+}

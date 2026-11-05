@@ -1,0 +1,30 @@
+<!-- Adaptado de Cognira Desktop por solicitud del usuario; conserva su diseño de parada. -->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Melodi · Control del equipo</title>
+  <style>
+    :root { color-scheme: dark; --accent: 35, 135, 125; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; pointer-events: none; user-select: none; }
+    .frame { position: fixed; inset: 0; border: 2px solid rgba(var(--accent), .82); border-radius: 12px;
+      box-shadow: inset 0 0 12px 3px rgba(var(--accent), .36), inset 0 0 40px 9px rgba(var(--accent), .14), inset 0 0 5px 1px rgba(7, 27, 43, .55); }
+    .status { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); max-width: calc(100% - 32px);
+      display: flex; align-items: center; gap: 9px; padding: 8px 12px; border-radius: 9px;
+      background: rgba(13, 27, 39, .95); border: 1px solid rgba(var(--accent), .44); color: #e6f4ff;
+      box-shadow: 0 2px 14px #0005; font: 500 12px/1.35 'Segoe UI', sans-serif; white-space: normal; text-align: center; }
+    .dot { width: 6px; height: 6px; flex: none; border-radius: 50%; background: #60c5ff; box-shadow: 0 0 7px #38b5ff99; }
+    .divider { width: 1px; height: 14px; background: #ffffff26; }
+    .hint { color: #b7cede; }
+    kbd { margin-right: 4px; padding: 1px 4px; border: 1px solid #ffffff38; border-bottom-width: 2px; border-radius: 4px; color: #fff; font: inherit; }
+    @media (max-width: 420px) { .status { font-size: 10px; gap: 6px; } }
+  </style>
+</head>
+<body aria-label="Melodi está controlando el equipo. Presiona Escape para detenerla.">
+  <div class="frame" aria-hidden="true"></div>
+  <div class="status" role="status"><span class="dot" aria-hidden="true"></span><span>Melodi controla el equipo</span><span class="divider" aria-hidden="true"></span><span class="hint"><kbd>Esc</kbd> detener</span></div>
+</body>
+</html>

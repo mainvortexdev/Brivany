@@ -1,0 +1,16 @@
+{
+  "suite": "computer-native",
+  "started_at": "2026-10-30T19:01:42.990444+00:00",
+  "finished_at": "2026-10-30T19:01:43.243766+00:00",
+  "duration_seconds": 0.253322,
+  "command": [
+    "node",
+    "--test",
+    "tests/computer-native.test.cjs",
+    "tests/computer-browser.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ Player hover keeps identity guards and injects movement only (23.1117ms)\n✔ Verification keeps the observed player visible without seeking or toggling (3.2277ms)\n✔ YouTube playback requires two content advances, then pause and resume are verified (0.832ms)\n✔ Advertisement timer is not music; only the observed skip control is used (0.5125ms)\n✔ A frozen playing label never confirms audible content progress (0.9175ms)\n✔ Unrelated timers and advertising cannot supply content progress (0.2357ms)\n✔ A result replaced during reasoning is never clicked (0.9993ms)\n✔ Browser search and login are typed actions; credentials are not tool parameters (0.6642ms)\n✔ Delayed accessible document is polled without repeating navigation (0.746ms)\n✔ Changed foreground aborts before another read or action (0.3415ms)\n✔ Wrong destination never becomes verified (0.4092ms)\n✔ Login redirects stay within the requested origin and hand off without reading fields (0.5324ms)\n✔ YouTube UI refresh is accepted only with the same query and origin (0.4632ms)\n✔ Unsafe navigation schemes and credentials never reach input (0.4584ms)\n✔ Win32 editor fallback uses observed identity and literal data (1.5245ms)\n✔ Literal input cannot interpolate shell syntax or SendKeys commands (0.2955ms)\n✔ Only typed native actions; no code, invented control or shell entry (0.472ms)\n✔ File scopes reject root modification, traversal, sibling prefixes and symlinks (3.3209ms)\nℹ tests 18\nℹ suites 0\nℹ pass 18\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 156.8683\n"
+}

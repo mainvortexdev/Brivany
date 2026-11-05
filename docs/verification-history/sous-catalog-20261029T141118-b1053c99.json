@@ -1,0 +1,18 @@
+{
+  "suite": "sous-catalog",
+  "started_at": "2026-10-29T14:11:18.961053+00:00",
+  "finished_at": "2026-10-29T14:11:26.063050+00:00",
+  "duration_seconds": 7.101997,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_sous_catalog"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Actual browser + Handler + SQLite catalog, locality and shopping; providers disabled.\",\r\n  \"checks\": [\r\n    \"three authored presets load without location inference or provider requests\",\r\n    \"declared country and preferences persist and only then reorder the regional practice\",\r\n    \"missing ingredients create an editable persistent shopping list with units, checkboxes, add and remove, no prices or orders\",\r\n    \"selected recipe creates a persisted cooking session with its own steps and read-only voice context\",\r\n    \"vegan preference blocks the egg practice instead of silently ignoring a conflict\",\r\n    \"catalog and shopping controls fit mobile and desktop widths\"\r\n  ],\r\n  \"screenshots\": [\r\n    \"tmp/sous-catalog/catalog-cooking-1440.png\",\r\n    \"tmp/sous-catalog/catalog-shopping-390.png\"\r\n  ],\r\n  \"automatic_device_requests\": 0,\r\n  \"provider_requests\": 0,\r\n  \"checked_at\": \"2026-10-29T14:11:25.471632+00:00\",\r\n  \"persistent_service_reopen_checked\": true,\r\n  \"voice_context_checked\": true,\r\n  \"external_calls\": 0,\r\n  \"gpu_inference\": false,\r\n  \"model_executed\": false,\r\n  \"limitations\": [\r\n    \"Authored presets and declared locality only; no traditional authenticity or external recipe sources verified.\",\r\n    \"No geolocation, food provider, purchase, WhatsApp message, model or physical device was used.\"\r\n  ]\r\n}\r\n"
+}

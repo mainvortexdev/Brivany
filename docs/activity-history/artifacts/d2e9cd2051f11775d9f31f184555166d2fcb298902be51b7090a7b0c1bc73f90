@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "type": "real account weather query with corrected local date and cited result",
+  "billing_usd": null,
+  "original_conversation_saved": false,
+  "state": "succeeded",
+  "host_job_calls": 2,
+  "error": "No se confirmó la fecha local.",
+  "account_requests": 15,
+  "elapsed_seconds": 33.17
+}

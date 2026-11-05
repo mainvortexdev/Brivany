@@ -1,0 +1,94 @@
+/* Capture always starts from the user's browser action, never a remote page. */
+import {readVideoCaptions,upcomingCaptions} from './caption-probe.js';
+import {connectDesktop,reply} from './desktop-connect.js';
+const players=new Map();
+const selectedTabs=new Set();
+const own=chrome.runtime.getURL('player.html');
+export async function activateSource(source){
+  if(!Number.isInteger(source.id)||!/^https?:/.test(source.url||''))return;
+  try{
+    selectedTabs.add(source.id);
+    if(chrome.scripting.insertCSS)await chrome.scripting.insertCSS({target:{tabId:source.id},files:['video-selection.css']});
+    await chrome.scripting.executeScript({target:{tabId:source.id},files:['video-loader.js']});
+  }catch(error){selectedTabs.delete(source.id);console.warn('Brivany no pudo seleccionar un video de esta página.');}
+}
+chrome.action.onClicked.addListener(activateSource);
+chrome.runtime.onConnect.addListener(port=>{
+ if(port.name!=='brivany-video'||port.sender?.id!==chrome.runtime.id||!selectedTabs.has(port.sender?.tab?.id))return;
+ let socket=null,closed=false,connecting=false,selected=false,sequence=0,acknowledged=0;
+ const fail=message=>{if(closed)return;closed=true;port.postMessage({type:'error',message});socket?.close();};
+ port.onMessage.addListener(async message=>{
+  if(closed)return;
+  if(message?.type==='connect-video'&&!connecting&&!socket){
+   connecting=true;
+   try{const grant=await connectDesktop();if(closed)return;
+    if(grant.selected_video_protocol!==2||grant.progressive_translation_available!==true)throw Error('desktop_version');
+    if(typeof message.selection!=='string'||! /^[\w-]{8,80}$/.test(message.selection))throw Error();
+    const probes=await chrome.scripting.executeScript({target:{tabId:port.sender.tab.id},world:'MAIN',func:readVideoCaptions,args:[null,message.selection]});if(closed)return;
+    socket=new WebSocket(grant.video_url);await reply(socket,{type:'authenticate',token:grant.token},'authenticated');if(closed){socket.close();return;}
+    socket.addEventListener('message',event=>{let value;try{value=JSON.parse(event.data);}catch{return;}if(closed)return;
+     if(value.type==='error')return fail(value.message||'No se pudo traducir este video.');
+     if(value.type==='audio-ack'){
+      if(!Number.isInteger(value.sequence)||value.sequence!==acknowledged||value.sequence>=sequence)return fail('Brivany no confirmó correctamente el audio. Vuelve a seleccionar el video.');
+      acknowledged++;port.postMessage({type:'ack',sequence:value.sequence});return;
+     }
+     if(['original-gain','caption-ack','transcript','translation-state'].includes(value.type))port.postMessage(value);
+    });
+    socket.addEventListener('close',()=>{if(!closed)fail('Se perdió la conexión con Brivany.');});port.postMessage({type:'video-ready',snapshot:probes[0]?.result||null});
+   }catch(error){fail(error.message==='desktop_version'?'Reinicia Brivany para aplicar la actualización de traducción y vuelve a pulsar la extensión.':'Abre Brivany y vuelve a pulsar la extensión.');}finally{connecting=false;}return;
+  }
+  if(message?.type==='stop'){closed=true;socket?.close();return;}
+  if(!socket||socket.readyState!==1)return;
+  if(message?.type==='select'&&!selected){selected=true;socket.send(JSON.stringify(message));return;}
+  if(message?.type==='captions'&&selected){const raw=JSON.stringify(message);if(raw.length<=13000)socket.send(raw);return;}
+  if(message?.type==='media-state'&&selected&&typeof message.paused==='boolean'){socket.send(JSON.stringify(message));return;}
+  if(message?.type==='position'&&selected&&Number.isFinite(message.position)){socket.send(JSON.stringify(message));return;}
+  if(message?.type==='pcm'&&selected){
+   if(message.sequence!==sequence++||typeof message.data!=='string'||message.data.length!==5120||socket.bufferedAmount>15360)return fail('El audio no pudo enviarse a tiempo.');
+   try{const bytes=Uint8Array.from(atob(message.data),c=>c.charCodeAt(0));if(bytes.length!==3840)throw Error();socket.send(bytes);}catch{fail('El audio del video llegó incompleto.');}
+  }
+ });
+ port.onDisconnect.addListener(()=>{closed=true;socket?.close();});
+});
+chrome.runtime.onConnect.addListener(port=>{
+  if(port.name!=='brivany-player'||!port.sender?.url?.startsWith(own))return;
+  let playerId=null;
+  port.onMessage.addListener(async message=>{
+    if(message?.type==='caption-request'&&playerId!==null){
+      const entry=players.get(playerId);if(!entry||entry.port!==port||!entry.capturing||entry.probing||!chrome.scripting)return;
+      entry.probing=true;
+      try{
+        const source=await chrome.tabs.get(entry.source);if(source.url!==entry.url)return sourceEnded(entry.source,'La pestaña cambió.');
+        const result=await chrome.scripting.executeScript({target:{tabId:entry.source},world:'MAIN',func:readVideoCaptions,args:[entry.captionCache||null]});
+        if(players.get(playerId)!==entry||entry.port!==port)return;
+        entry.captionCache=result[0]?.result||null;const snapshot=upcomingCaptions(entry.captionCache);
+        if(snapshot)port.postMessage({type:'caption-lookahead',...snapshot});
+      }catch{}finally{entry.probing=false;}
+      return;
+    }
+    if(message?.type!=='capture-request'||!Number.isInteger(message.player_id)||(playerId!==null&&playerId!==message.player_id))return;
+    try{
+      const player=await chrome.tabs.get(message.player_id);
+      if(!player.url?.startsWith(own))throw Error('player');
+      let entry=players.get(player.id);
+      if(!entry){
+        // The worker may have slept while the player opened. activeTab still
+        // makes Chrome enforce the original user grant for the target tab.
+        const sourceId=Number(new URL(player.url).searchParams.get('source'));
+        if(!Number.isInteger(sourceId)||sourceId<0)throw Error('source');
+        const source=await chrome.tabs.get(sourceId);entry={source:sourceId,url:source.url,port:null};players.set(player.id,entry);
+      }
+      const source=await chrome.tabs.get(entry.source);
+      if(source.url!==entry.url)throw Error('navigation');
+      playerId=player.id;entry.port=port;
+      const streamId=await chrome.tabCapture.getMediaStreamId({targetTabId:entry.source,consumerTabId:player.id});
+      if(players.get(player.id)!==entry||entry.port!==port)return;
+      entry.capturing=true;
+      port.postMessage({type:'capture-ready',stream_id:streamId});
+    }catch(error){port.postMessage({type:'capture-error',message:'No se pudo capturar la pestaña. Vuelve a pulsar la extensión en la pestaña del video.'});}
+  });
+  port.onDisconnect.addListener(()=>{if(playerId!==null)players.delete(playerId);});
+});
+function sourceEnded(tabId,reason){for(const [player,entry] of players)if(entry.source===tabId){try{entry.port?.postMessage({type:'source-ended',reason});}catch{}players.delete(player);}}
+chrome.tabs.onRemoved.addListener(tabId=>{selectedTabs.delete(tabId);sourceEnded(tabId,'La pestaña de origen se cerró.');players.delete(tabId);});
+chrome.tabs.onUpdated.addListener((tabId,change)=>{if(change.status==='loading'||change.url){selectedTabs.delete(tabId);sourceEnded(tabId,'La pestaña de origen cambió. Inicia una sesión nueva.');}});

@@ -1,0 +1,11 @@
+{
+  "scope": "real native execution on new synthetic files only",
+  "external_calls": 0,
+  "checks": [
+    "new note bytes verified"
+  ],
+  "user_documents_modified": false,
+  "fixture_root": "<local-path>\\tmp\\computer-files-real\\fixture-b219a673",
+  "status": "failed",
+  "failure": "La nota no presenta un único campo editable; no se escribirá en otro control."
+}

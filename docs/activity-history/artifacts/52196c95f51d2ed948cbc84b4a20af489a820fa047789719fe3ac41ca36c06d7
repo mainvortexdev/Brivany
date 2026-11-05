@@ -1,0 +1,28 @@
+{
+  "type": "public_youtube_isolated_brave_inline_sync",
+  "passed": false,
+  "source_owned_synthetic": false,
+  "encoded_video_source": false,
+  "owned_caption_track": false,
+  "provider_trial_max_seconds": 60,
+  "prefill_requested": true,
+  "continuity_trial": true,
+  "progressive_fixture": false,
+  "billing_amount": null,
+  "user_profile_used": false,
+  "physical_listening_verified": false,
+  "cloning_enabled": false,
+  "public_source_playing": true,
+  "requested_video_position": 0,
+  "prefix": {
+    "position_ms": 10,
+    "pcm_sent_ms": 7040,
+    "elapsed_ms": null,
+    "turns": [],
+    "error_code": "prefix_asr_timeout",
+    "prepared_before_activation": false,
+    "original_unchanged": true,
+    "video_seconds_before_activation": 13.559981
+  },
+  "error": "esperar-prefijo: Error"
+}

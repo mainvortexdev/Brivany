@@ -1,0 +1,309 @@
+{
+  "type": "public_youtube_isolated_brave_inline_sync",
+  "passed": true,
+  "source_owned_synthetic": false,
+  "encoded_video_source": false,
+  "owned_caption_track": false,
+  "provider_trial_max_seconds": 28,
+  "billing_amount": null,
+  "user_profile_used": false,
+  "physical_listening_verified": false,
+  "cloning_enabled": false,
+  "public_source_playing": true,
+  "requested_video_position": 24,
+  "cues": [
+    {
+      "speaker": 1,
+      "category": "feminine",
+      "source": 0,
+      "picture": 0.032,
+      "recovered_gap": false,
+      "rate": 1.1655629139072847,
+      "duration": 3.52,
+      "audio_peak": 0.929755449295044,
+      "played": 3.52,
+      "wall": 3.0072999999970196,
+      "completed": true,
+      "onset_ms": 6386,
+      "sync_error_ms": 32
+    },
+    {
+      "speaker": 2,
+      "category": "feminine",
+      "source": 3.02,
+      "picture": 3.002667,
+      "recovered_gap": false,
+      "rate": 1,
+      "duration": 3.12,
+      "audio_peak": 0.5265949368476868,
+      "played": 3.12,
+      "wall": 3.122,
+      "completed": true,
+      "onset_ms": 10022,
+      "sync_error_ms": -17
+    }
+  ],
+  "browser_voice_played": 2,
+  "browser_cues_with_signal": 2,
+  "audio_output_detected": true,
+  "ended_by_trial_limit": false,
+  "error_message": null,
+  "no_new_window": true,
+  "protocol": [
+    {
+      "type": "ready",
+      "at": 0
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 0,
+      "end": null,
+      "at": 522
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "at": 1942
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 0,
+      "end": 3020,
+      "at": 3744
+    },
+    {
+      "type": "stage-metrics",
+      "start": 0,
+      "stage": "segment_ready",
+      "at": 3746
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 3020,
+      "end": null,
+      "at": 3746
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "at": 3767
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "at": 3768
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_done",
+      "available": true,
+      "at": 4697
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "at": 4945
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "at": 5593
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "at": 5659
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "register": "local_pitch",
+      "confidence": 0,
+      "advisory": "uncertain",
+      "f0": 242,
+      "resonance": 2755,
+      "voiced": 56,
+      "resonanceWindows": 14,
+      "at": 5714
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "at": 5901
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "at": 6308
+    },
+    {
+      "type": "stage-metrics",
+      "start": 0,
+      "end": 3020,
+      "stage": "cue_ready",
+      "at": 6308
+    },
+    {
+      "type": "dub-cue",
+      "start": 0,
+      "end": 3020,
+      "speaker": 1,
+      "category": "feminine",
+      "at": 6328
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 3020,
+      "end": 6220,
+      "at": 6919
+    },
+    {
+      "type": "stage-metrics",
+      "start": 3020,
+      "stage": "segment_ready",
+      "at": 6919
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "at": 6944
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "at": 6945
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 6300,
+      "end": null,
+      "at": 6985
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_done",
+      "available": true,
+      "at": 7365
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "at": 8028
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "at": 9253
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "at": 9383
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "register": "local_pitch",
+      "confidence": 0,
+      "advisory": "uncertain",
+      "f0": 286,
+      "resonance": 2986,
+      "voiced": 55,
+      "resonanceWindows": 9,
+      "at": 9411
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "at": 9593
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_done",
+      "available": true,
+      "at": 9940
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "at": 9974
+    },
+    {
+      "type": "stage-metrics",
+      "start": 3020,
+      "end": 6220,
+      "stage": "cue_ready",
+      "at": 9975
+    },
+    {
+      "type": "dub-cue",
+      "start": 3020,
+      "end": 6220,
+      "speaker": 2,
+      "category": "feminine",
+      "at": 9982
+    }
+  ],
+  "last_processed_ms": 13200,
+  "last_buffer": {
+    "lag": 6.981332999999999,
+    "reason": null,
+    "media": 6.218667,
+    "capture": 13.2,
+    "processed": 13.12,
+    "paused": false,
+    "ready": 4,
+    "frames": 145,
+    "buffered": [
+      [
+        0,
+        13.118
+      ]
+    ]
+  },
+  "recorder_track": {
+    "width": 640,
+    "height": 360,
+    "frameRate": 24
+  },
+  "source_lifecycle": {
+    "events": [
+      {
+        "type": "pause",
+        "time": 42.003222,
+        "selected": true,
+        "ready": 4
+      },
+      {
+        "type": "seeking",
+        "time": 34.972308,
+        "selected": false,
+        "ready": 1
+      },
+      {
+        "type": "seeked",
+        "time": 34.972308,
+        "selected": false,
+        "ready": 4
+      }
+    ],
+    "connected": true,
+    "selected": false,
+    "paused": true,
+    "time": 34.972308
+  },
+  "finished_after_source": false,
+  "correct_speaker_sequence": null,
+  "public_speaker_match_verified": false,
+  "workspace_stop_clean": false,
+  "original_replayed_to": 0,
+  "one_session": null,
+  "drained_after_reset": false,
+  "late_cues_played": false,
+  "ephemeral_sample_delivered": true
+}

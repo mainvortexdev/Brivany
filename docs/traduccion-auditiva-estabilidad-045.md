@@ -1,0 +1,96 @@
+# Estabilidad de Traducción auditiva y Brave 0.4.5
+
+## Incidentes del 4 de noviembre de 2026
+
+En la primera prueba, el usuario oyó voces entrecortadas y aparentemente
+ralentizadas durante los primeros diez segundos. Después se entendía parte del
+doblaje, con retraso y una voz femenina atribuida al presentador. La captura de
+pantalla mostró el aviso genérico de interrupción de Muse. En una segunda
+prueba, el usuario informó que el video dejó de reproducirse y que el PC dejó de
+responder. Son reportes de uso real. Su consumo y la causa del bloqueo de
+Windows son desconocidos. La evidencia histórica disponible no conserva el
+código específico de Muse de la prueba del usuario.
+
+## Cambios
+
+- La extensión sigue siendo el punto de captura, tanto si se pulsa su icono
+  como si Traducción auditiva de WorkSpace activa la pestaña autorizada. El
+  original continúa durante la preparación. El reproductor con retardo usa
+  un margen de reanudación para evitar pausas repetidas cerca del umbral.
+- La captura limita la copia que se vuelve a codificar a 960 × 540 y 24 fps,
+  con objetivo de 650 kb/s de video.
+  La cola del grabador cuenta los bytes desde que llegan. La extensión
+  limita las solicitudes de reproducción pendientes y libera el audio y la
+  imagen originales si se detiene la captura, el decodificador o el enlace.
+  Si un turno queda abierto demasiado tiempo, reproduce el intervalo original
+  y permite volver al doblaje en el siguiente turno disponible.
+- El audio puede empezar a llegar a Muse mientras Cartesia termina de conectar.
+  Una frase traducida completa puede empezar a sintetizarse mientras Meta
+  termina la siguiente. Se conserva un contexto de voz y un solo bloque de
+  reproducción por turno final. Si el análisis expresivo sigue pendiente
+  cuando llega el texto, la espera adicional se limita a 120 ms y se usa el
+  análisis acústico local.
+- Muse recibe PCM en tiempo real. El enlace corta ante cuatro segundos de
+  entrada sin progreso o sin envío una vez iniciada la captura. Se distinguen
+  errores de ritmo, cierre de política y límite de conexiones. El estado local
+  conserva un código de error sin incluir el texto del proveedor ni el audio.
+  Se corrigió la salida de error cuando un cierre WebSocket trae código numérico.
+- Las etiquetas de Muse se aplican al intervalo que precede al evento y un
+  evento antiguo no sobrescribe una asignación más reciente. La selección de
+  timbre examina hasta ocho segundos del turno, corrige duplicaciones del tono
+  por armónicos y mantiene una voz por etiqueta dentro de la sesión. Dos turnos
+  con evidencia consistente pueden corregir un registro previo. El catálogo
+  separa los timbres de dos hablantes aunque sus registros coincidan.
+
+Muse sigue requiriendo un turno final para confirmar el texto. El ajuste al
+video usa los tiempos de turno del proveedor y la distinción corresponde a
+etiquetas acústicas. El habla superpuesta y la asignación en el video del
+usuario quedan pendientes de comprobación. [Protocolo de Muse](https://dev.meta.ai/docs/api-reference/voice/realtime).
+
+## Comprobaciones locales
+
+- Brave aislado con MP4 propio y protocolo sustituido. Cuatro solicitudes de
+  WorkSpace con el video en pausa abrieron una sesión al pulsar reproducir.
+  Tres turnos A/B/A a 1×, con diferencias absolutas de 1 a 11 ms entre imagen
+  y voz. Primera voz a 4,726 s desde captura y cierre tras el final. Informe
+  `tmp/selected-video/inline-sync-1793799857831.json`.
+- Brave aislado con una fuente propia de 720p/60 y un error de Muse inducido
+  tras el primer turno. El grabador recibió 960 × 540 a 24 fps. La voz de prueba
+  empezó a 4,505 s. Se verificó que el original recuperó volumen y avanzó tras
+  cerrar la sesión. Informe
+  `tmp/selected-video/inline-sync-1793799761035.json`.
+- Brave aislado con primer turno abierto y doblaje entregado tarde. Se oyó
+  el intervalo original y los dos turnos siguientes se reprodujeron a 1×, a
+  −15 y −21 ms de la imagen. Informe `tmp/selected-video/inline-sync-1793799833400.json`.
+- `workspace-sync-extension` pasó 43 pruebas, incluidas la reserva de
+  reanudación, una sola solicitud de reproducción pendiente y la selección
+  única desde WorkSpace. Informe `docs/verification-history/workspace-sync-extension-20261104T134412-9025536e.json`.
+- `sync-relay` pasó 29 pruebas. Verificó recepción de PCM con Cartesia aún
+  conectando, síntesis antes del final de Meta sin publicar un bloque parcial,
+  progreso pese a análisis expresivo pendiente y errores de Muse depurados.
+  Informe `docs/verification-history/sync-relay-20261104T134214-a92d850f.json`.
+- `river-translation` pasó 42 pruebas, incluidas dos voces del mismo registro,
+  estabilidad por etiqueta y corrección de octava. Durante el cierre, los
+  servidores de prueba registraron un socket cerrado y una conexión HTTP
+  cancelada. Informe `docs/verification-history/river-translation-20261104T134214-56551d2c.json`.
+- `sync-desktop` pasó 10 pruebas y `workspace-translation` pasó 15 pruebas.
+  Informes `docs/verification-history/sync-desktop-20261104T134245-b717e2f3.json` y
+  `docs/verification-history/workspace-translation-20261104T134242-b52ae0ec.json`.
+
+En estos ensayos se usaron medios propios y sustitutos de Muse, Meta y
+Cartesia. Consumo de inferencia cero. La latencia medida corresponde al banco
+local. Quedan pendientes la latencia con los proveedores, la escucha física y
+la estabilidad del PC en el perfil habitual durante la reproducción real.
+
+## Entrega y activación
+
+Se cotejaron los 18 archivos del ZIP `dist/Brivany-Traduccion-Brave-0.4.5.zip`
+con el código de ejecución. Informe `tmp/selected-video/release-045.json`.
+Los mismos archivos quedaron en la carpeta descomprimida que tiene registrada
+Brave y en la carpeta de distribución general. El paquete 0.4.4 queda disponible
+como ZIP histórico.
+
+La habilidad de control del ordenador detuvo la interacción con Brave porque
+no pudo verificar la URL de la ventana. Queda pendiente pulsar Recargar en la
+tarjeta de la extensión, reiniciar Brivany mediante Salir de Brivany desde la
+bandeja y recargar la pestaña del video. La copia en disco fue verificada.

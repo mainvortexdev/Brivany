@@ -1,0 +1,14 @@
+{
+  "suite": "main-navigation",
+  "started_at": "2026-10-30T13:20:38.492101+00:00",
+  "finished_at": "2026-10-30T13:20:55.717615+00:00",
+  "duration_seconds": 17.225514,
+  "command": [
+    "node",
+    "tools/check_main_navigation.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"status\": \"passed\",\n  \"main_url\": \"http://127.0.0.1:8765/\",\n  \"canonical_translation_url\": \"http://127.0.0.1:8765/dubbing\",\n  \"checks\": [\n    \"main homepage and canonical translation render at desktop/mobile sizes\",\n    \"home CTA opens the integrated translator\",\n    \"masculine Daniel selected; no daily quotas\",\n    \"opening main pages starts no provider socket or remote request\"\n  ],\n  \"websocket_connections\": 0,\n  \"external_calls\": 0,\n  \"provider_inference_calls\": 0,\n  \"physical_playback_verified\": false,\n  \"errors\": []\n}\n"
+}

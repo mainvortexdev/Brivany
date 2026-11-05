@@ -1,0 +1,20 @@
+-r requirements-h1.txt
+# BSD-3-Clause wrapper; Windows uses the separately installed Edge WebView2 runtime.
+pywebview==6.2.1
+# Opt-in system-output capture. Capture is never started during import/readiness.
+SoundCard==0.4.6
+# Streaming WASAPI mix-format conversion for explicit WorkSpace translation.
+numpy==2.3.5
+# Verified HTTPS roots for Spotify and its production callback handoff.
+certifi==2026.10.19
+
+# Local Spotify cover decoding and palette extraction; verified runtime version.
+Pillow==12.3.0
+# Local singing/speech classification; no cloud audio needed for the gate.
+ai-edge-litert==2.2.0
+# Local acoustic catalog matching with a pinned ONNX model and bounded CPU use.
+onnxruntime==1.23.2
+scipy==1.18.1
+soxr==1.1.0
+# Local anonymous speaker embeddings; CPU only, no provider audio upload.
+sherpa-onnx==2.0.1

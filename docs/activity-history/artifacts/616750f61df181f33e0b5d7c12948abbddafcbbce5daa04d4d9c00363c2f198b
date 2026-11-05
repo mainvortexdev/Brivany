@@ -1,0 +1,21 @@
+{
+  "suite": "palabra-live",
+  "started_at": "2026-10-30T04:28:00.012750+00:00",
+  "finished_at": "2026-10-30T04:28:10.466329+00:00",
+  "duration_seconds": 10.453579,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_palabra",
+    "tests.test_palabra_live",
+    "tests.test_palabra_native"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".....................................\r\n----------------------------------------------------------------------\r\nRan 37 tests in 9.742s\r\n\r\nOK\r\n"
+}

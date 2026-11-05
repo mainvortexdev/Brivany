@@ -1,0 +1,63 @@
+{
+  "started_at": "2026-10-30T12:52:21.405378+00:00",
+  "purpose": "One synthetic phrase through real Muse, Groq and Cartesia into native Windows output.",
+  "source_synthetic": true,
+  "source_sha256": "5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30",
+  "source_seconds": 2.3442083333333334,
+  "model": "qwen/qwen3.8-27b",
+  "maximum_sessions": 1,
+  "maximum_translation_requests": 1,
+  "maximum_tts_contexts": 1,
+  "automatic_retries": 0,
+  "audio_persisted": false,
+  "transcripts_persisted": false,
+  "physical_playback_verified": false,
+  "real_youtube_capture_verified": false,
+  "translation_quality_verified": false,
+  "actual_billed_usd": null,
+  "status": "passed_provider_chain_and_native_output_not_physical_listening",
+  "event_counts": {
+    "transcript": 15,
+    "voice-style": 1,
+    "metrics": 1,
+    "usage": 1,
+    "done": 1
+  },
+  "providers_ready": true,
+  "metrics": {
+    "first_audio_ms": 3109,
+    "tts_first_audio_ms": 187
+  },
+  "summary": {
+    "segments": 1,
+    "characters": 61,
+    "input_bytes": 115200,
+    "output_bytes": 103680,
+    "native_audio": {
+      "sample_rate": 24000,
+      "queued_ms": {
+        "original": 0.0,
+        "translation": 0.0
+      },
+      "maximum_queued_ms": {
+        "original": 80.0,
+        "translation": 1660.0
+      },
+      "accepted_bytes": {
+        "original": 115200,
+        "translation": 103680
+      },
+      "rejected_pushes": {
+        "original": 0,
+        "translation": 0
+      },
+      "output_bytes": 218880,
+      "output_frames": 228,
+      "worker_alive": true,
+      "error_code": null,
+      "physical_output_verified": false
+    }
+  },
+  "send_errors": [],
+  "finished_at": "2026-10-30T12:52:28.405705+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "scopes_ready": {
+    "streaming": true,
+    "history": true
+  },
+  "track_present": true,
+  "playing": false,
+  "position_ms": 17728,
+  "volume": 49,
+  "devices": [
+    {
+      "brivany": true,
+      "active": true,
+      "restricted": false,
+      "supports_volume": true
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/me/player",
+      "code": 200,
+      "ms": 750
+    },
+    {
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 172
+    }
+  ],
+  "mutations": 0,
+  "cost": "No paid inference; monetary/network cost not measured."
+}

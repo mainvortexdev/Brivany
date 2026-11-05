@@ -1,0 +1,58 @@
+{
+  "type": "real_owned_voice_timbre_capability_check",
+  "purpose": "Verify the audio advisory recognizes catalog timbre independently of the public video.",
+  "created_at": "2026-11-04T14:49:08.607038+00:00",
+  "max_source_seconds_each": 3,
+  "retries": 0,
+  "raw_audio_persisted": false,
+  "transcripts_persisted": false,
+  "billing_amount": null,
+  "catalog_verified": true,
+  "rows": [
+    {
+      "fixture": "masculine",
+      "source_audio_seconds": 2.48,
+      "maximum_request_seconds": 3,
+      "emotion": "neutral",
+      "confidence": 0,
+      "delivery": "neutral",
+      "voice_register": "uncertain",
+      "register_confidence": 0,
+      "voice_timbre": "uncertain",
+      "timbre_confidence": 0,
+      "latency_ms": 1860.0,
+      "usage": {
+        "completion_tokens": 335,
+        "prompt_tokens": 355,
+        "total_tokens": 690
+      },
+      "model": "muse-spark-1.2",
+      "audio_seconds": 2.48,
+      "completed": true,
+      "provider_requests": 1
+    },
+    {
+      "fixture": "feminine",
+      "source_audio_seconds": 2.0,
+      "maximum_request_seconds": 3,
+      "emotion": "neutral",
+      "confidence": 0,
+      "delivery": "neutral",
+      "voice_register": "uncertain",
+      "register_confidence": 0,
+      "voice_timbre": "uncertain",
+      "timbre_confidence": 0,
+      "latency_ms": 1828.0,
+      "usage": {
+        "completion_tokens": 359,
+        "prompt_tokens": 349,
+        "total_tokens": 708
+      },
+      "model": "muse-spark-1.2",
+      "audio_seconds": 2.0,
+      "completed": true,
+      "provider_requests": 1
+    }
+  ],
+  "provider_requests": 2
+}

@@ -1,0 +1,34 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "capture_id": {
+      "format": "uuid",
+      "title": "Capture Id",
+      "type": "string"
+    },
+    "target_domain": {
+      "enum": [
+        "video_editing",
+        "color_grading",
+        "cad",
+        "3d_modeling",
+        "physical"
+      ],
+      "title": "Target Domain",
+      "type": "string"
+    },
+    "requested_objective": {
+      "title": "Requested Objective",
+      "type": "string"
+    }
+  },
+  "required": [
+    "capture_id",
+    "target_domain",
+    "requested_objective"
+  ],
+  "title": "CompileRequest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:CompileRequest:0.1.0"
+}

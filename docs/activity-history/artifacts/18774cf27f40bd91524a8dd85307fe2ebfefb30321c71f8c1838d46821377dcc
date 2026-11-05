@@ -1,0 +1,19 @@
+{
+  "suite": "computer-images-agents-ui",
+  "started_at": "2026-10-30T21:22:04.545795+00:00",
+  "finished_at": "2026-10-30T21:22:31.644258+00:00",
+  "duration_seconds": 27.098463,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--images-agents"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"status\": \"passed\",\n  \"checks\": [\n    \"minimal chat opens directly without practice panels\",\n    \"typed conversation without desktop grant\",\n    \"PNG paste and actual bytes to substituted vision\",\n    \"image plan action authorizes once\",\n    \"plan preview and microphone within seven viewports\",\n    \"clear rejects late action\",\n    \"document agent announced and reviewed without replacing mic node\",\n    \"settings modal keeps chat node, applies theme and text size, fits 320x568\",\n    \"live transcript becomes chat and uses existing voice pipeline with substituted ASR and output\",\n    \"agent voice notice waits for unfinished user thought, once only\",\n    \"new conversation clears messages and references\"\n  ],\n  \"models_and_native\": \"substituted\",\n  \"compiler\": \"real local GLB\",\n  \"physical_audio_verified\": false,\n  \"os_clipboard_verified\": false,\n  \"external_calls\": 0,\n  \"errors\": []\n}\n"
+}

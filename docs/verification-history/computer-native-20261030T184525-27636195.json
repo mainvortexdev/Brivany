@@ -1,0 +1,16 @@
+{
+  "suite": "computer-native",
+  "started_at": "2026-10-30T18:45:25.622986+00:00",
+  "finished_at": "2026-10-30T18:45:26.089607+00:00",
+  "duration_seconds": 0.466621,
+  "command": [
+    "node",
+    "--test",
+    "tests/computer-native.test.cjs",
+    "tests/computer-browser.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ Delayed accessible document is polled without repeating navigation (6.8259ms)\n✔ Changed foreground aborts before another read or action (1.5807ms)\n✔ Wrong destination never becomes verified (1.6094ms)\n✔ YouTube UI refresh is accepted only with the same query and origin (2.2177ms)\n✔ Unsafe navigation schemes and credentials never reach input (4.9994ms)\n✔ Win32 editor fallback uses observed identity and literal data (3.7387ms)\n✔ Literal input cannot interpolate shell syntax or SendKeys commands (0.9633ms)\n✔ Only typed native actions; no code, invented control or shell entry (1.2138ms)\n✔ File scopes reject root modification, traversal, sibling prefixes and symlinks (15.3279ms)\nℹ tests 9\nℹ suites 0\nℹ pass 9\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 260.1005\n"
+}

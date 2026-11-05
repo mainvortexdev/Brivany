@@ -1,0 +1,317 @@
+"""Synthetic offline spatial backup recovery and hostile archive rejection."""
+from copy import deepcopy
+from contextlib import closing
+import hashlib
+import json
+from pathlib import Path
+import sqlite3
+import stat
+import struct
+import tempfile
+import unittest
+from unittest.mock import patch
+from uuid import uuid4
+from zipfile import ZipFile,ZipInfo,ZIP_DEFLATED
+
+from services.spatial.backup import BackupError,create_backup,inspect_backup,restore_backup
+from services.spatial.demo import DEMO_ID
+from services.spatial.jobs import SpatialService
+from services.spatial.review import CaptureReviewService
+
+
+class SpatialBackupTests(unittest.TestCase):
+    def setUp(self):
+        self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
+        self.root=Path(self.temp.name);self.source=self.root/'spatial';self.archive=self.root/'backup.zip'
+        self.offline=patch('services.spatial.backup._server_listening',return_value=False);self.offline.start();self.addCleanup(self.offline.stop)
+        service=SpatialService(self.source,start_worker=False)
+        service.update_transforms(DEMO_ID,{'expected_revision':1,'objects':[{'id':'chair','transform':{'position':[1.,0.,.5]}}]})
+        self.layout=service.save_layout(DEMO_ID,{'name':'Presentación','expected_revision':2})
+        service.close()
+        self.capture=str(uuid4());folder=self.source/'captures'/self.capture;(folder/'frames').mkdir(parents=True)
+        raw=b'\xff\xd8\xff\xc0'+struct.pack('>HBHHB',8,8,16,16,0)+b'\xff\xd9'
+        digest=hashlib.sha256(raw).hexdigest();(folder/'frames/frame-0000.jpg').write_bytes(raw)
+        manifest={'capture_id':self.capture,'source':{'filename':'original.mp4','sha256':'a'*64,'size_bytes':40,'duration_seconds':1.0,'width':16,'height':16,'has_audio':False},
+            'frames':[{'id':'frame-0000','relative_path':'frames/frame-0000.jpg','at_seconds':.5,'width':16,'height':16,'sha256':digest}]}
+        (folder/'capture.json').write_text(json.dumps(manifest),encoding='utf-8');(folder/'preflight.json').write_text('{"status":"prepared_not_reconstructed"}',encoding='utf-8')
+        with closing(sqlite3.connect(self.source/'spatial.sqlite3')) as db:
+            with db:db.execute("INSERT INTO spaces VALUES(?,?,?,?,?,?,?,?)",(self.capture,'Captura sintética','capture_prepared','capture',None,self.capture,'2026-10-28','2026-10-28'))
+        reviews=CaptureReviewService(self.source)
+        reviews.save(self.capture,{'expected_revision':0,'objects':[{'id':'object-1','label':'Mesa','frame_id':'frame-0000','frame_sha256':digest,
+            'rectangle':{'x':.25,'y':.25,'width':.5,'height':.5},'mask_reviewed':True}],'length_reference':{'description':'Referencia declarada','length_m':1.2}})
+        # Sensitive, original and derivable extras must not enter the backup.
+        (self.source/'.env').write_text('must-not-be-included',encoding='utf-8')
+        (self.source/'uploads'/'private.mp4').write_bytes(b'private-original')
+        (folder/'original.mp4').write_bytes(b'original-not-allowed')
+        (folder/'capture-bundle.zip').write_bytes(b'derivable-excluded')
+
+    def create(self):return create_backup(self.source,self.archive,offline=True)
+    def rewrite(self,mutate):
+        with ZipFile(self.archive) as original:files={item.filename:original.read(item.filename) for item in original.infolist()}
+        mutate(files);target=self.root/(str(uuid4())+'.zip')
+        with ZipFile(target,'x',compression=ZIP_DEFLATED) as output:
+            for name,raw in files.items():output.writestr(name,raw)
+        return target
+
+    def test_round_trip_preserves_scene_revision_layout_history_and_manual_review(self):
+        result=self.create();self.assertEqual(result['status'],'created');self.assertFalse(result['original_media_included'])
+        self.assertEqual(inspect_backup(self.archive,offline=True)['status'],'verified')
+        with ZipFile(self.archive) as package:
+            names=package.namelist()
+            self.assertTrue(all('.env' not in name and not name.endswith('.mp4') and '/uploads/' not in name and 'capture-bundle.zip' not in name for name in names))
+            manifest=json.loads(package.read('manifest.json'));self.assertEqual(len(manifest['files']),len(names)-1)
+        destination=self.root/'restored';restored=restore_backup(self.archive,destination,offline=True)
+        self.assertEqual(restored['status'],'restored');self.assertFalse(restored['service_started'])
+        service=SpatialService(destination,start_worker=False)
+        try:
+            scene=service.scene(DEMO_ID);self.assertEqual(scene['revision'],2)
+            self.assertEqual(scene['scene']['objects'][1]['transform']['position'],[1.,0.,.5])
+            self.assertEqual(service.list_layouts(DEMO_ID)['layouts'][0]['name'],'Presentación')
+            self.assertTrue(service.scene_history(DEMO_ID)['can_undo'])
+            review=CaptureReviewService(destination).get(self.capture);self.assertEqual(review['revision'],1)
+            self.assertEqual(review['objects'][0]['label'],'Mesa');self.assertTrue(review['objects'][0]['mask_reviewed'])
+            self.assertFalse(review['metric_scale_verified'])
+        finally:service.close()
+
+    def test_offline_flag_and_listening_server_are_required_before_any_copy(self):
+        with self.assertRaises(BackupError) as error:create_backup(self.source,self.archive)
+        self.assertEqual(error.exception.code,'offline_required');self.assertFalse(self.archive.exists())
+        with patch('services.spatial.backup._server_listening',return_value=True):
+            with self.assertRaises(BackupError) as error:self.create()
+        self.assertEqual(error.exception.code,'server_running');self.assertFalse(self.archive.exists())
+
+    def test_existing_archive_and_restore_directory_are_never_replaced(self):
+        self.create();before=self.archive.read_bytes()
+        with self.assertRaises(BackupError):self.create()
+        self.assertEqual(self.archive.read_bytes(),before)
+        destination=self.root/'exists';destination.mkdir();(destination/'keep').write_text('keep')
+        with self.assertRaises(BackupError):restore_backup(self.archive,destination,offline=True)
+        self.assertEqual((destination/'keep').read_text(),'keep')
+
+    def test_changed_bytes_reject_before_destination_publication(self):
+        self.create()
+        target=self.rewrite(lambda files:files.__setitem__('data/scenes/'+DEMO_ID+'/assets/chair.glb',b'corrupt'))
+        destination=self.root/'bad-restore'
+        with self.assertRaises(BackupError):restore_backup(target,destination,offline=True)
+        self.assertFalse(destination.exists());self.assertEqual(list(self.root.glob('.brivany-restore-*')),[])
+
+    def test_zip_slip_symlinks_unknown_files_and_duplicates_are_rejected(self):
+        self.create()
+        for name in ('../outside','data/../../outside','data/.env','C:/outside','data\\outside'):
+            target=self.rewrite(lambda files,name=name:files.__setitem__(name,b'bad'))
+            with self.assertRaises(BackupError):inspect_backup(target,offline=True)
+        target=self.root/'symlink.zip'
+        with ZipFile(self.archive) as original,ZipFile(target,'x') as output:
+            for item in original.infolist():output.writestr(item,original.read(item.filename))
+            link=ZipInfo('data/captures/link');link.create_system=3;link.external_attr=(stat.S_IFLNK|0o777)<<16
+            output.writestr(link,'../secret')
+        with self.assertRaises(BackupError):inspect_backup(target,offline=True)
+
+    def test_extra_database_table_or_corrupt_sqlite_is_rejected(self):
+        with closing(sqlite3.connect(self.source/'spatial.sqlite3')) as db:
+            with db:db.execute('CREATE TABLE secrets(value TEXT)')
+        with self.assertRaises(BackupError) as error:self.create()
+        self.assertEqual(error.exception.code,'backup_database');self.assertFalse(self.archive.exists())
+        with closing(sqlite3.connect(self.source/'spatial.sqlite3')) as db:
+            with db:db.execute('DROP TABLE secrets')
+        self.create()
+        def corrupt(files):
+            raw=b'not-a-sqlite-file';files['data/spatial.sqlite3']=raw
+            manifest=json.loads(files['manifest.json'])
+            for entry in manifest['files']:
+                if entry['path']=='spatial.sqlite3':entry.update(size_bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
+            manifest['total_size_bytes']=sum(entry['size_bytes'] for entry in manifest['files']);files['manifest.json']=json.dumps(manifest).encode()
+        target=self.rewrite(corrupt)
+        with self.assertRaises(BackupError):inspect_backup(target,offline=True)
+
+    def test_manifest_limit_and_duplicate_entry_are_rejected(self):
+        self.create()
+        def badsize(files):
+            manifest=json.loads(files['manifest.json']);manifest['files'][0]['size_bytes']=2*1024*1024*1024+1
+            files['manifest.json']=json.dumps(manifest).encode()
+        with self.assertRaises(BackupError):inspect_backup(self.rewrite(badsize),offline=True)
+        target=self.root/'duplicate.zip'
+        import warnings
+        with ZipFile(self.archive) as original,ZipFile(target,'x') as output,warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            for item in original.infolist():output.writestr(item,original.read(item.filename))
+            output.writestr('manifest.json',original.read('manifest.json'))
+        with self.assertRaises(BackupError):inspect_backup(target,offline=True)
+
+    def test_active_jobs_reject_snapshot_instead_of_dropping_unbacked_uploads(self):
+        with closing(sqlite3.connect(self.source/'spatial.sqlite3')) as db:
+            with db:db.execute("INSERT INTO jobs VALUES(?,?,?,?,?,?,?,?,?,?,?)",(str(uuid4()),DEMO_ID,'capture','queued',0,'queued',None,'now','now','key','{}'))
+        with self.assertRaises(BackupError) as error:self.create()
+        self.assertEqual(error.exception.code,'backup_pending_jobs');self.assertFalse(self.archive.exists())
+
+    def test_atomic_publication_race_preserves_destination_created_during_validation(self):
+        self.create();destination=self.root/'raced'
+        def race(staging,target):
+            target.mkdir();(target/'keep').write_text('concurrent user data');raise FileExistsError()
+        with patch('services.spatial.backup._publish_directory',side_effect=race):
+            with self.assertRaises(BackupError) as error:restore_backup(self.archive,destination,offline=True)
+        self.assertEqual(error.exception.code,'backup_destination')
+        self.assertEqual((destination/'keep').read_text(),'concurrent user data')
+        self.assertEqual(list(self.root.glob('.brivany-restore-*')),[])
+
+    def test_cli_inspection_returns_summary_without_private_titles_or_paths(self):
+        from contextlib import redirect_stdout
+        from io import StringIO
+        from tools.spatial_backup import main
+        self.create();output=StringIO()
+        with redirect_stdout(output):code=main(['inspect','--source',str(self.archive),'--offline'])
+        self.assertEqual(code,0);result=json.loads(output.getvalue());self.assertEqual(result['status'],'verified')
+        for private in ('Presentación','Mesa','Referencia declarada','must-not-be-included'):self.assertNotIn(private,output.getvalue())
+
+    def test_missing_space_scene_reference_is_rejected_before_backup_publication(self):
+        with closing(sqlite3.connect(self.source/'spatial.sqlite3')) as db:
+            with db:db.execute('DELETE FROM scenes WHERE id=?',(DEMO_ID,))
+        with self.assertRaises(BackupError):self.create()
+        self.assertFalse(self.archive.exists());self.assertEqual(list(self.root.glob('.brivany-backup-*')),[])
+
+    def test_invalid_history_cursor_or_layout_reference_is_rejected_before_publication(self):
+        with closing(sqlite3.connect(self.source/'spatial.sqlite3')) as db:
+            with db:db.execute('UPDATE scene_history SET cursor=500 WHERE scene_id=?',(DEMO_ID,))
+        with self.assertRaises(BackupError):self.create()
+        self.assertFalse(self.archive.exists())
+        with closing(sqlite3.connect(self.source/'spatial.sqlite3')) as db:
+            with db:
+                db.execute('UPDATE scene_history SET cursor=1 WHERE scene_id=?',(DEMO_ID,))
+                db.execute('UPDATE scene_layouts SET scene_id=?',(str(uuid4()),))
+        with self.assertRaises(BackupError):self.create()
+        self.assertFalse(self.archive.exists())
+
+    def dispatch_fixture(self):
+        from services.spatial.budget import SpatialBudget
+        from services.spatial.dispatch import preflight_package,SpatialDispatch
+        from services.spatial.review import rectangle_mask
+        reviews=CaptureReviewService(self.source)
+        image=rectangle_mask(16,16,{'x':0,'y':0,'width':1,'height':1})
+        def convert(args,**kwargs):Path(args[-1]).write_bytes(image)
+        with patch('services.spatial.review.shutil.which',return_value='ffmpeg'),patch('services.spatial.review._run',side_effect=convert):
+            package=reviews.prepare(self.capture,{'expected_revision':1,'object_id':'object-1'})
+        plan=preflight_package(reviews,self.capture,package['package_id'],expected_revision=1)
+        budget=SpatialBudget(self.source/'budget.sqlite3')
+        budget.configure(total_usd='1',per_job_usd='1',gpu_rate_usd_per_second='0.001',extra_reserve_usd='0.01')
+        budget.reserve(plan['job_id'],'0.18');budget.mark_started(plan['job_id']);budget.settle(plan['job_id'],None)
+        coordinator=SpatialDispatch(self.source,reviews,budget)
+        fields=('schema_version','job_id','identity','capture_id','package_id','package_sha256','review_revision','frame_id','source_sha256','image_sha256','mask_sha256','pipeline_version','lock_sha256','seed','timeout_seconds')
+        document={key:plan[key] for key in fields}
+        document.update(created_at='2026-10-28T20:00:00+00:00',updated_at='2026-10-28T20:00:00+00:00',
+            transport_kind='test_stub',origin='test_stub',model_executed=False,artifact=None,actual_billed_usd=None,
+            actual_cost_known=False,error_code='transport_failed',cancel_requested=False)
+        with closing(sqlite3.connect(coordinator.database)) as db:
+            with db:db.execute('INSERT INTO dispatch_jobs VALUES(?,?,?,?)',(plan['job_id'],plan['identity'],'failed_unknown',json.dumps(document)))
+        return plan,budget
+
+    def test_dispatch_ambiguous_work_and_budget_hold_survive_without_replay(self):
+        from services.spatial.budget import SpatialBudget,BudgetError
+        from services.spatial.dispatch import SpatialDispatch
+        plan,budget=self.dispatch_fixture();self.create();destination=self.root/'restored-dispatch'
+        restore_backup(self.archive,destination,offline=True)
+        restored_budget=SpatialBudget(destination/'budget.sqlite3')
+        class ForbiddenTransport:
+            simulation=True
+            def execute(self,request):raise AssertionError('A backup restore must never execute work.')
+        restored=SpatialDispatch(destination,CaptureReviewService(destination),restored_budget,transport=ForbiddenTransport())
+        current=restored.inspect(plan['job_id']);self.assertEqual(current['state'],'failed_unknown')
+        self.assertFalse(current['actual_cost_known']);self.assertIsNone(current['actual_billed_usd'])
+        self.assertFalse(current['replay_allowed']);self.assertTrue(current['consumption_uncertain'])
+        status=restored_budget.status();self.assertEqual(status['unknown_count'],1);self.assertEqual(status['reserved_usd'],'0.190000')
+        with self.assertRaises(BudgetError):restored_budget.reserve(str(uuid4()),'0.01')
+
+    def test_dispatch_unknown_work_cannot_lose_its_hold_or_reviewed_package(self):
+        plan,budget=self.dispatch_fixture()
+        with closing(sqlite3.connect(budget.path)) as db:
+            with db:db.execute("UPDATE reservations SET state='released' WHERE job_id=?",(plan['job_id'],))
+        with self.assertRaises(BackupError):self.create()
+        self.assertFalse(self.archive.exists())
+        with closing(sqlite3.connect(budget.path)) as db:
+            with db:db.execute("UPDATE reservations SET state='unknown' WHERE job_id=?",(plan['job_id'],))
+        (self.source/'captures'/self.capture/'review/packages'/(plan['package_id']+'.zip')).unlink()
+        with self.assertRaises(BackupError):self.create()
+        self.assertFalse(self.archive.exists())
+
+    def reference_fixture(self):
+        from PIL import Image
+        from services.spatial.references import ReferenceSetService
+        inputs=self.root/'synthetic-reference-inputs';inputs.mkdir()
+        paths=[]
+        for index in range(2):
+            path=inputs/f'private-source-name-{index}.png'
+            Image.new('RGB',(64,48),(40+index*30,70,100)).save(path);paths.append(path)
+        references=ReferenceSetService(self.source).create(paths,title='Referencias privadas sintéticas')
+        service=SpatialService(self.source,start_worker=False)
+        try:
+            created=service.create_reference_interpretation(references['id'],'Interpretación sintética')
+            scene_id=created['scene']['scene']['scene_id']
+        finally:service.close()
+        return references,scene_id,[path.read_bytes() for path in paths]
+
+    def test_reference_photos_and_render_settings_round_trip_with_explicit_private_media_flag(self):
+        from services.spatial.references import ReferenceSetService
+        references,scene_id,originals=self.reference_fixture()
+        render=json.loads((self.source/'scenes'/scene_id/'render.json').read_bytes())
+        result=self.create()
+        self.assertTrue(result['original_media_included']);self.assertTrue(result['original_reference_images_included'])
+        self.assertTrue(inspect_backup(self.archive,offline=True)['original_reference_images_included'])
+        with ZipFile(self.archive) as package:
+            names=package.namelist()
+            self.assertIn(f'data/scenes/{scene_id}/render.json',names)
+            self.assertIn(f'data/reference-sets/{references["id"]}/references.json',names)
+            self.assertFalse(any('private-source-name' in name for name in names))
+            self.assertFalse(any(name.endswith('.mp4') or '.env' in name for name in names))
+        destination=self.root/'restored-reference'
+        restore_backup(self.archive,destination,offline=True)
+        restored_references=ReferenceSetService(destination)
+        self.assertEqual(restored_references.get(references['id']),references)
+        for index,original in enumerate(originals):
+            self.assertEqual(restored_references.image(references['id'],f'frame-{index:04d}',variant='original')[0],original)
+        service=SpatialService(destination,start_worker=False)
+        try:
+            scene=service.scene(scene_id)
+            self.assertEqual(scene['scene']['origin'],'reference_interpretation')
+            self.assertEqual(scene['scene']['reference_set_id'],references['id'])
+            self.assertEqual(scene['render_config'],render)
+        finally:service.close()
+
+    def test_missing_reference_or_unsafe_render_reject_before_backup_publication(self):
+        references,scene_id,originals=self.reference_fixture()
+        original=self.source/'reference-sets'/references['id']/'originals/frame-0000.png'
+        original.unlink()
+        with self.assertRaises(BackupError):self.create()
+        self.assertFalse(self.archive.exists())
+        original.write_bytes(originals[0])
+        render=self.source/'scenes'/scene_id/'render.json';good_render=render.read_bytes()
+        for unsafe in ({'url':'https://example.invalid/private'}, {'camera':{'position':[float('nan'),1,2]}}, {'background':'../../secret'}):
+            render.write_text(json.dumps(unsafe),encoding='utf-8')
+            with self.assertRaises(BackupError):self.create()
+            self.assertFalse(self.archive.exists())
+        render.write_bytes(good_render)
+        with closing(sqlite3.connect(self.source/'spatial.sqlite3')) as db:
+            with db:
+                document=json.loads(db.execute('SELECT document FROM scenes WHERE id=?',(scene_id,)).fetchone()[0])
+                document['reference_set_id']=str(uuid4())
+                db.execute('UPDATE scenes SET document=?,baseline=? WHERE id=?',(json.dumps(document),json.dumps(document),scene_id))
+        with self.assertRaises(BackupError):self.create()
+        self.assertFalse(self.archive.exists())
+
+    def test_reference_archive_cannot_hide_originals_or_drop_a_declared_photo(self):
+        references,scene_id,originals=self.reference_fixture();self.create()
+        def hidden_originals(files):
+            manifest=json.loads(files['manifest.json']);manifest['original_media_included']=False
+            manifest['original_reference_images_included']=False;files['manifest.json']=json.dumps(manifest).encode()
+        with self.assertRaises(BackupError):inspect_backup(self.rewrite(hidden_originals),offline=True)
+        def missing_original(files):
+            relative=f'reference-sets/{references["id"]}/originals/frame-0000.png'
+            files.pop('data/'+relative)
+            manifest=json.loads(files['manifest.json'])
+            manifest['files']=[entry for entry in manifest['files'] if entry['path']!=relative]
+            manifest['total_size_bytes']=sum(entry['size_bytes'] for entry in manifest['files'])
+            files['manifest.json']=json.dumps(manifest).encode()
+        destination=self.root/'incomplete-reference'
+        with self.assertRaises(BackupError):restore_backup(self.rewrite(missing_original),destination,offline=True)
+        self.assertFalse(destination.exists())
+
+
+if __name__=='__main__':unittest.main()

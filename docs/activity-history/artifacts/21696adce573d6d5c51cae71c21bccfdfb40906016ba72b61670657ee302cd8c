@@ -1,0 +1,9 @@
+{
+  "scope": "real Meta web search, public weather query",
+  "provider_requests": 1,
+  "elapsed_seconds": 4.453,
+  "source_count": 4,
+  "cache_used": false,
+  "original_conversation_saved": false,
+  "billing_usd": null
+}

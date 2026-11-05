@@ -1,0 +1,18 @@
+{
+  "suite": "river-ui",
+  "started_at": "2026-10-30T13:17:25.138559+00:00",
+  "finished_at": "2026-10-30T13:17:27.195217+00:00",
+  "duration_seconds": 2.056658,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_river_ui"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "<local-path>\\tools\\check_river_ui.cjs:53\r\r\n    await page.waitForFunction(()=>document.querySelector('#segments').textContent==='3',{},{timeout:15000}).catch(async error=>{throw Error(error.message+' '+JSON.stringify(await page.evaluate(()=>({status:document.querySelector('#status').textContent,segments:document.querySelector('#segments').textContent,paused:document.querySelector('#local-video').paused,time:document.querySelector('#local-video').currentTime})))));});\r\r\n                                                                                                                                                                                                                                                                                                                                                                                                                                       ^\r\r\n\r\r\nSyntaxError: Unexpected token ')'\r\r\n    at wrapSafe (node:internal/modules/cjs/loader:1804:18)\r\r\n    at Module._compile (node:internal/modules/cjs/loader:1846:20)\r\r\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\r\r\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\r\r\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\r\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\r\r\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\r\r\n    at node:internal/main/run_main_module:33:47\r\r\n\r\r\nNode.js v24.19.0\r\r\n\r\n{\"substituted_provider_counts\": {\"muse\": 0, \"cartesia\": 0, \"meta\": 0, \"tts_messages\": 0, \"cancel\": 0}}\r\nTraceback (most recent call last):\r\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\r\n  File \"<frozen runpy>\", line 88, in _run_code\r\n  File \"<local-path>\\tools\\check_river_ui.py\", line 42, in <module>\r\n    if __name__=='__main__':main()\r\n                            ^^^^^^\r\n  File \"<local-path>\\tools\\check_river_ui.py\", line 32, in main\r\n    raise RuntimeError('UI verification failed; see output above.')\r\nRuntimeError: UI verification failed; see output above.\r\n"
+}

@@ -1,0 +1,28 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/floorplan-ui/report.json",
+  "original_sha256": "dd711d2155243b9679cdd3bc9713635744759ddfb3349bf16df406ad331a578b",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "model_executed": false,
+    "gpu_inference": false,
+    "architectural_accuracy_verified": false,
+    "metric_scale_verified": false,
+    "physical_devices_tested": false
+  },
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

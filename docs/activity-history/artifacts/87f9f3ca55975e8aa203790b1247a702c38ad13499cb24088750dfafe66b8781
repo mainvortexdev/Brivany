@@ -1,0 +1,13 @@
+{
+  "scope": "revisión visual de la captura del dibujo sintético real",
+  "observed": [
+    "Casa con tejado rojo, puerta azul y dos ventanas",
+    "Árbol verde, sol y césped",
+    "Paint clásico en español con Pinceles y paleta visibles"
+  ],
+  "limitations": [
+    "Líneas de relleno separadas y contornos irregulares",
+    "No acredita calidad artística de producción ni reproducción fiel de una referencia"
+  ],
+  "quality": "boceto básico con artefactos; control real del programa comprobado visualmente"
+}

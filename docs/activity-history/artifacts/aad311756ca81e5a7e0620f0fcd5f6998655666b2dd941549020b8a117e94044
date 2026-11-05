@@ -1,0 +1,18 @@
+{
+  "suite": "background-launch-native",
+  "started_at": "2026-11-03T23:11:06.395890+00:00",
+  "finished_at": "2026-11-03T23:11:14.555603+00:00",
+  "duration_seconds": 8.159713,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_background_launch"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"passed\": false, \"scope\": \"owned_exe_and_temporary_start_menu_shortcut_native_execution\", \"provider_calls\": 0, \"user_files_modified\": false, \"marker_created\": true, \"background_result\": {\"launched\": \"Melodi prueba f06d4f8c\", \"background\": true, \"input_sent\": false, \"process_id\": 16972, \"method\": \"observed-shortcut-background\", \"verified\": true}, \"foreground_preserved\": false, \"start\": {\"started\": true, \"escape_reserved\": false, \"background\": true}, \"error\": \"AssertionError('Foreground changed')\"}\r\n"
+}

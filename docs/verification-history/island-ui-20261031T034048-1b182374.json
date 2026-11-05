@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-10-31T03:40:48.205393+00:00",
+  "finished_at": "2026-10-31T03:41:01.061332+00:00",
+  "duration_seconds": 12.855939,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n3 !== 0\n\n    at <local-path>\\tools\\check_island_ui.cjs:34:203\n"
+}

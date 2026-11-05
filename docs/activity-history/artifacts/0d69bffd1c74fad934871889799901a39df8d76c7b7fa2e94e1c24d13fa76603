@@ -1,0 +1,202 @@
+# 22. Traducción modular con Muse y un modelo de traducción Meta
+
+27 de octubre de 2026. Propuesta de implementación motivada por la pregunta del
+usuario: reutilizar la transcripción Meta de Brivany y traducirla al momento.
+La ruta es viable como arquitectura incremental; **no existe todavía evidencia
+de doblaje completo con inferencia máxima de 500 ms**.
+
+## Respuesta práctica
+
+Muse ya entrega texto parcial mientras llega el audio. Ese texto puede alimentar
+un modelo de traducción especializado sin pasar por la conversación de Spark.
+Así se evita pedir a un modelo conversacional que construya una respuesta cuando
+lo que se necesita es traducir una frase. La espera relevante pasa a depender de
+cuándo hay texto suficientemente estable, cuánto tarda la traducción y, si se
+activa doblaje, cuánto tarda la primera voz.
+
+La opción inicial es **M2M100 de Meta alojado en Cloudflare Workers AI**, con la
+configuración Cloudflare existente. Su endpoint traduce texto por petición
+sincrónica: no es un WebSocket de traducción token a token. Una petición por cada
+pequeña cláusula estable permite una experiencia continua por segmentos. La API
+de conversación Spark mantiene su función de conversar y explicar con Melodi.
+[Modelo y protocolo M2M100](https://developers.cloudflare.com/workers-ai/models/m2m100-1.2b/).
+
+## Flujo propuesto
+
+```mermaid
+flowchart LR
+    A[Video autorizado o audio de sesión] --> P[PCM16 mono 24 kHz]
+    P --> M[Muse ASR en streaming]
+    M --> T[Parciales y final por turno]
+    T --> S[Prefijo estable y cláusulas breves]
+    S --> Q[Segmento con ID y revisión]
+    Q --> X[M2M100 Meta en Cloudflare]
+    X --> C[Subtítulos traducidos]
+    X --> V[TTS opcional Cartesia o ElevenLabs Flash]
+    V --> B[Cola de reproducción acotada]
+    R[Pausa, búsqueda o cambio de idioma] --> G[Nueva generación y cancelación]
+    G --> Q
+    G --> B
+```
+
+La captura a 24 kHz y el relay Muse existen en la base de voz. El adaptador de
+traducción M2M100 está preparado como prototipo independiente. La cadena
+completa desde el audio del video hasta M2M100 y un TTS distinto aún necesita
+conectarse y medirse. Las rutas integrales Palabra y ElevenLabs se conservan como
+opciones separadas, sin sustitución automática.
+
+## Estado y límites de cada etapa
+
+| Etapa | Estado al redactar | Qué comprueba y qué falta |
+|---|---|---|
+| Captura/PCM | Implementada para voz; el reproductor de doblaje también produce audio PCM | Falta conectar esta nueva ruta modular a la captura de video y verificar sus interrupciones |
+| Muse | Relay y parciales/finales implementados | Adaptar el uso de parciales a traducción por segmentos; conservar correcciones y turnos |
+| Segmentación estable | Diseño propuesto | Implementar estabilidad, IDs, revisiones, deduplicación y límites |
+| M2M100 Cloudflare | Adaptador preparado; cuatro pruebas locales pasan | El único intento real fue rechazado por HTTP; acceso y latencia funcional aún no verificados |
+| Subtítulos | Interfaz de doblaje existente | Conectar segmentos del nuevo pipeline sin duplicación ni texto atrasado |
+| TTS modular | Cartesia o Flash como candidatos explícitos | Todavía sin integración a esta nueva cadena ni medición de su recorrido completo |
+
+La voz habitual de Melodi puede conservar su timbre y proveedor. Traducir el audio
+de un video es otra tarea, con controles propios de original, doblaje y subtítulos.
+
+## Transportar audio rápido no obliga a traducir cada paquete
+
+Un bloque de PCM de 40–80 ms sirve para transporte y latencia de captura. No
+contiene necesariamente una palabra completa ni una unidad traducible. Traducir
+cada paquete produciría peticiones repetidas, poco contexto y voz con correcciones
+imposibles de retirar después de escucharse.
+
+La política propuesta acumula parciales de Muse y busca un prefijo que se mantiene
+entre actualizaciones. Se espera una pequeña cláusula o un límite lingüístico,
+con un plazo acotado cuando no aparezca puntuación. Los valores se elegirán con
+una muestra concreta; no se inventa un margen que garantice todos los idiomas.
+Debe conservarse contexto breve de lo ya dicho sin volver a emitirlo como una
+traducción nueva.
+
+Un prefijo estable es una heurística: un parcial puede corregirse después.
+Los subtítulos provisionales se pueden reemplazar. Para voz conviene confirmar
+una unidad antes de pronunciarla o aceptar explícitamente el riesgo de corrección.
+Esperar siempre al final de toda la intervención sería más simple, pero reduce la
+anticipación que busca esta función.
+
+## Identidad, revisiones y cancelación
+
+Cada unidad deberá tener `generation_id`, `turn_id`, `segment_id`, `revision`,
+idioma original/destino y tramo de audio de referencia. La llave de reutilización
+incorporará texto normalizado, dirección de traducción y versión de modelo, sin
+suponer equivalencia entre textos distintos.
+
+- Un parcial nuevo reemplaza la propuesta anterior del mismo segmento.
+- Una petición de traducción en curso puede terminar después de pausar o buscar;
+  la generación vigente debe descartar esa salida.
+- Una revisión anterior no puede sobrescribir un resultado más reciente.
+- Lo ya hablado se registra como emitido para no duplicarlo. Una corrección
+  posterior se muestra como tal; no se finge haber deshecho audio oído.
+- Cambiar fuente, idioma o posición del video cancela traducción pendiente,
+  solicitudes TTS y audio programado, e inicia una generación distinta.
+- La cola tiene límites de duración y número de segmentos; si se atrasa demasiado,
+  se conserva el estado retrasado o se detiene con una explicación.
+
+Estas son reglas de diseño del pipeline, no capacidades que por sí mismo entregue
+M2M100. Las pruebas locales deben comprobar carreras y cancelación antes de
+consumir nuevas inferencias reales.
+
+## Endpoint de traducción
+
+```text
+POST https://api.cloudflare.com/client/v4/accounts/<cuenta>/ai/run/@cf/meta/m2m100-1.2b
+Authorization: Bearer <token solo en servidor>
+Content-Type: application/json
+```
+
+```json
+{"text":"A short complete clause.","source_lang":"en","target_lang":"es"}
+```
+
+Cloudflare documenta una respuesta completa por petición sincrónica. Ofrece
+también ejecución batch, que tiene otra finalidad y no convierte esta ruta en
+traducción de audio continua por sí sola. El adaptador debe validar la respuesta,
+limitar texto y concurrencia, sanitizar errores y evitar reintentos automáticos.
+[Referencia oficial](https://developers.cloudflare.com/workers-ai/models/m2m100-1.2b/).
+
+Se usan los códigos `en` y `es` del esquema actual de parámetros. La misma página
+conserva ejemplos con nombres completos; esa discrepancia no demuestra la causa
+del rechazo HTTP observado.
+
+Esta elección usa M2M100 por su función de traducción y disponibilidad alojada;
+no presupone que un modelo distinto tenga la misma licencia o API. No hace falta
+descargar modelos al ordenador ni iniciar una GPU Modal para este primer paso.
+
+## Medir la pregunta «¿será demasiado lento?»
+
+Las mediciones anteriores de Muse reconocieron tres frases sintéticas y dieron
+un final a **285–368 ms después de la última actividad acústica** de cada muestra.
+Ese dato es fin de reconocimiento después de terminar de hablar; no mide un
+parcial desde que comienza una frase ni traduce audio. Las pruebas de reunión
+mostraron que un parcial útil podía activar ayuda durante la pregunta, pero esa
+ayuda recuperaba citas locales y no era traducción generada.
+[Mediciones de voz](13-voz-live.md#medir-latencia),
+[apoyo durante una pregunta](13-voz-live.md#apoyo-de-reunión-antes-del-final-de-la-pregunta).
+
+Para esta nueva ruta se deben separar:
+
+| Medición | Inicio y fin |
+|---|---|
+| Transporte/ASR parcial | Audio de referencia → primer parcial útil |
+| Espera de estabilidad | Parcial útil → segmento elegido para traducir |
+| Traducción observada | Envío de texto M2M100 → traducción completa recibida |
+| Primera síntesis | Envío de texto traducido → primer PCM TTS recibido |
+| Cola/reproducción | PCM recibido → instante programado para oírse |
+| Retraso respecto al video | Fragmento original → traducción correspondiente, con método de alineación explícito |
+
+Una única petición M2M100 con una frase corta puede resolver si la etapa de
+traducción es funcional y cuánto tardó en esa muestra. Aunque terminase antes de
+500 ms, eso no demostraría audio→doblaje completo en 500 ms, ni un máximo bajo
+todas las cargas, ni inferencia interna del proveedor. Si esta última no se expone,
+debe permanecer desconocida. El tiempo de red no se resta con una estimación para
+inventar una métrica de inferencia.
+
+Por tanto, sí tiene sentido construir esta ruta antes de declarar que se necesitan
+otras tres cuentas. Puede mejorar control y reutilización; su velocidad real es
+una pregunta de medición, no una promesa deducida del nombre “streaming”.
+
+## Ensayo y estado verificado
+
+`packages/providers/translation.py` limita cada segmento a 400 caracteres, valida
+la salida, impide redirecciones con credenciales y no reintenta. Las cuatro pruebas
+de `tests/test_translation.py` usan transporte simulado y comprueban errores,
+límites y formato; no miden calidad ni velocidad del modelo.
+
+Se ejecutó una única petición EN→ES con texto sintético para comprobar acceso y
+medir la etapa de traducción. Cloudflare la rechazó por HTTP (`mt_rejected`). El
+informe `tmp/translation-measurements/20261028T000057-be1bca0e.json` está conservado
+en la bitácora. No contiene traducción ni una latencia funcional válida; tampoco
+permite atribuir la causa a credenciales, cuota o parámetros. Consumo facturado
+desconocido. No hubo reintentos ni nuevas llamadas Meta en esta comprobación.
+
+La siguiente comprobación externa debe resolver el rechazo con diagnóstico
+acotado antes de comparar velocidad. Aún falta implementar y probar localmente
+la segmentación y conectar la cadena modular completa.
+
+## Presupuesto
+
+Cloudflare publica **$0.342 por millón de tokens de entrada y $0.342 por millón de
+tokens de salida** para M2M100. La fórmula de referencia es:
+
+```text
+coste_traducción_USD = (tokens_entrada + tokens_salida) × 0.342 / 1 000 000
+```
+
+No convertir caracteres en tokens con una relación fija para presentar una
+factura. Usar el consumo declarado por la respuesta si existe y separar cuota
+gratuita, tarifa publicada y cargo real. El coste Muse depende del acceso/modelo
+habilitado y permanece desconocido si no está disponible en su uso o facturación.
+TTS añade su propia unidad de cobro; los importes de Cartesia o Flash no incluyen
+por sí solos transcripción y traducción.
+[Tarifa M2M100](https://developers.cloudflare.com/workers-ai/models/m2m100-1.2b/),
+[comparación por unidades de la cadena alternativa](21-costes-cadena-doblaje.md).
+
+El primer ensayo se limitó a una frase sintética breve y una petición. Las demás
+comprobaciones serán locales hasta que
+otra llamada resuelva un fallo o decisión concreta. Guardar en la bitácora modelo,
+tiempos, consumo conocido y límites; no claves, audio original ni texto privado.

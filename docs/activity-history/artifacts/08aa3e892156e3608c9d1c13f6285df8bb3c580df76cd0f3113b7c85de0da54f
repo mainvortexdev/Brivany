@@ -1,0 +1,36 @@
+# Modelo de traducción del video con espera menor
+
+Se compararon Muse Spark 1.3 y 1.2 con tres frases propias en español y
+traducción al inglés. Cada modelo recibió las mismas instrucciones, una
+conexión preparada y tres solicitudes distintas. Ambas variantes devolvieron
+el mismo texto visible en los tres casos. La revisión conservó negación,
+doce kilos, horas y la condición de terminar una llamada. El informe guarda
+tiempos y uso, sin conservar las frases.
+
+| Modelo estándar | Solicitudes medidas |
+| --- | --- |
+| Muse Spark 1.3 | 1797, 1610 y 1656 ms |
+| Muse Spark 1.2 | 906, 1188 y 1015 ms |
+
+El total fue de seis solicitudes reales. Sus conteos de tokens se conservan
+en `tmp/selected-video/mt-model-comparison-072.json`. El importe y la GPU son
+desconocidos. La muestra es pequeña y la espera del proveedor puede variar.
+
+El doblaje en la pestaña usa 1.2 cuando el modelo general configurado es
+1.3 estándar. Las otras selecciones mantienen su modelo y la traducción
+ordinaria continúa usando la configuración general. La sesión valida el
+modelo solicitado, conserva la cuenta configurada y no realiza un segundo
+intento por este cambio. El estado incluye el modelo elegido para video.
+
+La elección mantiene el modo estándar. La documentación diferencia ese modo
+de Contributor, que puede utilizar el contenido para entrenamiento. También
+documenta `minimal` como el esfuerzo de razonamiento más breve admitido.
+[Modelos de Meta](https://dev.meta.ai/docs/models),
+[niveles de razonamiento](https://dev.meta.ai/docs/reasoning).
+
+Las suites registraron 36 pruebas de `meta-translation` y 69 de
+`river-translation`, aprobadas con protocolos locales. Los informes son
+`tmp/verification/meta-translation-20261104T210810-15e42bc4.json` y
+`tmp/verification/river-translation-20261104T210810-22e9bad9.json`.
+La suite River conserva avisos de cierre de servidores locales en casos
+de cancelación. La comparación con el video real se registra por separado.

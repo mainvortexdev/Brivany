@@ -1,0 +1,91 @@
+"""Owned native Work windows only. No desktop image, audio or provider requests."""
+import argparse
+import json
+from pathlib import Path
+import sys
+import tempfile
+import time
+from desktop.experience.launcher import experience_handler
+from desktop.experience.work import WorkBridge
+from desktop.launcher import LocalDesktopServer
+from services.h1.server import Handler
+from services.work.session import WorkSession
+
+
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--run',action='store_true',required=True);parser.parse_args()
+    import webview
+    output=Path('tmp/island-native/report.json');output.parent.mkdir(parents=True,exist_ok=True)
+    report={'status':'failed','native_windows':'real','screen_capture':False,'audio_capture':False,'inference_calls':0,'background_network_consumption_known':False}
+    with tempfile.TemporaryDirectory(prefix='brivany-work-native-') as folder,LocalDesktopServer(handler=experience_handler(Handler)) as server:
+        work=WorkSession(folder);bridge=WorkBridge();bridge._base=server.base_url;bridge._work_factory=lambda:work;bridge._trusted=lambda:None
+        window=webview.create_window('Brivany · comprobación Work',html='<html><body style="font:16px Segoe UI;padding:30px">Comprobación de ventanas Work. Sin captura ni audio.</body></html>',width=500,height=300)
+        bridge._window=window
+        def run():
+            try:
+                deadline=time.monotonic()+15
+                while time.monotonic()<deadline:
+                    try:
+                        if window.evaluate_js('document.readyState')=='complete':break
+                    except Exception:pass
+                    time.sleep(.1)
+                bridge._island_preview=True;bridge.start_work();companion=bridge._work_window;deadline=time.monotonic()+20;loaded=False
+                while time.monotonic()<deadline:
+                    try:loaded=companion.evaluate_js('!!document.querySelector("#work-region")')
+                    except Exception:loaded=False
+                    if loaded:break
+                    time.sleep(.1)
+                if not loaded:raise RuntimeError('No se confirmó el DOM de la ventana flotante.')
+                deadline=time.monotonic()+5;expanded=False
+                while time.monotonic()<deadline:
+                    expanded=companion.evaluate_js('document.body.dataset.expanded === "true"')
+                    if expanded:break
+                    time.sleep(.1)
+                if not expanded:raise RuntimeError('La vista previa no confirmó su estado desplegado con el puente real.')
+                companion.evaluate_js('window.BrivanyIsland.reopen()');time.sleep(.4)
+                deadline=time.monotonic()+4
+                while bridge._island_host.region is None and time.monotonic()<deadline:time.sleep(.1)
+                clip_checks={}
+                if sys.platform=='win32':
+                    import ctypes
+                    host=bridge._island_host
+                    if host.region is None:raise RuntimeError('La isla no confirmó la región nativa que deja pasar los clics exteriores.')
+                    handle,user,gdi=host.region
+                    user.GetLayeredWindowAttributes.argtypes=[ctypes.c_void_p,ctypes.c_void_p,ctypes.c_void_p,ctypes.c_void_p];user.GetLayeredWindowAttributes.restype=ctypes.c_bool
+                    color=ctypes.c_ulong();alpha=ctypes.c_ubyte();flags=ctypes.c_ulong()
+                    bridge.work_island_opacity(28)
+                    if not user.GetLayeredWindowAttributes(handle,ctypes.byref(color),ctypes.byref(alpha),ctypes.byref(flags)) or alpha.value!=round(255*.72):raise RuntimeError('No se confirmó transparencia en la ventana nativa.')
+                    report['native_transparency_verified']=True
+                    bridge.work_island_opacity(18)
+                    user.GetWindowRgn.argtypes=[ctypes.c_void_p,ctypes.c_void_p];gdi.PtInRegion.argtypes=[ctypes.c_void_p,ctypes.c_int,ctypes.c_int];gdi.PtInRegion.restype=ctypes.c_bool
+                    class Rect(ctypes.Structure):_fields_=[('left',ctypes.c_long),('top',ctypes.c_long),('right',ctypes.c_long),('bottom',ctypes.c_long)]
+                    def inside(x,y):
+                        rect=Rect();user.GetClientRect(handle,ctypes.byref(rect));scale=rect.right/host.value['host_width']
+                        region=gdi.CreateRoundRectRgn(0,0,1,1,0,0)
+                        try:
+                            if not user.GetWindowRgn(handle,region):raise RuntimeError('No se pudo leer la región propia.')
+                            return bool(gdi.PtInRegion(region,round(x*scale),round(y*scale)))
+                        finally:gdi.DeleteObject(region)
+                    center=host.value['host_width']/2
+                    clip_checks['compact_center_present']=inside(center,20);clip_checks['compact_side_excluded']=not inside(3,20);clip_checks['compact_bottom_excluded']=not inside(center,100)
+                    companion.evaluate_js('window.BrivanyIsland.expand()');time.sleep(.4)
+                    clip_checks['expanded_center_present']=inside(center,140);clip_checks['expanded_bottom_excluded']=not inside(center,350)
+                    companion.evaluate_js('window.BrivanyIsland.reopen()');time.sleep(.4)
+                    clip_checks['repeated_collapse_excludes_bottom']=not inside(center,100)
+                    if not all(clip_checks.values()):raise RuntimeError('La región nativa no coincide con el área visible.')
+                if work.tape is not None or work.capture_thread is not None:raise RuntimeError('El arranque activó audio.')
+                if bridge._keep_work_background() is not False:raise RuntimeError('No se conservó la ventana principal.')
+                bridge.return_to_chat();bridge.stop_work()
+                if work.active or bridge._work_window is not None:raise RuntimeError('Work no terminó correctamente.')
+                report.update(status='passed',preview_expanded_verified=True,native_region=clip_checks,checks=['native top-center WebView2 island and local widget DOM','preview boot confirms expanded state through real native bridge','native region excludes side and bottom pixels when compact','JS expand/collapse updates the owned window region through the bridge','Work starts without audio or capture','native close interceptor preserves main window','return to main and stop companion'])
+            except Exception as error:report['error']=type(error).__name__+': '+str(error)[:250]
+            finally:
+                work.close()
+                for item in list(webview.windows):
+                    try:item.destroy()
+                    except Exception:pass
+        webview.start(run,gui={'win32':'edgechromium','darwin':'cocoa','linux':'gtk'}.get(sys.platform),debug=False,private_mode=True,http_server=False)
+    output.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8');print(json.dumps(report,ensure_ascii=False,indent=2));return 0 if report['status']=='passed' else 1
+
+
+if __name__=='__main__':raise SystemExit(main())

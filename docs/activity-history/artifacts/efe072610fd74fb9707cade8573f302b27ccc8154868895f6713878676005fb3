@@ -1,0 +1,124 @@
+{
+  "format": "brivany-native-audio-pacing-1",
+  "recorded_at": "2026-10-30T05:05:53.000128+00:00",
+  "fixture": "digital_zero_pcm16_mono_24000_no_audio_file",
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "physical_output_verified": false,
+  "latency_scope": "local_mixer_and_driver_schedule_not_audible_translation",
+  "reports": [
+    {
+      "backend": "immediate_fake",
+      "seconds_requested": 24,
+      "elapsed_seconds": 24.122,
+      "producer_completed": true,
+      "drained": true,
+      "mixer": {
+        "sample_rate": 24000,
+        "queued_ms": {
+          "original": 0.0,
+          "translation": 0.0
+        },
+        "maximum_queued_ms": {
+          "original": 160.0,
+          "translation": 180.0
+        },
+        "accepted_bytes": {
+          "original": 1152000,
+          "translation": 768000
+        },
+        "rejected_pushes": {
+          "original": 0,
+          "translation": 0
+        },
+        "output_bytes": 1153920,
+        "output_frames": 1202,
+        "worker_alive": true,
+        "error_code": null,
+        "physical_output_verified": false
+      },
+      "driver_write": {
+        "count": 1202,
+        "mean_ms": 0.0,
+        "p95_ms": 0.0,
+        "max_ms": 0.0
+      },
+      "driver_bytes": 1153920,
+      "producer_lag": {
+        "original": {
+          "count": 600,
+          "mean_ms": 8.097,
+          "p95_ms": 15.0,
+          "max_ms": 28.0
+        },
+        "translation": {
+          "count": 400,
+          "mean_ms": 8.263,
+          "p95_ms": 15.0,
+          "max_ms": 31.0
+        }
+      },
+      "errors": []
+    },
+    {
+      "backend": "windows_winmm",
+      "seconds_requested": 24,
+      "elapsed_seconds": 6.403,
+      "producer_completed": true,
+      "drained": false,
+      "mixer": {
+        "sample_rate": 24000,
+        "queued_ms": {
+          "original": 980.0,
+          "translation": 0.0
+        },
+        "maximum_queued_ms": {
+          "original": 1000.0,
+          "translation": 0.0
+        },
+        "accepted_bytes": {
+          "original": 307200,
+          "translation": 0
+        },
+        "rejected_pushes": {
+          "original": 1,
+          "translation": 0
+        },
+        "output_bytes": 259200,
+        "output_frames": 270,
+        "worker_alive": true,
+        "error_code": null,
+        "physical_output_verified": false
+      },
+      "driver_write": {
+        "count": 270,
+        "mean_ms": 10.359,
+        "p95_ms": 31.0,
+        "max_ms": 32.0
+      },
+      "driver_bytes": 259200,
+      "producer_lag": {
+        "original": {
+          "count": 161,
+          "mean_ms": 8.143,
+          "p95_ms": 15.0,
+          "max_ms": 17.0
+        },
+        "translation": {
+          "count": 0,
+          "mean_ms": null,
+          "p95_ms": null,
+          "max_ms": null
+        }
+      },
+      "errors": [
+        {
+          "kind": "original",
+          "code": "native_audio_original_backlog",
+          "message": "La escucha del audio original se atrasó más de un segundo.",
+          "after_seconds": 6.403
+        }
+      ]
+    }
+  ]
+}

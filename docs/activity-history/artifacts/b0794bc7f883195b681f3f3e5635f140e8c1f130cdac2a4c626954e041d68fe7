@@ -1,0 +1,76 @@
+# Fuentes y alcance de las afirmaciones
+
+Consulta editorial: 4 de noviembre de 2026. Estas fuentes sostienen el guion;
+no autorizan acciones ni cambian el alcance del producto.
+
+## Datos externos
+
+1. **80 % sin tiempo o energía suficientes para su trabajo.** Microsoft,
+   Work Trend Index 2025. El informe también señala que el 53 % de los líderes
+   exige aumentar productividad. Se trata de resultados de encuesta, no una
+   medición de todas las personas ni un efecto causado por la IA.
+   [Publicación oficial, 23 de abril de 2025](https://blogs.microsoft.com/blog/2025/04/23/the-2025-annual-work-trend-index-the-frontier-firm-is-born/).
+   La encuesta recoge 31.000 trabajadores del conocimiento a tiempo completo
+   o autónomos en 31 mercados, febrero–marzo de 2025.
+   [Metodología oficial](https://www.microsoft.com/en-us/worklab/work-trend-index/breaking-down-infinite-workday).
+
+2. **40 % de empleados con mucho estrés el día anterior.** Gallup, State of
+   the Global Workplace 2026, datos recogidos en 2025. La pregunta se refiere
+   a experimentar estrés durante gran parte del día anterior; no diagnostica
+   un trastorno. La cifra no demuestra que el estrés aumente cada año ni que
+   lo cause la IA.
+   [Tabla global oficial](https://www.gallup.com/workplace/697904/state-of-the-global-workplace-global-data.aspx),
+   [alcance y metodología del informe](https://www.gallup.com/workplace/349484/state-of-the-global-workplace.aspx).
+
+**Dato descartado del guion:** «275 interrupciones diarias / cada dos minutos».
+La metodología de Microsoft se refiere al 20 % de usuarios con más mensajes;
+los 275 corresponden a 24 horas y el intervalo de dos minutos, a la jornada
+central. No se generaliza esa cifra a toda la población.
+
+## Pruebas del proyecto
+
+Inventario retrospectivo de archivos JSON con esquema de tools.verify,
+contrastados con las referencias de evidencia de la bitácora SQLite en modo
+de sólo lectura. Resultado guardado en
+`tmp/brivany-film-20261104/verification-inventory.json`.
+
+- **1.215 informes** reconocidos y referenciados en la bitácora.
+- 1.030 informes con salida cero y 185 con salida distinta de cero.
+- **26.665 ejecuciones de casos informadas** en 763 de esos informes; incluyen
+  regresiones repetidas, y algunos informes carecen de contador comparable.
+  Este total no se utiliza como cifra principal del video.
+- **283 casos aprobados en una ronda reciente de cuatro suites seleccionadas:**
+
+| Suite | Casos | Evidencia |
+| --- | ---: | --- |
+| Extensión | 83 | `tmp/verification/workspace-sync-extension-20261104T214713-d7d7ccfe.json` |
+| Voces | 26 | `tmp/verification/translation-voices-20261104T214340-37e6f3a6.json` |
+| River | 70 | `tmp/verification/river-translation-20261104T214340-eaa20328.json` |
+| Sync relay | 104 | `tmp/verification/sync-relay-20261104T214713-4931304e.json` |
+
+No son 1.215 funciones únicas, 1.215 pruebas integrales aprobadas ni 283
+escenarios reales de producción. Hay casos locales con proveedores sustituidos.
+El último ensayo público sigue fallido por continuidad, y la atribución humana
+de las voces permanece pendiente. No se oculta ese resultado tras los pases
+automatizados. Véanse `docs/traduccion-auditiva-cierre-acotado-074-079.md` y
+el cierre 080–081 en `docs/17-bitacora.md`.
+
+## Correspondencia con el producto
+
+| Afirmación/imagen | Alcance que permite mostrar |
+| --- | --- |
+| Melodi en WorkSpace, consultas y herramientas | Componentes del proyecto; seleccionar capturas actuales al producir. |
+| Human-skills y práctica | Módulos existentes; ejemplos de ejercicios, sin atribuir acreditación experta. |
+| Visor 3D editable | Escena de demostración o diseño conceptual, identificada. No habitación real reconstruida. |
+| Prefijo de siete segundos | Código y recorridos acotados documentados. Son siete segundos de contenido; no siete segundos garantizados de espera. |
+| Traducción sincronizada y hablantes | Prototipo en desarrollo, con continuidad y atribución pendientes. |
+| Reunión presencial traducida | Visión ilustrada. No confundir la captura de video/salida del ordenador con un sistema presencial terminado. |
+| Clonación con autorización | Capacidad planteada/integración opcional; no hay garantía de clonación instantánea validada. No usar audio de una persona real para escenificarla. |
+| Arquitectura híbrida | Coordinación y modelos locales más servicios remotos Meta/Cartesia. No afirmar ejecución totalmente offline ni privacidad absoluta. |
+
+## Reglas editoriales
+
+Intensificar la puesta en escena, el ritmo y el contraste emocional. Conservar
+exactos los datos y sus poblaciones. La pieza no afirma que Brivany reduzca
+clínicamente el estrés, sea infalible, supere a todos los modelos ni tenga una
+función cuya exclusividad se haya probado exhaustivamente.

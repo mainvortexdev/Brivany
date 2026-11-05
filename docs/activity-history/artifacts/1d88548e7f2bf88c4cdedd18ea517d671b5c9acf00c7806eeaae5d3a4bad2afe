@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "runtime": {
+    "ui_mode": "desktop-only",
+    "tray": {
+      "supported": true,
+      "active": true,
+      "closed": false,
+      "name": "Brivany",
+      "actions": [
+        "open",
+        "workspace",
+        "exit"
+      ]
+    },
+    "workspace_active": true,
+    "music_ducking": {
+      "supported": true,
+      "enabled": true,
+      "ducked": false,
+      "monitoring": true,
+      "error": "",
+      "excluded_count": 0
+    }
+  },
+  "scope": "actual restarted native app, local read-only runtime; no private account data or content",
+  "external_queries": 0,
+  "background_traffic": "not measured"
+}

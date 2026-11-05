@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-10-31T03:50:14.415044+00:00",
+  "finished_at": "2026-10-31T03:50:30.720656+00:00",
+  "duration_seconds": 16.305612,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"status\": \"passed\",\n  \"checks\": [\n    \"opaque black surfaces; removed logos, slogans, voice/tasks modules\",\n    \"cursor-edge anchoring with tolerant hover and delayed exit\",\n    \"distributed tools occlude roaming eyes\",\n    \"idle sleep, occasional gaze and reduced motion\",\n    \"Spotify setup, link handoff, controls and transfer with substituted provider\",\n    \"local synchronized lyrics rendered as text\",\n    \"five panel resolutions: bounds and visible controls; no page scroll\",\n    \"explicit audio consent and capture preserved\"\n  ],\n  \"native_bridge\": \"substituted\",\n  \"spotify\": \"substituted\",\n  \"external_calls\": 0,\n  \"errors\": []\n}\n"
+}

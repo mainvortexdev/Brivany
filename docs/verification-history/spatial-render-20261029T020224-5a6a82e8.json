@@ -1,0 +1,18 @@
+{
+  "suite": "spatial-render",
+  "started_at": "2026-10-29T02:02:24.853006+00:00",
+  "finished_at": "2026-10-29T02:02:43.758697+00:00",
+  "duration_seconds": 18.905691,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_spatial_render"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"checks\": 6,\r\n  \"passed\": [\r\n    \"22 actual GLB instances render with manual-reference origin and unverified scale\",\r\n    \"camera presets and daylight controls change the rendered image\",\r\n    \"all three quality profiles execute locally, including SSAO composer in high mode\",\r\n    \"reference images use signed local media links; fixtures are synthetic\",\r\n    \"actual Rapier WASM runs under page CSP, pauses and restores without persisting experimental transforms\",\r\n    \"interior controls fit 320,390,768 and desktop widths\"\r\n  ],\r\n  \"profiles\": [\r\n    {\r\n      \"quality\": \"economy\",\r\n      \"drawCalls\": 123,\r\n      \"triangles\": 124856\r\n    },\r\n    {\r\n      \"quality\": \"balanced\",\r\n      \"drawCalls\": 123,\r\n      \"triangles\": 124856\r\n    },\r\n    {\r\n      \"quality\": \"high\",\r\n      \"drawCalls\": 123,\r\n      \"triangles\": 124856\r\n    }\r\n  ],\r\n  \"renderer\": \"actual WebGL with software permitted\",\r\n  \"physical_gpu_tested\": false,\r\n  \"model_executed\": false,\r\n  \"external_calls\": 0,\r\n  \"gpu_inference\": false,\r\n  \"geometry_fidelity_verified\": false,\r\n  \"metric_scale_verified\": false,\r\n  \"physical_realism_verified\": false,\r\n  \"screenshots\": [\r\n    \"tmp/render-check/interior-1440.png\",\r\n    \"tmp/render-check/interior-390.png\"\r\n  ]\r\n}\r\n\r\n"
+}

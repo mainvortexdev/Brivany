@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-11-02T00:44:30.894952+00:00",
+  "finished_at": "2026-11-02T00:45:46.369140+00:00",
+  "duration_seconds": 75.474188,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Failure view {\n  panel: 'Música',\n  spotify: { configured: true, connected: true, pending: false },\n  body: {\n    expanded: 'true',\n    sleeping: 'false',\n    surface: 'preview',\n    motion: 'false',\n    panel: 'music',\n    characterState: 'attentive',\n    musicDucked: 'false',\n    liveListening: 'false',\n    liveSpeaking: 'false',\n    liveStarting: 'false',\n    musicAmbience: 'true',\n    musicPlaying: 'false',\n    musicView: 'library',\n    musicMood: 'groove',\n    danceVariant: 'sway',\n    moodSource: 'neutral-fallback'\n  }\n}\nFailure view {\n  panel: 'Música',\n  spotify: { configured: false, connected: false },\n  body: {\n    expanded: 'true',\n    sleeping: 'false',\n    surface: 'panel',\n    motion: 'true',\n    panel: 'music',\n    musicDucked: 'false',\n    liveListening: 'false',\n    liveSpeaking: 'false',\n    liveStarting: 'false',\n    musicPlaying: 'false',\n    musicAmbience: 'false',\n    musicView: 'player',\n    characterState: 'idle',\n    musicMood: 'groove',\n    danceVariant: 'sway',\n    moodSource: 'neutral-fallback'\n  }\n}\nFailure view { panel: undefined, spotify: undefined, body: {} }\npage.waitForFunction: Timeout 30000ms exceeded.\n    at <local-path>\\tools\\check_island_ui.cjs:107:2006\n"
+}

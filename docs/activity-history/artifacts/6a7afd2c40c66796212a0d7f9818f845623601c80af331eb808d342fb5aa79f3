@@ -1,0 +1,48 @@
+{
+  "scope": "real Paint; native Cognira executors through Brivany adapter",
+  "synthetic_drawing": true,
+  "started_at": "2026-10-30T16:21:59.043165+00:00",
+  "steps": [
+    {
+      "action": "launch_app",
+      "verified": true
+    },
+    {
+      "action": "draw_paint",
+      "strokes": 300,
+      "method": "paint-cursor-strokes",
+      "openedInPaint": true
+    }
+  ],
+  "cost_amount": null,
+  "physical_quality_verified": false,
+  "status": "passed",
+  "capture": {
+    "width": 1024,
+    "height": 819,
+    "paint_window_only": true
+  },
+  "visual_review_pending": true,
+  "finished_at": "2026-10-30T16:24:27.248994+00:00",
+  "planner_requests": 5,
+  "external_cost_unknown": true,
+  "native_diagnostics": [
+    {
+      "event": "diagnostic",
+      "phase": "display-metrics-changed"
+    },
+    {
+      "event": "diagnostic",
+      "phase": "window-closed"
+    },
+    {
+      "event": "diagnostic",
+      "phase": "window-closed"
+    }
+  ],
+  "limits": [
+    "No semantic or artistic quality claim from stroke count.",
+    "No inference retries at task level; source Paint helper may correct a structured response.",
+    "Only the new Paint drawing is captured; no original user image."
+  ]
+}

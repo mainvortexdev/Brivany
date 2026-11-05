@@ -1,0 +1,14 @@
+{
+  "type": "local_disposable_activity_auditor_fixtures",
+  "passed": true,
+  "checks": {
+    "complete_fixture_passes": true,
+    "audit_does_not_write_database": true,
+    "changed_content_detected": true,
+    "unregistered_files_detected": true,
+    "missing_and_corrupt_snapshots_detected": true,
+    "broken_chain_detected": true
+  },
+  "production_ledger_mutated": false,
+  "external_calls": 0
+}

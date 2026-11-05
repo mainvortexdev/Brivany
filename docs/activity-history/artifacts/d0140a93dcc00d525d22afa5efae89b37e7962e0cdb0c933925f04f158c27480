@@ -1,0 +1,43 @@
+{
+  "passed": [
+    "missing key blocks capture",
+    "single Comenzar click starts transcription and voice without settings or activation checkboxes; page load never captures",
+    "real AudioWorklet PCM at 80 ms",
+    "cumulative partial replacement",
+    "Muse final to Melodi audio without waiting for level tick",
+    "Spanish and English Cartesia selection at speed 1.05",
+    "English live final triggers English model request and English speech",
+    "echo muted as silence",
+    "sustained synthetic input interrupts speech with confirmed AEC; background sound does not",
+    "user partials stay silent; next final preserves prior user and assistant context",
+    "joke question waits in silence without automatic punchline; guessed answer laughs without revealing again",
+    "interruption",
+    "endStream flush",
+    "speaker labels and silent meeting",
+    "prepared context before questions",
+    "provisional support before final",
+    "corrected question retracts support",
+    "final promotes provisional support",
+    "meeting mobile support above fold",
+    "cleanup"
+  ],
+  "microphone": "synthetic",
+  "providers": "mocked",
+  "frames": 93,
+  "zeroFrames": 63,
+  "speechLanguages": [
+    "es",
+    "en",
+    "en",
+    "en",
+    "es",
+    "es"
+  ],
+  "turnLanguages": [
+    "en",
+    "en",
+    "es",
+    "es",
+    "es"
+  ]
+}

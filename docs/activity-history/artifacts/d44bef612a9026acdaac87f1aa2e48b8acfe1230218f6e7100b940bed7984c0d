@@ -1,0 +1,33 @@
+{
+  "type": "real_melodi_official_documentation",
+  "provider_cost": "unknown",
+  "started_at": "2026-11-01T13:45:30.379271+00:00",
+  "success": true,
+  "drivers_installed": false,
+  "route_calls": 1,
+  "job": {
+    "id": "ab27cb2d-2e2a-4ae4-9517-184982dceefe",
+    "kind": "support",
+    "state": "succeeded",
+    "phase": "Para escanear con los botones de la impresora: asegúrese de haber instalado el software y conectado el producto a la computadora con cable USB, coloque el original para escanearlo y pulse al mismo tiempo los botones de copia en ByN y de copia en color. El original se escanea y se guarda como PDF en su computadora. Los ajustes predeterminados se pueden cambiar con Event Manager.",
+    "steps": 0,
+    "result": {
+      "title": "Documentación",
+      "message": "Para escanear con los botones de la impresora: asegúrese de haber instalado el software y conectado el producto a la computadora con cable USB, coloque el original para escanearlo y pulse al mismo tiempo los botones de copia en ByN y de copia en color. El original se escanea y se guarda como PDF en su computadora. Los ajustes predeterminados se pueden cambiar con Event Manager.",
+      "sources": [
+        {
+          "title": "Manual · página 94",
+          "url": "https://files.support.epson.com/docid/cpd6/cpd60186.pdf#page=94"
+        }
+      ],
+      "documents_read": 1,
+      "verified": true,
+      "semantic_verification": false,
+      "images_read": false
+    },
+    "error": null,
+    "external_calls": 3,
+    "agent": "Agente de documentación y controladores",
+    "reviewed": false
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "suite": "social-ui",
+  "started_at": "2026-10-29T17:06:48.047088+00:00",
+  "finished_at": "2026-10-29T17:06:53.009880+00:00",
+  "duration_seconds": 4.962792,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_social_ui"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Traceback (most recent call last):\r\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\r\n  File \"<frozen runpy>\", line 88, in _run_code\r\n  File \"<local-path>\\tools\\check_social_ui.py\", line 74, in <module>\r\n    if __name__=='__main__':main()\r\n                            ^^^^^^\r\n  File \"<local-path>\\tools\\check_social_ui.py\", line 55, in main\r\n    if completed.returncode:raise RuntimeError((completed.stdout+completed.stderr).decode('utf-8',errors='replace'))\r\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nRuntimeError: AssertionError [ERR_ASSERTION]: The input did not match the regular expression /PAUSADA|PAUSED/. Input:\r\n\r\n'Crear campaña pausada\\n' +\r\n  'Cuenta: act_345678\\n' +\r\n  'Título: Campaña inmobiliaria\\n' +\r\n  'Texto: \\n' +\r\n  'Presupuesto diario declarado: 12.34 USD\\n' +\r\n  'Unidad menor: 2\\n' +\r\n  'Objetivo: OUTCOME_LEADS\\n' +\r\n  'Países: BO\\n' +\r\n  'Edades declaradas: 18–65\\n' +\r\n  'Categorías: HOUSING\\n' +\r\n  'Estado: pausada. Faltan conjunto de anuncios, creatividad y revisión de activación.'\r\n\r\n    at <local-path>\\tools\\check_social_ui.cjs:54:309\r\n\r\n"
+}

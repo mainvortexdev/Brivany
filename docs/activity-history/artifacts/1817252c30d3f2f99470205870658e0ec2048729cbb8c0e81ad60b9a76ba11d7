@@ -1,0 +1,77 @@
+{
+  "started_at": "2026-11-02T01:40:54.020882+00:00",
+  "purpose": "Two short synthetic Spanish voices through WASAPI, Muse, Meta and Cartesia into a separate native output.",
+  "status": "passed_system_capture_and_provider_output",
+  "paid_source_tts_contexts": 0,
+  "paid_asr_sessions": 1,
+  "paid_translation_requests": 3,
+  "retries": 0,
+  "microphone_captured": false,
+  "user_audio_persisted": false,
+  "actual_billed_amount": null,
+  "physical_listening_verified": false,
+  "source_seconds": [
+    2.48,
+    2.0
+  ],
+  "route_separated": true,
+  "voices_observed": [
+    "masculine",
+    "masculine",
+    "feminine"
+  ],
+  "expected_voice_categories": true,
+  "translation_contains_expected_words": {
+    "door": true,
+    "train": true
+  },
+  "session": {
+    "state": "translating",
+    "error": "",
+    "segments": 3,
+    "voice_category": "feminine",
+    "voice_method": "local_pitch_heuristic",
+    "first_audio_ms": 5422,
+    "active": true,
+    "target": "en",
+    "voice": "auto",
+    "elapsed_seconds": 15.9,
+    "buffered_seconds": 0.08,
+    "captured_seconds": 14.08,
+    "submitted_seconds": 13.92,
+    "original_gain": 0.12,
+    "microphone_captured": false,
+    "source": "system_output",
+    "feedback_isolated": true,
+    "audio_persisted": false,
+    "billing_amount": null
+  },
+  "native_audio": {
+    "sample_rate": 24000,
+    "queued_ms": {
+      "original": 40.0,
+      "translation": 0.0
+    },
+    "maximum_queued_ms": {
+      "original": 500.0,
+      "translation": 240.0
+    },
+    "accepted_bytes": {
+      "original": 668160,
+      "translation": 207360
+    },
+    "rejected_pushes": {
+      "original": 0,
+      "translation": 0
+    },
+    "output_bytes": 672000,
+    "output_frames": 700,
+    "worker_alive": true,
+    "error_code": null,
+    "physical_output_verified": false
+  },
+  "elapsed_from_stimulus": 14.49,
+  "stopped": true,
+  "capture_thread_stopped": true,
+  "finished_at": "2026-11-02T01:41:10.222019+00:00"
+}

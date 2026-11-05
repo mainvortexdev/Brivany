@@ -1,0 +1,68 @@
+# Voz provisional cuando el análisis de timbre no decide
+
+4 de noviembre de 2026. El ensayo real
+`tmp/selected-video/inline-sync-1793809294737.json` completó dos frases y pasó
+su comprobación corta de reproducción. La primera usó catálogo femenino pese
+a que el modelo local había devuelto `uncertain`, con confianza 0,806631. La
+elección procedía del registro alto, unos 200 Hz, después de descartar la
+abstención del modelo. Pasar continuidad no acreditó una asignación correcta.
+El informe histórico se conserva; su registro y consumo pertenecen al ensayo.
+
+## Corrección de la elección
+
+El puente conserva ahora el resultado local aunque sea incierto o no esté
+disponible, con confianza y procedencia. Si el grupo aún no tiene una elección
+de timbre confiable, usa temporalmente el catálogo neutral existente,
+`Daniel`, con `method=provisional_catalog` y
+`voice_category_provisional=true`. La categoría del catálogo describe la voz
+emitida; no se convierte en un género detectado del hablante. Tampoco se
+guarda la incertidumbre como evidencia confiable en la caché.
+
+El registro acústico puede seguir marcado alto. Ese dato ya no cambia una
+abstención del modelo local por una elección femenina. Una elección masculina
+o femenina ya establecida se conserva cuando un análisis posterior es
+incierto. Los resultados confiables y las preferencias manuales mantienen
+prioridad. Esta es una voz provisional para datos insuficientes, no una regla
+masculina global.
+
+También se corrigió un desacuerdo posible entre metadatos y sonido: cuando
+faltaba etiqueta de hablante, la categoría usaba el timbre pero el ID de voz
+seguía el pitch. Ahora el ID real sigue la misma elección de catálogo. Las
+regresiones comprueban los IDs exactos tanto para timbre masculino con pitch
+alto como para timbre femenino con pitch bajo, sin etiqueta ASR ni grupo
+acústico disponible.
+
+## Apertura preparada y entrega no expresiva
+
+La apertura conserva igualmente un resultado local incierto, su confianza y
+su origen. El puente carga esos metadatos de timbre aunque la entrega expresiva
+esté desactivada; en ese caso deshabilita la aplicación de emoción. Antes se
+perdían juntos ambos tipos de información.
+
+Una regresión de protocolo reutiliza una apertura con timbre incierto,
+registro alto y emoción preparada. Con entrega expresiva desactivada, TTS
+recibe el ID neutral, sigue indicando incertidumbre y no aplica emoción. No
+se vuelve a analizar ese audio ya preparado. El primer montaje de este test
+falló porque su servidor TTS compartido admitía únicamente francés y el caso
+requería inglés; se añadió un servidor local específico que comprueba idioma,
+ID y ausencia de emoción, sin relajar esas condiciones.
+
+## Verificación y alcance
+
+Las regresiones incluyen un tono propio de 210 Hz procesado por el estimador
+real de pitch, abstención y falta del clasificador, selección manual, categoría
+confiable previa, ID real sin hablante y conservación del prefijo. La regresión
+de protocolo reproduce la confianza 0,806631 observada sin adjuntar el audio
+original ni inferir la identidad del hablante de ese intervalo.
+
+- `tools.verify river-translation`: 59 pruebas aprobadas, 26,935 s.
+  `docs/verification-history/river-translation-20261104T163017-a225cf1a.json`.
+- `tools.verify sync-relay`: 69 pruebas aprobadas, 37,355 s.
+  `docs/verification-history/sync-relay-20261104T163017-96c04b22.json`.
+
+La suite River imprimió cierres de sockets de los servidores sustituidos
+durante cancelación, sin aserciones fallidas. Las comprobaciones de este hito
+fueron locales, sin nuevas solicitudes de inferencia a proveedores, sin GPU
+y sin persistir medios originales o conversaciones. El cambio no acredita
+por sí solo distinción perfecta, escucha natural ni continuidad de todo el
+video. La nueva prueba real corresponde a otro registro.

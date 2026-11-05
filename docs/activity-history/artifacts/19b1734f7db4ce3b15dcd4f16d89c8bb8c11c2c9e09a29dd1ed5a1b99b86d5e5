@@ -1,0 +1,18 @@
+{
+  "suite": "workspace-chat-native",
+  "started_at": "2026-11-03T21:59:05.428922+00:00",
+  "finished_at": "2026-11-03T22:02:05.543452+00:00",
+  "duration_seconds": 180.11453,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_workspace_native"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "No se completó la suite: proceso no disponible o límite de 180 segundos."
+}

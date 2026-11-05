@@ -1,0 +1,185 @@
+{
+  "started_at": "2026-10-28T01:24:06.698670+00:00",
+  "status": "passed",
+  "source": {
+    "filename": "english-room.wav",
+    "sha256": "5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30",
+    "size_bytes": 112600,
+    "duration_seconds": 2.3442083333333334,
+    "sample_rate": 24000,
+    "channels": 1,
+    "format": "pcm16"
+  },
+  "target_language": "es",
+  "source_language": "en",
+  "provider": "Google Gemini",
+  "model": "gemini-3.5-live-translate-preview",
+  "maximum_sessions": 1,
+  "automatic_retries": 0,
+  "input_chunk_ms": 40,
+  "configured_trial_limit_seconds": 5,
+  "input_bytes_sent": 112522,
+  "output_audio_chunks": 122,
+  "output_audio_bytes": 489600,
+  "output_formats": [
+    {
+      "sample_rate": 24000,
+      "channels": 1,
+      "format": "pcm16",
+      "bytes": 489600,
+      "duration_seconds": 10.2
+    }
+  ],
+  "translated_text_characters": 21,
+  "original_text_characters": 26,
+  "max_audio_queue_estimate_ms": 322.0,
+  "connect_ms": 437.0,
+  "first_input_audio_to_first_output_audio_ms": 3359.0,
+  "first_output_relative_input_end_ms": 1000.0,
+  "input_end_to_done_ms": 12063.0,
+  "relay_first_output_audio_ms": 3359.0,
+  "first_tts_chunk_generation_ms": null,
+  "inference_ms": null,
+  "mt_request_ms": [],
+  "tts_first_audio_ms": [],
+  "mt_requests_started": null,
+  "tts_requests_started": null,
+  "first_asr_partial_ms": null,
+  "first_segment_ready_ms": null,
+  "asr_received_input_ms": null,
+  "segment_wait_ms": [],
+  "segment_ready_to_first_audio_ms": [],
+  "target_inference_ms": 500,
+  "target_status": "unverified",
+  "estimated_base_service_usd": 0.005562,
+  "estimate_rate_usd_per_minute": null,
+  "estimate_basis": "published_input_and_output_audio_rates",
+  "actual_billed_usd": null,
+  "external_calls": 1,
+  "provider_ready": true,
+  "provider_settings": null,
+  "gpu_seconds": null,
+  "audio_persisted": true,
+  "transcripts_persisted": true,
+  "provider_finalization_verified": false,
+  "session_closed_locally": true,
+  "local_close_method": "bounded_post_input_drain",
+  "local_close_reason": "drain_budget",
+  "full_translation_verified": false,
+  "provider_diagnostics": {
+    "events_received": 47,
+    "interaction_idle_signals": 0,
+    "inline_audio_parts": 41,
+    "unknown_top_fields": 0,
+    "unknown_server_content_fields": 0,
+    "input_audio_frames_sent": 24,
+    "audio_stream_end_messages_sent": 1,
+    "top_fields": {
+      "setupComplete": 1,
+      "serverContent": 45,
+      "usageMetadata": 1,
+      "voiceActivity": 0,
+      "toolCall": 0,
+      "toolCallCancellation": 0,
+      "goAway": 0,
+      "sessionResumptionUpdate": 1,
+      "error": 0
+    },
+    "server_content_fields": {
+      "modelTurn": 41,
+      "inputTranscription": 1,
+      "outputTranscription": 1,
+      "interimInputTranscription": 0,
+      "generationComplete": 0,
+      "turnComplete": 0,
+      "interrupted": 0,
+      "waitingForInput": 0,
+      "interactionStatus": 0,
+      "turnCompleteReason": 0
+    },
+    "boolean_signals": {
+      "generationComplete": {
+        "true": 0,
+        "false": 0,
+        "invalid": 0
+      },
+      "turnComplete": {
+        "true": 0,
+        "false": 0,
+        "invalid": 0
+      },
+      "interrupted": {
+        "true": 0,
+        "false": 0,
+        "invalid": 0
+      },
+      "waitingForInput": {
+        "true": 0,
+        "false": 0,
+        "invalid": 0
+      }
+    },
+    "transcription_finished": {
+      "inputTranscription": {
+        "true": 0,
+        "false": 0,
+        "invalid": 0
+      },
+      "outputTranscription": {
+        "true": 0,
+        "false": 0,
+        "invalid": 0
+      },
+      "interimInputTranscription": {
+        "true": 0,
+        "false": 0,
+        "invalid": 0
+      }
+    },
+    "audio_stream_end_sent": true
+  },
+  "limitations": [
+    "Estimación a tarifas publicadas de $0.0053/min entrada y $0.0315/min salida; no es factura ni aplica cuotas gratuitas o consumo declarado por Google.",
+    "La primera salida medida incluye red y contexto; no es inferencia interna ni calidad oída.",
+    "El timing TTS opcional es generación hasta el primer chunk; no incluye ASR, traducción o red.",
+    "No se mide reproducción física ni sincronía semántica con el video.",
+    "external_calls cuenta una sesión solicitada al relay; no es telemetría de facturación del proveedor.",
+    "Gemini usa un cierre local acotado; no confirma que el proveedor consumió toda la entrada o entregó toda su cola.",
+    "La referencia de fin de entrada es el último PCM enviado, no el final acústico del habla; su diferencia con primer audio no es inferencia interna.",
+    "RMS en ventanas de 20 ms observa energía PCM, no demuestra habla, inteligibilidad, naturalidad ni reproducción física. La llegada del primer bloque puede preceder a una señal con energía.",
+    "Revisión optativa de fixture sintética fija: voz y texto de salida conservados aparte en tmp/; no evaluación humana de calidad."
+  ],
+  "estimate_input_rate_usd_per_minute": 0.0053,
+  "estimate_output_rate_usd_per_minute": 0.0315,
+  "pcm_observation": {
+    "measurement": "pcm_window_energy",
+    "sample_format": "pcm_s16le",
+    "sample_rate_hz": 24000,
+    "channels": 1,
+    "requested_window_ms": 20,
+    "window_frames": 480,
+    "actual_window_ms": 20.0,
+    "threshold_rms": 0.005,
+    "threshold_comparison": ">",
+    "time_reference": "chunk_arrival_relative_to_first_input",
+    "first_above_threshold_ms": 3359.0000000003783,
+    "received_pcm_bytes": 489600,
+    "total_pcm_seconds": 10.2,
+    "above_threshold_seconds": 0.72,
+    "analyzed_pcm_seconds": 10.2,
+    "analyzed_window_count": 510,
+    "maximum_window_rms": 0.2696936758019066,
+    "pending_bytes": 0,
+    "closed": true
+  },
+  "finished_at": "2026-10-28T01:24:21.548198+00:00",
+  "synthetic_review": {
+    "directory": "<local-path>\\tmp\\synthetic-dubbing-review\\d12ca425-789e-4af0-ae42-ed52844d54e9",
+    "wav_path": "<local-path>\\tmp\\synthetic-dubbing-review\\d12ca425-789e-4af0-ae42-ed52844d54e9\\translated.wav",
+    "json_path": "<local-path>\\tmp\\synthetic-dubbing-review\\d12ca425-789e-4af0-ae42-ed52844d54e9\\review.json",
+    "pcm_review_available": true,
+    "semantic_accuracy_verified": false,
+    "source_sha256": "5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30",
+    "output_sha256": "19e53da20f6d3e2691945f51436c33b8c15d39de518a60d7b7ce91b681ae538d"
+  }
+}

@@ -1,0 +1,90 @@
+# Comparación real posterior a preparar ambos transportes
+
+4 de noviembre de 2026. El ensayo real posterior a la
+[preparación de ambos transportes MT](traduccion-auditiva-transporte-052.md)
+volvió a fallar el criterio vigente de continuidad. El informe
+`tmp/selected-video/inline-sync-1793811652292.json` completó seis voces con
+señal hasta el segundo relativo 12,460, pero alcanzó **8,341333 s de retraso**
+y **4,053333 s de crecimiento**. Los límites siguen siendo 8 y 3 s.
+
+## Alcance y comparación
+
+El banco 49200 registró el recorrido de 17:00:18,523 a 17:00:52,349 UTC,
+con ventana de proveedores de 28 s. Fue Brave aislado, APIs reales y el
+video público de Tecnonauta desde una posición solicitada de 300 s, sin
+perfil personal ni preparación de prefijo. La captura efectiva comenzó
+en **304,167 s**. Se verificaron identidad y duración del video, sin anuncio,
+con fuente a velocidad 1×. La cobertura completada terminó en el segundo
+absoluto 316,627 del video.
+
+| Medición | Ensayo previo 1793810199055 | Ensayo posterior 1793811652292 |
+| --- | ---: | ---: |
+| Ancla efectiva de captura | 305,472 s | 304,167 s |
+| Cobertura relativa completada | 13,260 s | 12,460 s |
+| Voces completas con señal | 7 | 6 |
+| Primera señal desde activar | 7,996 s | 9,479 s |
+| Retraso inicial del monitor | 6,533333 s | 4,288 s |
+| Retraso máximo | 9,701346 s | 8,341333 s |
+| Crecimiento máximo | 3,168013 s | 4,053333 s |
+| Primera solicitud MT | 2,367 s | 3,472 s |
+| Segunda solicitud MT | 4,495 s | 2,981 s |
+| Aceptación de continuidad | Falló | Falló |
+
+El primer MT nuevo transcurrió entre 3753 y 7225 ms, y el segundo entre
+6541 y 9522 ms del reloj de protocolo. La segunda solicitud tardó menos,
+pero el arranque audible total tardó más y el crecimiento de retraso fue
+mayor. Los tramos no son idénticos: las anclas difieren en 1,305 s y el ASR
+segmentó de otra manera. Tampoco se controla la variación remota del
+proveedor. Esta comparación **no demuestra una mejora de latencia atribuible
+a TLS**, ni demuestra que TLS causara la demora anterior. El cambio evita
+una conexión fría identificada en código; su resultado global todavía no
+cumple el objetivo.
+
+Las seis voces completas tuvieron desfases de inicio entre −21 y +13 ms,
+con velocidades de 1× a 1,18×. Cinco límites eran estimaciones parciales
+del ASR y uno un límite de turno. No hubo recuperación del original,
+interrupción de fuente, error de decodificador ni voces publicadas perdidas
+dentro de la cobertura completada. Una séptima voz llegó a iniciarse, pero
+no tiene señal o finalización registradas y no extiende esa cobertura.
+
+El medidor de producción confirmó seis voces completas con señal y primera
+señal a los 8,2261 s desde su reloj de captura. El monitor externo registró
+primera imagen a los 5,625 s desde activar y primera señal a los 9,479 s.
+El retraso inicial de la tabla pertenece al monitor de imagen; no es una
+medición del máximo desde la primera señal del nuevo campo de producción.
+El informe aún no conserva `recorder_gap_recoveries`, aunque el motor ya
+expone ese contador. Los campos `recovered_gap` por voz son falsos. No se
+declara que se ejercitara una recuperación real a partir de esos datos.
+
+## Incertidumbre todavía mal tratada en un turno corto
+
+La cuarta voz completa, intervalo relativo **7,660–8,540 s** y absoluto
+311,827–312,707 s, recibió catálogo femenino con
+`voice_timbre=uncertain`, confianza de timbre cero y procedencia
+`register_fallback`. Pese a la falta de decisión de timbre, se marcó
+`voice_category_provisional=false`. Se registra este defecto de tratamiento
+de incertidumbre para corregirlo. No se convierte el registro tonal en
+prueba de género, ni se presupone cuál era la persona de ese intervalo.
+
+Otra voz femenina preparada en el intervalo posterior 12,460–14,540 s
+tuvo una predicción confiable del modelo, pero no se completó durante la
+cobertura verificada. Ninguno de los dos resultados acredita por sí solo
+la correspondencia humana de hablantes. No hubo nueva escucha física ni
+validación semántica humana específica de los intervalos.
+
+## Consumo y evidencias
+
+El estado terminal completo se conservó en
+`tmp/selected-video/lab-consumption-49200-053.json`. Confirma una sesión de
+relay, un flujo Muse con acuse y entrada de audio iniciada, **10 intentos MT
+directos, una traducción anticipada de subtítulos, nueve solicitudes TTS y
+siete intentos de conexión de prosodia en vivo**. No hubo preparación de
+prefijo. Parte del trabajo anticipó contenido fuera de las seis voces
+completadas. El importe facturado, el uso remoto de GPU y el tráfico incidental
+total son desconocidos.
+
+Esta revisión retrospectiva no abrió nuevas inferencias ni repitió pruebas.
+Las evidencias contienen métricas y códigos, sin PCM, video, transcripciones
+o credenciales originales. Se preservan ambos ensayos fallidos. Sigue pendiente
+reducir el arranque y el retraso acumulado, corregir la reserva de voz corta
+y comprobar el recorrido conjunto desde el inicio hasta continuidad prolongada.

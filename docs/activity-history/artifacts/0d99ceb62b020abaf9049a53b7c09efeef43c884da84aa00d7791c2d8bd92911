@@ -1,0 +1,13 @@
+{
+  "kind": "retrospective",
+  "source": "Observed tool output from the diagnostic HTTPS request at 2026-10-31T22:03:15Z",
+  "purpose": "Identify whether the first LRCLIB failure was native TLS or an upstream outage",
+  "provider": "LRCLIB",
+  "http_code": 502,
+  "tls_verified": true,
+  "diagnosis": "Cloudflare reported an origin bad gateway; certificate verification was not disabled.",
+  "external_calls": 1,
+  "lyrics_saved": false,
+  "account_used": false,
+  "cost": "Not measured."
+}

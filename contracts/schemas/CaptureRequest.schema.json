@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "application": {
+      "maxLength": 120,
+      "pattern": "^[a-z][a-z0-9_.-]*$",
+      "title": "Application",
+      "type": "string"
+    },
+    "artifact_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Artifact Ids",
+      "type": "array"
+    },
+    "consent_ref": {
+      "format": "uuid",
+      "title": "Consent Ref",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "application",
+    "artifact_ids",
+    "consent_ref",
+    "title"
+  ],
+  "title": "CaptureRequest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:CaptureRequest:0.1.0"
+}

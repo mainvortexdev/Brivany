@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "scope": "Local production status and served app HTML only; no provider connections or synthesis.",
+  "app_url": "http://127.0.0.1:8765/app",
+  "tts_provider": "Cartesia",
+  "model": "sonic-3.6-2026-08-27",
+  "configured": true,
+  "voice_ids": {
+    "en": "db6b0ed5-d5d3-463d-ae85-518a07d3c2b4",
+    "es": "3597a26f-80ef-4bd5-8101-9699bc764917"
+  },
+  "languages": [
+    "en",
+    "es"
+  ],
+  "external_calls": 0,
+  "paid_synthesis_calls": 0,
+  "live_physical_microphone_verified": false,
+  "physical_voice_listening_verified": false,
+  "user_will_test_live": true
+}

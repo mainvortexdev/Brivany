@@ -1,0 +1,17 @@
+{
+  "checked_at": "2026-10-30T12:45:59.162080+00:00",
+  "type": "real_access_check",
+  "purpose": "Two bounded metadata GET requests, no inference or synthesis; Muse not contacted.",
+  "external_calls": 2,
+  "monetary_cost": null,
+  "results": {
+    "groq": {
+      "http_status": 403,
+      "access": false
+    },
+    "cartesia": {
+      "http_status": 200,
+      "access": true
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-10-31T03:45:46.748597+00:00",
+  "finished_at": "2026-10-31T03:46:25.347423+00:00",
+  "duration_seconds": 38.598826,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "locator.isDisabled: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Vincular Spotify ↗' })\u001b[22m\n\n    at <local-path>\\tools\\check_island_ui.cjs:29:286\n"
+}

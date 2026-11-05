@@ -1,0 +1,61 @@
+# 17. Bitácora local y evidencias
+
+27 de octubre de 2026. Abrir [Bitácora](http://127.0.0.1:8765/activity) con el servidor habitual de Brivany. Permite buscar, filtrar por tipo/estado, revisar evidencias, cargar páginas anteriores y exportar lo consultado como JSON.
+
+## Qué se registra
+
+Actividades de desarrollo: ideas pendientes, decisiones, implementaciones y resultados de pruebas. Cada registro conserva fecha de anotación UTC (la web muestra La Paz), resumen, estado, consumo conocido y evidencias opcionales. Una prueba con resultado necesita al menos una evidencia adjunta. Un valor de consumo desconocido permanece sin registrar; no se convierte a cero.
+
+Las evidencias se copian al registrarlas y se identifican con SHA-256. Cambiar el archivo original después no altera la copia conservada. La web comprueba hash y tamaño al consultar, muestra si falta o cambió la copia y bloquea servir una evidencia alterada. El contenido adjunto permite revisar la afirmación: un hash por sí solo no confirma su corrección ni la precisión de un modelo.
+
+Los registros se añaden en transacciones SQLite, enlazando cada entrada al hash anterior. Esta cadena detecta ciertas alteraciones accidentales; **es local, no está firmada y no es una auditoría independiente**. Quien controla el disco puede sustituir la base completa o recalcular la cadena; borrar el último tramo tampoco se detecta sin una referencia externa conservada. La aplicación no ofrece edición o borrado de entradas; una corrección se registra como otra actividad.
+
+El histórico empieza al crear esta bitácora. Las etapas anteriores pueden incorporarse como retrospectivas que enlazan informes existentes y lo indican expresamente. No se inventan fechas de ejecución ni pruebas pasadas. La fecha visible es la de registro, no necesariamente la del trabajo descrito.
+
+## Guardado y límites
+
+Base: `.local/activity/activity.sqlite3`. Evidencias: `.local/activity/artifacts/<sha256>`. Todo permanece en el equipo y está excluido de Git. No registra conversaciones, audio, videos originales, secretos o sesiones de uso automáticamente. Es una herramienta de desarrollo, distinta de un historial del usuario de Melodi.
+
+Cada entrada admite ocho evidencias de hasta 2 MiB, dentro del proyecto y con extensiones de documento, código, informe o PNG. Se rechazan rutas externas y carpetas ocultas, incluida `.local`; `.env` tampoco es una evidencia admitida. La API es solo de lectura, aplica la protección local de Host/origen y conserva `no-store`. La PWA guarda el shell de la vista, no los registros ni las evidencias. No hay publicación, cuentas ni sincronización remota todavía.
+
+## Registrar cambios e ideas
+
+Desde la raíz del proyecto:
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.activity idea --status pending --title "Nueva capacidad" --summary "Alcance previsto; pendiente de implementación."
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.activity implementation --status implemented --title "Cambio terminado" --summary "Qué cambió y su alcance comprobado." --evidence docs/17-bitacora.md --external-calls 0 --gpu-seconds 0
+```
+
+Los tipos son `idea`, `decision`, `implementation` y `test`. Los estados son `pending`, `implemented`, `passed` y `failed`; solo las pruebas usan `passed`/`failed`. Para una corrección, añadir un registro que mencione el ID anterior.
+
+## Pruebas con registro automático
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify python
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify spatial
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify javascript
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify contracts
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify activity-ui
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify app-ui
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify activity-local
+```
+
+Elegir la suite que resuelva la duda del cambio; no es necesario ejecutar todas siempre. El comando conserva inicio/fin, duración, argumentos, código de salida y salida de consola en `tmp/verification/`, guarda una copia en la bitácora y termina con el código real de la prueba. Un fallo también queda registrado. Límite por suite: 180 segundos; salida conservada hasta 100 000 caracteres. Las suites listadas son locales con proveedores simulados y no consumen inferencia Meta/Modal. No ejecutar pruebas de proveedor real a través de este comando sin actualizar primero esa declaración.
+
+`activity-ui` necesita Playwright y Edge como las otras comprobaciones de interfaz; acepta `BRIVANY_PLAYWRIGHT_PATH` y `BRIVANY_BROWSER_CHANNEL`. Comprueba archivos reales de la interfaz con datos simulados; la lectura de API y evidencia reales se comprueba aparte.
+
+`activity-local` requiere servidor activo y al menos un registro con evidencia. Comprueba la página y API reales, descarga una evidencia y compara su SHA-256; conserva capturas de móvil/escritorio. Solo hace lecturas locales y no verifica el significado de los informes.
+
+## API y archivos
+
+| Recurso | Función |
+|---|---|
+| `GET /api/activity?before=<secuencia>` | Hasta 200 registros más recientes; cursor para anteriores e integridad de la cadena |
+| `GET /api/activity/<id>/evidence/<índice>` | Copia conservada; texto plano o PNG, después de verificar su hash |
+| `services/activity.py` | Registro transaccional y copias de evidencias |
+| `tools/activity.py` | Anotación explícita desde terminal |
+| `tools/verify.py` | Ejecución acotada de una suite y registro del resultado |
+| `web/activity.html`, `activity.css`, `activity.js` | Vista responsive, filtros y exportación |
+
+La exportación JSON conserva metadatos, hashes y URLs locales de lo cargado. No incluye automáticamente los bytes de las evidencias ni toda la base si quedan páginas por consultar. Para respaldo completo se deben conservar la base y su carpeta de artefactos juntas; este respaldo y su restauración siguen pendientes de automatización.

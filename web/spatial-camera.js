@@ -1,0 +1,57 @@
+/* Opt-in video-only capture. Nothing is requested before the explicit button. */
+export class SpatialCamera {
+  constructor(dialog,{upload,onPrepared}){
+    this.dialog=dialog;this.upload=upload;this.onPrepared=onPrepared;this.generation=0;this.$=id=>dialog.querySelector('#'+id);
+    this.$('close-camera').addEventListener('click',()=>dialog.close());dialog.addEventListener('close',()=>this.release());
+    this.$('camera-enable').addEventListener('click',()=>this.enable());this.$('camera-record').addEventListener('click',()=>this.record());
+    this.$('camera-stop').addEventListener('click',()=>this.stop());this.$('camera-use').addEventListener('click',()=>this.use());
+    this.$('camera-immersive').addEventListener('click',()=>this.immersive(!dialog.classList.contains('glasses-mode')));
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)return;if(this.recorder?.state==='recording')this.stop();else if(this.stream){for(const track of this.stream.getTracks())track.stop();this.stream=null;this.$('camera-record').disabled=true;this.$('camera-enable').disabled=false;this.state('idle');this.status('Cámara detenida al cambiar de ventana.');}});
+    window.addEventListener('pagehide',()=>this.release());
+  }
+  status(message){this.$('camera-status').textContent=message;}
+  state(value){this.dialog.dataset.captureState=value;this.$('camera-live-label').textContent=({idle:'Cámara apagada',live:'Vista en directo',recording:'Grabando',review:'Revisar captura',preparing:'Preparando'})[value] || 'Cámara apagada';}
+  immersive(value){this.dialog.classList.toggle('glasses-mode',value);this.$('camera-immersive').setAttribute('aria-pressed',String(value));this.$('camera-immersive').textContent=value?'Vista compacta':'Vista gafas';}
+  guide(elapsed=0){this.$('camera-time').textContent=String(Math.floor(elapsed/60)).padStart(2,'0')+':'+String(Math.floor(elapsed%60)).padStart(2,'0');this.$('camera-guide').textContent=elapsed<15?'Empieza desde una esquina.':elapsed<35?'Avanza despacio. Conserva vistas comunes.':'Muestra puertas y objetos desde varios lados.';}
+  error(message=''){this.$('camera-error').hidden=!message;this.$('camera-error').textContent=message;}
+  open(){this.release();this.dialog.showModal();const supported=Boolean(navigator.mediaDevices?.getUserMedia && window.MediaRecorder && typeof MediaRecorder.isTypeSupported==='function' && MediaRecorder.isTypeSupported('video/mp4'));
+    this.$('camera-enable').disabled=!supported;this.$('camera-record').disabled=true;this.$('camera-stop').disabled=true;this.$('camera-use').disabled=true;this.state('idle');this.guide();this.immersive(window.matchMedia('(max-width:700px)').matches);
+    this.status(supported?'La cámara se activa solo cuando lo decidas. Sin micrófono.':'Este navegador no graba MP4 compatible. Importa un video desde Nuevo espacio.');this.error();
+  }
+  async enable(){
+    const generation=this.generation;this.$('camera-enable').disabled=true;this.$('camera-use').disabled=true;this.error();this.status('Esperando permiso de cámara…');
+    try{const stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});
+      if(generation!==this.generation || !this.dialog.open){for(const track of stream.getTracks())track.stop();return;}
+      this.stream=stream;const video=this.$('camera-preview');video.controls=false;video.srcObject=stream;await video.play();
+      if(generation!==this.generation)return;this.$('camera-record').disabled=false;this.state('live');this.status('Buena luz. Recorre el espacio despacio y evita personas.');
+    }catch(exception){if(generation===this.generation){for(const track of this.stream?.getTracks() || [])track.stop();this.stream=null;this.$('camera-enable').disabled=false;this.status('No hay captura en curso.');this.error(exception.name==='NotAllowedError'?'No se concedió acceso a la cámara. Puedes importar un MP4.':'No se pudo abrir una cámara compatible. Puedes importar un MP4.');}}
+  }
+  record(){
+    if(!this.stream || this.recorder?.state==='recording')return;this.error();this.discard=false;this.chunks=[];this.bytes=0;this.blob=null;
+    if(this.url){URL.revokeObjectURL(this.url);this.url=null;}const generation=this.generation;
+    try{this.recorder=new MediaRecorder(this.stream,{mimeType:'video/mp4',videoBitsPerSecond:2000000});}
+    catch{this.error('El navegador no pudo iniciar la grabación MP4. Importa un video.');return;}
+    this.recorder.addEventListener('dataavailable',event=>{if(generation!==this.generation || this.discard || !event.data?.size)return;this.bytes+=event.data.size;
+      if(this.bytes>25*1024*1024){this.discard=true;this.chunks=[];this.error('La captura superó 25 MiB. Repite con un recorrido más corto.');this.stop();return;}this.chunks.push(event.data);});
+    this.recorder.addEventListener('error',()=>{if(generation!==this.generation)return;this.discard=true;this.chunks=[];this.error('La grabación se interrumpió. No se preparó ningún video.');this.stop();});
+    this.recorder.addEventListener('stop',()=>{if(generation!==this.generation)return;clearInterval(this.timer);for(const track of this.stream?.getTracks() || [])track.stop();this.stream=null;
+      this.$('camera-stop').disabled=true;this.$('camera-record').disabled=true;this.$('camera-enable').disabled=false;
+      if(this.discard || !this.chunks.length){this.state('idle');this.status('No se conservó una captura válida.');return;}
+      this.blob=new Blob(this.chunks,{type:'video/mp4'});this.chunks=[];this.url=URL.createObjectURL(this.blob);const video=this.$('camera-preview');video.srcObject=null;video.src=this.url;video.controls=true;
+      this.$('camera-use').disabled=false;this.state('review');this.status('Revisa tu captura. Se conserva solo en memoria hasta que decidas prepararla.');});
+    try{this.recorder.start(250);}catch{this.error('No se pudo grabar. Importa un MP4.');return;}
+    this.started=performance.now();this.$('camera-enable').disabled=true;this.$('camera-record').disabled=true;this.$('camera-stop').disabled=false;this.$('camera-use').disabled=true;this.state('recording');this.guide();
+    this.timer=setInterval(()=>{const elapsed=(performance.now()-this.started)/1000;this.guide(Math.min(elapsed,59));this.status('Grabando · '+Math.floor(elapsed)+' / 59 s · sin audio');if(elapsed>=59)this.stop();},200);
+  }
+  stop(){clearInterval(this.timer);if(this.recorder?.state==='recording'){this.$('camera-stop').disabled=true;this.status('Terminando el video…');try{this.recorder.stop();}catch{this.release();this.error('No se pudo terminar el video.');}}}
+  async use(){
+    if(!this.blob)return;const generation=this.generation,blob=this.blob;this.$('camera-use').disabled=true;this.$('camera-enable').disabled=true;this.error();this.state('preparing');this.status('Preparando únicamente en este equipo…');
+    try{const result=await this.upload(blob);if(generation!==this.generation)return;this.dialog.close();await this.onPrepared(result);}
+    catch(exception){if(generation===this.generation){this.error(exception.message);this.$('camera-use').disabled=false;this.$('camera-enable').disabled=false;this.state('review');this.status('La captura sigue en memoria. Puedes revisar o cerrar.');}}
+  }
+  release(){
+    ++this.generation;clearInterval(this.timer);this.discard=true;if(this.recorder?.state==='recording'){try{this.recorder.stop();}catch{}}
+    for(const track of this.stream?.getTracks() || [])track.stop();this.stream=null;this.recorder=null;this.chunks=[];this.blob=null;
+    const video=this.$('camera-preview');video.pause();video.srcObject=null;video.removeAttribute('src');video.load();if(this.url)URL.revokeObjectURL(this.url);this.url=null;this.state('idle');
+  }
+}

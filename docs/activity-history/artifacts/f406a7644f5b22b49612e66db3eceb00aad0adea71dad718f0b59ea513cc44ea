@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "checks": [
+    "native grant bridge substituted; token required",
+    "live turn enqueues conceptual model",
+    "conversation continues while job runs",
+    "real Cognira compilation and local GLB publication",
+    "model preview within live without leaving the microphone view",
+    "320/390/768/1120/1440 margins",
+    "stop disarms session"
+  ],
+  "providers": "substituted",
+  "native_input": "substituted",
+  "model_geometry": "real local compiler",
+  "physical_audio_verified": false,
+  "external_calls": 0,
+  "errors": []
+}

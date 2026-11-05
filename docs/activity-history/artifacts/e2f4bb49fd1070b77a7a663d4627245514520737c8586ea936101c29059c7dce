@@ -1,0 +1,19 @@
+{
+  "scope": "real Paint; native Cognira executors through Brivany adapter",
+  "synthetic_drawing": true,
+  "started_at": "2026-10-30T16:20:13.627774+00:00",
+  "steps": [],
+  "cost_amount": null,
+  "physical_quality_verified": false,
+  "status": "failed",
+  "failure": "Tarea cancelada con Escape.",
+  "visual_review_pending": true,
+  "finished_at": "2026-10-30T16:20:14.060769+00:00",
+  "planner_requests": 0,
+  "external_cost_unknown": true,
+  "limits": [
+    "No semantic or artistic quality claim from stroke count.",
+    "No inference retries at task level; source Paint helper may correct a structured response.",
+    "Only the new Paint drawing is captured; no original user image."
+  ]
+}

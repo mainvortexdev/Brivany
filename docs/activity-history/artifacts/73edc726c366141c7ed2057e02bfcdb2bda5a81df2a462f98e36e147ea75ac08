@@ -1,0 +1,31 @@
+{
+  "analysis_type": "retrospective_of_preserved_browser_report",
+  "measurement_report": "tmp/browser-dubbing-measurements/real-1793188472520.json",
+  "measurement_sha256": "486401df058759fc20ad44afc9ea218de5cc8ff6d5189ad2468c4c9fd9ab0214",
+  "trial_status": "passed",
+  "maximum_sessions": 1,
+  "automatic_retries": 0,
+  "external_calls": 1,
+  "new_external_calls_for_analysis": 0,
+  "source_captured_seconds": 2.3626666666666667,
+  "translated_scheduled_seconds": 2.6402083333333333,
+  "source_trailing_below_threshold_ms": 762.6666666666679,
+  "estimated_onset_to_onset_ms": 2579,
+  "estimated_first_translation_after_last_source_energy_ms": 1099.0000000000002,
+  "estimated_tail_to_tail_ms": 3519.000000000001,
+  "estimated_first_translation_after_file_end_ms": 336.33333333333223,
+  "target_audible_delay_ms": 500,
+  "target_achieved": false,
+  "physical_playback_measured": false,
+  "audible_delay_verified": false,
+  "actual_billed_usd": null,
+  "reference_rate_usd_per_input_minute": 0.04,
+  "estimated_base_service_usd": 0.001575,
+  "price_reference": "docs/18-traduccion-video-live.md; previously consulted published rate, not current invoice",
+  "interpretation": "The functional UI/WS/PCM trial passed; the estimated onset and final-source-energy delays exceed 500 ms. Silence after source speech must not be counted as a reduction in audible dubbing lag.",
+  "limits": [
+    "Energy windows are not speech recognition or semantic per-word alignment.",
+    "Original reference was captured before gain with original volume at 0%; no physical loopback.",
+    "No browser queue-overflow error occurred, but an exact queue percentile or acoustic quality score was not measured."
+  ]
+}

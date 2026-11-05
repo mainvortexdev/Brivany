@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "native_windows": "real",
+  "screen_capture": false,
+  "audio_capture": false,
+  "inference_calls": 0,
+  "background_network_consumption_known": false,
+  "checks": [
+    "native floating WebView2 window and local widget DOM",
+    "Work starts without audio or capture",
+    "native close interceptor preserves main window",
+    "return to main and stop companion"
+  ]
+}

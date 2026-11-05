@@ -1,0 +1,193 @@
+"""Native floating Work companion and explicit region selector."""
+import json
+import threading
+from urllib.parse import urlsplit
+from services.work.session import WorkSession
+from .island import IslandHost,DockHost,BAR_HEIGHT,geometry
+from types import SimpleNamespace
+
+
+class WorkBridge:
+    def _work(self):return self._work_factory()
+    def _show_island(self):
+        if getattr(self,'_dock_host',None) and self._dock_host.window is not None:self._dock_host.show()
+        host=getattr(self,'_island_host',None);window=getattr(self,'_work_window',None)
+        if host and window:
+            if host.value['expanded'] and host.window is not None and not getattr(getattr(self,'_dock_host',None),'fullscreen',False):host.show()
+            else:window.hide()
+    def _island_state(self):
+        host=getattr(self,'_island_host',None)
+        if not host:return None
+        value=host.status();dock=getattr(self,'_dock_host',None)
+        value.update(dock_height=BAR_HEIGHT,work_area_reserved=bool(dock and dock.status()['reserved']))
+        return value
+    def _dock_position(self,rect):
+        host=getattr(self,'_island_host',None)
+        if host:
+            scale=float(getattr(host.screen,'scale',1)) or 1
+            host.offset=round(rect['bottom']/scale-int(getattr(host.screen,'y',0)))
+            with host.lock:
+                host.generation+=1;old=host.value;host.value=geometry(host.screen,old['expanded'],old['size'],old['panel'],docked=True,offset=host.offset)
+                host.current=(host.value['width'],host.value['height'])
+                if host.window:
+                    host.window.resize(host.value['host_width'],host.value['host_height']);host.window.move(host.value['host_x'],host.value['y'])
+                    if host.region:host._clip(*host.current)
+    def _dock_fullscreen(self,active):
+        if active and getattr(self,'_work_window',None):
+            host=self._island_host;host.layout(False,host.value['size'],host.value['panel'],animate=False);self._work_window.hide()
+        elif not active:self._show_island()
+    def _close_island_windows(self):
+        dock=getattr(self,'_dock_host',None);host=getattr(self,'_island_host',None)
+        if dock:dock.close()
+        if host:host.close()
+        windows=[getattr(self,'_work_window',None),getattr(self,'_bar_window',None)]
+        self._work_window=None;self._bar_window=None
+        for window in windows:
+            if window:
+                try:window.destroy()
+                except Exception:pass
+    def _keep_work_background(self):
+        if self._work().active:
+            self._window.hide()
+            if getattr(self,'_work_window',None):self._show_island()
+            return False
+    def _sync_work(self):
+        value=self._work().status()
+        state={'active':value['active'],'recording':value['translation_state']=='recording'}
+        self._window.evaluate_js('window.BrivanyWorkState='+json.dumps(state)+';window.BrivanyWorkActive='+json.dumps(state['active'])+';')
+        value['island']=self._island_state()
+        value['jobs']=[];value['schedules']=[];value['live']={'listening':False,'speaking':False,'pending':False}
+        if hasattr(self,'_computer_factory'):
+            snapshot=self._computer_factory().status()
+            value['jobs']=[{key:job.get(key) for key in ('id','agent','kind','state','phase','reviewed')} for job in snapshot.get('jobs',[])]
+            value['schedules']=snapshot.get('schedules',[])
+        try:
+            live=self._window.evaluate_js("document.querySelector('#module-frame')?.contentWindow?.BrivanyChat?.liveState?.() || null")
+            if isinstance(live,dict):value['live']={key:live.get(key) is True for key in ('listening','speaking','pending')}
+        except Exception:pass
+        return value
+    def start_work(self):
+        self._trusted();self._work().start()
+        import webview
+        if getattr(self,'_work_window',None) is None:
+            native_screen=webview.screens[0] if webview.screens else SimpleNamespace(x=0,y=0,width=1366,height=768)
+            screen=SimpleNamespace(x=int(getattr(native_screen,'x',0)),y=int(getattr(native_screen,'y',0)),width=native_screen.width,height=native_screen.height,scale=float(getattr(native_screen,'scale',1)))
+            self._island_host=IslandHost(screen,expanded=getattr(self,'_island_preview',False),docked=True);layout=self._island_host.status()
+            self._dock_host=DockHost(screen,on_position=self._dock_position,on_fullscreen=self._dock_fullscreen)
+            self._work_window=webview.create_window('Melodi WorkSpace · Panel',self._base+'/work-widget?surface=panel',js_api=self,width=layout['host_width'],height=layout['host_height'],
+                x=layout['host_x'],y=layout['y'],hidden=True,frameless=True,easy_drag=False,on_top=True,resizable=False,
+                min_size=(220,1),shadow=False,focus=False,background_color='#050506')
+            self._bar_window=webview.create_window('Melodi WorkSpace',self._base+'/work-widget?surface=bar',js_api=self,width=screen.width,height=BAR_HEIGHT,
+                x=int(getattr(screen,'x',0)),y=int(getattr(screen,'y',0)),hidden=True,frameless=True,easy_drag=False,on_top=True,resizable=False,
+                min_size=(220,BAR_HEIGHT),shadow=False,focus=False,background_color='#050506')
+            def island_ready():
+                if self._work_window:
+                    self._island_host.bind(self._work_window);self._show_island()
+            self._work_window.events.loaded+=island_ready
+            def bar_ready():
+                if self._bar_window:
+                    try:self._dock_host.bind(self._bar_window);self._show_island()
+                    except Exception:
+                        self._work().close();self._close_island_windows();self._window.show()
+            self._bar_window.events.loaded+=bar_ready
+            def widget_closed():
+                if self._work().active:
+                    self._work().close();self._close_island_windows();self._window.show();self._sync_work()
+            self._work_window.events.closed+=widget_closed
+            self._bar_window.events.closed+=widget_closed
+        else:
+            self._show_island();self._work_window.evaluate_js('window.BrivanyIsland?.reopen()')
+        self._sync_work();self._window.hide();return {'ok':True}
+    def work_island_layout(self,expanded,size='normal',panel='home',animate=True,manual=False):
+        self._trusted()
+        if type(animate) is not bool or type(manual) is not bool:raise ValueError('Movimiento inválido.')
+        if not getattr(self,'_island_host',None):raise ValueError('Activa Work antes de abrir la isla.')
+        if not expanded:self._workspace_keyboard=False
+        self._island_host.layout(expanded,size,panel,animate=animate);state=self._island_state()
+        if manual and not expanded:state['suppress_hover']=True
+        for window in (getattr(self,'_work_window',None),getattr(self,'_bar_window',None)):
+            if window:
+                try:window.evaluate_js('window.BrivanyIsland?.receiveLayout('+json.dumps(state)+')')
+                except Exception:pass
+        self._show_island();return state
+    def work_island_gaze(self):
+        self._trusted()
+        return self._island_host.gaze() if getattr(self,'_island_host',None) and self._work().active else None
+    def work_island_pointer(self):
+        self._trusted()
+        value=self._island_host.pointer() if getattr(self,'_island_host',None) and self._work().active else None
+        if value:value['keep_open']=getattr(self,'_workspace_keyboard',False)
+        return value
+    def work_island_keyboard(self,active):
+        self._trusted()
+        if type(active) is not bool:raise ValueError('Estado de interacción inválido.')
+        self._workspace_keyboard=active;return {'ok':True}
+    def work_island_opacity(self,transparency):
+        self._trusted()
+        if not getattr(self,'_island_host',None):raise ValueError('Abre Melodi WorkSpace primero.')
+        result=self._island_host.opacity(transparency)
+        dock=getattr(self,'_dock_host',None)
+        if dock:
+            bar=dock.opacity(transparency);result['applied']=result['applied'] and bar['applied']
+        return result
+    def return_to_chat(self):
+        self._trusted();self._window.show();self._window.restore()
+        if getattr(self,'_island_host',None):self.work_island_layout(False,self._island_host.value['size'],self._island_host.value['panel'])
+        self._sync_work();return {'ok':True}
+    def stop_work(self):
+        self._trusted();self._work().close();self._close_island_windows();self._window.show();self._window.restore();self._sync_work()
+        return {'ok':True}
+    def work_status(self):self._trusted();return self._sync_work()
+    def work_audio(self,enabled,consent=False,target='es'):
+        self._trusted()
+        if type(enabled) is not bool:raise ValueError('Estado de audio no válido.')
+        if enabled:self._work().enable_audio(consent_to_asr=consent,target=target)
+        else:
+            work=self._work();work.capture_stop.set();work.detector_stop.set();work.monitoring=False
+            if work.monitor:work.monitor.close()
+        return self._sync_work()
+    def work_translation_decision(self,identifier,accept):
+        self._trusted()
+        if type(accept) is not bool:raise ValueError('Respuesta no válida.')
+        if accept:self._work().accept_translation(identifier)
+        else:self._work().decline_translation(identifier)
+        return self._sync_work()
+    def work_finish_translation(self):self._trusted();self._work().finish_translation();return self._sync_work()
+    def begin_work_region(self):
+        self._trusted()
+        import webview
+        self._work().start()
+        if getattr(self,'_capture_window',None):return {'ok':True}
+        # Hide our companion before grabbing; no original desktop frame is written to disk.
+        if getattr(self,'_work_window',None):self._work_window.hide()
+        if getattr(self,'_bar_window',None):self._bar_window.hide()
+        import time
+        time.sleep(.15)
+        try:self._region_preview=self._work().screen_snapshot()
+        except Exception:
+            if getattr(self,'_work_window',None):self._show_island()
+            else:self._window.show()
+            raise
+        self._capture_window=webview.create_window('Seleccionar región · Melodi',self._base+'/work-capture',js_api=self,
+            fullscreen=True,frameless=True,easy_drag=False,on_top=True,background_color='#19231e')
+        def region_closed():
+            self._capture_window=None;self._work().cancel_snapshot();self._region_preview=None
+            if getattr(self,'_work_window',None):self._show_island()
+        self._capture_window.events.closed+=region_closed
+        return {'ok':True}
+    def work_region_preview(self):self._trusted();return self._region_preview
+    def cancel_work_region(self):
+        self._trusted();self._work().cancel_snapshot();self._region_preview=None
+        window=getattr(self,'_capture_window',None)
+        if window:window.destroy();self._capture_window=None
+        if getattr(self,'_work_window',None):self._show_island()
+        return {'ok':True}
+    def use_work_region(self,x,y,width,height,action):
+        self._trusted()
+        if action not in {'explain','translate'}:raise ValueError('Acción de región no válida.')
+        data=self._work().select_region(x,y,width,height)
+        reference=self._computer_factory().references.add(data)
+        value={**reference,'preview':data,'question':'Traduce al español el texto visible en esta región.' if action=='translate' else 'Explica lo que se ve en esta región de pantalla.'}
+        self.cancel_work_region();self._window.show()
+        self._window.evaluate_js("(()=>{const frame=document.querySelector('#module-frame');const value="+json.dumps(value,ensure_ascii=True)+";if(frame?.contentWindow?.BrivanyImageRequest?.attachFromWork){if(frame.contentWindow.BrivanyImageRequest.attachFromWork(value))frame.contentWindow.BrivanyChat.send(value.question);}else{window.BrivanyPendingWorkRegion=value;window.BrivanyNavigate('/app');}})()")
+        return {'ok':True}

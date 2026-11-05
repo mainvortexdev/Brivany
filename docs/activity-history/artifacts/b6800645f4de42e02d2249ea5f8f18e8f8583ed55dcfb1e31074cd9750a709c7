@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-microphone-native",
+  "started_at": "2026-11-04T02:33:50.166047+00:00",
+  "finished_at": "2026-11-04T02:34:09.283371+00:00",
+  "duration_seconds": 19.117324,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_workspace_native",
+    "--microphone-input"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"type\": \"actual_owned_WebView2_windows_with_synthetic_conversation\", \"passed\": false, \"external_calls\": 0, \"microphone_used\": false, \"OS_input_sent\": false, \"appbar_reserved_by_test\": false, \"phase\": \"native_microphone_input\", \"voice_window_hidden_on_startup\": true, \"error\": \"ValueError('Configura la escucha de voz en Ajustes → Servicios.')\", \"traceback\": \"Traceback (most recent call last):\\n  File \\\"<local-path>\\\\tools\\\\check_workspace_native.py\\\", line 131, in test\\n    if snapshot.get('error'):raise ValueError(snapshot['error'])\\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\nValueError: Configura la escucha de voz en Ajustes → Servicios.\\n\"}\r\n"
+}

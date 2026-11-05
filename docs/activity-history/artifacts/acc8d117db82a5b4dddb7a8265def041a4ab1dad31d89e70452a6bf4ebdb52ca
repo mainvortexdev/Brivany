@@ -1,0 +1,232 @@
+"""Opt-in loopback relay for browser-owned synchronized translation.
+
+Pairing codes and 256-bit capability tokens live in memory, never in URLs,
+logs or public status. Providers are opened only after origin, authentication
+and an explicit synchronized start. This module never captures audio itself.
+"""
+from __future__ import annotations
+
+import hmac
+import json
+import logging
+import re
+import secrets
+import threading
+from collections import deque
+import time
+from urllib.parse import urlsplit
+
+from websockets.exceptions import ConnectionClosed
+from websockets.sync.server import serve
+from packages.providers.river_translation import RiverBridge
+from .selected_video import VIDEO_PROTOCOL,SelectedVideoError
+
+EXTENSION_ORIGIN=re.compile(r'chrome-extension://[a-p]{32}\Z')
+PAIR_TTL=120
+TOKEN_TTL=8*60*60
+
+
+class _SyncPeer:
+    def __init__(self,socket,initial):self.socket=socket;self.initial=initial
+    def recv(self,timeout=8):
+        if self.initial is not None:value=self.initial;self.initial=None;return value
+        return self.socket.recv(timeout=timeout)
+    def send(self,raw):return self.socket.send(raw)
+    def close(self):return self.socket.close()
+
+
+class SyncRelay:
+    def __init__(self,*,port=48217,bridge_factory=None,shared_lock=None,allowed_origins=(),clock=None,preferred_mode='synchronized',automatic_origin=None,video_hub=None):
+        self.port=port;self.bridge_factory=bridge_factory or (lambda:RiverBridge(0,allow_synchronized=True))
+        self.shared_lock=shared_lock or threading.Lock();self.clock=clock or time.monotonic
+        self.allowed_origins={'https://brivany.example'}
+        for origin in allowed_origins:
+            parsed=urlsplit(origin)
+            if parsed.path or parsed.query or parsed.fragment or parsed.username or parsed.password or not (
+                parsed.scheme=='https' and parsed.hostname=='brivany.example' or
+                parsed.scheme in {'http','https'} and parsed.hostname in {'127.0.0.1','localhost'} and parsed.port):
+                raise ValueError('Origen del reproductor no válido.')
+            self.allowed_origins.add(origin)
+        if not isinstance(preferred_mode,str) or preferred_mode not in {'synchronized','preproduction'}:raise ValueError('Modo de traducción no válido.')
+        self.preferred_mode=preferred_mode
+        if automatic_origin is not None and not EXTENSION_ORIGIN.fullmatch(automatic_origin):raise ValueError('Identidad de extensión no válida.')
+        self.automatic_origin=automatic_origin;self.automatic_enabled=automatic_origin is not None
+        self.video_hub=video_hub
+        self.lock=threading.RLock();self.server=None;self.thread=None;self.closed=False;self.pairing=None;self.grants={};self.connections=set();self.running=0
+        self.voice_bridges=deque(maxlen=4);self.last_failure=None;self.workspace_clients=set();self.workspace_request=None
+    def set_mode(self,mode):
+        if not isinstance(mode,str) or mode not in {'synchronized','preproduction'}:raise ValueError('Modo de traducción no válido.')
+        with self.lock:
+            if self.closed:raise ValueError('El enlace del navegador está cerrado.')
+            if self.running:raise ValueError('Detén la sesión activa antes de cambiar el modo.')
+            self.preferred_mode=mode
+        return self.status()
+    def origin_allowed(self,origin):
+        return isinstance(origin,str) and (origin in self.allowed_origins or EXTENSION_ORIGIN.fullmatch(origin) is not None)
+    def start(self):
+        with self.lock:
+            if self.server or self.closed:raise ValueError('El enlace ya está iniciado o cerrado.')
+            logger=logging.getLogger('brivany.sync.websocket');logger.handlers=[logging.NullHandler()];logger.propagate=False
+            self.server=serve(self.handle,'127.0.0.1',self.port,process_request=self.check_request,
+                origins=[*self.allowed_origins,EXTENSION_ORIGIN],logger=logger,max_size=16384,max_queue=8,
+                compression=None,close_timeout=1)
+            self.port=self.server.socket.getsockname()[1]
+            self.thread=threading.Thread(target=self.server.serve_forever,daemon=True,name='brivany-sync-relay');self.thread.start()
+        return self
+    def check_request(self,connection,request):
+        try:origin=request.headers.get('Origin');host=request.headers.get('Host')
+        except Exception:return connection.respond(403,'Origen no autorizado.')
+        valid_path=request.path in {'/pair','/sync'} or request.path in {'/connect','/video','/workspace'} and origin==self.automatic_origin and self.automatic_enabled
+        if not valid_path or host not in {f'127.0.0.1:{self.port}',f'localhost:{self.port}'} or not self.origin_allowed(origin):
+            return connection.respond(403,'Origen o dirección no autorizados.')
+    def connect_extension(self,origin):
+        """Bootstrap only our stable extension; no page/other extension grant."""
+        with self.lock:
+            self._purge()
+            if self.closed or not self.automatic_enabled or origin!=self.automatic_origin:raise PermissionError('Conexión automática no autorizada.')
+            for token,grant in self.grants.items():
+                if grant['origin']==origin:
+                    return {'type':'connected','token':token,'websocket_url':f'ws://127.0.0.1:{self.port}/sync','expires_in':max(1,int(grant['expires']-self.clock())),'preferred_mode':self.preferred_mode,'selected_video_protocol':VIDEO_PROTOCOL,'progressive_translation_available':bool(self.video_hub and self.video_hub.on_translate)}
+            if len(self.grants)>=16:raise PermissionError('Revoca los enlaces anteriores antes de vincular otro navegador.')
+            token=secrets.token_urlsafe(32);self.grants[token]={'origin':origin,'expires':self.clock()+TOKEN_TTL}
+            return {'type':'connected','token':token,'websocket_url':f'ws://127.0.0.1:{self.port}/sync','expires_in':TOKEN_TTL,'preferred_mode':self.preferred_mode,'selected_video_protocol':VIDEO_PROTOCOL,'progressive_translation_available':bool(self.video_hub and self.video_hub.on_translate)}
+    def issue_pairing(self):
+        with self.lock:
+            if self.closed or self.server is None:raise ValueError('El enlace del navegador no está disponible.')
+            code=f'{secrets.randbelow(1000000):06d}';self.pairing={'code':code,'expires':self.clock()+PAIR_TTL,'failures':0}
+            url=f'ws://127.0.0.1:{self.port}/pair'
+            return {'code':code,'expires_in':PAIR_TTL,'pair_url':url,'pair_link':url+'#'+code}
+    def _purge(self):
+        self.grants={token:grant for token,grant in self.grants.items() if grant['expires']>self.clock()}
+        if self.pairing and self.pairing['expires']<=self.clock():self.pairing=None
+    def pair(self,code,origin):
+        with self.lock:
+            self._purge()
+            if self.closed or not self.origin_allowed(origin):raise PermissionError('Vinculación no autorizada.')
+            pairing=self.pairing
+            valid=pairing is not None and isinstance(code,str) and re.fullmatch(r'[0-9]{6}',code) is not None and hmac.compare_digest(code,pairing['code'])
+            if not valid:
+                if pairing:
+                    pairing['failures']+=1
+                    if pairing['failures']>=5:self.pairing=None
+                raise PermissionError('Código no válido o caducado.')
+            self.pairing=None
+            if len(self.grants)>=16:raise PermissionError('Revoca los enlaces anteriores antes de vincular otro navegador.')
+            token=secrets.token_urlsafe(32);self.grants[token]={'origin':origin,'expires':self.clock()+TOKEN_TTL}
+            return {'type':'paired','token':token,'websocket_url':f'ws://127.0.0.1:{self.port}/sync','expires_in':TOKEN_TTL}
+    def authorized(self,token,origin):
+        with self.lock:
+            self._purge()
+            if self.closed or not isinstance(token,str) or len(token)>128:return False
+            return any(hmac.compare_digest(token,saved) and grant['origin']==origin for saved,grant in self.grants.items())
+    @staticmethod
+    def _send(socket,event):socket.send(json.dumps(event,ensure_ascii=False,allow_nan=False))
+    def request_video(self,timeout=5):
+        with self.lock:
+            clients=list(self.workspace_clients)
+            if self.closed or not self.automatic_enabled or len(clients)!=1:
+                raise ValueError('Conecta la extensión de Brivany en un solo navegador. Pulsa su icono una vez en el sitio del video.')
+            if self.workspace_request:raise ValueError('El navegador está preparando la selección del video.')
+            pending={'id':secrets.token_hex(16),'done':threading.Event(),'result':None};self.workspace_request=pending
+        try:
+            self._send(clients[0],{'type':'select-active-video','request_id':pending['id'],'expires_at_ms':int(time.time()*1000+timeout*1000)})
+            if not pending['done'].wait(timeout):raise ValueError('La extensión no respondió. Recárgala en el navegador e inténtalo otra vez.')
+            result=pending['result'] or {}
+            if result.get('ok') is not True:
+                messages={'site_permission':'Pulsa una vez la extensión en este sitio y permite su acceso para iniciarla desde WorkSpace.',
+                          'no_video_tab':'Abre la pestaña del video en el navegador vinculado.',
+                          'selection_failed':'No se pudo seleccionar el video. Reproduce el video y vuelve a intentarlo.'}
+                raise ValueError(messages.get(result.get('reason'),'La extensión no pudo preparar este video.'))
+            return {'requested':True}
+        finally:
+            with self.lock:
+                if self.workspace_request is pending:self.workspace_request=None
+    def _workspace(self,socket,token,origin):
+        with self.lock:self.workspace_clients.add(socket)
+        try:
+            while not self.closed and self.authorized(token,origin):
+                try:raw=socket.recv(timeout=25)
+                except TimeoutError:continue
+                value=json.loads(raw) if isinstance(raw,str) else None
+                if value=={'type':'ping'}:self._send(socket,{'type':'pong'});continue
+                if not isinstance(value,dict) or set(value)!={'type','request_id','ok','reason'} or value['type']!='selection-result' or type(value['ok']) is not bool or value['reason'] not in ('','site_permission','no_video_tab','selection_failed','expired'):raise SelectedVideoError('Respuesta de extensión no válida.')
+                with self.lock:
+                    pending=self.workspace_request
+                    if pending and value['request_id']==pending['id'] and not pending['done'].is_set():pending['result']=value;pending['done'].set()
+        finally:
+            with self.lock:self.workspace_clients.discard(socket)
+    def handle(self,socket):
+        with self.lock:self.connections.add(socket)
+        bridge=None;counted=False;stage='authentication'
+        try:
+            origin=socket.request.headers.get('Origin');path=socket.request.path
+            raw=socket.recv(timeout=8);message=json.loads(raw) if isinstance(raw,str) else None
+            if path=='/connect':
+                if message!={'type':'connect','protocol':1}:raise PermissionError('Conexión automática no válida.')
+                self._send(socket,self.connect_extension(origin));return
+            if path=='/pair':
+                if not isinstance(message,dict) or set(message)!={'type','code'} or message['type']!='pair':raise PermissionError('Vinculación no autorizada.')
+                self._send(socket,self.pair(message['code'],origin));return
+            if not isinstance(message,dict) or set(message)!={'type','token'} or message['type']!='authenticate' or not self.authorized(message['token'],origin):
+                raise PermissionError('Enlace no autorizado. Vuelve a vincularlo desde Brivany.')
+            if path=='/video':
+                stage='selected-video'
+                if self.video_hub is None:raise ValueError('La selección de video no está disponible.')
+                self._send(socket,{'type':'authenticated'});self.video_hub.handle(socket);return
+            if path=='/workspace':
+                self._send(socket,{'type':'authenticated'});self._workspace(socket,message['token'],origin);return
+            with self.lock:mode=self.preferred_mode
+            stage='synchronized-start'
+            self._send(socket,{'type':'authenticated','sample_rate':24000,'input_frame_ms':80,
+                'preferred_mode':mode,'initial_delay_ms':5000 if mode=='preproduction' else 4000})
+            initial=socket.recv(timeout=8);options=json.loads(initial) if isinstance(initial,str) else None
+            if not isinstance(options,dict) or options.get('type')!='start' or options.get('synchronized_output') is not True:
+                raise PermissionError('Inicia la reproducción sincronizada desde el navegador vinculado.')
+            if not self.authorized(message['token'],origin):raise PermissionError('El enlace ha caducado.')
+            bridge=self.bridge_factory()
+            with self.lock:self.voice_bridges.append(bridge)
+            if not bridge.allow_synchronized:raise ValueError('El puente no admite reproducción sincronizada.')
+            bridge.lock=self.shared_lock
+            with self.lock:
+                if self.closed:return
+                self.running+=1;counted=True
+            bridge.handle(_SyncPeer(socket,initial))
+        except ConnectionClosed:pass
+        except PermissionError as error:
+            try:self._send(socket,{'type':'error','code':'sync_auth','message':str(error)})
+            except ConnectionClosed:pass
+        except SelectedVideoError as error:
+            with self.lock:self.last_failure={'stage':stage,'code':'video_input','exception_type':type(error).__name__}
+            try:self._send(socket,{'type':'error','code':'video_input','message':str(error)})
+            except ConnectionClosed:pass
+        except Exception as error:
+            with self.lock:self.last_failure={'stage':stage,'code':'video_protocol' if stage=='selected-video' else 'sync_protocol','exception_type':type(error).__name__}
+            try:self._send(socket,{'type':'error','code':'video_protocol' if stage=='selected-video' else 'sync_protocol','message':'No se pudo iniciar la traducción del video. Reinicia Brivany y recarga la extensión.' if stage=='selected-video' else 'No se pudo iniciar el enlace sincronizado.'})
+            except ConnectionClosed:pass
+        finally:
+            if bridge:bridge.close()
+            with self.lock:
+                self.connections.discard(socket)
+                if counted:self.running-=1
+            socket.close()
+    def status(self):
+        with self.lock:
+            self._purge()
+            pools=[bridge.voice_agents.status() for bridge in self.voice_bridges if getattr(bridge,'voice_agents',None)]
+            voice_agents={'agents':[job for pool in pools for job in pool['agents']],'speakers':[speaker for pool in pools for speaker in pool['speakers']]}
+            return {'available':bool(self.server and not self.closed),'port':self.port if self.server else None,
+                'voice_agents':voice_agents,
+                'selected_video':self.video_hub.status() if self.video_hub else {'selected':False},
+                'paired_browsers':len(self.grants),'active_sessions':self.running,'pairing_pending':self.pairing is not None,'automatic_available':self.automatic_enabled,
+                'pairing_ttl_seconds':max(0,round(self.pairing['expires']-self.clock())) if self.pairing else 0,
+                'input_frame_ms':80,'synchronized_output':True,'audio_persisted':False,'preferred_mode':self.preferred_mode,
+                'selected_video_protocol':VIDEO_PROTOCOL,'last_failure':dict(self.last_failure) if self.last_failure else None,'workspace_connected':len(self.workspace_clients)==1}
+    def revoke_all(self):
+        with self.lock:self.grants.clear();self.pairing=None;self.automatic_enabled=False;connections=list(self.connections)
+        if self.video_hub:self.video_hub.close()
+        for socket in connections:socket.close()
+    def close(self):
+        with self.lock:self.closed=True
+        self.revoke_all()
+        if self.server:self.server.shutdown()
+        if self.thread and self.thread is not threading.current_thread():self.thread.join(timeout=2)

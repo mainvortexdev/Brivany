@@ -1,0 +1,21 @@
+{
+  "suite": "workspace-sync-extension",
+  "started_at": "2026-11-04T05:42:19.209594+00:00",
+  "finished_at": "2026-11-04T05:42:19.869828+00:00",
+  "duration_seconds": 0.660234,
+  "command": [
+    "node",
+    "--test",
+    "browser-extension/tests/sync-timeline.test.mjs",
+    "browser-extension/tests/background.test.mjs",
+    "browser-extension/tests/stream-setup.test.mjs",
+    "browser-extension/tests/caption-probe.test.mjs",
+    "browser-extension/tests/video-selection.test.mjs",
+    "browser-extension/tests/pcm-sender.test.mjs",
+    "browser-extension/tests/workspace-control.test.mjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ browser action captures its granted source into a separate consumer and navigation stops it (45.6582ms)\n✔ caption probing requires a captured source and drops a reply after navigation (8.5666ms)\n✔ PCM is confirmed only after native receipt, and the first failure is preserved (17.6059ms)\n✔ an old running desktop is rejected before capture with restart instructions (19.3256ms)\n✔ native captions preserve voice hints as data and select only the upcoming bounded window (17.9738ms)\n✔ only same-origin timedtext of the current exposed YouTube video can be fetched (96.7401ms)\n✔ unavailable captions return an empty fallback; a cached track avoids another request (6.7389ms)\n✔ slow setup and a burst of worklet frames wait for acknowledgements instead of cancelling (49.1046ms)\n✔ a renderer stall does not flush the accumulated queue faster than real time (1.1221ms)\n✔ a genuinely missing acknowledgement and an excessive queue still stop explicitly (1.0929ms)\n✔ an explicit media pause discards unsent pre-pause frames before resuming (2.4674ms)\n✔ provider preparation waits for ready before the capture phase and creates one session (67.9999ms)\n✔ cancellation during provider preparation rejects instead of activating later capture (1.5406ms)\n✔ provider rejection is surfaced without a second start request (0.6823ms)\n✔ lookahead uses the active epoch and stops when playback closes or transport is congested (1.0086ms)\n✔ autoplay replays only a confirmed silent prefix while the first translated cue is pending (6.5451ms)\n✔ unknown silence, insufficient ASR progress or less than the minimum buffer never bypass preparation (1.7119ms)\n✔ preproduction and an explicit user pause retain their playback requirement for a confirmed prefix (1.748ms)\n✔ a filtered song advances without waiting for translated lyrics or audio (10.3218ms)\n✔ pairing accepts only a loopback WebSocket with a six digit code and binds sync origin (2.8386ms)\n✔ four seconds alone cannot start a picture before real ASR progress (0.5544ms)\n✔ a late provider holds the matching picture before the speech and resumes with its cue (1.6783ms)\n✔ late audio is rejected rather than played over an unrelated picture (0.8119ms)\n✔ old epochs never enter the new session and transcript-only markers cannot be cues (0.3918ms)\n✔ buffer has a hard thirty second horizon even while paused (0.3441ms)\n✔ preproduction requires five prepared seconds and explicit playback (0.5362ms)\n✔ cue IDs are unique and completed intervals can be released from memory (1.0565ms)\n✔ an eight second utterance with seven seconds provider work holds at its source onset instead of dropping content (0.7178ms)\n✔ preproduction can start with the first cue while a second utterance crossing five seconds is still being translated (0.9729ms)\n✔ six seconds without the first cue signals a missed budget without dropping audio or silently extending a promise (0.5424ms)\n✔ one visible YouTube video is automatic, several videos require an explicit choice (7.6817ms)\n✔ pin chooses only the video underneath its coordinates and ignores hidden/offscreen videos (2.5876ms)\n✔ a cancelled or timed-out connection cannot send a late request on opening (8.3826ms)\n✔ native intent activates only the active tab on a previously granted site (54.8261ms)\n✔ native intent cannot grant permissions or run on a missing or restricted tab (1.0612ms)\n✔ expired and malformed commands cannot start a capture (0.3738ms)\nℹ tests 36\nℹ suites 0\nℹ pass 36\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 512.7477\n"
+}

@@ -1,0 +1,38 @@
+{
+  "base_url": "http://127.0.0.1:58813",
+  "scope": "read-only local startup, no inference or capture",
+  "checks": {
+    "/brivany-shell": {
+      "status": 200
+    },
+    "/app": {
+      "status": 200
+    },
+    "/settings": {
+      "status": 200
+    },
+    "/work-widget": {
+      "status": 200
+    },
+    "/work-capture": {
+      "status": 200
+    },
+    "/api/desktop/services": {
+      "status": 200,
+      "configured_services": 4
+    },
+    "/api/computer/capabilities": {
+      "status": 200,
+      "capabilities": 15,
+      "human_skills": 3
+    },
+    "/api/computer/status": {
+      "status": 200,
+      "control_enabled": false,
+      "agents": 7,
+      "edits_installed": true,
+      "jobs_returned": 0
+    }
+  },
+  "passed": true
+}

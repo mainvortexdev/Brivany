@@ -1,0 +1,12 @@
+{
+  "type": "real_brave_two_owned_video_elements_selected_capture_and_mocked_desktop",
+  "user_profile_used": false,
+  "test_copy_localhost_host_permission": true,
+  "browser_action_permission_verified": false,
+  "external_calls": 0,
+  "paid_calls": 0,
+  "microphone": false,
+  "media_persisted": false,
+  "passed": false,
+  "error": "worker.evaluate: TypeError: import() is disallowed on ServiceWorkerGlobalScope by the HTML specification. See https://github.com/w3c/ServiceWorker/issues/1356.\n    at eval (eval at evaluate (:370:30), <anonymous>:1:115)\n    at async <anonymous>:396:30"
+}

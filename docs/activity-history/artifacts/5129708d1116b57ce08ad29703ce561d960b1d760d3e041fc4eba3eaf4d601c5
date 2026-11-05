@@ -1,0 +1,26 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/work-events-ui/report.json",
+  "original_sha256": "5048a2db8daae6ae410b3098648a62ed5061d4febdfe0844322f50136b953e69",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "real_ui_http": true,
+    "physical_audio_verified": false,
+    "real_outbound_delivery": false
+  },
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

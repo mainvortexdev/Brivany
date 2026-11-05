@@ -1,0 +1,116 @@
+"""Owned native WorkSpace windows and AppBar; no user screenshots/audio/models."""
+import argparse
+import ctypes
+import json
+from pathlib import Path
+import sys
+import tempfile
+import time
+from desktop.experience.launcher import experience_handler
+from desktop.experience.work import WorkBridge
+
+
+class MusicFixtureBridge(WorkBridge):
+    def spotify_status(self):return {'connected':True,'pending':False,'library_access':True}
+    def spotify_playback(self):return {**self.spotify_status(),'playback':None,'devices':[]}
+
+from desktop.launcher import LocalDesktopServer
+from services.h1.server import Handler
+from services.work.session import WorkSession
+from desktop.experience.appbar import WindowsAppBar,Rect,rect_value
+
+
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--run',action='store_true',required=True);parser.parse_args()
+    import webview
+    output=Path('tmp/workspace-compact-native/report.json');output.parent.mkdir(parents=True,exist_ok=True)
+    report={'status':'failed','native_windows':'real','screen_capture':False,'audio_capture':False,'inference_calls':0,'spotify':'substituted','background_network_consumption_known':False}
+    with tempfile.TemporaryDirectory(prefix='brivany-workspace-native-') as folder,LocalDesktopServer(handler=experience_handler(Handler)) as server:
+        work=WorkSession(folder);bridge=MusicFixtureBridge();bridge._base=server.base_url;bridge._work_factory=lambda:work;bridge._trusted=lambda:None
+        window=webview.create_window('Brivany · comprobación WorkSpace',html='<html><body>Comprobación propia. Sin captura ni audio.</body></html>',width=500,height=300)
+        fixture=webview.create_window('WorkSpace · ventana maximizada de prueba',html='<html><body>Contenido sintético para comprobar los márgenes.</body></html>',width=620,height=400)
+        bridge._window=window
+        def wait_for(check,seconds=12):
+            deadline=time.monotonic()+seconds
+            while time.monotonic()<deadline:
+                try:
+                    value=check()
+                    if value:return value
+                except Exception:pass
+                time.sleep(.1)
+            raise RuntimeError('La comprobación nativa no confirmó su estado a tiempo.')
+        def run():
+            reader=None;before=None
+            try:
+                if sys.platform!='win32':raise RuntimeError('Esta comprobación de reserva requiere Windows.')
+                wait_for(lambda:window.evaluate_js('document.readyState')=='complete')
+                reader=WindowsAppBar(int(window.native.Handle.ToInt64()),height=40)
+                before=rect_value(reader.monitor().work);report['baseline_work_area']=before
+                fixture.maximize();time.sleep(.2)
+                bridge._island_preview=True;bridge.start_work()
+                wait_for(lambda:bridge._dock_host.reservation and bridge._dock_host.reservation.registered)
+                bar=bridge._bar_window;panel=bridge._work_window;dock=bridge._dock_host;host=bridge._island_host
+                wait_for(lambda:bar.evaluate_js('document.body.dataset.surface === "bar"'))
+                wait_for(lambda:panel.evaluate_js('document.body.dataset.surface === "panel"'))
+                state=dock.reservation.status();after=state['work_area'];rect=state['rect'];report['reserved_bar']=rect
+                if after['top']<rect['bottom'] or after['top']-before['top']!=rect['bottom']-rect['top'] or after['bottom']!=before['bottom']:raise RuntimeError('La reserva no coincide con la franja superior.')
+                metrics=bar.evaluate_js('({width:innerWidth,element:document.querySelector("#island").getBoundingClientRect().width,height:document.querySelector("#island").getBoundingClientRect().height})')
+                if abs(metrics['width']-metrics['element'])>1 or metrics['height']!=40:raise RuntimeError('La barra no ocupa todo su ancho.')
+                user=reader.user
+                user.GetWindowRect.argtypes=[ctypes.c_void_p,ctypes.POINTER(Rect)];user.GetWindowRect.restype=ctypes.c_bool
+                user.IsWindowVisible.argtypes=[ctypes.c_void_p];user.IsWindowVisible.restype=ctypes.c_bool
+                dwm=ctypes.WinDLL('dwmapi');dwm.DwmGetWindowAttribute.argtypes=[ctypes.c_void_p,ctypes.c_uint,ctypes.c_void_p,ctypes.c_uint];dwm.DwmGetWindowAttribute.restype=ctypes.c_long
+                def fixture_below(target=fixture,label='maximized_fixture_visible_bounds'):
+                    bounds=Rect();handle=int(target.native.Handle.ToInt64());quality=dwm.DwmGetWindowAttribute(handle,9,ctypes.byref(bounds),ctypes.sizeof(bounds))==0
+                    if not quality:user.GetWindowRect(handle,ctypes.byref(bounds))
+                    report[label]=rect_value(bounds)
+                    return bounds.top>=after['top']-(1 if quality else 12)
+                wait_for(fixture_below,5)
+                bridge.return_to_chat();time.sleep(.2)
+                window.maximize();wait_for(lambda:fixture_below(window,'newly_maximized_fixture_bounds'),5)
+                if not user.IsWindowVisible(int(bar.native.Handle.ToInt64())):raise RuntimeError('Volver al chat ocultó la barra reservada.')
+                before_expand=rect_value(reader.monitor().work)
+                # Geometry fixture ignores the user's real cursor; hover is covered separately.
+                bridge.work_island_pointer=lambda:{'near':False,'inside':False,'over_bar':False,'keep_open':True}
+                bridge.work_island_keyboard(True);bar.evaluate_js('window.BrivanyIsland.expand()');wait_for(lambda:host.value['expanded']);time.sleep(.4)
+                if rect_value(reader.monitor().work)!=before_expand:raise RuntimeError('El panel desplegado alteró la reserva.')
+                popup=Rect();user.GetWindowRect(int(panel.native.Handle.ToInt64()),ctypes.byref(popup))
+                if abs(popup.top-rect['bottom']-6)>1:raise RuntimeError('El panel no está debajo de la barra.')
+                if panel.native.ShowInTaskbar or bar.native.ShowInTaskbar or not window.native.ShowInTaskbar:raise RuntimeError('La configuración de la barra de tareas no coincide.')
+                bridge.work_island_opacity(0)
+                user.GetLayeredWindowAttributes.argtypes=[ctypes.c_void_p,ctypes.c_void_p,ctypes.c_void_p,ctypes.c_void_p];user.GetLayeredWindowAttributes.restype=ctypes.c_bool
+                for target in (bar,panel):
+                    color=ctypes.c_ulong();alpha=ctypes.c_ubyte();flags=ctypes.c_ulong()
+                    if not user.GetLayeredWindowAttributes(int(target.native.Handle.ToInt64()),ctypes.byref(color),ctypes.byref(alpha),ctypes.byref(flags)) or alpha.value!=255 or not flags.value&2:raise RuntimeError('No se confirmó la opacidad nativa.')
+                anchors=[]
+                for x in (8,host.screen.width-8):
+                    value=bridge.work_island_layout(True,'normal','music-player',False,False,x);time.sleep(.2)
+                    css=panel.evaluate_js('({left:document.querySelector("#island-content").getBoundingClientRect().left,width:document.querySelector("#island-content").getBoundingClientRect().width})')
+                    bounds=Rect();user.GetWindowRect(int(panel.native.Handle.ToInt64()),ctypes.byref(bounds))
+                    report['last_anchor_check']={'expected':{k:value[k] for k in ('width','height','clip_left','host_width','revision')},'css':css,'host_now':host.status()['panel'],'ui':panel.evaluate_js('({status:document.querySelector("#music-status").textContent,panel:document.querySelector("#panel-label").textContent,api:Object.keys(window.pywebview.api).filter(k=>k.startsWith("spotify"))})')}
+                    if abs(css['left']-value['clip_left'])>1 or abs(css['width']-value['width'])>1:raise RuntimeError('El panel CSS no coincide con la región nativa anclada.')
+                    anchors.append({'anchor':x,'host':rect_value(bounds),'content_left':css['left'],'content_width':css['width']})
+                if anchors[1]['host']['left']<=anchors[0]['host']['left']:raise RuntimeError('El panel no sigue el anclaje horizontal.')
+                report['anchored_panels']=anchors
+                bar.evaluate_js('window.BrivanyIsland.reopen()');wait_for(lambda:not host.value['expanded']);time.sleep(.35)
+                if user.IsWindowVisible(int(panel.native.Handle.ToInt64())) or not user.IsWindowVisible(int(bar.native.Handle.ToInt64())):raise RuntimeError('El acoplamiento no ocultó sólo el panel.')
+                if rect_value(reader.monitor().work)!=before_expand:raise RuntimeError('El acoplamiento cambió la reserva.')
+                if work.tape is not None or work.capture_thread is not None:raise RuntimeError('Se activó captura de audio.')
+                for target in (panel,bar):target.evaluate_js('window.BrivanyIsland.dispose()')
+                time.sleep(.6) # Drain the fixture's pending bridge replies before native destruction.
+                bridge.stop_work();wait_for(lambda:rect_value(reader.monitor().work)==before,5)
+                report.update(status='passed',appbar_reserved=True,maximized_existing_fixture_below_bar=True,newly_maximized_fixture_below_bar=True,popup_does_not_change_work_area=True,bar_visible_with_chat=True,taskbar_hidden_verified=True,native_opacity_verified=True,work_area_restored=True,checks=['full-width native Windows AppBar','existing and newly maximized owned fixtures respect reserved work area','floating panel overlays without reserving extra space','collapse hides panel and preserves strip','bar remains with the main chat','auxiliary windows have no taskbar entries','opaque native bar and panel; left and right cursor anchoring','exit restores baseline desktop work area','no capture or inference'])
+            except Exception as error:report['error']=type(error).__name__+': '+str(error)[:280]
+            finally:
+                work.close();bridge._close_island_windows()
+                if reader and before:
+                    try:report['cleanup_work_area_restored']=rect_value(reader.monitor().work)==before
+                    except Exception:report['cleanup_work_area_restored']=False
+                for item in list(webview.windows):
+                    try:item.destroy()
+                    except Exception:pass
+        webview.start(run,gui={'win32':'edgechromium','darwin':'cocoa','linux':'gtk'}.get(sys.platform),debug=False,private_mode=True,http_server=False)
+    output.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8');print(json.dumps(report,ensure_ascii=False,indent=2));return 0 if report['status']=='passed' and report.get('cleanup_work_area_restored') else 1
+
+
+if __name__=='__main__':raise SystemExit(main())

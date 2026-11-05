@@ -1,0 +1,18 @@
+{
+  "suite": "spatial-vendor",
+  "started_at": "2026-10-28T15:37:45.161460+00:00",
+  "finished_at": "2026-10-28T15:37:45.353918+00:00",
+  "duration_seconds": 0.192458,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_spatial_vendor"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"status\": \"passed\", \"package\": \"three\", \"version\": \"0.180.0\", \"license\": \"MIT\", \"files_checked\": [\"three.module.js\", \"three.core.js\", \"addons/controls/OrbitControls.js\", \"addons/controls/TransformControls.js\", \"addons/loaders/GLTFLoader.js\", \"addons/utils/BufferGeometryUtils.js\", \"LICENSE\"], \"runtime_external_requests\": 0, \"external_calls\": 0, \"scope\": \"Integrity and import closure, not rendered scene quality.\"}\r\n"
+}

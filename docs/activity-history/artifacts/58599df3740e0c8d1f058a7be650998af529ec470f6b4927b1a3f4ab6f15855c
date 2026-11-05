@@ -1,0 +1,105 @@
+{
+  "started_at": "2026-10-27T23:42:21.949495+00:00",
+  "status": "passed",
+  "source": {
+    "filename": "conversation-input.wav",
+    "sha256": "28b5f4279b562ce77eaf4e0707a102cd0f702012f0f8f189f3ab85a0d748c88e",
+    "size_bytes": 205484,
+    "duration_seconds": 4.28,
+    "sample_rate": 24000,
+    "channels": 1,
+    "format": "pcm16"
+  },
+  "target_language": "en",
+  "source_language": "es",
+  "provider": "Palabra",
+  "model": "speech-to-speech",
+  "maximum_sessions": 1,
+  "automatic_retries": 0,
+  "input_chunk_ms": 40,
+  "configured_trial_limit_seconds": 5,
+  "input_bytes_sent": 205440,
+  "output_audio_chunks": 21,
+  "output_audio_bytes": 188180,
+  "output_formats": [
+    {
+      "sample_rate": 24000,
+      "channels": 1,
+      "format": "pcm16",
+      "bytes": 188180,
+      "duration_seconds": 3.92
+    }
+  ],
+  "translated_text_characters": 61,
+  "original_text_characters": 59,
+  "max_audio_queue_estimate_ms": 725.21,
+  "connect_ms": 4187.0,
+  "first_input_audio_to_first_output_audio_ms": 2906.0,
+  "relay_first_output_audio_ms": 2906.0,
+  "first_tts_chunk_generation_ms": null,
+  "inference_ms": null,
+  "target_inference_ms": 500,
+  "target_status": "unverified",
+  "estimated_base_service_usd": 0.002853,
+  "estimate_rate_usd_per_minute": 0.04,
+  "estimate_basis": "input_audio_duration_only",
+  "actual_billed_usd": null,
+  "external_calls": 1,
+  "provider_ready": true,
+  "provider_settings": {
+    "source_language": "es",
+    "target_language": "en",
+    "queue": null,
+    "observed_fields": {
+      "source_language": true,
+      "target_language": true,
+      "queue": {
+        "desired_queue_level_ms": false,
+        "max_queue_level_ms": false,
+        "auto_tempo": false,
+        "min_tempo": false,
+        "max_tempo": false
+      }
+    },
+    "observed_path": "pipeline",
+    "shape": {
+      "keys": [
+        "input_stream",
+        "output_stream",
+        "pipeline",
+        "task_status",
+        "output_modes"
+      ],
+      "objects": {
+        "input_stream": [
+          "content_type",
+          "source"
+        ],
+        "output_stream": [
+          "content_type",
+          "target"
+        ],
+        "pipeline": [
+          "turn_detection",
+          "transcription",
+          "translations",
+          "allowed_message_types"
+        ],
+        "output_modes": [
+          "en"
+        ]
+      }
+    }
+  },
+  "gpu_seconds": null,
+  "audio_persisted": false,
+  "transcripts_persisted": false,
+  "limitations": [
+    "La estimación usa $0.04/min y solo la duración del audio; no es una factura ni un máximo garantizado.",
+    "La primera salida medida incluye red y contexto; no es inferencia interna ni calidad oída.",
+    "El timing TTS opcional es generación hasta el primer chunk; no incluye ASR, traducción o red.",
+    "No se mide reproducción física ni sincronía semántica con el video.",
+    "external_calls cuenta una sesión solicitada al relay; no es telemetría de facturación del proveedor."
+  ],
+  "finished_at": "2026-10-27T23:42:36.872709+00:00"
+}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff"><title>Doblaje · Brivany</title>
+  <link rel="icon" href="/icon.svg"><link rel="stylesheet" href="/dubbing.css"><link rel="stylesheet" href="/palette.css">
+  <script src="/dubbing.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Ir al doblaje</a>
+  <header class="dub-header"><a class="wordmark" href="/" aria-label="Brivany, inicio">brivany<span>.</span></a><nav aria-label="Brivany"><a href="/app">Melodi</a><a href="/dubbing" aria-current="page">Doblaje</a><a href="/activity">Bitácora</a></nav></header>
+  <main id="main">
+    <header class="page-heading"><p class="eyebrow">VIDEO · VOZ A VOZ</p><h1>El mismo video.<br>Otro idioma.</h1><p>Escucha una traducción mientras se reproduce.</p></header>
+    <div class="dub-layout">
+      <section class="player-column" aria-label="Tu video">
+        <div class="player-shell" id="player-shell"><video id="dub-video" controls playsinline preload="metadata" aria-label="Video original" hidden></video><label id="video-picker" class="video-picker" for="video-file"><span class="play-icon" aria-hidden="true">▷</span><strong>Abre un video</strong><small>MP4 · hasta 25 MiB</small></label><input id="video-file" class="sr-only" type="file" accept="video/mp4,.mp4"></div>
+        <div class="file-bar"><span id="file-name">Tu video permanece en este equipo.</span><button id="change-video" class="text-button" type="button" hidden>Cambiar ↗</button></div>
+        <section class="captions" aria-labelledby="caption-heading"><div class="caption-heading"><h2 id="caption-heading">La traducción.</h2><span id="caption-state">Sin empezar</span></div><p id="translation-caption" aria-live="off">Las palabras aparecerán aquí.</p><details id="source-caption-details" hidden><summary>Texto original</summary><p id="original-caption"></p></details></section>
+      </section>
+      <aside class="controls-column" aria-labelledby="controls-heading">
+        <div class="controls-heading"><h2 id="controls-heading">A tu idioma.</h2><span id="session-state" class="state-label">En espera</span></div>
+        <label class="field-label" for="target-language">Traducir al</label><select id="target-language"><option value="es">Español</option><option value="en">English</option></select>
+        <div class="volume-control"><label for="original-volume">Audio original <output id="original-volume-label">0 %</output></label><input id="original-volume" type="range" min="0" max="100" value="0"></div>
+        <div class="volume-control"><label for="dub-volume">Voz traducida <output id="dub-volume-label">85 %</output></label><input id="dub-volume" type="range" min="0" max="100" value="85"></div>
+        <label class="consent"><input id="dub-consent" type="checkbox"><span>Enviar el audio a OpenAI<small>Solo durante esta sesión. El video no se sube.</small></span></label>
+        <div class="session-actions"><button id="start-dubbing" class="primary" type="button" disabled>Iniciar doblaje <span aria-hidden="true">↗</span></button><button id="stop-dubbing" class="secondary" type="button" disabled>Detener</button></div>
+        <p id="dub-notice" class="notice" role="status" aria-live="polite">Consultando conexión…</p><p id="dub-error" class="error" role="alert" hidden></p>
+        <div class="provider-bar"><span id="provider-state">API sin comprobar</span><button id="configure-dubbing" class="text-button" type="button">Conectar API</button></div>
+        <details class="measurement-details"><summary>Latencia y alcance</summary><dl><div><dt>Objetivo de inferencia</dt><dd>≤ 500 ms · por verificar</dd></div><div><dt>Inferencia del proveedor</dt><dd id="inference-ms">Sin dato del proveedor</dd></div><div><dt>Primer audio recibido</dt><dd id="first-audio-ms">Sin medición</dd></div><div><dt>Primera voz programada</dt><dd id="first-playback-ms">Sin medición</dd></div></dl><p>Las mediciones del primer audio incluyen red y espera de contexto; no son la inferencia aislada. La calidad y latencia reales aún requieren una prueba con el proveedor.</p><p>Prueba de hasta <span id="session-limit">60</span> segundos. Traducción de voz, sin clonación ni sincronización labial. Las transmisiones externas se conectarán después.</p><p id="session-clock">Sin sesión activa.</p></details>
+      </aside>
+    </div>
+    <footer><span>La voz de Melodi sigue en su espacio.</span><a href="/app">Volver a Melodi ↗</a></footer>
+  </main>
+  <dialog id="dubbing-key-dialog" aria-labelledby="key-title"><form id="dubbing-key-form"><button id="close-dubbing-key" class="close-dialog" type="button" aria-label="Cerrar configuración">×</button><p class="eyebrow">CONEXIÓN LOCAL</p><h2 id="key-title">Conecta la traducción.</h2><p>Guarda tu clave de la API de OpenAI en este equipo. Se carga de nuevo al abrir Brivany.</p><label class="field-label" for="dubbing-key">Clave API</label><input id="dubbing-key" type="password" autocomplete="off" spellcheck="false" minlength="20" maxlength="2048" required placeholder="Pega tu clave aquí"><p id="key-notice" class="notice" role="status"></p><button id="save-dubbing-key" class="primary" type="submit">Guardar clave</button><small>La clave permanece en el servidor local. No se guarda en el navegador ni aparece en el chat. La API requiere acceso y saldo propios.</small></form></dialog>
+</body>
+</html>

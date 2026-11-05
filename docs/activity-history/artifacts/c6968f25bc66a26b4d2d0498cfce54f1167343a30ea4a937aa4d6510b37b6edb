@@ -1,0 +1,14 @@
+{
+  "created_at": "2026-10-28T12:07:14.501419+00:00",
+  "status": "blocked",
+  "synthetic": true,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "purpose": "Test whether useful translation of clause one begins before clause two ends, without a long inter-clause silence.",
+  "limitations": [
+    "No translation provider, model latency, intelligibility, or physical audio device is evaluated by fixture preparation.",
+    "RMS landmarks identify energy windows, not forced word alignment or proof of semantic correspondence.",
+    "Reproduction uses the fixed prior synthetic PCM plus offline Windows Zira synthesis; byte reproducibility depends on the installed voice version."
+  ],
+  "reason": "The fixed offline Windows Zira voice could not generate clause two."
+}

@@ -1,0 +1,84 @@
+import {BufferedTranslationPlayer} from './buffered-player.js';
+import {upcomingCaptions} from './caption-probe.js';
+
+class RelayPort extends EventTarget {
+  constructor(port) {
+    super();
+    this.port = port;
+    this.readyState = WebSocket.OPEN;
+    this.bufferedAmount = 0;
+  }
+
+  send(raw) {
+    if (typeof raw === 'string') {
+      const control = JSON.parse(raw);
+      this.port.postMessage(control.type === 'stop' ? control : {type:'sync-control', control});
+    } else {
+      const data = btoa(String.fromCharCode(...new Uint8Array(raw)));
+      this.port.postMessage({type:'sync-pcm', data});
+    }
+  }
+
+  receive(value) {
+    if (value.type === 'sync-ended') this.dispatchEvent(new Event('close'));
+    else this.dispatchEvent(new MessageEvent('message', {data:JSON.stringify(value)}));
+  }
+
+  close() {
+    this.readyState = WebSocket.CLOSED;
+  }
+}
+
+export function inlineTranslation({port, source, root, snapshot, settings, audio, stream, originalGain, status, caption, failure, finished}) {
+  if (!source.isConnected) throw Error('El video seleccionado ya no está en la página.');
+  if (!stream.getVideoTracks().length) throw Error('El video no permite sincronizar su imagen. Abre el reproductor original.');
+  const frame = document.createElement('video');
+  const cover = document.createElement('canvas');
+  frame.playsInline = true;
+  const layerStyle = 'position:fixed;background:#000;object-fit:contain;pointer-events:none;';
+  frame.style.cssText = layerStyle+'visibility:hidden;';
+  cover.style.cssText = layerStyle;
+  cover.width = Math.min(960, source.videoWidth || 640);
+  cover.height = Math.round(cover.width * (source.videoHeight || 360) / (source.videoWidth || 640));
+  try { cover.getContext('2d').drawImage(source,0,0,cover.width,cover.height); } catch {}
+  root.prepend(frame);
+  root.prepend(cover);
+  const socket = new RelayPort(port);
+  const engine = new BufferedTranslationPlayer({
+    video:frame, naturalRate:true,
+    status:text => {
+      if (text === 'Traduciendo') {frame.style.visibility = 'visible';cover.hidden = true;}
+      status(text);
+    },
+    caption, failure, finished,
+  });
+  const fit = () => {
+    if (!source.isConnected) {finished();return;}
+    const box = source.getBoundingClientRect();
+    const position={left:`${box.left}px`, top:`${box.top}px`, width:`${box.width}px`, height:`${box.height}px`};
+    Object.assign(frame.style, position);
+    Object.assign(cover.style, position);
+  };
+  fit();
+  const followFullscreen = () => {
+    const container=document.fullscreenElement;
+    if (container===source) {finished();return;}
+    (container?.contains(source)?container:document.documentElement).append(root.host);
+    fit();
+  };
+  document.addEventListener('fullscreenchange',followFullscreen);
+  const layout = setInterval(fit, 100);
+  const sendLookahead = () => {
+    const next = upcomingCaptions({...snapshot, position:source.currentTime, paused:source.paused, rate:source.playbackRate});
+    if (next) engine.anticipate(next,{early:true});
+  };
+  const lookahead = setInterval(sendLookahead, 1000);
+  return {
+    start:async() => {await engine.start({stream, audio, socket, target:settings.target, voice:settings.voice, originalGain});sendLookahead();},
+    setCaptions:value => {snapshot=value;sendLookahead();},
+    receive:value => { socket.receive(value); if (value.type === 'ready') sendLookahead(); },
+    finish:() => engine.finishInput(),
+    currentSourceTime:() => frame.style.visibility==='visible'?Math.max(0,source.currentTime-engine.captureTime+frame.currentTime-(engine.mediaOrigin||0)):null,
+    close:() => { document.removeEventListener('fullscreenchange',followFullscreen);clearInterval(layout); clearInterval(lookahead); engine.close(); frame.remove(); cover.remove(); },
+  };
+}

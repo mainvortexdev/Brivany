@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-translation-ui",
+  "started_at": "2026-11-04T06:30:54.982267+00:00",
+  "finished_at": "2026-11-04T06:31:03.576432+00:00",
+  "duration_seconds": 8.594165,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-translation"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Workspace auditory: one click, no navigation, caption, voice/stop, five widths passed.\n"
+}

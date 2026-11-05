@@ -1,0 +1,36 @@
+# 54. Melodi con un ritmo más ágil
+
+30 de octubre de 2026. El ritmo inicial de `/app` pasa de 0,95 a 1,05.
+Se envía como `generation_config.speed` a Cartesia y el reproductor PCM usa
+rate 1, evitando aplicar dos ajustes a la misma salida. El backend valida
+0,75–1,15, rechaza booleanos, texto y valores no finitos antes de conectar.
+Clientes sin ritmo explícito siguen usando 1. Los IDs de voz no cambian.
+
+El final de Muse puede disparar la respuesta directamente, sin esperar el tick
+del medidor de 50 ms. Se pide una primera frase breve y completa a Meta. La
+pausa añadida entre frases pasa de 90 a 60 ms. No cambia el endpointing de Muse,
+no hay anticipación sobre transcripciones parciales ni llamadas extra/retries.
+La caché del shell pasa a v41. Servidor principal reiniciado con el cambio.
+
+La [documentación oficial de Cartesia](https://docs.cartesia.ai/build-with-cartesia/capability-guides/volume-speed-emotion)
+describe speed como guía de generación, no un multiplicador exacto. Una muestra
+corta no acredita mejora perceptible ni una reducción de la latencia total.
+
+Suites locales registradas por `tools.verify`:
+
+- `melodi-cartesia`: 18 pruebas, `tmp/verification/melodi-cartesia-20261030T134555-1200a85e.json`.
+- `javascript`: 46 pruebas, `tmp/verification/javascript-20261030T134555-d64e9ae0.json`.
+- `live-ui`: `tmp/verification/live-ui-20261030T134617-846ae7af.json`; incluye
+  final Muse con intervalos de nivel detenidos, ritmo 1,05 y cancelación.
+- `http`: 23 pruebas, `tmp/verification/http-20261030T134617-fa3b5d77.json`.
+
+Los proveedores de esas suites son sustitutos; no hacen inferencia pagada.
+
+Comprobación real separada: `tools.check_melodi_speed_real --allow-paid` hizo
+una sola síntesis española de texto sintético fijo a través de la API principal,
+con speed 1,05, sin ASR, conversación, retries ni guardado de audio nuevo.
+Resultado HTTP 200, 126720 bytes PCM (2,64 s) con energía, primer PCM 812 ms y
+recepción completa 1250 ms. Evidencia:
+`tmp/melodi-speed-real-20261030T134636426432+0000.json`.
+Una operación de inferencia externa; importe y GPU facturada desconocidos.
+No es comparación controlada de velocidad ni prueba de audición física.

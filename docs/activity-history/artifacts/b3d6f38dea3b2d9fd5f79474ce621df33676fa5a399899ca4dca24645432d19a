@@ -1,0 +1,23 @@
+{
+  "suite": "whatsapp-gateway",
+  "started_at": "2026-10-29T16:42:12.534841+00:00",
+  "finished_at": "2026-10-29T16:42:15.681219+00:00",
+  "duration_seconds": 3.146378,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_whatsapp_gateway.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "...............\r\n----------------------------------------------------------------------\r\nRan 15 tests in 2.586s\r\n\r\nOK\r\n"
+}

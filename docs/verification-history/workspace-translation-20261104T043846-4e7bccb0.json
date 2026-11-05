@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-translation",
+  "started_at": "2026-11-04T04:38:46.134872+00:00",
+  "finished_at": "2026-11-04T04:38:48.338976+00:00",
+  "duration_seconds": 2.204104,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_work_translation"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".....E.EE......\r\n======================================================================\r\nERROR: test_pause_during_pending_wait_retains_the_dequeued_frame (tests.test_work_translation.PacingTests.test_pause_during_pending_wait_retains_the_dequeued_frame)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_work_translation.py\", line 176, in test_pause_during_pending_wait_retains_the_dequeued_frame\r\n    peer=CapturePeer(owner);peer.recv();peer.send(json.dumps({'type':'ready'}))\r\n                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"<local-path>\\services\\work\\live_translation.py\", line 36, in send\r\n    selected=getattr(o,'source_video',None) or getattr(o.route,'video',None)\r\n                                                       ^^^^^^^\r\nAttributeError: 'types.SimpleNamespace' object has no attribute 'route'\r\n\r\n======================================================================\r\nERROR: test_scheduler_stall_must_not_replay_four_frames_as_an_instant_burst (tests.test_work_translation.PacingTests.test_scheduler_stall_must_not_replay_four_frames_as_an_instant_burst) (flow_pause=False)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_work_translation.py\", line 196, in test_scheduler_stall_must_not_replay_four_frames_as_an_instant_burst\r\n    peer=CapturePeer(owner);peer.recv();peer.send(json.dumps({'type':'ready'}));received=[];arrivals=[]\r\n                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"<local-path>\\services\\work\\live_translation.py\", line 36, in send\r\n    selected=getattr(o,'source_video',None) or getattr(o.route,'video',None)\r\n                                                       ^^^^^^^\r\nAttributeError: 'types.SimpleNamespace' object has no attribute 'route'\r\n\r\n======================================================================\r\nERROR: test_scheduler_stall_must_not_replay_four_frames_as_an_instant_burst (tests.test_work_translation.PacingTests.test_scheduler_stall_must_not_replay_four_frames_as_an_instant_burst) (flow_pause=True)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_work_translation.py\", line 196, in test_scheduler_stall_must_not_replay_four_frames_as_an_instant_burst\r\n    peer=CapturePeer(owner);peer.recv();peer.send(json.dumps({'type':'ready'}));received=[];arrivals=[]\r\n                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"<local-path>\\services\\work\\live_translation.py\", line 36, in send\r\n    selected=getattr(o,'source_video',None) or getattr(o.route,'video',None)\r\n                                                       ^^^^^^^\r\nAttributeError: 'types.SimpleNamespace' object has no attribute 'route'\r\n\r\n----------------------------------------------------------------------\r\nRan 14 tests in 0.847s\r\n\r\nFAILED (errors=3)\r\n"
+}

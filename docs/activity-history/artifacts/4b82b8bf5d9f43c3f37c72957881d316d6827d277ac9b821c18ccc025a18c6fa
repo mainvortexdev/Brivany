@@ -1,0 +1,131 @@
+(() => {
+  const $ = (selector) => document.querySelector(selector);
+  const shell = $('.app-shell');
+  const home = $('#home-view');
+  const moduleView = $('#module-view');
+  const frame = $('#module-frame');
+  const title = $('#page-title');
+  const prompt = $('#prompt-input');
+  const hint = $('#composer-hint');
+  const toast = $('#toast');
+  const names = new Map([
+    ['/app', 'Melodi'], ['/spaces', 'Espacios 3D'], ['/human-skills', 'Human-skills'],
+    ['/practice', 'Práctica'], ['/dubbing', 'Video y traducción'], ['/connections', 'Conexiones'], ['/activity', 'Bitácora'],
+  ]);
+  let toastTimer;
+  const notify = (message) => {
+    toast.textContent = message;
+    toast.classList.add('visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('visible'), 2800);
+  };
+  const openModule = (route, {settings = false} = {}) => {
+    const displayName = names.get(route) || 'Melodi';
+    shell.classList.add('module-active');
+    home.hidden = true;
+    moduleView.hidden = false;
+    title.textContent = displayName;
+    frame.src = route;
+    document.querySelectorAll('.module-link').forEach((item) => {
+      const active = item.dataset.route === route && item.dataset.openSettings !== 'true';
+      item.classList.toggle('active', active);
+      if (active) item.setAttribute('aria-current', 'page');
+      else item.removeAttribute('aria-current');
+    });
+    frame.addEventListener('load', () => {
+      if (settings) {
+        try { frame.contentWindow.document.querySelector('#settings-open')?.click(); } catch {}
+      }
+      if (route === '/activity') loadAllActivityPages();
+    }, {once: true});
+  };
+  const goHome = () => {
+    shell.classList.remove('module-active');
+    moduleView.hidden = true;
+    home.hidden = false;
+    title.textContent = 'Melodi';
+    document.querySelectorAll('.module-link').forEach((item) => {
+      const active = item.dataset.key === 'melodi';
+      item.classList.toggle('active', active);
+      if (active) item.setAttribute('aria-current', 'page');
+      else item.removeAttribute('aria-current');
+    });
+  };
+  function loadAllActivityPages() {
+    try {
+      const doc = frame.contentDocument;
+      const button = doc?.querySelector('#load-older-activity');
+      const list = doc?.querySelector('#activity-list');
+      if (!button || !list || typeof MutationObserver !== 'function') return;
+      const advance = () => {
+        if (!button.hidden && !button.disabled) button.click();
+      };
+      const observer = new MutationObserver(advance);
+      observer.observe(button, {attributes: true, attributeFilter: ['hidden', 'disabled']});
+      observer.observe(list, {childList: true});
+      advance();
+    } catch {}
+  }
+  document.querySelectorAll('[data-route]').forEach((button) => button.addEventListener('click', () => {
+    const route = button.dataset.route;
+    if (route === '/app' && button.dataset.key === 'melodi') { goHome(); return; }
+    openModule(route, {settings: button.dataset.openSettings === 'true'});
+  }));
+  $('#sidebar-toggle').addEventListener('click', () => shell.classList.toggle('sidebar-collapsed'));
+  const nativeWindowCall = async (method, ...args) => {
+    if (!window.pywebview?.api || typeof window.pywebview.api[method] !== 'function') {
+      notify('Los controles de ventana nativos no están disponibles.');
+      return null;
+    }
+    try { return await window.pywebview.api[method](...args); }
+    catch { notify('No se pudo cambiar el estado de la ventana.'); return null; }
+  };
+  $('#window-minimize').addEventListener('click', () => nativeWindowCall('minimize_window'));
+  let isMaximized = false;
+  const updateMaximizeButton = () => {
+    const button = $('#window-maximize');
+    button.setAttribute('aria-label', isMaximized ? 'Restaurar' : 'Maximizar');
+    button.title = isMaximized ? 'Restaurar' : 'Maximizar';
+    button.innerHTML = isMaximized
+      ? '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5h7.5V11M3.5 5H11v7.5H3.5z"></path></svg>'
+      : '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="3.5" width="9" height="9" rx=".7"></rect></svg>';
+  };
+  $('#window-maximize').addEventListener('click', async () => {
+    const nextState = !isMaximized;
+    const result = await nativeWindowCall('set_window_maximized', nextState);
+    if (result?.ok) { isMaximized = nextState; updateMaximizeButton(); }
+  });
+  $('#window-close').addEventListener('click', () => nativeWindowCall('close_window'));
+  $('#history-toggle').addEventListener('click', () => {
+    const collapsed = shell.classList.toggle('history-collapsed');
+    $('#history-empty').hidden = collapsed;
+    document.querySelector('.history-footer').hidden = collapsed;
+  });
+  const sendPrompt = () => {
+    if (!prompt.value.trim()) { openModule('/app'); return; }
+    const value = prompt.value.trim();
+    openModule('/app');
+    hint.textContent = 'Melodi está lista. Escribe tu idea en el campo de contexto para continuar.';
+    frame.addEventListener('load', () => {
+      try {
+        const input = frame.contentDocument.querySelector('#context-text');
+        if (input) { input.value = value; input.dispatchEvent(new Event('input', {bubbles: true})); input.focus(); }
+      } catch {}
+    }, {once: true});
+  };
+  $('#send-prompt').addEventListener('click', sendPrompt);
+  prompt.addEventListener('keydown', (event) => { if (event.key === 'Enter') sendPrompt(); });
+  $('#open-melodi').addEventListener('click', () => openModule('/app'));
+  $('#history-start').addEventListener('click', () => openModule('/app'));
+  $('#new-session').addEventListener('click', () => {
+    if (!moduleView.hidden && frame.contentWindow.location.pathname === '/app') {
+      try { frame.contentDocument.querySelector('#clear-session')?.click(); } catch {}
+      notify('Sesión local reiniciada.');
+    } else { goHome(); prompt.value = ''; }
+  });
+  window.addEventListener('message', (event) => {
+    if (event.origin !== window.location.origin || !event.data || event.data.type !== 'brivany-navigate') return;
+    const route = names.has(event.data.route) ? event.data.route : null;
+    if (route) openModule(route);
+  });
+})();

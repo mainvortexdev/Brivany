@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "origin": "https://brivany.example",
+  "checks": [
+    "presentation and bundled assets",
+    "legal pages and redirects",
+    "HEAD semantics",
+    "no public cookies",
+    "CSP",
+    "private OAuth callback unchanged",
+    "404 and 405"
+  ]
+}

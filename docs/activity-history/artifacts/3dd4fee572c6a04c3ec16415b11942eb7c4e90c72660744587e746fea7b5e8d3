@@ -1,0 +1,14 @@
+{
+  "suite": "dubbing-ui",
+  "started_at": "2026-10-30T03:37:05.971407+00:00",
+  "finished_at": "2026-10-30T03:37:38.987126+00:00",
+  "duration_seconds": 33.015719,
+  "command": [
+    "node",
+    "tools/check_dubbing_ui.cjs"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "page.waitForFunction: Timeout 30000ms exceeded.\n    at <local-path>\\tools\\check_dubbing_ui.cjs:130:74 {\n  log: [],\n  name: 'TimeoutError'\n}\n"
+}

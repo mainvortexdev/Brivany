@@ -1,0 +1,16 @@
+{
+  "type": "actual_Windows_audio_session_reduction_and_restore",
+  "before": [
+    1.0
+  ],
+  "during": [
+    0.12
+  ],
+  "after": [
+    1.0
+  ],
+  "capture_and_translation_endpoints_disjoint": true,
+  "microphone_used": false,
+  "providers_opened": false,
+  "PCM_persisted": false
+}

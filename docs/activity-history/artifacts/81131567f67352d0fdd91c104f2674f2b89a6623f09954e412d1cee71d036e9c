@@ -1,0 +1,8 @@
+/* Brivany: Georgia for headings, Segoe UI for reading and interaction. */
+:root{--brivany-body:"Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;--brivany-heading:Georgia,"Times New Roman",serif;--font:var(--brivany-body);--sans:var(--brivany-body);--serif:var(--brivany-heading)}
+*{font-family:inherit!important}
+html,body,button,input,select,textarea,optgroup,option{font-family:var(--brivany-body)!important}
+h1,h2{font-family:var(--brivany-heading)!important;font-weight:400}
+code,pre,kbd,samp{font-family:ui-monospace,SFMono-Regular,Consolas,monospace!important}
+.brand,.wordmark{font-family:var(--brivany-body)!important;font-weight:700;letter-spacing:-.8px}
+.brand>span,.wordmark>span{color:#0071e3!important}

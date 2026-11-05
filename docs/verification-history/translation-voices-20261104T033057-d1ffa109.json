@@ -1,0 +1,19 @@
+{
+  "suite": "translation-voices",
+  "started_at": "2026-11-04T03:30:57.795290+00:00",
+  "finished_at": "2026-11-04T03:30:59.505882+00:00",
+  "duration_seconds": 1.710592,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_audio_content"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "............\r\n----------------------------------------------------------------------\r\nRan 12 tests in 0.767s\r\n\r\nOK\r\n"
+}

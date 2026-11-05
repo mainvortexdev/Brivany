@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "platform": "win32",
+    "source_available": true,
+    "executor": "cognira-native",
+    "window_input_tested": false
+  },
+  "source": {
+    "available": true,
+    "source_lock_matches": true,
+    "backend": "cognira-windows",
+    "platforms_verified": [],
+    "native_input_verified": false
+  },
+  "external_calls": 0,
+  "ui_actions": 0
+}

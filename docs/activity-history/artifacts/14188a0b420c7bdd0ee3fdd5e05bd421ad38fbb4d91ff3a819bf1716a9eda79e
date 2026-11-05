@@ -1,0 +1,24 @@
+{
+  "started_at": "2026-10-28T00:00:50.536635+00:00",
+  "provider": "Cloudflare",
+  "model_origin": "Meta",
+  "model": "@cf/meta/m2m100-1.2b",
+  "source_language": "en",
+  "target_language": "es",
+  "input": "The meeting starts at three. Please bring the room measurements.",
+  "synthetic": true,
+  "status": "failed",
+  "maximum_requests": 1,
+  "automatic_retries": 0,
+  "inference_ms": null,
+  "target_inference_ms": 500,
+  "target_status": "unverified",
+  "actual_billed_usd": null,
+  "limitations": [
+    "Una petición corta no constituye un percentil ni un máximo garantizado.",
+    "Tiempo de petición incluye red y servicio; no inferencia interna.",
+    "No incluye ASR, contexto de segmentación, síntesis o reproducción; calidad pendiente de revisión."
+  ],
+  "error_code": "mt_rejected",
+  "finished_at": "2026-10-28T00:00:57.449564+00:00"
+}

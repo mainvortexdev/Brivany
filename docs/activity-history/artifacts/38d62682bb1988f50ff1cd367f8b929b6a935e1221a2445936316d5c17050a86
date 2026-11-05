@@ -1,0 +1,59 @@
+{
+  "started_at": "2026-10-27T23:33:03.591399+00:00",
+  "status": "passed",
+  "source": {
+    "filename": "conversation-input.wav",
+    "sha256": "28b5f4279b562ce77eaf4e0707a102cd0f702012f0f8f189f3ab85a0d748c88e",
+    "size_bytes": 205484,
+    "duration_seconds": 4.28,
+    "sample_rate": 24000,
+    "channels": 1,
+    "format": "pcm16"
+  },
+  "target_language": "en",
+  "source_language": "es",
+  "provider": "Palabra",
+  "model": "speech-to-speech",
+  "maximum_sessions": 1,
+  "automatic_retries": 0,
+  "input_chunk_ms": 40,
+  "configured_trial_limit_seconds": 5,
+  "input_bytes_sent": 205440,
+  "output_audio_chunks": 161,
+  "output_audio_bytes": 153920,
+  "output_formats": [
+    {
+      "sample_rate": 24000,
+      "channels": 1,
+      "format": "pcm16",
+      "bytes": 153920,
+      "duration_seconds": 3.207
+    }
+  ],
+  "translated_text_characters": 61,
+  "original_text_characters": 59,
+  "connect_ms": 2234.0,
+  "first_input_audio_to_first_output_audio_ms": 3110.0,
+  "relay_first_output_audio_ms": 3110.0,
+  "first_tts_chunk_generation_ms": null,
+  "inference_ms": null,
+  "target_inference_ms": 500,
+  "target_status": "unverified",
+  "estimated_base_service_usd": 0.002853,
+  "estimate_rate_usd_per_minute": 0.04,
+  "estimate_basis": "input_audio_duration_only",
+  "actual_billed_usd": null,
+  "external_calls": 1,
+  "provider_ready": true,
+  "gpu_seconds": null,
+  "audio_persisted": false,
+  "transcripts_persisted": false,
+  "limitations": [
+    "La estimación usa $0.04/min y solo la duración del audio; no es una factura ni un máximo garantizado.",
+    "La primera salida medida incluye red y contexto; no es inferencia interna ni calidad oída.",
+    "El timing TTS opcional es generación hasta el primer chunk; no incluye ASR, traducción o red.",
+    "No se mide reproducción física ni sincronía semántica con el video.",
+    "external_calls cuenta una sesión solicitada al relay; no es telemetría de facturación del proveedor."
+  ],
+  "finished_at": "2026-10-27T23:33:13.965359+00:00"
+}

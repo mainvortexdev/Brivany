@@ -1,0 +1,25 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/search-latency-probe.json",
+  "original_sha256": "12569e95a6d277c4cc5e58a0a90ed5c8886d827e39216a0e40ce42f280c487ae",
+  "new_test_execution": false,
+  "reported_result": "failed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "passed": false,
+    "cache_used": false
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": 1,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

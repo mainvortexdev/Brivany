@@ -1,0 +1,19 @@
+{
+  "suite": "computer",
+  "started_at": "2026-10-30T19:28:39.333433+00:00",
+  "finished_at": "2026-10-30T19:28:44.645863+00:00",
+  "duration_seconds": 5.31243,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_computer_control"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "...................\r\n----------------------------------------------------------------------\r\nRan 19 tests in 4.515s\r\n\r\nOK\r\n"
+}

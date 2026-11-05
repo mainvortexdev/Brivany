@@ -1,0 +1,23 @@
+{
+  "started_at": "2026-10-30T13:58:50.042044+00:00",
+  "purpose": "Verify one Spanish synthetic reaction with native Cartesia [laughter], keeping the requested voice and pace.",
+  "source_synthetic": true,
+  "requested_speed": 1.05,
+  "maximum_syntheses": 1,
+  "automatic_retries": 0,
+  "maximum_audio_bytes": 480000,
+  "maximum_read_seconds": 15,
+  "new_audio_persisted": false,
+  "conversation_persisted": false,
+  "physical_playback_verified": false,
+  "actual_billed_usd": null,
+  "status": "passed_real_http_and_synthesis_not_subjective_voice_quality",
+  "case": "laugh",
+  "http_status": 200,
+  "first_pcm_ms": 750,
+  "output_bytes": 119040,
+  "audio_seconds": 2.48,
+  "pcm_has_voice_energy": true,
+  "finished_at": "2026-10-30T13:58:51.237845+00:00",
+  "elapsed_ms": 1203
+}

@@ -1,0 +1,111 @@
+"""Native lifecycle contract with substituted windows; no screen or audio capture."""
+from types import SimpleNamespace
+import tempfile
+import unittest
+from unittest.mock import patch
+from desktop.experience.work import WorkBridge
+from services.work.session import WorkSession
+from desktop.experience.island import geometry,pointer_presence
+
+
+class Event:
+    def __init__(self):self.callbacks=[]
+    def __iadd__(self,callback):self.callbacks.append(callback);return self
+    def fire(self):
+        for callback in self.callbacks:callback()
+
+
+class Window:
+    def __init__(self):self.hidden=False;self.destroyed=False;self.scripts=[];self.events=SimpleNamespace(closed=Event(),loaded=Event());self.bounds={}
+    def hide(self):self.hidden=True
+    def show(self):self.hidden=False
+    def restore(self):self.hidden=False
+    def resize(self,width,height):self.bounds.update(width=width,height=height)
+    def move(self,x,y):self.bounds.update(x=x,y=y)
+    def evaluate_js(self,source):self.scripts.append(source)
+    def destroy(self):self.destroyed=True;self.events.closed.fire()
+
+
+class BridgeTests(unittest.TestCase):
+    def setUp(self):
+        self.temp=tempfile.TemporaryDirectory();self.capture_calls=[];self.work=WorkSession(self.temp.name,capture=lambda *a,**k:self.capture_calls.append(True));self.main=Window();self.windows=[]
+        self.bridge=WorkBridge();self.bridge._base='http://127.0.0.1:1';self.bridge._window=self.main;self.bridge._trusted=lambda:None;self.bridge._work_factory=lambda:self.work
+        def create(*args,**kwargs):value=Window();self.windows.append((value,kwargs));return value
+        self.fake=SimpleNamespace(screens=[SimpleNamespace(width=800,height=600)],create_window=create)
+        self.patcher=patch.dict('sys.modules',{'webview':self.fake});self.patcher.start()
+    def load_windows(self):
+        for window,options in list(self.windows):window.events.loaded.fire()
+    def tearDown(self):self.patcher.stop();self.work.close();self.temp.cleanup()
+    def test_start_keeps_chat_and_native_close_in_background_without_audio(self):
+        self.bridge.start_work();self.assertTrue(self.main.hidden);self.assertTrue(self.work.active);self.assertEqual(self.capture_calls,[])
+        self.assertLessEqual(self.windows[0][1]['width'],800);self.assertLessEqual(self.windows[0][1]['height'],600)
+        self.bridge.return_to_chat();self.assertFalse(self.main.hidden);self.assertFalse(self.bridge._keep_work_background());self.assertTrue(self.main.hidden)
+        self.bridge.stop_work();self.assertFalse(self.main.hidden);self.assertFalse(self.work.active);self.assertTrue(self.windows[0][0].destroyed)
+    def test_companion_native_close_restores_main(self):
+        self.bridge.start_work();self.windows[0][0].destroy();self.assertFalse(self.work.active);self.assertFalse(self.main.hidden);self.assertIsNone(self.bridge._work_window)
+    def test_failed_region_capture_restores_companion(self):
+        self.bridge.start_work();self.load_windows();self.work.screen_snapshot=lambda:(_ for _ in ()).throw(OSError('synthetic capture failure'))
+        with self.assertRaises(OSError):self.bridge.begin_work_region()
+        self.assertFalse(self.windows[1][0].hidden);self.assertEqual(self.capture_calls,[])
+    def test_loaded_fallback_is_top_center_and_resizes_to_visible_bounds(self):
+        self.bridge.start_work();self.load_windows();window=self.windows[0][0]
+        self.assertEqual(window.bounds,{'width':336,'height':0,'x':232,'y':46});self.assertTrue(window.hidden)
+        self.assertEqual(self.windows[1][0].bounds,{'width':800,'height':40,'x':0,'y':0})
+        result=self.bridge.work_island_layout(True,'normal','home',False)
+        self.assertEqual(window.bounds,{'width':336,'height':148,'x':232,'y':46});self.assertFalse(result['native_clip']);self.assertEqual(self.capture_calls,[])
+    def test_invalid_island_geometry_cannot_change_native_window(self):
+        self.bridge.start_work()
+        with self.assertRaises(ValueError):self.bridge.work_island_layout(True,'arbitrary','home')
+        with self.assertRaises(ValueError):self.bridge.work_island_layout('yes','normal','home')
+    def test_geometry_respects_small_and_offset_screens(self):
+        for width,height,x,y in [(320,240,0,0),(1366,768,0,0),(1920,1080,-1920,40),(3840,2160,1920,-80)]:
+            screen=SimpleNamespace(width=width,height=height,x=x,y=y)
+            for size in ('compact','normal','large'):
+                for expanded in (False,True):
+                    for panel in ('home','voice','tasks','settings'):
+                        value=geometry(screen,expanded,size,panel)
+                        self.assertEqual(value['y'],y);self.assertGreaterEqual(value['x'],x);self.assertLessEqual(value['x']+value['width'],x+width);self.assertLessEqual(value['height'],height)
+    def test_pointer_proximity_has_a_tolerant_margin_without_exposing_coordinates(self):
+        screen=SimpleNamespace(width=800,height=600,x=0,y=0,scale=1)
+        self.assertEqual(pointer_presence(screen,336,48,400,20),{'inside':True,'near':True})
+        self.assertEqual(pointer_presence(screen,336,48,578,54),{'inside':False,'near':True})
+        self.assertEqual(pointer_presence(screen,336,48,610,80),{'inside':False,'near':False})
+        self.assertEqual(set(pointer_presence(screen,336,48,400,20)),{'inside','near'})
+    def test_native_transparency_is_bounded_and_never_enables_capture(self):
+        self.bridge.start_work();result=self.bridge.work_island_opacity(0);self.assertEqual(result['transparency'],0)
+        for invalid in (-1,18,28,41,True,'28'):
+            with self.assertRaises(ValueError):self.bridge.work_island_opacity(invalid)
+        self.assertEqual(self.capture_calls,[])
+    def test_pointer_anchored_panels_stay_inside_screen_at_both_edges(self):
+        for sw in (320,800,1920):
+            screen=SimpleNamespace(width=sw,height=600,x=-1920,y=0)
+            for anchor in (0,sw/2,sw):
+                v=geometry(screen,True,panel='music',docked=True,anchor_x=anchor)
+                self.assertGreaterEqual(v['host_x'],-1920);self.assertLessEqual(v['host_x']+v['host_width'],-1920+sw)
+                self.assertGreaterEqual(v['x'],-1920+8);self.assertLessEqual(v['x']+v['width'],-1920+sw-8)
+                self.assertEqual(v['host_x']+v['clip_left'],v['x'])
+        self.bridge.start_work();self.load_windows()
+        right=self.bridge.work_island_layout(True,'normal','music',False,False,790)
+        left=self.bridge.work_island_layout(True,'normal','screen',False,False,10)
+        self.assertGreater(right['x'],left['x']);self.assertEqual(right['transparency'],0)
+    def test_invalid_anchor_and_module_are_rejected(self):
+        self.bridge.start_work()
+        for anchor in (-1,801,float('nan'),True,'10'):
+            with self.assertRaises(ValueError):self.bridge.work_island_layout(True,anchor_x=anchor)
+        with self.assertRaises(ValueError):self.bridge.workspace_open_module('https://example.com')
+        self.bridge.workspace_open_module('/spaces');self.assertFalse(self.main.hidden)
+        self.assertTrue(any('BrivanyNavigate' in s for s in self.main.scripts))
+    def test_gaze_follows_from_current_roaming_eye_position(self):
+        self.bridge.start_work();host=self.bridge._island_host
+        with patch.object(host,'_pointer',return_value=(600,20)):
+            self.assertGreater(self.bridge.work_island_gaze(400)['x'],0)
+            self.assertLess(self.bridge.work_island_gaze(700)['x'],0)
+        with self.assertRaises(ValueError):self.bridge.work_island_gaze(float('nan'))
+    def test_docked_pointer_crosses_bar_and_panel_without_leaving_the_hover_area(self):
+        self.bridge.start_work();host=self.bridge._island_host;host.layout(True,animate=False)
+        for point in ((10,20),(400,44),(400,140),(400,205)):
+            with patch.object(host,'_pointer',return_value=point):self.assertTrue(host.pointer()['near'])
+        with patch.object(host,'_pointer',return_value=(10,180)):self.assertFalse(host.pointer()['near'])
+
+
+if __name__=='__main__':unittest.main()

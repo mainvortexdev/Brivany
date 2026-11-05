@@ -1,0 +1,56 @@
+{
+  "status": "passed",
+  "scope": "real public HTTPS, no account authentication or inference",
+  "requests": 6,
+  "deployment": "eea6d74c-b6b1-4f68-88c7-50ebb8282921",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 7694,
+      "sha256": "20378f3d945b160754041a1300e6ada0f8655ca074a472a7f9403f41b540ec81",
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "public, max-age=60"
+    },
+    {
+      "path": "/privacidad",
+      "status": 200,
+      "bytes": 16372,
+      "sha256": "191e2e1488abb906882f53a86e02bf157d69e51c9ab7eaaa63683ce85ac1cc27",
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "public, max-age=60"
+    },
+    {
+      "path": "/condiciones",
+      "status": 200,
+      "bytes": 11876,
+      "sha256": "abc1921b3a57687a50719cc37294d4f20d4b665e1303b3cb27e74b0c33165927",
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "public, max-age=60"
+    },
+    {
+      "path": "/robots.txt",
+      "status": 200,
+      "bytes": 2765,
+      "sha256": "c01e231189884a11866b7f2575ed5c3b5ef1537554276c8e4051c590dbcd6525",
+      "content_type": "text/plain; charset=utf-8",
+      "cache_control": "public, max-age=60"
+    },
+    {
+      "path": "/sitemap.xml",
+      "status": 200,
+      "bytes": 356,
+      "sha256": "92d02bff189d4da3020b622d9f2cd787e6f9da02938c146075ba1d805488cf76",
+      "content_type": "application/xml; charset=utf-8",
+      "cache_control": "public, max-age=60"
+    },
+    {
+      "path": "/spotify/callback",
+      "status": 200,
+      "bytes": 1039,
+      "sha256": "c708b245e383985b9e9c4f1c148b5820636cf161c08b0f56293753ad2a2b1a0c",
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-store, private"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "suite": "support",
+  "started_at": "2026-11-01T13:44:44.880967+00:00",
+  "finished_at": "2026-11-01T13:44:45.755627+00:00",
+  "duration_seconds": 0.87466,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_support"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "......F\r\n======================================================================\r\nFAIL: test_search_and_read_use_observed_sources_and_strip_script (tests.test_support.SupportTests.test_search_and_read_use_observed_sources_and_strip_script)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_support.py\", line 28, in test_search_and_read_use_observed_sources_and_strip_script\r\n    self.assertEqual(sources[0]['url'],'https://learn.microsoft.com/windows/test')\r\nAssertionError: 'https://ffmpeg.org/ffmpeg.html' != 'https://learn.microsoft.com/windows/test'\r\n- https://ffmpeg.org/ffmpeg.html\r\n+ https://learn.microsoft.com/windows/test\r\n\r\n\r\n----------------------------------------------------------------------\r\nRan 7 tests in 0.147s\r\n\r\nFAILED (failures=1)\r\n"
+}

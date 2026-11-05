@@ -1,0 +1,15 @@
+{
+  "suite": "music-ducking-volume",
+  "started_at": "2026-11-01T03:29:35.588325+00:00",
+  "finished_at": "2026-11-01T03:29:36.123733+00:00",
+  "duration_seconds": 0.535408,
+  "command": [
+    "node",
+    "--test",
+    "tests/music-ducking.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ fade down/up is progressive and restores the latest user volume (20.7309ms)\n✔ manual mute and external volume changes are respected while ducked (9.2281ms)\n✔ rapid changes retarget from current gain; disposal stops pending fades (8.1055ms)\nℹ tests 3\nℹ suites 0\nℹ pass 3\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 315.4003\n"
+}

@@ -1,0 +1,15 @@
+{
+  "status": "failed",
+  "evidence_kind": "retrospective consolidation of actual tool-observed diagnostics, not a new execution",
+  "observations": [
+    {
+      "target": "Brivany public configuration API",
+      "result": "Generic Python request returned HTTP 403; declared Brivany client identification returned HTTP 200. No origin of the rejection was inferred."
+    },
+    {
+      "target": "Spotify token endpoint, unauthenticated GET",
+      "result": "Default Python SSL context failed SSLCertVerificationError/issuer validation; Windows curl verified TLS and returned HTTP 405; adding certifi also verified TLS and returned 405."
+    }
+  ],
+  "corrections": "Explicit app User-Agent and a scoped verified TLS context with system roots plus certifi. No user credentials, OAuth codes or images included."
+}

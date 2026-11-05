@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-11-01T03:05:52.032361+00:00",
+  "finished_at": "2026-11-01T03:06:23.543312+00:00",
+  "duration_seconds": 31.510951,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Failure view {\n  panel: 'Música',\n  spotify: { configured: true, connected: true, pending: false },\n  body: {\n    expanded: 'true',\n    sleeping: 'false',\n    surface: 'preview',\n    motion: 'true',\n    characterState: 'attentive',\n    translationBusy: 'false',\n    translationFocus: 'false',\n    musicAmbience: 'true',\n    musicPlaying: 'false',\n    musicView: 'library',\n    musicMood: 'groove',\n    danceVariant: 'sway',\n    moodSource: 'neutral-fallback'\n  }\n}\nAssertionError [ERR_ASSERTION]: {\"width\":320,\"center\":160,\"screen\":320,\"inside\":false,\"overlap\":false,\"overflow\":false}\n\nfalse !== true\n\n    at <local-path>\\tools\\check_island_ui.cjs:68:54\n"
+}

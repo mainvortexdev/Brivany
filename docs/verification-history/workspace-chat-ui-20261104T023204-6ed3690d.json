@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-chat-ui",
+  "started_at": "2026-11-04T02:32:04.435548+00:00",
+  "finished_at": "2026-11-04T02:33:06.893617+00:00",
+  "duration_seconds": 62.458069,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-chat"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "AssertionError [ERR_ASSERTION]: The recorder must draw microphone peaks, not a flat placeholder.\n    at <local-path>\\tools\\check_workspace_chat.cjs:91:229 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n"
+}

@@ -1,0 +1,18 @@
+{
+  "suite": "workspace-chat-native",
+  "started_at": "2026-11-02T00:46:14.666846+00:00",
+  "finished_at": "2026-11-02T00:46:24.057721+00:00",
+  "duration_seconds": 9.390875,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_workspace_native"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"type\": \"actual_owned_WebView2_windows_with_synthetic_conversation\", \"passed\": true, \"external_calls\": 0, \"microphone_used\": false, \"OS_input_sent\": false, \"appbar_reserved_by_test\": false, \"phase\": \"music_waves\", \"real_native_bridge_roundtrip\": true, \"history_survives_close\": true, \"rounded_chooser_without_header\": true, \"voice_canvas_contains_pixels\": true, \"music_waves_visible\": true, \"voice_overlay_created_and_click_through\": true, \"live_sample_visualization\": \"synthetic, no capture\", \"four_owned_views\": true, \"UI_survives_cookie_deletion\": true}\r\n"
+}

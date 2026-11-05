@@ -1,0 +1,19 @@
+{
+  "suite": "computer-images-agents-ui",
+  "started_at": "2026-11-03T21:58:20.350333+00:00",
+  "finished_at": "2026-11-03T22:00:18.784848+00:00",
+  "duration_seconds": 118.434515,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--images-agents"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#module-frame').contentFrame().locator('#mic-toggle[aria-pressed=true]') to be visible\u001b[22m\n\n    at <local-path>\\tools\\check_computer_images_agents_ui.cjs:60:117\n"
+}

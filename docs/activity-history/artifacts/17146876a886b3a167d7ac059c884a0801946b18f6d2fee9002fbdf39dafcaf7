@@ -1,0 +1,29 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/background-launch/report.json",
+  "original_sha256": "ce82c059bb2a26f40c35426862cbf8bdc3558a84df4f7ab2a4e200c031e70d86",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "passed": true,
+    "user_files_modified": false,
+    "marker_created": true,
+    "foreground_preserved": true,
+    "application_started": true,
+    "cursor_guard_started": false
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": 0,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

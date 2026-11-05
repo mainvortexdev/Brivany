@@ -1,0 +1,12 @@
+{
+  "type": "native_restart_rejected_before_execution",
+  "observed_utc": "2026-11-04T17:22:38.7937683+00:00",
+  "observed_process_id": 8744,
+  "browser_active_sessions": 0,
+  "workspace_connected": true,
+  "inline_active": false,
+  "prefix_active": false,
+  "restart_executed": false,
+  "rejection_reason": "blocked by policy; no specific reason returned",
+  "newest_delivery_calibration_loaded": false
+}

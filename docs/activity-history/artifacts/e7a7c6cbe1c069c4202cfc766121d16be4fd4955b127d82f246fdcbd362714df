@@ -1,0 +1,24 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/connections/report.json",
+  "original_sha256": "9e3376b10c5a72bb027e1fd3c2944ea201c3d4919caca573851e4315438c99c7",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "real_account_access": false
+  },
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

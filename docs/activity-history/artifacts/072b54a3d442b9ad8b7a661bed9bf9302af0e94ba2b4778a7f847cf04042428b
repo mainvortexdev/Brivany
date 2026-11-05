@@ -1,0 +1,32 @@
+{
+  "kind": "actual_local_http_with_fixed_synthetic_turns",
+  "external_model_calls": 0,
+  "tts_calls": 0,
+  "steps": [
+    {
+      "events": [
+        "delta",
+        "sentence",
+        "done"
+      ],
+      "await_user": true,
+      "laughter_control": false
+    },
+    {
+      "events": [
+        "done"
+      ],
+      "await_user": true,
+      "laughter_control": false
+    },
+    {
+      "events": [
+        "delta",
+        "sentence",
+        "done"
+      ],
+      "await_user": false,
+      "laughter_control": true
+    }
+  ]
+}

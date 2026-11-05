@@ -1,0 +1,401 @@
+{
+  "type": "local_public_timbre_model_comparison",
+  "source": "youtube:sr_iLGKNsxU",
+  "captured": {
+    "start": 25.201647,
+    "end": 37.314688,
+    "rate": 24000,
+    "playbackRate": 1
+  },
+  "analysis": {
+    "load": {
+      "wall_ms": 858.95,
+      "cpu_ms": 781.25,
+      "inputs": [
+        {
+          "name": "input_values",
+          "shape": [
+            "batch_size",
+            "sequence_length"
+          ],
+          "type": "tensor(float)"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "logits",
+          "shape": [
+            "batch_size",
+            2
+          ],
+          "type": "tensor(float)"
+        }
+      ]
+    },
+    "windows": [
+      {
+        "start_seconds": 0,
+        "content": {
+          "skip": false,
+          "kind": "speech",
+          "model": "yamnet",
+          "windows": 4,
+          "speech_score": 0.9883,
+          "singing_score": 0,
+          "music_score": 0.0117,
+          "latency_ms": 12.98
+        },
+        "compact": {
+          "voice_timbre": "masculine",
+          "timbre_confidence": 0.932049,
+          "available": true,
+          "local_model": "syntropicsignal-ai/gender-voice-classifier@248c107",
+          "windows": 1,
+          "mixed": false,
+          "latency_ms": 666.62,
+          "female_style_probability": 0.067951
+        },
+        "candidate": {
+          "source_seconds": 3,
+          "female_style_probability": 0.964737,
+          "male_style_probability": 0.035263,
+          "voice_timbre": "feminine",
+          "confidence": 0.964737,
+          "logits": [
+            1.566567,
+            -1.742443
+          ],
+          "wall_ms": 820.49,
+          "cpu_ms": 796.88
+        }
+      },
+      {
+        "start_seconds": 1,
+        "content": {
+          "skip": false,
+          "kind": "speech",
+          "model": "yamnet",
+          "windows": 4,
+          "speech_score": 0.9961,
+          "singing_score": 0,
+          "music_score": 0.0039,
+          "latency_ms": 11.39
+        },
+        "compact": {
+          "voice_timbre": "masculine",
+          "timbre_confidence": 0.980069,
+          "available": true,
+          "local_model": "syntropicsignal-ai/gender-voice-classifier@248c107",
+          "windows": 1,
+          "mixed": false,
+          "latency_ms": 7.76,
+          "female_style_probability": 0.019931
+        },
+        "candidate": {
+          "source_seconds": 3,
+          "female_style_probability": 0.336838,
+          "male_style_probability": 0.663162,
+          "voice_timbre": "masculine",
+          "confidence": 0.663162,
+          "logits": [
+            -0.295923,
+            0.381496
+          ],
+          "wall_ms": 865.69,
+          "cpu_ms": 843.75
+        }
+      },
+      {
+        "start_seconds": 2,
+        "content": {
+          "skip": false,
+          "kind": "speech",
+          "model": "yamnet",
+          "windows": 4,
+          "speech_score": 0.9922,
+          "singing_score": 0,
+          "music_score": 0.043,
+          "latency_ms": 14.1
+        },
+        "compact": {
+          "voice_timbre": "uncertain",
+          "timbre_confidence": 0.697972,
+          "available": true,
+          "local_model": "syntropicsignal-ai/gender-voice-classifier@248c107",
+          "windows": 1,
+          "mixed": false,
+          "latency_ms": 10.5,
+          "female_style_probability": 0.697972
+        },
+        "candidate": {
+          "source_seconds": 3,
+          "female_style_probability": 0.982585,
+          "male_style_probability": 0.017415,
+          "voice_timbre": "feminine",
+          "confidence": 0.982585,
+          "logits": [
+            1.903333,
+            -2.129526
+          ],
+          "wall_ms": 818.56,
+          "cpu_ms": 781.25
+        }
+      },
+      {
+        "start_seconds": 3,
+        "content": {
+          "skip": false,
+          "kind": "speech",
+          "model": "yamnet",
+          "windows": 4,
+          "speech_score": 0.9883,
+          "singing_score": 0,
+          "music_score": 0.0195,
+          "latency_ms": 13.79
+        },
+        "compact": {
+          "voice_timbre": "feminine",
+          "timbre_confidence": 0.999946,
+          "available": true,
+          "local_model": "syntropicsignal-ai/gender-voice-classifier@248c107",
+          "windows": 1,
+          "mixed": false,
+          "latency_ms": 13.01,
+          "female_style_probability": 0.999946
+        },
+        "candidate": {
+          "source_seconds": 3,
+          "female_style_probability": 0.986348,
+          "male_style_probability": 0.013652,
+          "voice_timbre": "feminine",
+          "confidence": 0.986348,
+          "logits": [
+            2.027026,
+            -2.253073
+          ],
+          "wall_ms": 790.18,
+          "cpu_ms": 750
+        }
+      },
+      {
+        "start_seconds": 4,
+        "content": {
+          "skip": false,
+          "kind": "speech",
+          "model": "yamnet",
+          "windows": 4,
+          "speech_score": 0.9844,
+          "singing_score": 0,
+          "music_score": 0.0195,
+          "latency_ms": 10.35
+        },
+        "compact": {
+          "voice_timbre": "feminine",
+          "timbre_confidence": 0.999987,
+          "available": true,
+          "local_model": "syntropicsignal-ai/gender-voice-classifier@248c107",
+          "windows": 1,
+          "mixed": false,
+          "latency_ms": 8.08,
+          "female_style_probability": 0.999987
+        },
+        "candidate": {
+          "source_seconds": 3,
+          "female_style_probability": 0.994014,
+          "male_style_probability": 0.005986,
+          "voice_timbre": "feminine",
+          "confidence": 0.994014,
+          "logits": [
+            2.412324,
+            -2.699933
+          ],
+          "wall_ms": 951.61,
+          "cpu_ms": 781.25
+        }
+      },
+      {
+        "start_seconds": 5,
+        "content": {
+          "skip": false,
+          "kind": "speech",
+          "model": "yamnet",
+          "windows": 4,
+          "speech_score": 0.9883,
+          "singing_score": 0,
+          "music_score": 0.0195,
+          "latency_ms": 13
+        },
+        "compact": {
+          "voice_timbre": "feminine",
+          "timbre_confidence": 1,
+          "available": true,
+          "local_model": "syntropicsignal-ai/gender-voice-classifier@248c107",
+          "windows": 1,
+          "mixed": false,
+          "latency_ms": 8.77,
+          "female_style_probability": 1
+        },
+        "candidate": {
+          "source_seconds": 3,
+          "female_style_probability": 0.995475,
+          "male_style_probability": 0.004525,
+          "voice_timbre": "feminine",
+          "confidence": 0.995475,
+          "logits": [
+            2.539219,
+            -2.854318
+          ],
+          "wall_ms": 899.7,
+          "cpu_ms": 890.62
+        }
+      },
+      {
+        "start_seconds": 6,
+        "content": {
+          "skip": false,
+          "kind": "speech",
+          "model": "yamnet",
+          "windows": 4,
+          "speech_score": 0.9844,
+          "singing_score": 0,
+          "music_score": 0.1484,
+          "latency_ms": 12.74
+        },
+        "compact": {
+          "voice_timbre": "feminine",
+          "timbre_confidence": 1,
+          "available": true,
+          "local_model": "syntropicsignal-ai/gender-voice-classifier@248c107",
+          "windows": 1,
+          "mixed": false,
+          "latency_ms": 8.91,
+          "female_style_probability": 1
+        },
+        "candidate": {
+          "source_seconds": 3,
+          "female_style_probability": 0.990382,
+          "male_style_probability": 0.009618,
+          "voice_timbre": "feminine",
+          "confidence": 0.990382,
+          "logits": [
+            2.192313,
+            -2.442167
+          ],
+          "wall_ms": 862.83,
+          "cpu_ms": 843.75
+        }
+      },
+      {
+        "start_seconds": 7,
+        "content": {
+          "skip": false,
+          "kind": "speech",
+          "model": "yamnet",
+          "windows": 4,
+          "speech_score": 0.9844,
+          "singing_score": 0,
+          "music_score": 0.0039,
+          "latency_ms": 20.89
+        },
+        "compact": {
+          "voice_timbre": "feminine",
+          "timbre_confidence": 1,
+          "available": true,
+          "local_model": "syntropicsignal-ai/gender-voice-classifier@248c107",
+          "windows": 1,
+          "mixed": false,
+          "latency_ms": 16.18,
+          "female_style_probability": 1
+        },
+        "candidate": {
+          "source_seconds": 3,
+          "female_style_probability": 0.995935,
+          "male_style_probability": 0.004065,
+          "voice_timbre": "feminine",
+          "confidence": 0.995935,
+          "logits": [
+            2.588947,
+            -2.912236
+          ],
+          "wall_ms": 818.33,
+          "cpu_ms": 781.25
+        }
+      },
+      {
+        "start_seconds": 8,
+        "content": {
+          "skip": false,
+          "kind": "speech",
+          "model": "yamnet",
+          "windows": 4,
+          "speech_score": 0.9883,
+          "singing_score": 0,
+          "music_score": 0.043,
+          "latency_ms": 12.35
+        },
+        "compact": {
+          "voice_timbre": "feminine",
+          "timbre_confidence": 0.99999,
+          "available": true,
+          "local_model": "syntropicsignal-ai/gender-voice-classifier@248c107",
+          "windows": 1,
+          "mixed": false,
+          "latency_ms": 9.46,
+          "female_style_probability": 0.99999
+        },
+        "candidate": {
+          "source_seconds": 3,
+          "female_style_probability": 0.996125,
+          "male_style_probability": 0.003875,
+          "voice_timbre": "feminine",
+          "confidence": 0.996125,
+          "logits": [
+            2.608996,
+            -2.940442
+          ],
+          "wall_ms": 1010.77,
+          "cpu_ms": 859.38
+        }
+      },
+      {
+        "start_seconds": 9,
+        "content": {
+          "skip": false,
+          "kind": "speech",
+          "model": "yamnet",
+          "windows": 4,
+          "speech_score": 0.9844,
+          "singing_score": 0,
+          "music_score": 0.082,
+          "latency_ms": 14.01
+        },
+        "compact": {
+          "voice_timbre": "feminine",
+          "timbre_confidence": 0.999987,
+          "available": true,
+          "local_model": "syntropicsignal-ai/gender-voice-classifier@248c107",
+          "windows": 1,
+          "mixed": false,
+          "latency_ms": 9.3,
+          "female_style_probability": 0.999987
+        },
+        "candidate": {
+          "source_seconds": 3,
+          "female_style_probability": 0.996161,
+          "male_style_probability": 0.003839,
+          "voice_timbre": "feminine",
+          "confidence": 0.996161,
+          "logits": [
+            2.611851,
+            -2.946843
+          ],
+          "wall_ms": 902.01,
+          "cpu_ms": 890.62
+        }
+      }
+    ]
+  },
+  "source_audio_persisted": false,
+  "provider_calls": 0,
+  "billing_amount": 0
+}

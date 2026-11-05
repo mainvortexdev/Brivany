@@ -1,0 +1,66 @@
+# Adelantar un resto estable que envejece sin puntuación
+
+4 de noviembre de 2026. El ensayo real
+`tmp/selected-video/inline-sync-1793813320346.json` completó catorce voces y
+31,700 s, con señal y sin intervalos publicados perdidos ni recuperación del
+original. Siguió fallando la aceptación: retraso máximo de 9,559520 s y
+crecimiento de 5,255520 s. Se conserva ese resultado; la mejora frente al
+ensayo anterior no acredita que todos los cambios causaran la diferencia.
+
+La inspección por índice de solicitud localizó dos aumentos importantes de
+espera: aproximadamente 1,104 s antes de la pieza que empieza en 8,5 s y
+2,411 s antes de la que empieza en 15,088760 s. Esta última cubría 3,891 s de
+fuente; estuvo lista para traducción a los 19,870 s del reloj diagnóstico,
+después consumió 2,375 s en MT y tuvo unos 220 ms adicionales antes de solicitar
+TTS. Las voces ya publicadas también acumularon excesos de duración. Esto
+demuestra que la duración de TTS por sí sola no explica todo el retraso.
+
+## Cambio acotado
+
+El corte provisional sin puntuación exigía siempre ocho palabras estables más
+tres palabras retenidas. Un resto de diez palabras podía alcanzar casi cuatro
+segundos sin ofrecer ese mínimo, aunque sus primeras siete palabras ya fueran
+estables. Se mantiene el umbral ordinario de ocho palabras, pero a partir de
+tres segundos de audio pendiente se permiten entre cuatro y siete palabras
+estables.
+
+El cambio conserva estas condiciones:
+
+- Dos parciales reales con tiempos que avanzan deben coincidir en el prefijo.
+  Repetir el mismo tiempo no cuenta como otra observación.
+- Las tres palabras finales permanecen sin comprometer.
+- El intervalo estimado de la pieza debe cubrir al menos 1800 ms de audio y
+  quedar dentro de los tiempos observados. Cuatro palabras que sólo cubrirían
+  1714 ms todavía esperan.
+- La edad se cuenta desde el límite de la pieza anterior, no desde el principio
+  del turno completo.
+- No se repiten palabras comprometidas. Se conservan números, signos, acentos
+  canónicos y detección de revisiones que cambian palabras ya emitidas.
+
+Los límites intermedios siguen siendo estimados a partir de ASR, sin marcas
+temporales por palabra. Una entrega temprana puede perder contexto que sólo
+aparece después; conservar tres palabras y comprobar estabilidad reduce ese
+riesgo, pero no prueba fidelidad semántica universal. No se cambian los umbrales
+de calidad del banco ni se recortan palabras para que pase una prueba.
+
+## Evidencia local
+
+Quince pruebas dirigidas locales aprobaron estabilidad, límite 2999/3000 ms,
+prefijos de cuatro a siete palabras, conservación del resto final, ausencia de
+duplicación, edad reiniciada en cada pieza, duración mínima y revisiones de
+números y acentos. La primera ejecución conservó un fallo de una expectativa
+anterior en el segundo 3000: el nuevo comportamiento emitía correctamente siete
+palabras. Esa comprobación anterior se movió al segundo 2999, y otra regresión
+exige explícitamente el comportamiento al alcanzar 3000 ms.
+
+No se modificó River, el prefijo ni la extensión en este cambio. No se añadió
+diagnóstico de contenido o historial nuevo: el banco deberá medir el efecto en
+otra ejecución real. Las pruebas son locales con sustitutos y no abren llamadas
+a APIs externas de traducción. No acreditan haber resuelto la demora observada
+ni el objetivo integral.
+
+`tools.verify sync-relay` registró 88 pruebas aprobadas en
+`tmp/verification/sync-relay-20261104T174503-02ada503.json`. La suite incluye
+también la preparación de prefijo actualizada en la tarea paralela. El número
+total no atribuye esas otras pruebas a este cambio. No se repitió River porque
+su implementación no cambió.

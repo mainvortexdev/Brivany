@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-chat-ui",
+  "started_at": "2026-11-04T02:38:58.938884+00:00",
+  "finished_at": "2026-11-04T02:40:57.565487+00:00",
+  "duration_seconds": 118.626603,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-chat"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('Pensando…', { exact: true }) to be visible\u001b[22m\n\u001b[2m    57 × locator resolved to hidden <div role=\"status\" class=\"workspace-thinking\">Pensando…</div>\u001b[22m\n\n    at <local-path>\\tools\\check_workspace_chat.cjs:105:198 {\n  log: [\n    \"  - waiting for getByText('Pensando…', { exact: true }) to be visible\",\n    '    57 × locator resolved to hidden <div role=\"status\" class=\"workspace-thinking\">Pensando…</div>'\n  ],\n  name: 'TimeoutError'\n}\n"
+}

@@ -1,0 +1,21 @@
+{
+  "suite": "python",
+  "started_at": "2026-10-27T23:01:35.594089+00:00",
+  "finished_at": "2026-10-27T23:01:39.564088+00:00",
+  "duration_seconds": 3.969999,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".............................................................................\r\n----------------------------------------------------------------------\r\nRan 77 tests in 3.199s\r\n\r\nOK\r\n"
+}

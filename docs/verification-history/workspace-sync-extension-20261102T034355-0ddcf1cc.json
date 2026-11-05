@@ -1,0 +1,16 @@
+{
+  "suite": "workspace-sync-extension",
+  "started_at": "2026-11-02T03:43:55.996776+00:00",
+  "finished_at": "2026-11-02T03:43:56.358808+00:00",
+  "duration_seconds": 0.362032,
+  "command": [
+    "node",
+    "--test",
+    "browser-extension/tests/sync-timeline.test.mjs",
+    "browser-extension/tests/background.test.mjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ browser action captures its granted source into a separate consumer and navigation stops it (12.1909ms)\n✔ pairing accepts only a loopback WebSocket with a six digit code and binds sync origin (9.6352ms)\n✔ four seconds alone cannot start a picture before real ASR progress (0.9102ms)\n✔ a late provider holds the matching picture before the speech and resumes with its cue (0.6933ms)\n✔ late audio is rejected rather than played over an unrelated picture (0.7655ms)\n✔ old epochs never enter the new session and transcript-only markers cannot be cues (0.5019ms)\n✔ buffer has a hard thirty second horizon even while paused (0.4151ms)\n✔ preproduction requires five prepared seconds and explicit playback (0.7011ms)\n✔ cue IDs are unique and completed intervals can be released from memory (0.6874ms)\n✔ an eight second utterance with seven seconds provider work holds at its source onset instead of dropping content (1.2476ms)\n✔ preproduction can start with the first cue while a second utterance crossing five seconds is still being translated (1.187ms)\n✔ six seconds without the first cue signals a missed budget without dropping audio or silently extending a promise (0.6215ms)\nℹ tests 12\nℹ suites 0\nℹ pass 12\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 230.1232\n"
+}

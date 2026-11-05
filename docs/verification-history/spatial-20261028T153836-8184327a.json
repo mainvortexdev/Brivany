@@ -1,0 +1,23 @@
+{
+  "suite": "spatial",
+  "started_at": "2026-10-28T15:38:36.517542+00:00",
+  "finished_at": "2026-10-28T15:38:41.474858+00:00",
+  "duration_seconds": 4.957316,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_spatial*.py"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "..................F............\r\n======================================================================\r\nFAIL: test_actual_ffmpeg_capture_is_prepared_without_scene_and_cache_reuses_package (test_spatial_jobs.SpatialJobsTests.test_actual_ffmpeg_capture_is_prepared_without_scene_and_cache_reuses_package)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_spatial_jobs.py\", line 140, in test_actual_ffmpeg_capture_is_prepared_without_scene_and_cache_reuses_package\r\n    self.assertEqual(job['state'],'succeeded');space=service.get_space(created['space']['id'])\r\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: 'failed' != 'succeeded'\r\n- failed\r\n+ succeeded\r\n\r\n\r\n----------------------------------------------------------------------\r\nRan 31 tests in 4.206s\r\n\r\nFAILED (failures=1)\r\n"
+}

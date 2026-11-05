@@ -1,0 +1,82 @@
+"""Automatic, local application recipes; observed selectors, never executable code."""
+from datetime import datetime,timezone
+import hashlib
+import json
+from pathlib import Path
+import re
+import threading
+from urllib.parse import urlsplit
+from uuid import UUID,uuid4
+
+ROLES={'ControlType.Button','ControlType.MenuItem','ControlType.Edit','ControlType.ComboBox','ControlType.TabItem','ControlType.TreeItem','ControlType.CheckBox'}
+SENSITIVE=re.compile(r'password|contrase|token|secret|credential|api.?key|\b(pin|cvv|iban)\b',re.I)
+
+def identity(observation):
+    foreground=observation.get('foreground') or {};process=str(foreground.get('processName','')).casefold().removesuffix('.exe')
+    if not re.fullmatch(r'[a-z0-9_.-]{1,80}',process) or process in {'chrome','msedge','brave','firefox','regedit','consent','powershell','cmd','pwsh'}:return None
+    value={'process':process,'class':str(foreground.get('className',''))[:80],'version':str(foreground.get('version') or 'unreported')[:50]}
+    return {**value,'key':hashlib.sha256(json.dumps(value,sort_keys=True).encode()).hexdigest()}
+
+def selector(control):
+    name=control.get('name','');role=control.get('role')
+    if not isinstance(name,str) or not 1<=len(name)<=80 or role not in ROLES or SENSITIVE.search(name) or re.search(r'[\d@\r\n]|https?://',name):return None
+    return {'name':name,'role':role}
+
+class ApplicationMemory:
+    def __init__(self,directory):
+        self.root=Path(directory).resolve();self.root.mkdir(parents=True,exist_ok=True);self.lock=threading.RLock();self.records={}
+        for path in sorted(self.root.glob('*.json'),key=lambda p:p.stat().st_mtime)[-100:]:
+            try:
+                if path.is_symlink() or getattr(path,'is_junction',lambda:False)():continue
+                if path.stat().st_size>40000:continue
+                value=json.loads(path.read_text(encoding='utf-8'));app=value.get('application') or {};steps=value.get('steps',[])
+                valid=value.get('schema')==1 and value.get('verified') is True and str(UUID(value.get('id','')))==path.stem and re.fullmatch(r'[a-f0-9]{64}',app.get('key','')) and re.fullmatch(r'[a-z0-9_.-]{1,80}',app.get('process','')) and isinstance(value.get('title'),str) and isinstance(value.get('sources'),list) and 1<=len(steps)<=12
+                if valid and all(s.get('action') in {'click_control','type_text'} and selector(s.get('selector',{}))==s.get('selector') and set(s)<={'action','selector','input'} and s.get('input','user_value')=='user_value' for s in steps):self.records[value['id']]=value
+            except (OSError,ValueError,TypeError,AttributeError):continue
+    def lookup(self,observation):
+        app=identity(observation)
+        if not app:return []
+        visible=[selector(c) for c in observation.get('controls',[])];found=[]
+        with self.lock:
+            for record in reversed(list(self.records.values())):
+                if record['application']['key']!=app['key'] or record['steps'][0]['selector'] not in visible:continue
+                found.append({k:record[k] for k in ('id','title','application','steps','sources','verification')})
+                if len(found)==3:break
+        return found
+    def catalog(self):
+        with self.lock:return [{'id':r['id'],'application':r['application']['process'],'title':r['title'],'steps':len(r['steps']),'verification':r['verification']} for r in list(self.records.values())[-20:]]
+    def observe_step(self,job,observation,step,result):
+        app=identity(observation);action=step.get('action');params=step.get('params',{})
+        if not app or action not in {'type_text','click_control'} or result.get('requires_user'):return
+        if action=='type_text' and result.get('text_value_verified') is not True:return
+        if action=='click_control' and not (result.get('input_sent') or result.get('verified')):return
+        controls=[c for c in observation.get('controls',[]) if c.get('id')==params.get('control_id')]
+        if len(controls)!=1:return
+        target=selector(controls[0])
+        if not target:return
+        rows=job.setdefault('_application_steps',[])
+        if len(rows)>=12:return
+        rows.append({'application':app,'step':{'action':action,'selector':target,**({'input':'user_value'} if action=='type_text' else {})}})
+    def remember(self,job,sources=()):
+        if job.get('state')!='succeeded' or job.get('review_state')!='accepted':return []
+        rows=job.get('_application_steps',[]);groups={}
+        for row in rows:groups.setdefault(row['application']['key'],[]).append(row)
+        saved=[]
+        for entries in groups.values():
+            app=entries[0]['application'];steps=[r['step'] for r in entries]
+            # Opening/typing alone does not prove a reusable application workflow.
+            if not any(s['action']=='click_control' for s in steps):continue
+            urls=[]
+            for source in sources:
+                url=source.get('url','') if isinstance(source,dict) else ''
+                try:parsed=urlsplit(url)
+                except ValueError:continue
+                if parsed.scheme=='https' and parsed.hostname and not parsed.username and not parsed.password and not parsed.query:urls.append(url[:1000])
+            value={'schema':1,'id':str(uuid4()),'job_id':job['id'],'created_at':datetime.now(timezone.utc).isoformat(),'application':app,'title':app['process']+' · '+next(s['selector']['name'] for s in reversed(steps) if s['action']=='click_control'),'steps':steps,'sources':list(dict.fromkeys(urls))[:6],'verified':True,'verification':'observed_controls_and_model_review','limitations':'Recipe guidance only. Reobserve controls and use current user values; no executable code, credentials, values or old runtime IDs.'}
+            with self.lock:
+                if any(r['application']['key']==app['key'] and (r['job_id']==job['id'] or r['steps']==steps) for r in self.records.values()):continue
+                with (self.root/(value['id']+'.json')).open('x',encoding='utf-8') as stream:json.dump(value,stream,ensure_ascii=False)
+                self.records[value['id']]=value
+                while len(self.records)>100:self.records.pop(next(iter(self.records)))
+            saved.append(value['id'])
+        return saved

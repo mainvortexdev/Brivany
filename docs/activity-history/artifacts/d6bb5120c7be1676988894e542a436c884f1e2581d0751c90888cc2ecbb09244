@@ -1,0 +1,11 @@
+{
+  "scope": "real native execution on new synthetic files only",
+  "external_calls": 0,
+  "checks": [
+    "new note bytes verified"
+  ],
+  "user_documents_modified": false,
+  "fixture_root": "<local-path>\\tmp\\computer-files-real\\fixture-c1de01c3",
+  "status": "failed",
+  "failure": "Excepción al llamar a \"Append\" con los argumentos \"3\": \"TEXT_UNVERIFIED\""
+}

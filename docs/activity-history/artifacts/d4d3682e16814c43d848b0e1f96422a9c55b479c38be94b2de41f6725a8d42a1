@@ -1,0 +1,23 @@
+{
+  "suite": "dubbing-measure",
+  "started_at": "2026-10-28T12:29:39.642138+00:00",
+  "finished_at": "2026-10-28T12:29:40.689379+00:00",
+  "duration_seconds": 1.047241,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_dubbing_measure.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".......\r\n----------------------------------------------------------------------\r\nRan 7 tests in 0.419s\r\n\r\nOK\r\n"
+}

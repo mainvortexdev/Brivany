@@ -1,0 +1,49 @@
+{
+  "title": "Dos formas: rectángulo naranja y círculo azul",
+  "description": "Diseño 3D conceptual con un prisma rectangular naranja vertical a la izquierda y una esfera azul a la derecha, en disposición lateral.",
+  "assumptions": "Observado: rectángulo vertical naranja a la izquierda y círculo azul más pequeño a la derecha, separados sobre fondo claro. Inferido: el rectángulo se modela como box y el círculo como sphere para conservar la silueta circular desde cualquier vista; colores aproximados, tamaños y separación conceptuales sin medidas verificadas.",
+  "objects": [
+    {
+      "name": "rectangulo_naranja",
+      "type": "box",
+      "position": [
+        -0.9,
+        1.0,
+        0.0
+      ],
+      "size": [
+        0.9,
+        1.6,
+        0.4
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "color": "#E67E22",
+      "role": "object"
+    },
+    {
+      "name": "circulo_azul",
+      "type": "sphere",
+      "position": [
+        0.7,
+        0.7,
+        0.0
+      ],
+      "size": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "color": "#2A68C8",
+      "role": "object"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "type": "reported_local_ui_and_native_state_observation",
+  "recorded_at": "2026-11-04T18:29:27.348070+00:00",
+  "observation_source": "root_agent_accessibility_screenshot_and_public_runtime_checks",
+  "prior_real_report": "tmp/selected-video/inline-sync-1793816151318.json",
+  "new_translation_inference_requests": 0,
+  "visual_bank": {
+    "port": 49204,
+    "viewport_width_px": 443,
+    "methods": [
+      "accessibility_tree",
+      "local_screenshot"
+    ],
+    "displayed_seconds": {
+      "full_preparation": 12.06,
+      "capture_receive": 7.02,
+      "asr": 2.59,
+      "turn_classification": 0.02,
+      "local_timbre": 1.97,
+      "prosody": 2.34
+    },
+    "parallel_not_sum_explanation_visible": true,
+    "layout_overlap_observed": false,
+    "table_horizontal_scroll_available": true,
+    "local_screenshot_file": "bank-prefix-phases-062.png",
+    "local_screenshot_exists": true,
+    "local_screenshot_size_bytes": 175930,
+    "screenshot_attached_to_ledger": false,
+    "new_latency_measurement": false
+  },
+  "native_start": {
+    "previous_pid": 8744,
+    "previous_pid_missing_before_launch": true,
+    "relay_port_free_before_launch": true,
+    "official_launcher_used": true,
+    "first_launch_argument": "--island",
+    "launcher_pid": 5620,
+    "child_pid": 21976,
+    "relay_port": 48217,
+    "http_port": 58536,
+    "public_runtime": {
+      "paired_extensions": 1,
+      "workspace_connected": true,
+      "active_translation_sessions": 0,
+      "cached_prefixes": 0,
+      "last_failure": null
+    },
+    "later_official_launch_without_island": true,
+    "window_id": 12782798,
+    "accessibility_button": "Abrir Melodi WorkSpace",
+    "accessibility_button_index_at_observation": 46,
+    "accessibility_click_attempts": 2,
+    "accessibility_clicks_succeeded": 0,
+    "click_failure_kind": "control_reference_cache",
+    "native_screenshot_timed_out": true,
+    "workspace_opened_verified": false,
+    "forced_process_stop": false,
+    "installed_extension_reload_attempted": false,
+    "personal_capture_started": false,
+    "personal_dubbing_started": false,
+    "capture_module_loaded_verified": false
+  },
+  "prior_real_trial_quality_reclassified": false,
+  "physical_listening_verified": false,
+  "full_video_verified": false,
+  "all_incidental_external_traffic_measured": false,
+  "limits": [
+    "single_viewport_width",
+    "existing_results_only",
+    "port_pairing_not_module_execution",
+    "no_new_personal_translation"
+  ]
+}

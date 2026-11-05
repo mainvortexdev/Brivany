@@ -1,0 +1,13 @@
+{
+  "type": "real_brave_native_video_text_tracks_owned_fixture",
+  "external_calls": 0,
+  "paid_calls": 0,
+  "user_profile_used": false,
+  "microphone": false,
+  "user_media": false,
+  "passed": true,
+  "native_track_read": true,
+  "upcoming_cues": 2,
+  "caption_voice_hints_only": true,
+  "pause_disables_lookahead": true
+}

@@ -1,0 +1,120 @@
+{
+  "track_source": "recent history",
+  "purpose": "Reproduce missing native audio with the current observed track, then pause/restore position. No capture.",
+  "initial_playing": null,
+  "samples": [
+    {
+      "stage": "api_play",
+      "second": 1,
+      "sdk_state": "ready",
+      "playing": true,
+      "position_ms": 0,
+      "volume": 50,
+      "available": true,
+      "muted": false,
+      "document_audio": false,
+      "visible": true
+    },
+    {
+      "stage": "api_play",
+      "second": 2,
+      "sdk_state": "ready",
+      "playing": true,
+      "position_ms": 0,
+      "volume": 50,
+      "available": true,
+      "muted": false,
+      "document_audio": true,
+      "visible": true
+    },
+    {
+      "stage": "api_play",
+      "second": 3,
+      "sdk_state": "ready",
+      "playing": true,
+      "position_ms": 914,
+      "volume": 50,
+      "available": true,
+      "muted": false,
+      "document_audio": true,
+      "visible": true
+    },
+    {
+      "stage": "sdk_resume",
+      "second": 1,
+      "sdk_state": "ready",
+      "playing": true,
+      "position_ms": 1443,
+      "volume": 50,
+      "available": true,
+      "muted": false,
+      "document_audio": true,
+      "visible": true
+    },
+    {
+      "stage": "sdk_resume",
+      "second": 2,
+      "sdk_state": "ready",
+      "playing": true,
+      "position_ms": 2942,
+      "volume": 50,
+      "available": true,
+      "muted": false,
+      "document_audio": true,
+      "visible": true
+    },
+    {
+      "stage": "sdk_resume",
+      "second": 3,
+      "sdk_state": "ready",
+      "playing": true,
+      "position_ms": 3693,
+      "volume": 50,
+      "available": true,
+      "muted": false,
+      "document_audio": true,
+      "visible": true
+    }
+  ],
+  "events": [],
+  "screen_audio_capture": false,
+  "cost": "No model inference; API/SDK/CDN monetary consumption not measured.",
+  "registered": "ready",
+  "direct_command_ms": 16,
+  "direct_command_accepted": true,
+  "status": "completed",
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/v1/me/player",
+      "code": 204,
+      "ms": 234
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/recently-played",
+      "code": 200,
+      "ms": 203
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 218
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 157
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/play",
+      "code": 204,
+      "ms": 265
+    }
+  ],
+  "known_native_api_requests": 5,
+  "sdk_network_requests": "not measured"
+}

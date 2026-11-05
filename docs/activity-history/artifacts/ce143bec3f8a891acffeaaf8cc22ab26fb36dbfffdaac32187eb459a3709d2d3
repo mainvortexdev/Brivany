@@ -1,0 +1,21 @@
+{
+  "type": "retrospective_local_source_reset_regression",
+  "simulation": true,
+  "real_youtube": false,
+  "provider_api_calls": 0,
+  "fixture_report": "inline-sync-1793807147089.json",
+  "checks": {
+    "source_interrupted": true,
+    "interruption_reported": true,
+    "drained_captured_media": true,
+    "no_natural_completion_claim": true,
+    "not_accepted_as_working_translation": true,
+    "one_local_protocol_session": true
+  },
+  "regression_passed": true,
+  "translation_success": false,
+  "completed_cues": 3,
+  "error_message": "El video original se interrumpió. Vuelve a reproducirlo para continuar la traducción.",
+  "audio_signal_observed": true,
+  "physical_listening_verified": false
+}

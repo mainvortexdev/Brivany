@@ -1,0 +1,22 @@
+{
+  "suite": "spotify",
+  "started_at": "2026-11-01T00:47:59.706306+00:00",
+  "finished_at": "2026-11-01T00:48:00.766499+00:00",
+  "duration_seconds": 1.060193,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_spotify",
+    "tests.test_lyrics",
+    "tests.test_spotify_artwork",
+    "tests.test_spotify_player"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "...................................\r\n----------------------------------------------------------------------\r\nRan 35 tests in 0.448s\r\n\r\nOK\r\n"
+}

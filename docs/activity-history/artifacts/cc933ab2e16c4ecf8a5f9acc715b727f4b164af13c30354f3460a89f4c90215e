@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "time": "2026-11-04T00:06:56.141724+00:00",
+  "scope": "real account broker, running Brivany desktop and installed Word",
+  "inference_requests": 0,
+  "billing_usd": null,
+  "original_conversation_saved": false,
+  "word": {
+    "ack_seconds": 0.468,
+    "completion_seconds": 3.797,
+    "old_fixed_phrase_absent": true,
+    "state": "succeeded",
+    "process_id": 9624,
+    "window_verified": true,
+    "window_metadata": [
+      {
+        "class": "OpusApp",
+        "minimized": true
+      }
+    ],
+    "foreground_preserved": true,
+    "background": true,
+    "input_sent": false,
+    "local_model_calls": 0,
+    "word_left_open": true
+  },
+  "process_count": {
+    "ack_seconds": 0.219,
+    "completion_seconds": 1.844,
+    "old_fixed_phrase_absent": true,
+    "state": "succeeded",
+    "observed_count": 252,
+    "observed_at": "2026-11-04T00:07:02.1748036Z",
+    "answer_contains_observed_count": true,
+    "local_model_calls": 0
+  },
+  "account_requests": 13
+}

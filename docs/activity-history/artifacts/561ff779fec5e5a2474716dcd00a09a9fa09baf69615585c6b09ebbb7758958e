@@ -1,0 +1,16 @@
+{
+  "type": "real_account_and_desktop_read_only",
+  "source": "chat",
+  "physical_iphone": false,
+  "microphone_used": false,
+  "audio_persisted": false,
+  "transcripts_persisted": false,
+  "calls": {
+    "chat": 1,
+    "asr": 0,
+    "tts": 0
+  },
+  "passed": false,
+  "checked_at": "2026-11-02T12:38:05.413611+00:00",
+  "error_code": "No se pudo completar la respuesta de tu cuenta Brivany."
+}

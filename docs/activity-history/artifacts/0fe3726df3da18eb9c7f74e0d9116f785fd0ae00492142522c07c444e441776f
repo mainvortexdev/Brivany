@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "scope": "real isolated Edits MCP and FFmpeg; planner substituted",
+  "synthetic_only": true,
+  "inference_calls": 0,
+  "background_network_consumption_known": false,
+  "tool_count": 48,
+  "decisions": [
+    "sequence_duplicate",
+    "clip_update",
+    "export_start",
+    "done"
+  ],
+  "result": {
+    "editor": "Cognira Edits",
+    "title": "Melodi · prueba sintética",
+    "project_path": "<local-path>\\tmp\\edits-mcp-real\\fixture-24d90f69\\workspace\\edits\\real-check\\Melodi.cognira-edits",
+    "video_path": "<local-path>\\tmp\\edits-mcp-real\\fixture-24d90f69\\workspace\\edits\\real-check\\exports\\Melodi-synthetic.mp4",
+    "steps_completed": 3,
+    "verified": true,
+    "semantic_verification": false,
+    "review_required": true,
+    "mcp_tools_available": 30,
+    "analysis_jobs_started": 0,
+    "external_analysis_consumption_known": false
+  },
+  "checks": {
+    "original_sequence_preserved": true,
+    "saved_copy_exists": true,
+    "video_frames": 60,
+    "video_rate": "30/1",
+    "audio_present": true,
+    "artistic_quality_verified": false
+  }
+}

@@ -1,0 +1,416 @@
+[
+  {
+    "id": "macos.command.pwd",
+    "name": "pwd",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.ls",
+    "name": "ls",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.cd",
+    "name": "cd",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.mkdir",
+    "name": "mkdir",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.rmdir",
+    "name": "rmdir",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.cp",
+    "name": "cp",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.mv",
+    "name": "mv",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.cat",
+    "name": "cat",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.head",
+    "name": "head",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.tail",
+    "name": "tail",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.wc",
+    "name": "wc",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.sort",
+    "name": "sort",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.uniq",
+    "name": "uniq",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.grep",
+    "name": "grep",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.find",
+    "name": "find",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.stat",
+    "name": "stat",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.file",
+    "name": "file",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.du",
+    "name": "du",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.df",
+    "name": "df",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.date",
+    "name": "date",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.uname",
+    "name": "uname",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.sw_vers",
+    "name": "sw_vers",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.system_profiler",
+    "name": "system_profiler",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.ps",
+    "name": "ps",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.pgrep",
+    "name": "pgrep",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.kill",
+    "name": "kill",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.which",
+    "name": "which",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.man",
+    "name": "man",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.open",
+    "name": "open",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.xcrun",
+    "name": "xcrun",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.xcodebuild",
+    "name": "xcodebuild",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.ditto",
+    "name": "ditto",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.hdiutil",
+    "name": "hdiutil",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.diskutil",
+    "name": "diskutil",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.launchctl",
+    "name": "launchctl",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.plutil",
+    "name": "plutil",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.defaults",
+    "name": "defaults",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.curl",
+    "name": "curl",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.git",
+    "name": "git",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.tar",
+    "name": "tar",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.zip",
+    "name": "zip",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.unzip",
+    "name": "unzip",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.shasum",
+    "name": "shasum",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.chmod",
+    "name": "chmod",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.chown",
+    "name": "chown",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  },
+  {
+    "id": "macos.command.sudo",
+    "name": "sudo",
+    "platform": "macos",
+    "kind": "shell",
+    "source": "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html",
+    "availability": "macos_host_required",
+    "policy": "review_required"
+  }
+]

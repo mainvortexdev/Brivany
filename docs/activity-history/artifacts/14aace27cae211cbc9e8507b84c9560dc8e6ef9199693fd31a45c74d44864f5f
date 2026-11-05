@@ -1,0 +1,65 @@
+{
+  "format": "brivany-native-audio-pacing-1",
+  "recorded_at": "2026-10-30T05:26:06.407645+00:00",
+  "fixture": "digital_zero_pcm16_mono_24000_no_audio_file",
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "physical_output_verified": false,
+  "latency_scope": "local_mixer_and_driver_schedule_not_audible_translation",
+  "reports": [
+    {
+      "backend": "windows_winmm",
+      "seconds_requested": 24,
+      "elapsed_seconds": 24.075,
+      "producer_completed": true,
+      "drained": true,
+      "mixer": {
+        "sample_rate": 24000,
+        "queued_ms": {
+          "original": 0.0,
+          "translation": 0.0
+        },
+        "maximum_queued_ms": {
+          "original": 60.0,
+          "translation": 60.0
+        },
+        "accepted_bytes": {
+          "original": 1152000,
+          "translation": 768000
+        },
+        "rejected_pushes": {
+          "original": 0,
+          "translation": 0
+        },
+        "output_bytes": 1153920,
+        "output_frames": 1202,
+        "worker_alive": true,
+        "error_code": null,
+        "physical_output_verified": false
+      },
+      "driver_write": {
+        "count": 1202,
+        "mean_ms": 17.24,
+        "p95_ms": 31.0,
+        "max_ms": 32.0
+      },
+      "timer_1ms_requested": true,
+      "driver_bytes": 1153920,
+      "producer_lag": {
+        "original": {
+          "count": 600,
+          "mean_ms": 3.097,
+          "p95_ms": 12.0,
+          "max_ms": 15.0
+        },
+        "translation": {
+          "count": 400,
+          "mean_ms": 3.055,
+          "p95_ms": 11.0,
+          "max_ms": 15.0
+        }
+      },
+      "errors": []
+    }
+  ]
+}

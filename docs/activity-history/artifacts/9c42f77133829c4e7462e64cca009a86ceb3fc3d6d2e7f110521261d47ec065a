@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "scope": "Local HTTP configuration and served HTML only; no provider session or inference.",
+  "provider": "Muse · Meta Spark · Cartesia",
+  "model": "muse-spark-1.3",
+  "asr_model": "muse-voice-transcribe-1.0",
+  "sessions_remaining": 1,
+  "playback_queue_lead_ms": 240,
+  "available": true,
+  "external_calls": 0,
+  "paid_inference": false,
+  "real_meta_translation_verified_in_this_change": false,
+  "physical_playback_verified": false
+}

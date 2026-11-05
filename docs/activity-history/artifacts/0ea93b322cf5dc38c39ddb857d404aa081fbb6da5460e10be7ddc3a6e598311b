@@ -1,0 +1,18 @@
+{
+  "suite": "spatial-ui",
+  "started_at": "2026-10-28T15:42:21.611811+00:00",
+  "finished_at": "2026-10-28T15:42:34.007349+00:00",
+  "duration_seconds": 12.395538,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_spatial_ui"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"checked_at\": \"2026-10-28T15:42:33.603Z\",\r\n  \"checks\": 10,\r\n  \"passed\": [\r\n    \"actual local GLB demo loads in WebGL with origin and unverified scale visible\",\r\n    \"zoom, orbit, and reset change the rendered scene\",\r\n    \"environment can be inspected but cannot be moved\",\r\n    \"select, move mode, rotate mode, and numeric transform persist through reload\",\r\n    \"restore distribution persists canonical transforms\",\r\n    \"focus and keyboard reset are available without voice\",\r\n    \"new demo runs through the persistent local job service\",\r\n    \"MP4 preparation shows six real frames and pending reconstruction, never the demo as its result\",\r\n    \"workspace fits 320, 390, 768 and 1440 pixel layouts\",\r\n    \"WebGL failure preserves the library and a textual object inspector with editing disabled\"\r\n  ],\r\n  \"api\": \"real_local\",\r\n  \"assets\": \"real_generated_glb\",\r\n  \"renderer\": \"real WebGL with software backend permitted\",\r\n  \"physical_devices\": false,\r\n  \"cloud_requests\": 0,\r\n  \"gpu_inference\": false,\r\n  \"external_calls\": 0,\r\n  \"request_counts\": {\r\n    \"external\": 0,\r\n    \"microphone\": 0\r\n  },\r\n  \"javascript_errors\": [],\r\n  \"screenshots\": [\r\n    \"tmp/ui/spatial-1440.png\",\r\n    \"tmp/ui/spatial-390.png\"\r\n  ],\r\n  \"limitations\": [\r\n    \"Procedural demo only; no capture was reconstructed, no metric dimensions or physical realism validated.\",\r\n    \"Viewport widths emulate responsive layout, not actual macOS/iOS/Android hardware.\"\r\n  ]\r\n}\r\n\r\n"
+}

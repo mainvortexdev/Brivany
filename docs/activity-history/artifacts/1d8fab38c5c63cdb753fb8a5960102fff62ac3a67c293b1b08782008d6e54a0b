@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "provider_calls": 1,
+  "source_domains": [
+    "learn.microsoft.com"
+  ],
+  "elapsed_seconds": 13.24,
+  "billing_usd": null
+}

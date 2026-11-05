@@ -1,0 +1,219 @@
+from dataclasses import FrozenInstanceError
+from email import policy
+from email.parser import BytesParser
+import io
+import json
+import os
+import threading
+import unittest
+from unittest.mock import Mock, patch
+import wave
+
+from packages.providers import prefix_translation as prefix
+from packages.providers.live_voice import VoiceError
+
+
+PCM = bytes(prefix.PREFIX_BYTES)
+
+
+def turn(identifier, start, end, text, speaker=None):
+    return {'turnId': identifier, 'startMs': start, 'endMs': end, 'transcript': text, 'speaker': speaker}
+
+
+def transcription(*rows):
+    return {'audioDurationMs': prefix.PREFIX_MS, 'turns': list(rows)}
+
+
+class PrefixTests(unittest.TestCase):
+    def test_buffered_muse_upload_uses_one_exact_wav_and_diarization(self):
+        requests = []
+        closed = []
+
+        class Response:
+            status = 200
+
+            def read(self, _limit):
+                return json.dumps(transcription()).encode()
+
+            def close(self):
+                closed.append('response')
+
+        class Connection:
+            def request(self, method, path, *, body, headers):
+                requests.append((method, path, body, headers))
+
+            def getresponse(self):
+                return Response()
+
+            def close(self):
+                closed.append('connection')
+
+        with patch.dict(os.environ, {'BRIVANY_MUSE_API_KEY': 'synthetic-prefix-key'}):
+            result = prefix._transcribe(PCM, cancelled=threading.Event(), connection_factory=lambda *_args, **_kwargs: Connection())
+        self.assertEqual(result, transcription())
+        self.assertEqual(closed, ['response', 'connection'])
+        self.assertEqual(len(requests), 1)
+        method, path, body, headers = requests[0]
+        self.assertEqual((method, path), ('POST', '/v1/asr/transcribe'))
+        self.assertEqual(headers['Authorization'], 'Bearer synthetic-prefix-key')
+        self.assertNotIn(b'synthetic-prefix-key', body)
+        message = BytesParser(policy=policy.default).parsebytes(
+            ('Content-Type: ' + headers['Content-Type'] + '\r\n\r\n').encode() + body)
+        settings, audio = list(message.iter_parts())
+        config = json.loads(settings.get_payload(decode=True))
+        self.assertEqual((config['mode'], config['audioEncoding']), ('DIARIZATION', 'WAV'))
+        with wave.open(io.BytesIO(audio.get_payload(decode=True))) as source:
+            self.assertEqual((source.getframerate(), source.getnchannels(), source.getsampwidth()), (24000, 1, 2))
+            self.assertEqual(source.readframes(source.getnframes()), PCM)
+
+    def test_cutoff_only_reuses_confirmed_turns_and_keeps_content_in_memory(self):
+        rows = transcription(turn(0, 80, 2200, '   Owned    words. ', 'A'),
+                             turn(1, 2500, 4500, 'Owned song lyrics.', 'B'),
+                             turn(2, 6200, 0, ''))
+        classified = []
+        advisories = []
+
+        class Filter:
+            def classify(self, raw):
+                classified.append(len(raw))
+                return {'kind': 'singing', 'skip': True} if len(raw) == 96000 else {'kind': 'speech', 'skip': False}
+
+        class Advisor:
+            def analyze(self, raw, *, cancelled):
+                advisories.append((len(raw), cancelled.is_set()))
+                return {'emotion': 'calm', 'confidence': .8, 'voice_register': 'low', 'register_confidence': .9}
+
+            def close(self):
+                pass
+
+        result = prefix.prepare_prefix(PCM, cancelled=threading.Event(), prosody_factory=Advisor,
+                                       content_filter_factory=Filter, transcriber=lambda *_args, **_kwargs: rows)
+        self.assertEqual((result.duration_ms, result.resume_from_ms), (7000, 6200))
+        self.assertEqual([(row.speaker, row.content) for row in result.turns], [('A', 'speech'), ('B', 'singing')])
+        self.assertEqual(classified, [prefix.PREFIX_BYTES, 101760, 96000])
+        self.assertEqual(advisories, [(101760, False)])
+        self.assertEqual(result.turns[0].text, 'Owned words.')
+        self.assertEqual(result.turns[0].prosody.as_dict('en')['voice_register'], 'low')
+        self.assertTrue(result.turns[0].prosody.as_dict('en')['applied'])
+        self.assertFalse(result.turns[0].prosody.as_dict('es')['applied'])
+        self.assertIsNone(result.turns[1].prosody)
+        self.assertEqual(result.turns[0].prosody.as_dict('en')['voice_timbre'],'uncertain')
+        self.assertNotIn('Owned', repr(result))
+        with self.assertRaises(FrozenInstanceError):
+            result.resume_from_ms = 0
+
+    def test_prefix_keeps_confident_catalog_timbre_separate_from_pitch(self):
+        class Filter:
+            def classify(self,_raw):return {'kind':'speech','skip':False}
+        class Advisor:
+            def analyze(self,_raw,*,cancelled):
+                return {'emotion':'calm','confidence':.8,'voice_register':'high','register_confidence':.95,
+                        'voice_timbre':'masculine','timbre_confidence':.91}
+            def close(self):pass
+        result=prefix.prepare_prefix(PCM,cancelled=threading.Event(),prosody_factory=Advisor,
+            content_filter_factory=Filter,transcriber=lambda *_args,**_kwargs:transcription(turn(1,0,2500,'Owned speech.','A')))
+        advisory=result.turns[0].prosody.as_dict('en')
+        self.assertEqual((advisory['voice_register'],advisory['voice_timbre'],advisory['timbre_confidence']),('high','masculine',.91))
+
+    def test_invalid_prefix_size_and_cancellation_stop_before_provider(self):
+        entered = []
+        def transcriber(*_args, **_kwargs):
+            entered.append(True)
+            return transcription()
+        with self.assertRaisesRegex(VoiceError, 'siete segundos'):
+            prefix.prepare_prefix(PCM[:-2], cancelled=threading.Event(), transcriber=transcriber)
+        cancelled = threading.Event()
+        cancelled.set()
+        with self.assertRaisesRegex(VoiceError, 'canceló'):
+            prefix.prepare_prefix(PCM, cancelled=cancelled, transcriber=transcriber)
+        self.assertEqual(entered, [])
+
+    def test_prefix_keeps_robust_model_abstention_and_confidence_for_voice_matching(self):
+        class Filter:
+            def classify(self,_raw):return {'kind':'speech','skip':False}
+        uncertain={'available':True,'voice_timbre':'uncertain','timbre_confidence':.806631}
+        with patch.object(prefix,'analyze_timbre',return_value=uncertain):
+            result=prefix.prepare_prefix(PCM,cancelled=threading.Event(),content_filter_factory=Filter,
+                transcriber=lambda *_args,**_kwargs:transcription(turn(1,0,2500,'Owned speech.','A')))
+        advice=result.turns[0].prosody.as_dict('en')
+        self.assertEqual((advice['voice_timbre'],advice['timbre_confidence'],advice['timbre_inference_source']),
+            ('uncertain',.806631,'local_robust_voice_timbre'))
+        self.assertFalse(advice['applied']);self.assertEqual(result.resume_from_ms,7000)
+
+    def test_cancelling_active_upload_interrupts_provider_headers(self):
+        cancelled = threading.Event()
+        interrupted = threading.Event()
+
+        class Connection:
+            @property
+            def sock(self):
+                return self
+
+            def request(self, *_args, **_kwargs):
+                pass
+
+            def getresponse(self):
+                cancelled.set()
+                if not interrupted.wait(.5):
+                    raise AssertionError('The provider socket was not interrupted')
+                raise OSError('Synthetic disconnect')
+
+            def shutdown(self, _how):
+                interrupted.set()
+
+            def close(self):
+                pass
+
+        with patch.dict(os.environ, {'BRIVANY_MUSE_API_KEY': 'synthetic-prefix-key'}):
+            with self.assertRaisesRegex(VoiceError, 'canceló'):
+                prefix._transcribe(PCM, cancelled=cancelled, connection_factory=lambda *_args, **_kwargs: Connection())
+        self.assertTrue(interrupted.is_set())
+
+    def test_fully_transcribed_or_silent_prefix_resumes_at_seven_seconds(self):
+        result = prefix.prepare_prefix(PCM, cancelled=threading.Event(), transcriber=lambda *_args, **_kwargs: transcription())
+        self.assertEqual((result.turns, result.resume_from_ms), ((), 7000))
+
+    def test_music_or_singing_only_opening_never_calls_muse_or_prosody(self):
+        for kind in ('music', 'singing'):
+            with self.subTest(kind=kind):
+                decision = {'kind': kind, 'skip': True, 'speech_score': .03, f'{kind}_score': .95}
+                content_filter = Mock()
+                content_filter.classify.return_value = decision
+                transcriber, prosody_factory = Mock(), Mock()
+                result = prefix.prepare_prefix(PCM, cancelled=threading.Event(), prosody_factory=prosody_factory,
+                    transcriber=transcriber, content_filter_factory=lambda: content_filter)
+                transcriber.assert_not_called()
+                prosody_factory.assert_not_called()
+                self.assertEqual(content_filter.classify.call_count, 10)
+                self.assertEqual(result.resume_from_ms, 7000)
+                interval, = result.turns
+                self.assertEqual((interval.start_ms, interval.end_ms, interval.content, interval.text), (0, 7000, kind, ''))
+
+    def test_brief_speech_between_whole_clip_windows_still_reaches_muse(self):
+        marker = b'\x01\x02' * 120
+        start = 1200 * prefix.PCM_BYTES_PER_MS
+        mixed = PCM[:start] + marker + PCM[start + len(marker):]
+
+        class Filter:
+            def classify(self, raw):
+                if len(raw) < prefix.PREFIX_BYTES and marker in raw:
+                    return {'kind': 'speech', 'skip': False, 'speech_score': .9}
+                return {'kind': 'music', 'skip': True, 'speech_score': .03, 'music_score': .95}
+
+        row = turn(-1, 1200, 2000, 'Owned speech over music.')
+        del row['speaker']
+        transcriber = Mock(return_value={'sessionId': 'test', 'transcript': row['transcript'], **transcription(row)})
+        result = prefix.prepare_prefix(mixed, cancelled=threading.Event(), transcriber=transcriber, content_filter_factory=Filter)
+        transcriber.assert_called_once()
+        speaker, = result.turns
+        self.assertEqual((speaker.turn_id, speaker.speaker, speaker.content, speaker.text), ('-1', None, 'speech', row['transcript']))
+
+    def test_duplicate_or_out_of_range_provider_turn_is_rejected(self):
+        for rows in (transcription(turn(0, 100, 1000, 'Owned.'), turn(0, 1500, 2000, 'Again.')),
+                     transcription(turn(1, 100, 7200, 'Owned.'))):
+            with self.subTest(rows=rows), self.assertRaisesRegex(VoiceError, 'turno'):
+                prefix.prepare_prefix(PCM, cancelled=threading.Event(), transcriber=lambda *_args, **_kwargs: rows)
+
+
+if __name__ == '__main__':
+    unittest.main()

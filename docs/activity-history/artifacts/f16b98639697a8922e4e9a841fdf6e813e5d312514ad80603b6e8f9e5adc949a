@@ -1,0 +1,23 @@
+{
+  "status": "script_only",
+  "duration_seconds": 180,
+  "scenes": 11,
+  "words": 387,
+  "estimated_words_per_minute": 129.0,
+  "scene_rates": [
+    132.9,
+    116.2,
+    129.2,
+    122.5,
+    132.0,
+    138.8,
+    137.1,
+    127.5,
+    128.0,
+    128.6,
+    132.0
+  ],
+  "new_audio_generated": false,
+  "new_video_rendered": false,
+  "new_media_generation_requests": 0
+}

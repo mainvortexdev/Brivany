@@ -1,0 +1,74 @@
+"""Check real TTS request timing guidance with local protocol substitutes."""
+import base64
+import json
+import threading
+import unittest
+from unittest.mock import patch
+
+from websockets.exceptions import ConnectionClosed
+from websockets.sync.server import serve
+
+from packages.providers import river_translation as river
+from tests import test_sync_relay as sync_fixture
+
+
+class DubbingDeliveryPipelineTests(unittest.TestCase):
+    def run_delivery(self, source, parts):
+        harness=sync_fixture.SynchronizedPipelineTests(
+            'test_partials_never_trigger_mt_final_cue_has_real_boundaries_and_no_native_output')
+        harness.setUp()
+        requests=[]
+
+        class Translator:
+            def stream(self,*_):yield from parts
+            def close(self):pass
+
+        def tts(socket):
+            try:
+                for raw in socket:
+                    event=json.loads(raw)
+                    if event.get('cancel'):continue
+                    requests.append(event)
+                    if event['transcript']:
+                        socket.send(json.dumps({'type':'chunk','context_id':event['context_id'],
+                            'data':base64.b64encode(harness.fixture.pcm).decode()}))
+                    if event['continue'] is False:
+                        socket.send(json.dumps({'type':'done','context_id':event['context_id']}))
+            except ConnectionClosed:pass
+
+        server=serve(tts,'127.0.0.1',0,compression=None)
+        threading.Thread(target=server.serve_forever,daemon=True).start()
+        harness.expressive=False;harness.translator_factory=Translator
+        harness.final_text=source;harness.release.set()
+        try:
+            with patch.object(river,'CARTESIA_URL',f'ws://127.0.0.1:{server.socket.getsockname()[1]}'),harness.socket(inline=True) as socket:
+                socket.send(harness.fixture.pcm*2);socket.send(json.dumps({'type':'finish'}))
+                events=[]
+                while True:
+                    event=json.loads(socket.recv(timeout=4));events.append(event)
+                    if event['type'] in {'done','error'}:break
+                self.assertEqual(event['type'],'done',event)
+            self.assertEqual(''.join(row['transcript'] for row in requests),''.join(parts))
+            return requests,events
+        finally:
+            server.shutdown();harness.tearDown()
+
+    def test_expanded_translation_uses_spoken_words_not_short_source(self):
+        translation='Ne changez pas les douze kilos et ne les ajoutez pas.'
+        requests,events=self.run_delivery('Do not.',[translation])
+        self.assertTrue(requests)
+        self.assertTrue(all(row['generation_config']['speed']==1.28 for row in requests))
+        cue=next(row for row in events if row['type']=='dub-cue')
+        self.assertEqual((cue['source_start_ms'],cue['source_end_ms']),(100,1040))
+
+    def test_short_translation_does_not_inherit_dense_source_acceleration(self):
+        requests,_=self.run_delivery('Do not change any of these values or omit anything here.', ['Non.'])
+        self.assertTrue(all('speed' not in row.get('generation_config',{}) for row in requests))
+
+    def test_streaming_continuations_keep_the_first_delivery_guidance(self):
+        parts=['Voici une première phrase assez longue avec les douze kilos. Et',
+               ' voici la deuxième phrase à conserver intégralement.']
+        requests,_=self.run_delivery('Short source.',parts)
+        self.assertGreaterEqual(len(requests),2)
+        self.assertEqual(len({row['context_id'] for row in requests}),1)
+        self.assertTrue(all(row['generation_config']['speed']==1.28 for row in requests))

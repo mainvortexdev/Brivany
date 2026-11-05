@@ -1,0 +1,18 @@
+[
+ ["Abre Word por mí","word"],
+ ["Melodi, abre Excel por favor.","excel"],
+ ["¿Puedes abrir Word?","word"],
+ ["Abre chatgpt.exe","chatgpt.exe"],
+ ["Inicia Microsoft Word ahora","microsoft word"],
+ ["Open Notepad please","notepad"],
+ ["Abre Word y escribe una carta",null],
+ ["No abras Word",null],
+ ["Si te pido abre Word, ¿puedes?",null],
+ ["Por ejemplo abre Word",null],
+ ["¿Melodi puede abrir Word?",null],
+ ["Dijo: abre Word",null],
+ ["Abre \"Word\"",null],
+ ["Abre el proyecto de Word",null],
+ ["Abre Word en Casa",null],
+ ["Abre https://example.com",null]
+]

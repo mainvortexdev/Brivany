@@ -1,0 +1,19 @@
+{
+  "suite": "meta-prosody",
+  "started_at": "2026-11-02T03:57:32.900210+00:00",
+  "finished_at": "2026-11-02T03:57:34.936267+00:00",
+  "duration_seconds": 2.036057,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_meta_prosody"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "...................\r\n----------------------------------------------------------------------\r\nRan 19 tests in 1.353s\r\n\r\nOK\r\n"
+}

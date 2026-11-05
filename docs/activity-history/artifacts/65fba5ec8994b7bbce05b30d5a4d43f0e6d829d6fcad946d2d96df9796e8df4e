@@ -1,0 +1,59 @@
+{
+  "type": "production_local_timbre_reference_parity",
+  "provider_calls": 0,
+  "required_relative_logit_error": 0.001,
+  "passed": true,
+  "rows": [
+    {
+      "fixture": "masculine",
+      "relative_feature_l2": 2.6831730792764574e-07,
+      "reference_logit": -8.63563060760498,
+      "production_logit": -8.63563060760498,
+      "relative_logit_error": 0.0,
+      "production_result": {
+        "voice_timbre": "masculine",
+        "timbre_confidence": 0.999822,
+        "available": true,
+        "local_model": "syntropicsignal-ai/gender-voice-classifier@248c107",
+        "windows": 1,
+        "mixed": false,
+        "latency_ms": 12.91,
+        "female_style_probability": 0.000178
+      }
+    },
+    {
+      "fixture": "feminine",
+      "relative_feature_l2": 1.8337995300043985e-07,
+      "reference_logit": 9.570663452148438,
+      "production_logit": 9.570657730102539,
+      "relative_logit_error": 5.978734835935544e-07,
+      "production_result": {
+        "voice_timbre": "feminine",
+        "timbre_confidence": 0.99993,
+        "available": true,
+        "local_model": "syntropicsignal-ai/gender-voice-classifier@248c107",
+        "windows": 1,
+        "mixed": false,
+        "latency_ms": 9.53,
+        "female_style_probability": 0.99993
+      }
+    },
+    {
+      "fixture": "harmonic_tone",
+      "relative_feature_l2": 1.374388830299722e-06,
+      "reference_logit": -5.119687080383301,
+      "production_logit": -5.119686126708984,
+      "relative_logit_error": 1.862758995682311e-07,
+      "production_result": {
+        "voice_timbre": "masculine",
+        "timbre_confidence": 0.994058,
+        "available": true,
+        "local_model": "syntropicsignal-ai/gender-voice-classifier@248c107",
+        "windows": 1,
+        "mixed": false,
+        "latency_ms": 22.15,
+        "female_style_probability": 0.005942
+      }
+    }
+  ]
+}

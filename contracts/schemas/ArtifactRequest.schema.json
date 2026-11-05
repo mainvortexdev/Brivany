@@ -1,0 +1,47 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "file_name": {
+      "minLength": 1,
+      "pattern": "^[^/\\\\]+$",
+      "title": "File Name",
+      "type": "string"
+    },
+    "mime_type": {
+      "title": "Mime Type",
+      "type": "string"
+    },
+    "size_bytes": {
+      "maximum": 536870912,
+      "minimum": 1,
+      "title": "Size Bytes",
+      "type": "integer"
+    },
+    "sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Sha256",
+      "type": "string"
+    },
+    "purpose": {
+      "enum": [
+        "source",
+        "observation",
+        "exercise",
+        "result"
+      ],
+      "title": "Purpose",
+      "type": "string"
+    }
+  },
+  "required": [
+    "file_name",
+    "mime_type",
+    "size_bytes",
+    "sha256",
+    "purpose"
+  ],
+  "title": "ArtifactRequest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:ArtifactRequest:0.1.0"
+}

@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "native_window_title": "Brivany",
+  "source_mode": "bundled",
+  "bundle_verified": true,
+  "control_initially_disabled": true,
+  "new_preview_adapter_served": true,
+  "microphone_activated": false,
+  "provider_calls_by_check": 0
+}

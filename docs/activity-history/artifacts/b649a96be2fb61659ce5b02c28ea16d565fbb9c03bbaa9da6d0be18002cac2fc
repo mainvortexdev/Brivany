@@ -1,0 +1,28 @@
+{
+  "type": "real_isolated_brave_inline_sync_and_provider_voice_trial",
+  "passed": false,
+  "source_owned_synthetic": true,
+  "provider_trial_max_seconds": 28,
+  "billing_amount": null,
+  "user_profile_used": false,
+  "physical_listening_verified": false,
+  "cloning_enabled": false,
+  "error_message": null,
+  "cues": [
+    {
+      "speaker": 1,
+      "category": "masculine",
+      "source": 0.14,
+      "picture": 0.133333,
+      "rate": 1,
+      "duration": 2.08,
+      "played": 2.08,
+      "wall": 2.08529999999702,
+      "onset_ms": 8862,
+      "sync_error_ms": -7
+    }
+  ],
+  "no_new_window": true,
+  "browser_voice_played": 1,
+  "correct_speaker_sequence": false
+}

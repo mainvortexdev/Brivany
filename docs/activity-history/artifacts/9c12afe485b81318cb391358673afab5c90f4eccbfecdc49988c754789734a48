@@ -1,0 +1,21 @@
+{
+  "type": "actual_native_restart_and_local_extension_bootstrap_without_media",
+  "passed": true,
+  "workspace_bars": 1,
+  "bar_bounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1280,
+    "bottom": 40
+  },
+  "work_area": {
+    "left": 0,
+    "top": 40,
+    "right": 1280,
+    "bottom": 994
+  },
+  "loopback_bootstrap": true,
+  "audio_sent": false,
+  "provider_inference_started": false,
+  "token_persisted": false
+}

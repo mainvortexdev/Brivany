@@ -1,0 +1,126 @@
+{
+  "scope": "read-only local ledger integrity and saved verification report coverage; no test re-execution",
+  "records": 597,
+  "chain_valid": true,
+  "unique_evidence": 795,
+  "bad_evidence": [],
+  "test_results": {
+    "passed": 445,
+    "failed": 82
+  },
+  "verification_reports": 471,
+  "unregistered_verification_reports": [],
+  "recent": [
+    {
+      "id": "5750de5a-c529-4948-8747-ec4a7d8ee618",
+      "kind": "test",
+      "status": "passed",
+      "title": "Verificación · events",
+      "evidence_count": 1
+    },
+    {
+      "id": "516a04f4-e232-476a-951e-3be19c3d0bc3",
+      "kind": "test",
+      "status": "passed",
+      "title": "Verificación · computer",
+      "evidence_count": 1
+    },
+    {
+      "id": "d40d5e1b-3f06-4785-8c50-318dd61b544c",
+      "kind": "test",
+      "status": "passed",
+      "title": "Verificación · edits-mcp",
+      "evidence_count": 1
+    },
+    {
+      "id": "8b1b58f6-58fc-4b54-b6ea-3b709ba95d0a",
+      "kind": "test",
+      "status": "passed",
+      "title": "Verificación · work-events-ui",
+      "evidence_count": 1
+    },
+    {
+      "id": "6d7e1df0-8d24-4903-95c8-66e3b61e5b10",
+      "kind": "test",
+      "status": "passed",
+      "title": "Verificación · work",
+      "evidence_count": 1
+    },
+    {
+      "id": "19b4181c-e430-4acd-864e-e2b9f1709dc7",
+      "kind": "test",
+      "status": "passed",
+      "title": "Verificación · desktop",
+      "evidence_count": 1
+    },
+    {
+      "id": "63ad1ce6-dcb3-4bee-9a47-7b7a89f70e0f",
+      "kind": "test",
+      "status": "passed",
+      "title": "Verificación · work-events-ui",
+      "evidence_count": 1
+    },
+    {
+      "id": "90a92de2-c9dc-4ac6-8c5c-b61936921397",
+      "kind": "test",
+      "status": "failed",
+      "title": "Verificación · melodi-cartesia",
+      "evidence_count": 1
+    },
+    {
+      "id": "0e51accf-4e62-4504-abaa-e45f977cfd45",
+      "kind": "test",
+      "status": "passed",
+      "title": "Verificación · computer-images-agents",
+      "evidence_count": 1
+    },
+    {
+      "id": "81e2fe8b-1c19-4222-82b7-f551ec8755de",
+      "kind": "test",
+      "status": "passed",
+      "title": "Verificación · melodi-cartesia",
+      "evidence_count": 1
+    },
+    {
+      "id": "1c54dbb0-d543-4022-a8b5-487b39af66d4",
+      "kind": "test",
+      "status": "passed",
+      "title": "Verificación · computer",
+      "evidence_count": 1
+    },
+    {
+      "id": "ae731cbc-8269-4cc4-8078-702ebde4c681",
+      "kind": "test",
+      "status": "passed",
+      "title": "Edits MCP real y exportación sintética en perfil aislado",
+      "evidence_count": 2
+    },
+    {
+      "id": "3adcad9f-97d8-4696-9b91-7ee838da15f7",
+      "kind": "implementation",
+      "status": "implemented",
+      "title": "Melodi: Edits MCP, capacidades live, Work y esperas persistentes",
+      "evidence_count": 8
+    },
+    {
+      "id": "e8d83138-37d2-4764-8ab2-bee5683f65c3",
+      "kind": "test",
+      "status": "passed",
+      "title": "Work: ventana flotante Windows WebView2 real sin captura",
+      "evidence_count": 2
+    },
+    {
+      "id": "a03911dd-534c-48c6-a9e9-65d4c14e74a8",
+      "kind": "test",
+      "status": "passed",
+      "title": "Arranque de Brivany con Edits, Work y siete especialistas",
+      "evidence_count": 1
+    }
+  ],
+  "limits": [
+    "local unsigned ledger, not independent audit",
+    "existing records and local reports cannot prove undocumented earlier work",
+    "evidence integrity does not certify semantic quality"
+  ],
+  "external_calls": 0
+}

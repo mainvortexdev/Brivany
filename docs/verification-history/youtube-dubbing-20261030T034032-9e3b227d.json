@@ -1,0 +1,18 @@
+{
+  "suite": "youtube-dubbing",
+  "started_at": "2026-10-30T03:40:32.021535+00:00",
+  "finished_at": "2026-10-30T03:40:36.130456+00:00",
+  "duration_seconds": 4.108921,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_youtube_dubbing"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"checks\": [\r\n    \"YouTube is embedded from a validated manual link without playback, capture, microphone or provider activation\",\r\n    \"explicit start captures synthetic live tab PCM through the real local relay and plays translated PCM in a separate window\",\r\n    \"French changes in the existing stream and original/translation listening toggles without preprocessing or reopening the video\",\r\n    \"stop releases capture tracks and the local interface fits desktop and mobile widths\"\r\n  ],\r\n  \"scope\": \"Real local HTTP/WebSocket/AudioWorklet/AudioContext/MessageChannel with substituted YouTube API, capture picker and Palabra translation.\",\r\n  \"external_calls\": 0,\r\n  \"paid_inference\": false,\r\n  \"real_youtube_audio_capture_verified\": false,\r\n  \"physical_echo_isolation_verified\": false,\r\n  \"translation_quality_verified\": false,\r\n  \"audible_latency_verified\": false,\r\n  \"screenshots\": [\r\n    \"tmp/youtube-dubbing/live-translator-1440.png\",\r\n    \"tmp/youtube-dubbing/live-translator-390.png\"\r\n  ],\r\n  \"checked_at\": \"2026-10-30T03:40:35.692965+00:00\",\r\n  \"provider_received\": {\r\n    \"connections\": 1,\r\n    \"pcm_packets\": 7,\r\n    \"pcm_bytes\": 26880,\r\n    \"nonzero_pcm\": true,\r\n    \"source_languages\": [\r\n      \"en\",\r\n      \"en\"\r\n    ],\r\n    \"target_languages\": [\r\n      \"es\",\r\n      \"fr\"\r\n    ],\r\n    \"task_updates\": 1,\r\n    \"session_close_messages\": 0\r\n  },\r\n  \"provider_errors\": []\r\n}\r\n"
+}

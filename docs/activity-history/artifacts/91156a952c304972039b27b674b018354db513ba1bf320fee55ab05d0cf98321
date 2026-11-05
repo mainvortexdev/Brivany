@@ -1,0 +1,140 @@
+"""On-demand LRCLIB lyrics. Public track metadata only; no Spotify credentials.
+
+Bounded, serialized HTTPS requests, in-memory cache and provider backoff. Provider
+text is untrusted display data, never HTML, a prompt or an executable asset.
+"""
+from collections import OrderedDict
+import json
+import random
+import re
+import threading
+import time
+import unicodedata
+from urllib.parse import urlencode, quote
+from urllib.request import Request, build_opener, HTTPRedirectHandler, HTTPSHandler
+from urllib.error import HTTPError, URLError
+from services.spotify_tls import verified_context
+
+
+class LyricsError(ValueError): pass
+
+
+class NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self, *args, **kwargs): return None
+
+
+def transport(query):
+    return fetch('https://lrclib.net/api/get?' + urlencode(query))
+
+
+def fallback_transport(query):
+    return fetch('https://api.lyrics.ovh/v1/' + quote(query['artist_name'], safe='') + '/' + quote(query['track_name'], safe=''))
+
+
+def fetch(url):
+    request = Request(url, headers={
+        'Accept': 'application/json', 'User-Agent': 'BrivanyDesktop/0.1 (https://brivany.example)'})
+    try:
+        response = build_opener(NoRedirect(), HTTPSHandler(context=verified_context())).open(request, timeout=10)
+    except HTTPError as error: response = error
+    except (URLError, OSError): raise LyricsError('No se pudo consultar el proveedor de letras. Inténtalo más tarde.') from None
+    with response:
+        raw = response.read(262145)
+        if len(raw) > 262144: raise LyricsError('La respuesta de letras supera el tamaño permitido.')
+        try: data = json.loads(raw) if raw else {}
+        except (ValueError, UnicodeError): data = {}
+        return response.code, dict(response.headers), data
+
+
+def parse_lyrics(text):
+    if not isinstance(text, str) or len(text.encode('utf-8')) > 65536:
+        raise LyricsError('La letra supera el límite de 64 KB.')
+    rows = []; offset = 0
+    match = re.search(r'\[offset:([+-]?\d+)\]', text)
+    if match: offset = max(-60000, min(60000, int(match[1])))
+    for line in text.splitlines():
+        stamps = re.findall(r'\[(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?\]', line)
+        words = re.sub(r'\[[^\]]*\]', '', line).strip()
+        if len(words) > 2000: raise LyricsError('Una línea de la letra es demasiado larga.')
+        if stamps:
+            for minute, second, fraction in stamps:
+                if int(second) < 60:
+                    rows.append({'ms': max(0, int(minute)*60000 + int(second)*1000 + int((fraction+'000')[:3]) + offset), 'text': words})
+        elif words and not line.startswith('['): rows.append({'ms': None, 'text': words})
+        if len(rows) > 800: raise LyricsError('La letra supera las 800 líneas.')
+    synced = bool(rows) and all(row['ms'] is not None for row in rows)
+    if synced: rows.sort(key=lambda row: row['ms'])
+    return {'synced': synced, 'lines': rows}
+
+
+def normalized(text):
+    return ' '.join(unicodedata.normalize('NFKC', str(text)).casefold().split())
+
+
+class LyricsService:
+    def __init__(self, *, http=transport, clock=time.time, fallback_http=None):
+        self.http = http; self.clock = clock; self.lock = threading.Lock()
+        self.cache = OrderedDict(); self.next_request = 0
+        # A substituted primary transport never silently makes real fallback calls.
+        self.fallback_http = fallback_http or (fallback_transport if http is transport else None)
+        self.fallback_after = 0
+
+    def clear(self):
+        with self.lock: self.cache.clear()
+
+    def lookup(self, track):
+        identifier = track.get('id', '')
+        base = {'track_id': identifier, 'provider': 'LRCLIB', 'source_url': 'https://lrclib.net', 'synced': False, 'lines': []}
+        duration = track.get('duration_ms', 0) / 1000
+        if track.get('type') != 'track' or not identifier or not track.get('title') or not track.get('artist') or not 1 <= duration <= 3600:
+            return {**base, 'status': 'unavailable', 'message': 'No hay letra disponible para este contenido.'}
+        query = {'track_name': track['title'][:240], 'artist_name': track['artist'][:400], 'album_name': str(track.get('album', ''))[:240], 'duration': round(duration, 3)}
+        key = tuple(query.values())
+        with self.lock:
+            now = self.clock()
+            cached = self.cache.get(key)
+            if cached and cached[0] > now:
+                self.cache.move_to_end(key); return {**cached[1], 'track_id': identifier}
+            throttled = now < self.next_request
+            if not throttled: self.next_request = now + .5
+            try: code, headers, data = (429, {'Retry-After': str(max(1, int(self.next_request-now)))}, {}) if throttled else self.http(query)
+            except LyricsError as error:
+                result = {**base, 'status': 'error', 'message': str(error)}; ttl = 30
+            else:
+                if code in (429, 502, 503, 504):
+                    try: delay = max(1, min(86400, int(next((v for k,v in headers.items() if k.lower() == 'retry-after'), '60'))))
+                    except (ValueError, TypeError): delay = 60
+                    if not throttled: self.next_request = now + delay + random.uniform(0, delay * .3)
+                    result = {**base, 'status': 'retry', 'message': 'LRCLIB pide esperar. Inténtalo más tarde.'}; ttl = delay
+                elif code == 404:
+                    result = {**base, 'status': 'unavailable', 'message': 'LRCLIB no tiene una letra para esta versión.'}; ttl = 300
+                elif code != 200 or not isinstance(data, dict):
+                    result = {**base, 'status': 'error', 'message': 'LRCLIB no está disponible en este momento.'}; ttl = 30
+                else:
+                    try:
+                        matches = normalized(data.get('trackName')) == normalized(query['track_name']) and normalized(data.get('artistName')) == normalized(query['artist_name']) and abs(float(data.get('duration', -999)) - duration) <= 2.1
+                        if not matches: raise LyricsError('No se encontró una letra que coincida con esta versión.')
+                        parsed = parse_lyrics(data.get('syncedLyrics') or data.get('plainLyrics') or '')
+                        instrumental = data.get('instrumental') is True
+                        result = {**base, **parsed, 'status': 'instrumental' if instrumental else 'ready' if parsed['lines'] else 'unavailable', 'message': 'Pista instrumental.' if instrumental else ''}
+                        ttl = 3600
+                    except (LyricsError, ValueError, TypeError) as error:
+                        result = {**base, 'status': 'unavailable', 'message': str(error) if isinstance(error, LyricsError) else 'No se encontró una letra que coincida con esta versión.'}; ttl = 300
+            if result['status'] not in ('ready', 'instrumental') and self.fallback_http and now >= self.fallback_after:
+                self.fallback_after = now + .5
+                try:
+                    code, headers, data = self.fallback_http(query)
+                    if code in (429, 502, 503, 504):
+                        try: delay = max(30, min(86400, int(next((v for k,v in headers.items() if k.lower() == 'retry-after'), '60'))))
+                        except (ValueError, TypeError): delay = 60
+                        self.fallback_after = now + delay + random.uniform(0, delay * .3)
+                    if code == 200 and isinstance(data, dict) and data.get('lyrics'):
+                        parsed = parse_lyrics(data['lyrics'])
+                        # This API cannot verify the album/duration or supply timings.
+                        parsed = {'synced': False, 'lines': [{'ms': None, 'text': row['text']} for row in parsed['lines']]}
+                        if parsed['lines']:
+                            result = {**base, **parsed, 'status': 'ready', 'provider': 'Lyrics.ovh', 'source_url': 'https://lyrics.ovh', 'version_verified': False, 'message': ''}; ttl = 3600
+                except (LyricsError, ValueError, TypeError): pass
+            self.cache[key] = (now + ttl, result); self.cache.move_to_end(key)
+            while len(self.cache) > 32: self.cache.popitem(last=False)
+            return result

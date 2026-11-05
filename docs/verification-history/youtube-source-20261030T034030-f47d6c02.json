@@ -1,0 +1,17 @@
+{
+  "suite": "youtube-source",
+  "started_at": "2026-10-30T03:40:30.886095+00:00",
+  "finished_at": "2026-10-30T03:40:31.131470+00:00",
+  "duration_seconds": 0.245375,
+  "command": [
+    "node",
+    "--test",
+    "tests/youtube-source.test.cjs",
+    "tests/dub-audio-sink.test.cjs",
+    "tests/dub-tab-capture.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ client handshake requires exact popup, origin and random nonce; PCM transfers a copy (9.3822ms)\n✔ client cancellation before ready closes popup and rejects; blocked popup is actionable (4.1851ms)\n✔ client stop flushes generations, ignores late schedule and supports original volume (3.1466ms)\n✔ sink rejects wrong origin, wrong opener and nonce before constructing audio (8.0293ms)\n✔ autoplay denial asks for explicit activation and schedules no hidden audio (2.985ms)\n✔ sink queue is bounded, source gain capped and stop prevents stale language audio (7.9064ms)\n✔ translation-only flush keeps original monitoring sources and pending acknowledgement alive (5.7632ms)\n✔ capturing a monitor or another tab rejects before any audio processing and closes tracks (7.9438ms)\n✔ playback suppression must be observed rather than assumed from requested constraints (2.0972ms)\n✔ permission arriving after cancellation immediately releases every late track (1.905ms)\n✔ unsupported capture is actionable and never opens a provider connection (3.3503ms)\n✔ strict YouTube links normalize only a safe fixed video identity (4.3344ms)\n✔ constructing does not request YouTube or autoplay; explicit load creates origin-bound controlled iframe (4.7825ms)\n✔ normalized states and video errors cannot arrive from a destroyed old player (2.8985ms)\n✔ API loads only after explicit load and cancelled initialization never inserts a stale iframe (1.728ms)\nℹ tests 15\nℹ suites 0\nℹ pass 15\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 152.9282\n"
+}

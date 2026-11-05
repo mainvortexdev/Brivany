@@ -1,0 +1,93 @@
+{
+  "checked_at": "2026-10-28T12:13:39.281Z",
+  "status": "passed",
+  "provider": "Palabra",
+  "upstream": "real",
+  "api": "real_local",
+  "synthetic": true,
+  "source_sha256": "373acd421477dc7f1169151181f1d5dff3a6a3107ed70704c9ca894c74a46b38",
+  "video_sha256": "b52f79ef0a6eb4c48f18265025ab741d7400d07fc5461c67de6b84c69e37ca39",
+  "source_fixture": "two_distinct_clauses_260ms_energy_gap",
+  "fixture_regenerated_from_verified_source": true,
+  "target_audible_delay_ms": 500,
+  "physical_playback_measured": false,
+  "audible_delay_verified": false,
+  "external_calls": 1,
+  "maximum_sessions": 1,
+  "automatic_retries": 0,
+  "actual_billed_usd": null,
+  "output_timing_method": "same_audio_context_energy_windows_with_browser_device_timestamp_estimate",
+  "energy_window_ms": 20,
+  "energy_rms_threshold": 0.005,
+  "limitations": [
+    "One fixed synthetic source; no percentile, maximum guarantee, physical loopback or verified per-word semantic alignment.",
+    "The original reference is captured before its volume gain. Device output timestamps are estimates, and energy is not proof of intelligible translated speech."
+  ],
+  "timing": {
+    "scheduledBuffers": 122,
+    "microphoneRequests": 0,
+    "provider_settings": {
+      "only_confirm_by_silence": null,
+      "translate_partial_transcriptions": false
+    },
+    "segment_timing": {
+      "measurement": "provider_input_segment_offsets_and_scheduled_pcm_energy",
+      "audible_delay_verified": false,
+      "physical_playback_measured": false,
+      "correlated_segment_count": 1,
+      "identified_audio_segments": 2,
+      "uncorrelated_audio_segments": 1,
+      "silent_audio_segments": 0,
+      "unattributed_audio_chunks": 0,
+      "tracking_limited": false,
+      "input_clock_continuous": true,
+      "max_observed_onset_delay_ms": 3582.9999999999995,
+      "segments": [
+        {
+          "index": 1,
+          "source_start_seconds": 0,
+          "source_end_seconds": 2.56,
+          "translated_first_energy_context": 6.5056666666666665,
+          "onset_delay_ms": 3582.9999999999995,
+          "response_after_source_end_ms": 1022.9999999999997,
+          "tail_delay_ms": 3422.9999999999823,
+          "audio_segment_final": true
+        }
+      ]
+    },
+    "source": {
+      "first_energy_context": 3.022666666666667,
+      "last_energy_context": 6.282666666666668,
+      "record_start_context": 2.9226666666666667,
+      "record_end_context": 6.400000000000003,
+      "frames": 83456,
+      "window_ms": 20,
+      "rms_threshold": 0.005
+    },
+    "translation": {
+      "first_energy_context": 6.5056666666666665,
+      "last_energy_context": 11.045666666666603,
+      "record_start_context": 6.445666666666667,
+      "record_end_context": 11.246083333333265,
+      "frames": 115210,
+      "window_ms": 20,
+      "rms_threshold": 0.005
+    },
+    "onset_to_onset_ms": 3482.9999999999995,
+    "first_translation_after_last_source_energy_ms": 222.9999999999981,
+    "tail_to_tail_ms": 4762.999999999935,
+    "first_translation_after_source_file_end_ms": 105.66666666666347,
+    "audio_context_state": "running",
+    "device_timestamp_valid": true,
+    "base_latency_seconds": 0.01,
+    "output_latency_seconds": 0.07200000000000001,
+    "source_last_energy_device_estimate_ms": 6870.561666666669,
+    "translated_energy_device_estimate_ms": 7093.561666666667,
+    "device_clock_has_passed_first_energy": true
+  },
+  "estimated_onset_delay_within_target": false,
+  "first_translated_energy_before_final_source_energy": false,
+  "original_volume_percent": 0,
+  "translation_volume_percent": 85,
+  "final_caption": "Esta habitación tiene dos ventanas. La mesa está junto a la puerta."
+}

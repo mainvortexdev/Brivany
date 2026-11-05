@@ -1,0 +1,74 @@
+[
+  {
+    "bodyFont": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+    "h1": "Un espacio paralo que quieres crear.",
+    "legalLinks": 4,
+    "overflow": false,
+    "path": "/",
+    "width": 320
+  },
+  {
+    "bodyFont": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+    "h1": "Política de privacidad",
+    "legalLinks": 4,
+    "overflow": false,
+    "path": "/privacidad",
+    "width": 320
+  },
+  {
+    "bodyFont": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+    "h1": "Condiciones de uso",
+    "legalLinks": 5,
+    "overflow": false,
+    "path": "/condiciones",
+    "width": 320
+  },
+  {
+    "bodyFont": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+    "h1": "Un espacio paralo que quieres crear.",
+    "legalLinks": 4,
+    "overflow": false,
+    "path": "/",
+    "width": 768
+  },
+  {
+    "bodyFont": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+    "h1": "Política de privacidad",
+    "legalLinks": 4,
+    "overflow": false,
+    "path": "/privacidad",
+    "width": 768
+  },
+  {
+    "bodyFont": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+    "h1": "Condiciones de uso",
+    "legalLinks": 5,
+    "overflow": false,
+    "path": "/condiciones",
+    "width": 768
+  },
+  {
+    "bodyFont": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+    "h1": "Un espacio paralo que quieres crear.",
+    "legalLinks": 4,
+    "overflow": false,
+    "path": "/",
+    "width": 1280
+  },
+  {
+    "bodyFont": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+    "h1": "Política de privacidad",
+    "legalLinks": 4,
+    "overflow": false,
+    "path": "/privacidad",
+    "width": 1280
+  },
+  {
+    "bodyFont": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+    "h1": "Condiciones de uso",
+    "legalLinks": 5,
+    "overflow": false,
+    "path": "/condiciones",
+    "width": 1280
+  }
+]

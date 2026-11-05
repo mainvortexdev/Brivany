@@ -1,0 +1,52 @@
+{
+  "name": "three",
+  "version": "0.180.0",
+  "license": "MIT",
+  "source": "https://registry.npmjs.org/three/-/three-0.180.0.tgz",
+  "npm_integrity": "sha512-o+qycAMZrh+TsE01GqWUxUIKR1AL0S8pq7zDkYOQw8GqfX8b8VoCKYUoHbhiX5j+7hr8XsuHDVU6+gkQJQKg9w==",
+  "local_change": "Addon bare imports resolve to local /vendor/three/three.module.js; no runtime CDN",
+  "files": [
+    {
+      "source": "build/three.module.js",
+      "path": "three.module.js",
+      "sha256": "9e06b55afc5c845ad8663d0dba7dc8f4e815c218bedae8a9917fac5972e5314f",
+      "source_sha256": "c8211c69345d2e9949dc7a8ac969380497aa0600a5a8ac6a459c8cd02dd9cb8a"
+    },
+    {
+      "source": "build/three.core.js",
+      "path": "three.core.js",
+      "sha256": "7c075bd6b2414b6c4ed4b3416b180df2984051118c2b89965de066ce99307f1c",
+      "source_sha256": "eb077d2417f61d3e6d9264c317cabc4ea35769ed6b0ab533067292a550784c20"
+    },
+    {
+      "source": "examples/jsm/controls/OrbitControls.js",
+      "path": "addons/controls/OrbitControls.js",
+      "sha256": "9191a339db246e4cf8253fd147647fb62d8d4dc421e8132ca21e7432086b4f3a",
+      "source_sha256": "b97879c748170baadeb3fb84cea1ffdf4674e283dc06042f34e2acb95a76042c"
+    },
+    {
+      "source": "examples/jsm/controls/TransformControls.js",
+      "path": "addons/controls/TransformControls.js",
+      "sha256": "71c876485a39a9c90543141894e46231820351b7d3c8b6a9a8c569eb67869aed",
+      "source_sha256": "621fb8894c0f748c2be2a6ff8a6bdd72c18a22b24ddfe21d506514544df5c84e"
+    },
+    {
+      "source": "examples/jsm/loaders/GLTFLoader.js",
+      "path": "addons/loaders/GLTFLoader.js",
+      "sha256": "a47711f24ea35cbdd547714f820aa6cb0c1bc5d4af7758ba4c4928b649adb81b",
+      "source_sha256": "67ac5551fdafa6e349bd80c8f8e5e39c136d6b2fb1ad647db9abb21dc86f9e4a"
+    },
+    {
+      "source": "examples/jsm/utils/BufferGeometryUtils.js",
+      "path": "addons/utils/BufferGeometryUtils.js",
+      "sha256": "074f6b7856312b0666c7bc70268326b554911417a4a059ab51fd63c6bf9829bd",
+      "source_sha256": "fda7e946b8e0b5ab39b779206589e7a1079a22eb24efb89d7223e03fdfb1f751"
+    },
+    {
+      "source": "LICENSE",
+      "path": "LICENSE",
+      "sha256": "df2a91696186fe58c92518a25d48bc59c8ee2edc7cac9ca6d19a5a0d599a2a05",
+      "source_sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
+    }
+  ]
+}

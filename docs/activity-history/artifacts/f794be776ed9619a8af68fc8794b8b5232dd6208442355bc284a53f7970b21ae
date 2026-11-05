@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "real_paint": true,
+  "real_meta": true,
+  "billing_usd": null,
+  "planned_actions": [
+    "paint_text"
+  ],
+  "executor_errors": [],
+  "state": "succeeded",
+  "phase": "El texto está en un cuadro de texto activo de Paint.",
+  "paint_window_verified": true,
+  "native_input": true,
+  "editor_read_back": true,
+  "editable_text_box": true,
+  "window_handle": "3998772",
+  "process_id": 5264,
+  "provider_requests": 3,
+  "elapsed_seconds": 58.0
+}

@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "checks": [
+    "compact top-edge Mini Melodi and keyboard-safe inert content",
+    "proximity opens; premature exit waits; re-entry cancels collapse; sustained exit closes",
+    "occasional gaze follows a substituted coarse cursor direction and returns to center",
+    "three native size presets, transparency control and four tabs",
+    "real-state contract: running, completed, live and translation offer",
+    "audio consent preserved; start does not capture",
+    "five viewports: bounds, readable navigation and panel scrolling",
+    "clearly labelled animation preview without agent dispatch",
+    "Escape collapse and reduced-motion support"
+  ],
+  "native_bridge": "substituted",
+  "providers": "not called",
+  "physical_audio_verified": false,
+  "external_calls": 0,
+  "errors": []
+}

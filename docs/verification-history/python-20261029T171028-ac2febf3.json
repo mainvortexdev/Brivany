@@ -1,0 +1,21 @@
+{
+  "suite": "python",
+  "started_at": "2026-10-29T17:10:28.607390+00:00",
+  "finished_at": "2026-10-29T17:12:42.543670+00:00",
+  "duration_seconds": 133.93628,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "...................................................................................F..................................................................................................................................................................................................................................................................................................................................................................................................................................................................\r\n======================================================================\r\nFAIL: test_wall_deadline_sends_stream_end_without_more_client_messages (test_gemini_dubbing.GeminiDubbingTests.test_wall_deadline_sends_stream_end_without_more_client_messages)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_gemini_dubbing.py\", line 715, in test_wall_deadline_sends_stream_end_without_more_client_messages\r\n    self.with_relay(upstream, body)\r\n  File \"<local-path>\\tests\\test_gemini_dubbing.py\", line 63, in with_relay\r\n    body(bridge)\r\n  File \"<local-path>\\tests\\test_gemini_dubbing.py\", line 710, in body\r\n    self.assertTrue(ended.is_set())\r\nAssertionError: False is not true\r\n\r\n----------------------------------------------------------------------\r\nRan 534 tests in 132.837s\r\n\r\nFAILED (failures=1)\r\n"
+}

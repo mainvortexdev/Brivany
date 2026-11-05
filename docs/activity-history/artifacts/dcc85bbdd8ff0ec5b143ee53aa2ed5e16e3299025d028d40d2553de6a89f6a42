@@ -1,0 +1,88 @@
+{
+  "status": "failed",
+  "checks": {
+    "multi_track_queue": {
+      "passed": true,
+      "queued_distinct": 20
+    }
+  },
+  "screen_audio_capture": false,
+  "cost": "No paid inference; API/SDK/CDN cost not measured.",
+  "error": "No se confirmó el control en el estado real.",
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/v1/me/player",
+      "code": 200,
+      "ms": 531
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 140
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/tracks",
+      "code": 200,
+      "ms": 625
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 141
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 531
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player",
+      "code": 204,
+      "ms": 203
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/currently-playing",
+      "code": 204,
+      "ms": 172
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200,
+      "ms": 157
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/recently-played",
+      "code": 200,
+      "ms": 406
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/play",
+      "code": 204,
+      "ms": 437
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/shuffle",
+      "code": 200,
+      "ms": 703
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/repeat",
+      "code": 200,
+      "ms": 453
+    }
+  ],
+  "known_native_api_calls": 12,
+  "sdk_network_calls": "not measured"
+}

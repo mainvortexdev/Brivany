@@ -1,0 +1,24 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/terminal-ide-real/native-20261101T191752.json",
+  "original_sha256": "bb754283403383246492e27532ba8286a49be284c136a98d18944780cb20f15a",
+  "new_test_execution": false,
+  "reported_result": "pending",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "success": false
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": 1,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "status": "passed",
+  "checked_at": "2026-10-29T22:40:24.299619+00:00",
+  "scope": "Exploratory local product-service journeys in disposable folders, not market demand or human usability validation.",
+  "cases": [
+    {
+      "id": "N01",
+      "use": "Planificar una mudanza o una sala para un evento",
+      "result": "probado_local",
+      "observation": "Dos distribuciones, aplicar y deshacer conservan objetos e historial.",
+      "limits": "No comprueba espacio de paso, accesibilidad física ni medidas reales."
+    },
+    {
+      "id": "N02",
+      "use": "Catálogo de colección o pequeño museo privado",
+      "result": "probado_local",
+      "observation": "Punto de interés y ficha sobreviven al proyecto portátil y a un respaldo/restauración reales.",
+      "limits": "Sin audio guía curada, digitalización fotorealista, derechos de colección o enlaces públicos verificados."
+    },
+    {
+      "id": "N03",
+      "use": "Diario de obra, estudio o mantenimiento",
+      "result": "probado_local",
+      "observation": "Comando tipado prepara una nota; sólo se guarda tras confirmación local y persiste al reabrir.",
+      "limits": "Sin cuenta WhatsApp ni dictado real. La nota no certifica que el trabajo se realizó."
+    },
+    {
+      "id": "N04",
+      "use": "Guardar apuntes externos que contienen instrucciones o etiquetas",
+      "result": "probado_local",
+      "observation": "Se conserva como cuerpo de nota, sin reinterpretarlo como herramienta. El render de texto inerte se verifica en personal-ui.",
+      "limits": "Esta prueba de servicio no ejecuta HTML ni evalúa aislamiento frente a código local malicioso."
+    },
+    {
+      "id": "N05",
+      "use": "Asistente con permisos ausentes o retirados",
+      "result": "probado_local",
+      "observation": "Falta de grant impide consultar Drive y no consume la aprobación; cero HTTP a cuentas.",
+      "limits": "Retirada real de un permiso en Google, su propagación y renovación siguen pendientes de cuenta."
+    },
+    {
+      "id": "N06",
+      "use": "Checklist de viaje o preparación de equipo",
+      "result": "probado_local",
+      "observation": "Nota y recordatorio vencido se conservan localmente sin un proveedor ni worker.",
+      "limits": "Requiere abrir Brivany; no hay alarma con la aplicación cerrada ni entrega WhatsApp comprobada."
+    }
+  ],
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "model_inference": false,
+  "real_account_access": false
+}

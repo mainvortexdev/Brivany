@@ -1,0 +1,96 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "verification_id": {
+      "format": "uuid",
+      "title": "Verification Id",
+      "type": "string"
+    },
+    "workspace_id": {
+      "format": "uuid",
+      "title": "Workspace Id",
+      "type": "string"
+    },
+    "session_id": {
+      "format": "uuid",
+      "title": "Session Id",
+      "type": "string"
+    },
+    "step_id": {
+      "maxLength": 120,
+      "pattern": "^[a-z][a-z0-9_.-]*$",
+      "title": "Step Id",
+      "type": "string"
+    },
+    "attempt": {
+      "minimum": 1,
+      "title": "Attempt",
+      "type": "integer"
+    },
+    "check_id": {
+      "maxLength": 120,
+      "pattern": "^[a-z][a-z0-9_.-]*$",
+      "title": "Check Id",
+      "type": "string"
+    },
+    "evaluator_kind": {
+      "enum": [
+        "deterministic",
+        "visual",
+        "expert"
+      ],
+      "title": "Evaluator Kind",
+      "type": "string"
+    },
+    "evaluator_version": {
+      "title": "Evaluator Version",
+      "type": "string"
+    },
+    "verdict": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "UNKNOWN",
+        "NEEDS_REVIEW"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    },
+    "evidence_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Evidence Ids",
+      "type": "array"
+    },
+    "reason": {
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "verified_at": {
+      "format": "date-time",
+      "title": "Verified At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "verification_id",
+    "workspace_id",
+    "session_id",
+    "step_id",
+    "attempt",
+    "check_id",
+    "evaluator_kind",
+    "evaluator_version",
+    "verdict",
+    "evidence_ids",
+    "reason",
+    "verified_at"
+  ],
+  "title": "Verification",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:Verification:0.1.0"
+}

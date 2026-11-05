@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-10-31T03:41:44.903166+00:00",
+  "finished_at": "2026-10-31T03:42:00.313791+00:00",
+  "duration_seconds": 15.410625,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "AssertionError [ERR_ASSERTION]: Clipped controls 280x240 more\n+ actual - expected\n\n+ [\n+   'Servicios ↗'\n+ ]\n- []\n\n    at <local-path>\\tools\\check_island_ui.cjs:44:236\n"
+}

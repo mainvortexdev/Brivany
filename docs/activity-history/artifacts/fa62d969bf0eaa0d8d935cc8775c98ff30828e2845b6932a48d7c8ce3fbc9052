@@ -1,0 +1,87 @@
+{
+  "type": "retrospective_transport_comparison_audit",
+  "reviewed_at": "2026-11-04T17:04:13.848773+00:00",
+  "report": "tmp/selected-video/inline-sync-1793811652292.json",
+  "terminal_bank_report": "tmp/selected-video/lab-consumption-49200-053.json",
+  "prior_report": "tmp/selected-video/inline-sync-1793810199055.json",
+  "new_provider_inference_requests_during_review": 0,
+  "accepted": false,
+  "completed_voices_with_signal": 6,
+  "completed_source_end_ms": 12460,
+  "source_capture_anchor_ms": 304167,
+  "prior_source_capture_anchor_ms": 305472,
+  "identical_source_intervals": false,
+  "completed_voice_sync_error_ms_range": [
+    -21,
+    13
+  ],
+  "activation_to_first_signal_ms": 9479,
+  "activation_to_first_picture_ms": 5625,
+  "production_audio_diagnostics": {
+    "signaled_voices": 6,
+    "completed_voice_count": 6,
+    "completed_voices_with_signal": 6,
+    "first_signal_after_capture_ms": 8226.09999999404
+  },
+  "recorder_gap_recoveries_persisted": false,
+  "actual_gap_recovery_proven": false,
+  "media_lag": {
+    "initial_seconds": 4.288,
+    "maximum_seconds": 8.341333000000002,
+    "final_seconds": 8.304,
+    "maximum_growth_seconds": 4.053333000000002
+  },
+  "continuity_quality": {
+    "maximum_nonsong_fallback_seconds": 1,
+    "maximum_allowed_lag_seconds": 8,
+    "maximum_observed_lag_seconds": 8.341333000000002,
+    "maximum_allowed_lag_growth_seconds": 3,
+    "maximum_observed_lag_growth_seconds": 4.053333000000002,
+    "observed_nonsong_fallback_seconds": 0,
+    "verified_source_end_ms": 12460,
+    "unplayed_published_cues": 0,
+    "missing_intervals": [],
+    "passed": false
+  },
+  "first_mt_elapsed_ms": 3472,
+  "second_mt_elapsed_ms": 2981,
+  "tls_causality_proven": false,
+  "observed_consumption": {
+    "pipeline_ready_events_observed": 1,
+    "muse_live_input_started": 1,
+    "muse_live_session_acks_observed": 1,
+    "prefix_mt_attempts_observed": 0,
+    "live_mt_attempts_observed": 10,
+    "prefix_tts_requests_observed": 0,
+    "live_tts_requests_observed": 9,
+    "live_prosody_stages_started": 7,
+    "billing_amount": null,
+    "relay_sessions_started": 1,
+    "prefix_preparations_started": 0,
+    "prefix_muse_batch_attempts": 0,
+    "prefix_meta_prosody_attempts": 0,
+    "live_meta_prosody_attempts": 7,
+    "meta_caption_prefetch_attempts": 1
+  },
+  "billing_amount": null,
+  "remote_gpu_seconds": null,
+  "uncertain_short_turn": {
+    "source_start_ms": 7660,
+    "source_end_ms": 8540,
+    "category": "feminine",
+    "voice_timbre": "uncertain",
+    "timbre_confidence": 0,
+    "timbre_source": "register_fallback",
+    "voice_category_provisional": false,
+    "semantic_speaker_reference_available": false
+  },
+  "physical_listening_verified": false,
+  "public_speaker_match_verified": false,
+  "limits": [
+    "different_actual_anchors_and_asr_pieces",
+    "provider_variation_not_controlled",
+    "deep_trial_without_prefix",
+    "no_physical_listening",
+    "no_full_video_coverage"
+  ]
+}

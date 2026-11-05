@@ -1,0 +1,125 @@
+# Observación mediante el enlace normal de Work
+
+Se añade `tools/personal_translation_lab.py` para observar una sesión de la
+extensión ya instalada usando `SyncRelay.request_video()`. No navega, instala,
+recarga ni consulta páginas internas del navegador. Debe poseer exclusivamente
+`127.0.0.1:48217`: si está ocupado, termina sin detener procesos ni cambiar de
+puerto. La operación de escritorio que estaba usando ese puerto se gestiona
+aparte y se restaura al terminar el ensayo.
+
+El argumento `--allow-paid` es obligatorio. Los proveedores solo se habilitan
+tras un `POST /api/run` local, durante una observación de entre 10 y 120 segundos.
+El banco permite una sesión y una preparación inicial como máximo; no produce
+reintentos de ensayo automáticos. Al iniciar solicita el video activo mediante
+el canal normal de Work. Este recorrido no demuestra que el prefijo estuviera
+preparado antes de la activación.
+
+`POST /api/observe` acepta solo el esquema enumerado de métricas numéricas del
+reproductor: relojes, contadores y hasta 32 voces completas. Rechaza campos extra,
+versiones distintas, tiempos incoherentes y voces que no coincidan con los
+intervalos, categoría, hablante y provisionalidad enviados por el backend.
+El control HTTP exige Host y Origin locales exactos. No se guardan PCM,
+transcripciones ni tokens; los contadores de bytes son cantidades, no audio.
+
+Las métricas aportadas por una observación no acreditan por sí solas la identidad
+real del video, su correspondencia humana de hablantes, escucha física ni
+continuidad completa. El informe conserva estos límites y no emite una aprobación
+global de calidad. El importe del proveedor queda desconocido hasta disponer de
+su facturación.
+
+## Comprobación local
+
+`tests/test_personal_translation_lab.py`: 11 pruebas aprobadas con FakeRelay y
+HTTP de bucle local. Verifican el opt-in, los plazos, la única solicitud normal,
+el rechazo de puerto ocupado, saneamiento, correlación de voces, Origin/Host y
+ausencia de consumo antes de activar. No se inició una sesión con proveedores ni
+se automatizó un navegador en esta comprobación.
+
+La primera invocación con el Python global no pudo importar pydantic. Se usó el
+entorno `.venv` del proyecto. Una aserción inicial buscaba la palabra `pcm` en
+todo el informe y confundía el contador `input_pcm_bytes` con contenido; se
+corrigió para comprobar la ausencia de la clave de audio y de su valor.
+La ejecución posterior aprobó las 11 pruebas. Estas comprobaciones locales no
+certifican el recorrido real con el perfil personal.
+
+Ejemplo para el operador del ensayo, con el puerto de Work previamente libre:
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.personal_translation_lab --allow-paid --port 49199 --seconds 60 --connect-timeout 20 --target en
+```
+
+La página local presenta el botón de inicio. El ensayo real y sus resultados se
+registran por separado de estas pruebas sustituidas.
+
+## Corrección posterior: selección reconocida sin captura
+
+El informe real `personal-sync-1793811452177586100.json` conservó 60 segundos de
+observación, cero sesiones de traducción, cero bytes PCM y cero voces enviadas.
+Terminó con `frontend_unverified`. El informe no contiene mediciones del
+reproductor y no demuestra la causa por la que no empezó la captura. Se preserva
+sin reescribirlo; tampoco demuestra reproducción traducida ni su calidad.
+
+Se añade el resultado más preciso `capture_not_started` cuando termina el plazo
+sin haber abierto una sesión ni recibido PCM. Un error previo, rechazo de
+selección o parada explícita conserva su propio resultado. Los informes nuevos
+separan cinco hechos: canal Work observado conectado, solicitud intentada,
+selección reconocida por la extensión, puente de captura abierto y recepción de
+PCM. La solicitud intentada no se presenta como prueba de envío efectivo ni su
+reconocimiento como prueba de captura.
+
+La página personal indica «posición actual en Brave» y que el inicio está por
+medir. El iframe sigue siendo una referencia; su posición no establece el punto
+del ensayo en la pestaña real. La identidad de fuente continúa sin certificarse
+por el banco.
+
+Las 14 pruebas locales posteriores aprobaron, incluyendo la diferencia entre
+selección rechazada, selección reconocida sin captura y captura iniciada sin
+mediciones de reproducción, además del texto de la página personal. Se usaron
+FakeRelay y HTTP local, sin llamadas a proveedores ni control de navegador. El
+informe real anterior y su importe desconocido no se convierten en una prueba
+aprobada por esta corrección local.
+
+## Continuación 053: solicitud aceptada sin inicio de captura
+
+El 4 de noviembre se ejecutó un ensayo real desde el banco 49199, por el
+canal normal `SyncRelay.request_video()` en `127.0.0.1:48217`. Su ventana de
+60 s fue de **16:56:32,160 a 16:57:32,177 UTC**. El informe
+`tmp/selected-video/personal-sync-1793811452177586100.json` terminó con
+`passed=false` y `error_code=frontend_unverified`.
+
+Las lecturas separadas del video personal de YouTube lo situaron primero
+pausado en 307,526 s y después reproduciendo en 336,077 s, con `readyState=4`
+y duración de 1495,781 s. Son observaciones puntuales, no una medición de
+sesenta segundos continuos de reproducción. Work figuraba conectado y la
+selección se aceptó, pero no aparecieron la marca de captura ni la marca
+de versión del prefijo. El banco no recibió métricas del reproductor. Por
+ello conserva `source_identity_verified=false`: las lecturas externas no
+se sustituyen por una correlación de identidad ausente en su informe.
+
+No empezó ninguna sesión de relay de traducción ni preparación del prefijo.
+Se recibieron **cero bytes PCM**, cero eventos del backend y cero voces. Todos
+los contadores enumerados de intentos de Muse, MT directo, MT anticipado de
+subtítulos, prosodia y TTS quedaron en cero. Esto acredita que esos proveedores
+no se iniciaron en el recorrido observado; no mide el tráfico de YouTube ni
+el consumo externo total del ordenador. El importe permanece desconocido en
+el informe y no se convierte en una factura de coste cero.
+
+La aceptación de la selección no acredita que el módulo de traducción se
+cargara o que comenzara la captura. La causa exacta del fallo de carga todavía
+no se ha demostrado. La siguiente corrección propuesta es esperar una
+confirmación explícita del módulo antes de anunciar el inicio; al anotar este
+ensayo esa corrección está pendiente y no se presenta como implementada.
+El resultado tampoco demuestra funcionamiento del prefijo, omisión de
+canciones, hablantes, sincronía, señal traducida o escucha física.
+
+Se preparó además una nueva instantánea de veinte archivos del paquete 0.4.8,
+con los permisos declarados conservados en las copias de distribución. La
+evidencia `tmp/selected-video/package-048-observability-053.json` registra sus
+hashes y declara `browser_worker_reload_verified=false`. Es integridad de
+archivos, no evidencia de que Brave ejecutara esos archivos. No se intentó
+ni se certifica una recarga del trabajador instalado en este ensayo.
+
+La revisión retrospectiva y la anotación de estos resultados no ejecutaron
+nuevas inferencias. Se guardan sólo métricas y documentos, sin PCM, video,
+transcripciones ni credenciales originales. El fallo queda abierto para
+comprobar el arranque real del módulo antes de otra prueba de calidad.

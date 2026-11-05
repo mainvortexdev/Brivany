@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "checks": [
+    "exactly three controls",
+    "manual link loads without capture or autoplay",
+    "Spanish English French selection",
+    "real AudioWorklet sends 80 ms frames through loopback Muse, Meta Spark SSE and Cartesia WS",
+    "French tokens reach captions",
+    "stop pauses source and releases capture",
+    "daily reservation displayed",
+    "known 403 blocks paid pipeline",
+    "desktop and 390px mobile fit"
+  ],
+  "external_calls": 0,
+  "paid_inference": false,
+  "real_youtube_verified": false,
+  "physical_output_verified": false,
+  "translation_quality_verified": false,
+  "errors": [],
+  "upstream_counts": {
+    "muse": 1,
+    "cartesia": 1,
+    "meta": 2,
+    "tts_messages": 4,
+    "cancel": 1
+  },
+  "all_mixers_closed": true
+}

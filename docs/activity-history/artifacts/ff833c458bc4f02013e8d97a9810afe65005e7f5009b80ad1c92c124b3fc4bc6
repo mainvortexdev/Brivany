@@ -1,0 +1,19 @@
+{
+  "suite": "application-learning",
+  "started_at": "2026-11-03T23:16:07.682006+00:00",
+  "finished_at": "2026-11-03T23:16:09.971132+00:00",
+  "duration_seconds": 2.289126,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_application_memory"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "....\r\n----------------------------------------------------------------------\r\nRan 4 tests in 0.891s\r\n\r\nOK\r\n"
+}

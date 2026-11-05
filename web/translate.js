@@ -1,0 +1,130 @@
+'use strict';
+(()=>{
+  const $=id=>document.getElementById(id),languages=['es','en','fr'],labels={es:'Español',en:'English',fr:'Français'};
+  let target='es',status=null,current=null,epoch=0,loadTimer=null,loading=0,sourceKind='youtube',waitingForRelease=false,releaseDeadline=0,releaseTimer=null;
+  const activeSource=()=>sourceKind==='file'?localSource:youtube;
+  const pauseSource=()=>activeSource().pause();
+  const note=(text,error=false)=>{$('status').textContent=text;$('status').dataset.error=String(error);};
+  const controls=()=>{$('start').disabled=Boolean(current) || waitingForRelease || !activeSource().ready || !status?.available;$('stop').disabled=!current && activeSource().state!=='playing';$('youtube-url').disabled=Boolean(current);$('source-kind').disabled=Boolean(current);$('video-file').disabled=Boolean(current);};
+  function sourceState(event){if(current?.streaming && event.state==='ended')finish();else if(current?.streaming && event.state==='paused' && !current.flowPaused)stop('Video pausado. Traducción y sonido cerrados.');controls();}
+  const localSource=new BrivanyVideoFileSource($('local-video'),{onReady:()=>{note('Video preparado. La traducción continuará hasta detenerla o terminar el video.');controls();},onStateChange:sourceState,onError:error=>stop(error.message,true)});
+  const youtube=new BrivanyYouTubeSource.YouTubeSource($('youtube-player'),{
+    onReady:()=>{$('video-state').textContent='Video preparado';if(status?.access_blocked)refresh();else note('Listo. La traducción continuará hasta detenerla o terminar el video.');controls();},
+    onError:error=>stop(error.message,true),
+    onStateChange:sourceState,
+    onAutoplayBlocked:()=>stop('YouTube bloqueó el inicio. Reproduce el video desde sus controles y vuelve a iniciar.',true)
+  });
+  async function refresh(preserveNotice=false){
+    try{const response=await fetch('/api/dubbing/status',{cache:'no-store',signal:AbortSignal.timeout(4000)});if(!response.ok)throw Error();status=await response.json();
+      waitingForRelease=status.busy===true;clearTimeout(releaseTimer);
+      if(waitingForRelease && !current && performance.now()<releaseDeadline)releaseTimer=setTimeout(()=>refresh(true),250);
+      if(preserveNotice){controls();return;}
+      if(status.model_blocked)note('El modelo de traducción no está disponible en tu cuenta Meta. Inicio bloqueado para evitar consumo inútil.',true);
+      else if(status.access_blocked){const failed=Object.entries(status.access_checks).find(([,check])=>check.access===false);note(failed[0]+' rechazó el acceso (HTTP '+(failed[1].http_status || 'sin respuesta')+'). Inicio bloqueado para evitar consumo inútil.',true);}
+      else if(!status.configured)note('Falta configurar una de las APIs en el servidor.',true);
+      else if(!status.native_output.available)note('No se encontró salida de audio Windows en este ordenador.',true);
+      else if(status.busy)note('Hay una traducción cerrándose o activa en otra pestaña. Detén esa sesión antes de iniciar.');
+      else if(!activeSource().ready)note(sourceKind==='file'?'Abre un video de este equipo para comenzar.':'Pega un enlace de YouTube para preparar tu video.');
+    }catch{status=null;note('No se pudo conectar al servidor local.',true);}controls();
+  }
+  async function load(){
+    clearTimeout(loadTimer);const value=$('youtube-url').value.trim();if(!value)return;
+    try{BrivanyYouTubeSource.parseYouTubeUrl(value);}catch(error){note(error.message,true);return;}
+    stop();const sequence=++loading;note('Preparando YouTube…');$('video-state').textContent='Cargando';
+    try{await youtube.loadUrl(value);}catch(error){if(sequence===loading)note(error.message,true);}controls();
+  }
+  function stop(message='Todo detenido. Para continuar debes iniciar de nuevo.',error=false){
+    ++epoch;const old=current;current=null;
+    if(old){waitingForRelease=true;releaseDeadline=performance.now()+10000;old.controller.abort();clearInterval(old.timer);clearTimeout(old.setupTimer);old.capture?.stop();
+      if(old.socket?.readyState===WebSocket.OPEN)try{old.socket.send(JSON.stringify({type:'stop'}));}catch{}
+      old.socket?.close();old.pending=null;
+    }
+    pauseSource();$('session-clock').textContent='Hasta que lo detengas';note(message,error);controls();
+    if(old)refresh(true);
+  }
+  async function start(){
+    if(current || waitingForRelease || !status?.available || !activeSource().ready)return;
+    const session={id:++epoch,controller:new AbortController(),capture:null,socket:null,pending:null,streaming:false};current=session;controls();
+    $('caption').textContent='Escuchando…';$('original').textContent='';$('segments').textContent='0';$('latency').textContent='Sin medir';$('voice-style').textContent='Por escuchar';
+    note(sourceKind==='file'?'Preparando el audio del video local…':'Elige esta pestaña de Brivany y activa «Compartir audio».');
+    try{
+      // Start the capture picker in the user gesture. Do not open paid providers until capture and playback are confirmed.
+      session.capture=await (sourceKind==='file'?localSource.openAudio.bind(localSource):BrivanyTabAudio.openTabAudio)({signal:session.controller.signal,
+        onEnded:()=>{if(current===session)stop('Dejaste de compartir. Todo el sonido y la traducción se detuvieron.');},
+        onPcm:event=>{
+          if(current!==session || !session.streaming || event.type!=='pcm' || event.generation!==session.id)return;
+          const bytes=new Uint8Array(event.buffer);
+          if(!session.pending){session.pending=bytes;return;}
+          const combined=new Uint8Array(session.pending.length+bytes.length);combined.set(session.pending);combined.set(bytes,session.pending.length);session.pending=null;
+          if(combined.byteLength!==3840 || session.socket.readyState!==WebSocket.OPEN || session.socket.bufferedAmount>15360){stop('El audio se atrasó. Sesión detenida sin reconectar.',true);return;}
+          session.socket.send(combined.buffer);
+        }});
+      if(current!==session){session.capture.stop();return;}
+      const mix=session.capture.configureOriginal(0);activeSource().setVolume(mix.playerVolume);
+      await activeSource().playConfirmed();
+      if(current!==session)return;
+      pauseSource();
+      note('Conectando Muse, Meta Spark y Cartesia…');
+      const socket=new WebSocket(status.websocket_url);session.socket=socket;
+      session.setupTimer=setTimeout(()=>{if(current===session)stop('La conexión tardó demasiado. No se reintentó.',true);},16000);
+      socket.onopen=()=>{if(current!==session){socket.close();return;}socket.send(JSON.stringify({type:'start',consent:true,target_language:target,original_gain:mix.nativeOriginalGain,voice_mode:$('voice-mode').value}));};
+      socket.onmessage=event=>{
+        if(current!==session)return;
+        let data;try{data=JSON.parse(event.data);}catch{stop('Respuesta no válida del servidor.',true);return;}
+        if(data.type==='error'){stop(data.message,true);return;}
+        if(data.type==='ready'){
+          clearTimeout(session.setupTimer);session.streaming=true;session.started=performance.now();
+          activeSource().play();
+          session.capture.capture.port.postMessage({active:true,generation:session.id});
+          note('Traduciendo al '+labels[target]+'. Detener cierra audio y conexiones.');
+          session.timer=setInterval(()=>{if(current!==session)return;const seconds=Math.floor((performance.now()-session.started)/1000);$('session-clock').textContent=Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0')+' traduciendo';},500);
+        }
+        if(data.type==='flow-control'){
+          session.flowPaused=data.paused===true;
+          if(session.flowPaused){pauseSource();note('Ajustando el ritmo del video mientras termina la voz…');}
+          else if(!session.finishing){activeSource().play();note('Traduciendo al '+labels[target]+'. Detener cierra audio y conexiones.');}
+        }
+        if(data.type==='done'){stop('Sesión terminada. Audio y proveedores cerrados.');return;}
+        if(data.type==='transcript'){
+          if(data.source==='original')$('original').textContent=data.text;
+          else if(data.source==='translation'){$('caption').textContent=data.text;$('caption').lang=target;}
+        }
+        if(data.type==='voice-style')$('voice-style').textContent=data.voice_name+' · '+(data.voice_category==='masculine'?'masculina':'femenina')+(data.method==='manual'?' · elegida':' · auto');
+        if(data.type==='metrics')$('latency').textContent=data.first_audio_ms+' ms · sin altavoz medido';
+        if(data.type==='usage')$('segments').textContent=String(data.segments);
+      };
+      socket.onerror=()=>{if(current===session)stop('Falló la conexión. Todo se detuvo sin reintentar.',true);};
+      socket.onclose=()=>{if(current===session)stop('Conexión cerrada. Audio detenido; sin reconexión automática.');};
+    }catch(error){if(current===session)stop(error.message || 'No se pudo iniciar la captura.',true);}
+  }
+  function finish(send=true){
+    const session=current;if(!session || session.finishing)return;session.finishing=true;session.streaming=false;
+    clearInterval(session.timer);session.capture?.stop();pauseSource();
+    if(send && session.socket?.readyState===WebSocket.OPEN)session.socket.send(JSON.stringify({type:'finish'}));
+    note('Finalizando el último fragmento…');session.setupTimer=setTimeout(()=>{if(current===session)stop('Tiempo de cierre agotado. Todo detenido.');},30000);
+  }
+  const youtubeNote=$('source-note').textContent;
+  $('source-kind').addEventListener('change',()=>{
+    clearTimeout(loadTimer);stop();sourceKind=$('source-kind').value;
+    $('youtube-input').hidden=sourceKind!=='youtube';$('file-input').hidden=sourceKind!=='file';
+    $('youtube-player').hidden=sourceKind!=='youtube';$('local-video').hidden=sourceKind!=='file';
+    $('source-note').textContent=sourceKind==='youtube'?youtubeNote:'El video se decodifica en este navegador. Solo el audio se envía a Meta al iniciar; Meta traduce el texto y Cartesia genera la voz. El archivo de video permanece en tu equipo.';
+    refresh();controls();
+  });
+  $('video-file').addEventListener('change',async()=>{
+    stop();const file=$('video-file').files[0];if(!file)return;
+    $('file-name').textContent=file.name;note('Preparando video de este equipo…');
+    try{await localSource.load(file);}catch(error){note(error.message,true);}controls();
+  });
+  $('voice-mode').addEventListener('change',()=>{
+    const mode=$('voice-mode').value;
+    if(current?.socket?.readyState===WebSocket.OPEN)current.socket.send(JSON.stringify({type:'voice_mode',mode}));
+    note('Voz '+(mode==='auto'?'automática':mode==='masculine'?'masculina · Daniel':'femenina · Skylar')+'. Se aplicará al próximo fragmento.');
+  });
+  $('start').addEventListener('click',start);$('stop').addEventListener('click',()=>stop());
+  $('language').addEventListener('click',()=>{const active=Boolean(current);if(active)stop();target=languages[(languages.indexOf(target)+1)%languages.length];$('language').textContent=labels[target]+' ↻';$('caption').lang=target;note(active?'Idioma cambiado a '+labels[target]+'. Pulsa iniciar para una nueva sesión.':'Traducir al '+labels[target]+'.');});
+  $('youtube-url').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();load();}});
+  $('youtube-url').addEventListener('input',()=>{clearTimeout(loadTimer);loadTimer=setTimeout(load,700);});
+  window.addEventListener('pagehide',()=>{stop();localSource.destroy();});window.addEventListener('beforeunload',()=>stop());
+  refresh();
+})();

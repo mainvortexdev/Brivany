@@ -1,0 +1,28 @@
+{
+  "type": "runtime_package_file_integrity_only",
+  "version": "0.4.8",
+  "file_count": 20,
+  "browser_worker_reload_verified": false,
+  "files": {
+    "background.js": "471eed8bc6ef39de43281243352e2dfdb2aa822baf9c64ba75fe76a72d5b3dab",
+    "buffered-player.js": "e713e91810648952463abc71961ac05e9a77bb6b49acdaea4349982541ccac1b",
+    "caption-probe.js": "ae1fed9615c3598fe5f2652770615ddf2f7f33a3cbc8629128ceeaf89ad34b26",
+    "desktop-connect.js": "4ca8164bf7523094436be6779796cf54230355b2ed7e913707b7ae2a87896d0c",
+    "icon.png": "25c4c37c5e2ad2d2b947d5be10243fde63d5bdd244a8a1f9b060e3169a8739c9",
+    "inline-translation.js": "bc1818788d4c3c879abd9855bcf4226af9a48ee14df6931663f655901be2e4af",
+    "manifest.json": "522ca1d269f58ed5f782deb9c60697a8381795c98cf37df398495a68a4eb83b3",
+    "pcm-capture.js": "6e6804ccfab852dd7d2f908ed536a54d9fcd2a1de6bb7bf6d4133f510aaebdb9",
+    "pcm-sender.js": "dffb3b6425680eb8e55573dded749adfb473f71f2b94d83b2b9813ee6199efc7",
+    "player.css": "571d5a3b2240540ea0a20f0d3118e150d7a95ef9b941cfa3d8c124944bc04fea",
+    "player.html": "255f18758a8da89c3353a5cd27efcaee4c5dfbaf53d0d2ff90c3dc1d2e74b98b",
+    "player.js": "d9645419584177b705c17ded0cbbc3b9996a99a3ced5bfd20fabec443c1dd3a6",
+    "prefix-preparation.js": "df4db277cf83d8d459359f87ac62a11157f1def7b18f8539c21c879b1bdd3d96",
+    "README.md": "20facc7aa0f74f6e01421663b7fca79baceb638b9480d6cbdc4cc7a32d25df4b",
+    "sync-timeline.js": "b54dc79d719f10704ccbb9a7c1b42aa18ce256e93e737b94a0921a7df50cb08e",
+    "video-loader.js": "e6f0bf1cc75fa3c32f712b145a616c1690c28f667d5758b57bd5917c78f6d694",
+    "video-prepare-loader.js": "774124674cc6cd13f69195fc0f563cc5c80bbf7413ebee719a511259f0bf17e1",
+    "video-selection.css": "a06d621a1b9441052e2b77ed52c45cd5619a1aa9a0ae831ff59360d30a9e426d",
+    "video-selection.js": "5d33001da76c976449fe14c4189fafe2aec7a18c13899b48a0930e14b43ac50f",
+    "workspace-control.js": "297efadae06faaa0e7821cdefdf2b3e7bb2644906b4c2807ae5fb7ab0ff46e60"
+  }
+}

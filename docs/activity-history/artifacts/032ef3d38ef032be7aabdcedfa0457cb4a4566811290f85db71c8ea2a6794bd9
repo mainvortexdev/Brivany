@@ -1,0 +1,144 @@
+# Melodi: proyecto abierto y ejecutado desde el IDE
+
+1 de noviembre de 2026. Ampliación del objetivo de terminal, después de la web
+oficial. La clonación, captura y TXT anteriores se conservan como evidencia
+histórica; esta comprobación cubre la apertura efectiva y ejecución en el IDE.
+
+## Corrección implementada
+
+La detección anterior confundía `Antigravity.exe` 2.28.2, el gestor de agentes,
+con el editor. En este equipo el editor está instalado por separado como
+`Antigravity IDE/Antigravity IDE.exe` 2.5.5. Ahora se distinguen ambas aplicaciones,
+incluida la estructura clásica del editor. Una preferencia explícita por
+Antigravity se respeta aunque también exista VS Code; la recomendación general
+sigue siendo VS Code. La palabra «cursor» referida al ratón no selecciona el IDE
+Cursor. Se contempla la estructura `.app` de macOS con pruebas de directorios
+sustituidos: no es una ejecución real en macOS.
+
+El especialista admite abrir una copia existente, preparar su configuración o
+ejecutarla desde el IDE. No necesita clonar otra vez ni reinstalar dependencias.
+La preparación crea un `.code-workspace` independiente, fuera de `work` y de la
+copia `source`; no sobrescribe `.vscode`, no configura tareas automáticas y no
+desactiva las protecciones de confianza del editor.
+
+El depurador JavaScript incorporado lanza un adaptador propio sin shell. Éste
+usa el intérprete Python comprobado y el host Flask de presentación ya existente.
+Un sello vincula configuración, intérpretes y adaptadores. El control nativo
+comprueba el ejecutable del IDE, la ventana con nombre único y la configuración
+seleccionada. Sólo envía los atajos fijos del panel de depuración y F5; no escribe
+comandos en una terminal ni expresiones en Debug Console. Un diálogo protegido
+detiene la operación. La prueba no captura el ratón.
+
+La comprobación de salud se vincula al identificador de esa ejecución. Los
+eventos de progreso son códigos cerrados, no texto de ventanas ni credenciales.
+La cola mantiene la fase de espera mientras arranca el servidor. Una sesión ya
+observada como activa se espera sin otro F5; una URL saludable sin su sesión de
+IDE observada no autoriza un nuevo arranque. El servidor vigila al proceso Node
+que lo posee y termina si éste desaparece.
+
+## Evidencia real
+
+- Apertura por el planificador real en Antigravity IDE. UI Automation mostró las
+  rutas de `main.py`, `README.md` y `requirements.txt` de la copia de trabajo.
+  `tmp/terminal-ide-real/launch.json` y `ui-observation.json`.
+- Ensayo manual del depurador mediante control de aplicaciones: Node hijo del
+  IDE, Python hijo de ese Node, consola con `MELODI_PREVIEW_READY`, HTTP saludable
+  y web visible. Parada desde Shift+F5: desaparecieron ambos procesos y la URL
+  dejó de responder. Después se comprobó un nuevo arranque. `prepared-run.json`,
+  `debug-ui.json`, `health.json` y `stopped.json` en esa carpeta.
+- Ensayo automático final del planificador del especialista y adaptador nativo:
+  `native-20261101T193223.json`. Workspace `0e923f86`, URL
+  `http://127.0.0.1:53773`, configuración observada, ejecución verificada y una
+  segunda lectura de salud correcta. Fuente Git limpia, recibo
+  `57c71494-6244-4999-bf8c-932173983839`. La cadena observada fue IDE → Node 21332
+  → Python 20496; `processes.json`. No se publicó ningún cambio en el repositorio.
+- Recuperación real de una sesión anterior ya arrancada: `resume.json`, con
+  `already_running: true`, sin repetir F5 ni llamar al modelo.
+- Captura final mediante la API nativa de Melodi: `capture.json` y
+  `final-web.png`. El PNG de 1144 × 741 también está en
+  `<local-path>/Desktop/Evidencia Melodi/ProjectFixture-IDE-20261101T193636Z.png`.
+  Se revisó visualmente: pantalla de acceso del proyecto, sin iniciar sesión ni
+  realizar operaciones financieras. La ventana de captura se cerró con su
+  ejecutor; el servidor del IDE se conserva aparte.
+
+El proyecto sigue en el commit `57b3878cc09eaffab9789fdcc438753895995e08`.
+La ejecución usa su aplicación Flask con el adaptador local de presentación;
+las rutas operativas se restringen. No acredita trading, autenticación ni una
+ejecución sin restricciones de todos sus servicios.
+
+El enrutador real también clasificó la petición como `terminal` y conservó el
+identificador del proyecto y Antigravity, sin volver a ejecutarlo: `route.json`.
+El especialista y el adaptador se verificaron en el ensayo automático anterior;
+esta ampliación no activó un micrófono ni una nueva sesión ASR.
+
+## Fallos conservados y límites de la prueba
+
+Los tres recibos automáticos fallidos se conservan: `native-20261101T191507.json`
+(identificación de ventana), `native-20261101T191752.json` (inicio del overlay) y
+`native-20261101T192139.json` (plazo de salud). Se corrigió la conversión del
+handle UIA, se retiró el overlay de ratón de esta operación exclusivamente de
+teclado y se separó la espera de arranque. El tercer servidor llegó a estar
+saludable después del plazo: esa observación posterior no cambia el fallo de su
+recibo original. El intento final completo sí pasó.
+
+Las capturas nativas de la ventana del IDE mediante el control de aplicaciones
+agotaron el plazo de WGC; no se sustituyeron por una imagen inventada. Se conserva
+observación UIA y metadatos de procesos, y se capturó la web con la API nativa que
+usa Melodi. El control de pestañas de Codex dejó de estar disponible durante la
+última captura; no se introdujeron credenciales ni se actuó sobre su pestaña de
+Google Cloud.
+
+Pruebas locales registradas: `terminal` 44 casos, `terminal-ide` 11,
+`computer` 24 y `computer-native` 30. Las pruebas de UI/transportes sustituidos
+no se cuentan como ejecuciones físicas del catálogo. La nueva suite cubre sello,
+rutas, intérprete, adaptador, entorno inyectado, URI remota, configuración
+equivocada, permisos, respuesta HTTP ajena y prevención de F5 duplicado. También
+se comprueban cancelación previa y progreso sin finalizar prematuramente la
+llamada. Informes finales: `tmp/verification/terminal-20261101T193407-ba2b20ee.json`,
+`terminal-ide-20261101T193407-dc31325c.json`,
+`computer-20261101T193147-73463ea9.json` y
+`computer-native-20261101T192032-ce4d1ce6.json`.
+
+Se usaron modelos reales en las planificaciones y se conservaron los intentos
+fallidos; su importe no se conoce. Los ensayos de configuración, reanudación y
+captura no llamaron a modelos. No se adjuntan código original, claves, `.env`,
+conversaciones ni medios originales a la bitácora de desarrollo.
+
+`audit.json` contabiliza seis llamadas de planificación reales en este hito:
+apertura, cuatro intentos de ejecución y clasificación de intención. No es el
+total de solicitudes de red ni una medida monetaria. Se comprobaron de nuevo la
+revisión Git limpia, la presencia y contenido básico del TXT original de 1376
+bytes y la huella del EXE propio; no se repitió su ejecución ni se modificaron
+esos artefactos históricos.
+
+## Aplicación y limpieza del ensayo
+
+Brivany se reinició después de liberar su reserva AppBar, para cargar el código
+actual. Proceso comprobado: 14756. WorkSpace ocupa 1280 × 40 y reserva el margen
+superior; sus ventanas no se anuncian como ventanas de aplicación en la barra de
+tareas. La ventana principal está oculta y dentro del área de trabajo. Aunque
+Win32 marca el panel como visible, su región de dibujo es `NULLREGION`, vacía:
+no hay un modal desplegado. Se amplió la herramienta de metadatos de lectura para
+comprobar esa diferencia mediante
+[GetWindowRgnBox](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowrgnbox).
+Evidencia: `app-after-restart.json`; sin captura ni entrada de usuario en esa
+inspección.
+
+Se terminaron sólo los Node de dos ensayos anteriores, después de verificar PID,
+ejecutable e identificador de configuración. El seguimiento del propietario
+cerró sus servidores Python. El proceso del último servidor verificado se
+conservó. `cleanup.json` registra esas solicitudes y `processes.json` la cadena
+del último ensayo; la disponibilidad posterior se comprueba por salud HTTP.
+
+## Estado del objetivo general
+
+La checklist conserva 65 aprobados, un fallo y 401 pendientes. El catálogo activo
+tiene 190 entradas de comandos Windows, 231 atajos y 46 nombres macOS preliminares. El usuario
+aceptó antes ese alcance y detuvo su ampliación; no se reanudaron ejecuciones de
+la checklist ni se declara una certificación de 2.000 comandos.
+
+Abrir y ejecutar esta copia en Antigravity IDE sí queda acreditado. Continúan sin
+certificarse el uso físico de macOS, una instalación de VS Code en este equipo
+(ya había IDE), el arranque universal de cualquier repositorio y la navegación
+de rutas Regedit. El bloqueo de cambios del registro se conserva. El objetivo
+general no se marca completo con esta prueba.

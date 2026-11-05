@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "scope": "real_account_desktop_and_meta_own_content",
+  "checked_at": "2026-11-03T21:37:36.074539+00:00",
+  "physical_iphone": false,
+  "microphone": false,
+  "originals_modified": false,
+  "calls": {
+    "account_chat": 1
+  },
+  "content_in_report": false,
+  "command_id": "5aa249e2-eaa5-48f4-8953-b88213189e61",
+  "broker_kind": "orchestrator",
+  "state": "succeeded",
+  "local_state": "succeeded",
+  "error": null,
+  "team_size": 2,
+  "accepted": 2,
+  "attempts": [
+    {
+      "kind": "document",
+      "state": "succeeded",
+      "attempt": 1,
+      "review_state": "accepted",
+      "external_calls": 1
+    },
+    {
+      "kind": "document",
+      "state": "succeeded",
+      "attempt": 1,
+      "review_state": "accepted",
+      "external_calls": 1
+    }
+  ],
+  "known_host_provider_attempts": 5,
+  "artifacts": [
+    {
+      "kind": "document",
+      "path": "<local-path>\\.local\\computer\\workspace\\documents\\7d0d01be-ac34-4e4f-81ce-509934a48830.txt",
+      "review_state": "accepted"
+    },
+    {
+      "kind": "document",
+      "path": "<local-path>\\.local\\computer\\workspace\\documents\\887ced03-6ef0-48e3-ae04-896535f68c59.txt",
+      "review_state": "accepted"
+    }
+  ],
+  "execution_overlap_seconds": 2.828,
+  "documents_only": true,
+  "elapsed_seconds": 22.98
+}

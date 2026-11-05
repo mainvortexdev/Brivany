@@ -1,0 +1,1170 @@
+# 17. Bitácora local y evidencias
+
+4 de noviembre, ensayo real 073. Muse Spark 1.2 completó quince voces hasta
+31,700 s con un máximo de 7,745 s. El crecimiento de 3,452 s mantuvo el
+resultado fallido. Se compararon seis solicitudes de frases propias antes
+del cambio de modelo y se conservaron sus tiempos y tokens.
+[Comparación e implementación](traduccion-auditiva-modelo-072.md),
+[recorrido real y consumo](traduccion-auditiva-ensayo-073.md).
+
+4 de noviembre, continuaciones 070–071. La imagen espera si tarda el inicio
+de una voz y se retira únicamente relleno exterior casi mudo del PCM.
+Pasaron 102 pruebas del relay y 77 de extensión. En el ensayo real se
+retiraron 1,149 s en quince voces completadas, pero la espera remota mantuvo
+el retraso fuera del criterio. Se preserva el ensayo fallido.
+[Cambio y prueba propia](traduccion-auditiva-relleno-070.md),
+[recorrido y consumo](traduccion-auditiva-ensayo-071.md).
+
+4 de noviembre, ensayo real 069. Quince voces completaron 31,380 s con señal
+y sin reserva original. Una voz se publicó por delante de la anterior y se
+reprodujo en orden. El tercer turno del prefijo siguió excediendo su duración.
+El retraso bajó frente a 065 y volvió a superar ambos límites, con máximo
+8,167 s y crecimiento de 3,879 s. Se conserva el resultado fallido y el consumo.
+[Publicación, duración y comparación](traduccion-auditiva-ensayo-069.md).
+
+4 de noviembre, continuación 068. El relay entrega una voz lista por delante
+de una pendiente y libera un puesto para la siguiente. Brave mantiene el orden
+de reproducción. El traductor recibe un rango orientativo de palabras para
+las frases de al menos un segundo, con prioridad para el contenido completo.
+Pasaron 96 pruebas del relay, 76 de la extensión y 35 del traductor. Se descartó
+acelerar los huecos por su escaso ahorro en las mediciones previas.
+[Cola y límites](traduccion-auditiva-cola-068.md),
+[guía de duración y fidelidad](traduccion-auditiva-guia-lexica-068.md).
+
+4 de noviembre, ensayo diagnóstico real 067. Aprobó los mismos límites de
+continuidad en una ventana acotada de 16 s. Nueve voces completaron 17,454 s
+con señal. El retraso máximo fue 6,587 s y creció 2,235 s. La tercera síntesis
+del prefijo recibió su último bloque a 688 ms y el fin se midió en 0 ms
+redondeados después. El alcance de 31 s anterior, el perfil personal y el
+video completo siguen pendientes.
+[Medición de síntesis, alcance y consumo](traduccion-auditiva-sintesis-real-067.md).
+
+4 de noviembre, continuación 066. La extensión recupera el arranque en
+navegaciones autorizadas y espera la raíz del documento. WorkSpace negocia
+un informe de compilación activa sin guardar datos del sitio. Brave aislado
+comprobó la recuperación y un recorrido propio con prefijo, canción omitida
+y cinco voces a 1×. El ensayo real anterior mantiene su fallo de retraso.
+Se registran por separado el último bloque de voz y el fin de síntesis.
+[Arranque, distribución, pruebas y alcance](traduccion-auditiva-arranque-066.md).
+
+4 de noviembre, corrección posterior 063. La revisión de concurrencia evita
+que una evidencia antigua borre una contradicción nueva. Las coincidencias
+débiles sin timbre fiable mantienen provisional la voz de esa pieza.
+Pasaron 96 pruebas de sync-relay y 68 de River. En el ensayo 065, las diez
+coincidencias débiles con voz completada recibieron análisis nuevo.
+[Corrección y evidencia](traduccion-auditiva-cache-timbre-063.md#corrección-posterior-de-concurrencia-y-evidencia-antigua).
+
+4 de noviembre, ensayo real 065. Dieciséis voces completaron 31,460 s con
+señal y sin reserva de audio original. Las diez coincidencias acústicas por
+debajo de 0,77 registraron nueva evaluación de timbre. Hubo ocho voces de
+catálogo masculinas y ocho femeninas, con cinco provisionales. La atribución
+humana sigue pendiente y la continuidad volvió a fallar, con 10,949 s de
+retraso máximo y 6,416 s de crecimiento. Se registran los intentos de
+proveedores y los recursos observados del banco y del equipo.
+[Voces, retraso, recursos y consumo](traduccion-auditiva-ensayo-065.md).
+
+4 de noviembre, seguimiento personal 064. Tras llevar el video a cero y
+reproducir, una lectura a 24,938 s no encontró marcas de preparación del
+prefijo ni traducción activa. El servicio seguía emparejado y disponible,
+con cero prefijos completos o reutilizados; eso no cuenta todos los intentos
+facturables. La causa no está demostrada y no hubo doblaje personal nuevo.
+[Observación posterior y límites](traduccion-auditiva-visual-y-carga-064.md#observación-posterior-no-apareció-el-prefijo-en-la-pestaña-personal).
+
+4 de noviembre, verificación posterior 064. El banco mostró las fases del
+ensayo 062 y su explicación de simultaneidad sin solaparse a 443 px; la tabla
+permite desplazamiento horizontal. Se observó una instancia nativa nueva con
+una extensión emparejada y cero sesiones activas, sin forzar el cierre de la
+anterior ni recargar la extensión. Los intentos de abrir WorkSpace mediante
+el control no quedaron comprobados y no hubo doblaje personal nuevo.
+[Presentación, carga nativa y límites](traduccion-auditiva-visual-y-carga-064.md).
+
+4 de noviembre, ensayo real 062. La comprobación directa del video permitió
+abrirlo y medir la preparación: 12,059 s de pared, siete segundos de contenido
+y análisis local/remoto solapados. Quince voces completaron 31,700 s con señal,
+sin recuperar el original. El ensayo volvió a fallar por retraso de 9,479 s
+y crecimiento de 5,191 s. La atribución humana sigue pendiente: una voz fue
+masculina y catorce femeninas. Se conservan los fallos previos de apertura.
+[Fases reales, límites y consumo](traduccion-auditiva-fases-reales-062.md),
+[apertura directa y regresiones 061](traduccion-auditiva-apertura-061.md).
+
+4 de noviembre, intento real 060. Tras restablecerse el control, el banco
+integrado pudo abrirse e iniciar una prueba nueva; el intento anterior
+deshabilitado se conserva. La apertura del video agotó su plazo antes del
+doblaje. No hubo sesión de traducción, pero sí una preparación automática
+y un intento Muse batch. Faltan identidad, prefijo utilizable y voces;
+este fallo no mide las mejoras 058–059 ni supone consumo externo nulo.
+[Resultado, ausencias y consumo](traduccion-auditiva-apertura-060.md).
+
+4 de noviembre, continuaciones 058–059. Los restos estables pueden enviarse
+antes cuando llevan tres segundos pendientes, conservando tres palabras al
+final y al menos 1,8 segundos de audio. La preparación solapa un trabajador de
+timbre con dos análisis de prosodia y publica únicamente duraciones numéricas.
+Pasaron 94 pruebas sync y siete comprobaciones dirigidas posteriores. El banco
+distingue la espera previa de la duración de contenido; su nueva presentación
+no quedó comprobada visualmente. El siguiente ensayo no se inició porque el
+control indicó que el navegador local estaba deshabilitado en Work. No se
+acredita una mejora real por estos cambios.
+[Restos estables](traduccion-auditiva-resto-estable-058.md),
+[preparación paralela, integración y límites](traduccion-auditiva-preparacion-paralela-059.md).
+
+4 de noviembre, ensayo real 057 con ritmo medido. Catorce voces completaron
+31,700 s con señal, sin recuperar el original ni perder voces publicadas
+dentro de esa cobertura. El retraso máximo fue menor que en el ensayo previo,
+pero volvió a fallar: 9,560 s y crecimiento de 5,256 s. Las solicitudes y
+segmentaciones difieren; no se atribuye la mejora observada a una causa única.
+El alcance integral, las voces humanas y el video completo siguen pendientes.
+[Ensayo, comparación y consumo](traduccion-auditiva-ensayo-057.md),
+[matriz de aceptación sin reducir el objetivo](traduccion-auditiva-aceptacion-057.md).
+
+4 de noviembre, continuaciones 055–056. La guía de ritmo usa las duraciones
+ya generadas por cada voz y conserva el texto. Pasan 81 pruebas sync y 62 de
+River; su efecto real sigue pendiente. El banco correlaciona solicitudes
+paralelas mediante índices numéricos, sin conservar identificadores, texto ni
+audio: 68 pruebas de extensión y cinco de saneamiento aprobadas. Se distinguen
+las esperas remotas y la duración de las voces; no se añaden solicitudes
+duplicadas sin evidencia de que mejoren el resultado.
+[Ritmo medido](traduccion-auditiva-duracion-medida-055.md),
+[diagnóstico por solicitud](traduccion-auditiva-diagnostico-solicitudes-056.md).
+
+4 de noviembre, carga nativa pendiente. La revisión automática rechazó detener
+la instancia de prueba para reiniciarla, indicando únicamente «blocked by
+policy». El proceso seguía abierto con cero sesiones de video activas. No se
+ejecutó el reinicio ni se acreditó la carga del último ajuste de ritmo en esa
+instancia; el código y las pruebas locales se conservan.
+
+4 de noviembre, ensayo real 055 desde el inicio. La apertura preparó siete
+segundos antes de activar y el ASR continuó exactamente desde ese límite,
+sin solapamiento ni voces duplicadas. Trece voces completaron 31,620 s con
+señal. El ensayo falló: retraso máximo 11,516 s, crecimiento 7,228 s y
+2,365 s de audio original no clasificado como canción. Once voces fueron
+femeninas y dos masculinas, sin correspondencia humana verificada.
+[Prefijo comprobado, fallos y consumo](traduccion-auditiva-prefijo-real-055.md).
+
+4 de noviembre, continuación 054. Los turnos cortos, el consejo ausente y
+el modelo pendiente ya no convierten el tono de voz en una asignación segura.
+Se mantiene la voz elegida manualmente y se distinguen dos grupos acústicos
+provisionales. Pasan 76 pruebas de sincronización y 62 de River; la comprobación
+real de continuidad y atribución sigue abierta.
+[Voz sin evidencia y alcance](traduccion-auditiva-voz-ausente-054.md).
+
+4 de noviembre, continuación 053 de empaquetado. Se actualizan los veinte
+archivos de distribución con la confirmación de carga del selector y las
+mediciones numéricas de audio y recuperación. El banco conserva esas medidas
+sin texto ni PCM. Integridad de archivos y pruebas locales no acreditan recarga
+del trabajador instalado ni calidad semántica del doblaje.
+[Ensayos y límites de la comparación](traduccion-auditiva-comparacion-053.md).
+
+4 de noviembre, comparación real 053 tras preparar ambos transportes. Seis
+voces completaron 12,460 s con señal, pero el ensayo volvió a fallar:
+8,341 s de retraso y 4,053 s de crecimiento. El primer audio tardó 9,479 s.
+La segunda solicitud MT fue más breve; los tramos y tiempos remotos difieren
+y no acreditan una mejora global atribuible a TLS. Se detectó además un turno
+corto incierto marcado como voz no provisional.
+[Comparación, defecto y consumo](traduccion-auditiva-comparacion-053.md).
+
+4 de noviembre, continuación 053 del enlace personal. La solicitud normal
+de Work aceptó la selección, pero no inició captura durante una ventana de
+60 s: cero bytes PCM, eventos o voces. El ensayo falló; conexión y selección
+no acreditan que el módulo cargara. La instantánea 0.4.8 conserva veinte
+archivos y permisos; su recarga en Brave sigue sin comprobarse.
+[Banco personal, resultado y consumo](traduccion-auditiva-enlace-personal-052.md).
+
+4 de noviembre, continuación 052. Siete voces del video real completaron
+13,260 s con señal y desfases de inicio de −17 a +13 ms. El ensayo se rechazó:
+el retraso alcanzó 9,701 s y creció 3,168 s. La segunda traducción tardó
+4,495 s y retuvo la entrega de la siguiente. La atribución humana de voces
+y el recorrido integral siguen sin certificar.
+[Métricas, consumo y límites](traduccion-auditiva-continuidad-052.md).
+
+4 de noviembre, continuación 052 del transporte. Los dos traductores del
+trayecto sincronizado preparan sus conexiones antes del audio, sin abrir
+inferencias para ese calentamiento. Se evita un establecimiento tardío en
+el segundo trabajador. Sync-relay pasó 72 casos y River 59; la reducción de
+latencia con proveedores reales aún requiere un ensayo posterior.
+[Cambio, cancelación y evidencia](traduccion-auditiva-transporte-052.md).
+
+4 de noviembre, continuación 051. Una abstención del modelo conserva su
+incertidumbre y usa una voz de catálogo provisional cuando falta evidencia
+confiable. Se corrige también el desacuerdo entre categoría e ID real de voz,
+y se conserva el timbre preparado con expresividad desactivada. River pasó
+59 pruebas y sync-relay 69; son comprobaciones locales, sin inferencia nueva.
+[Correcciones y evidencia](traduccion-auditiva-voz-provisional-051.md).
+
+4 de noviembre, continuación 050 del búfer. Se corrige la recuperación de
+huecos pequeños sin reiniciar la voz activa. Un nuevo ensayo real terminó
+dos frases, con retraso máximo de 6,437 s y crecimiento de 0,464 s, sin cortar
+la fuente ni recuperar el original. No acredita haber alcanzado un hueco real
+ni resuelve las voces: la primera quedó femenina por reserva tonal y la
+segunda masculina. El objetivo completo sigue abierto.
+[Recuperación, ensayo corto y límites](traduccion-auditiva-huecos-050.md).
+
+4 de noviembre, continuación 050 de duración y verificación. La guía de
+velocidad usa la traducción pronunciada y el banco rechaza cobertura vacía.
+Se preservan las 62 pruebas aprobadas y una ejecución posterior con dos errores
+por un evento nuevo anterior al error esperado; la comprobación dirigida
+posterior no equivale a otra suite completa. También se conserva un intento
+que agotó la apertura del video sin iniciar proveedores de traducción.
+[Duración y aceptación](traduccion-auditiva-duracion-050.md),
+[secuencia posterior y consumo](traduccion-auditiva-integracion-049.md#continuación-050-dos-frases-completas-no-cierran-el-objetivo).
+
+4 de noviembre, integración y prueba real posterior. El paquete 0.4.8 contiene
+veinte archivos comprobados y respaldo previo; su recarga en Brave no está
+verificada. Desde el minuto cinco se midió una voz masculina con señal, pero
+la copia de imagen se detuvo antes de completar la primera frase. El ensayo
+falló y no acredita estabilidad ni correspondencia humana de hablantes. Se
+conserva también un fallo posterior de cancelación en la suite sync-relay.
+[Integración, consumo, publicación y pendientes](traduccion-auditiva-integracion-049.md).
+
+4 de noviembre, continuidad local de hablantes. Se añaden grupos acústicos por
+pieza, compartidos entre prefijo y vivo, sin equiparar letras de dos sesiones
+ASR. Música y muestras ambiguas no entrenan grupos; las voces permanecen
+provisionales. Pruebas locales con voces propias y sustitutos, con límites de
+calibración en español natural. [Cambio y evidencias](traduccion-auditiva-hablantes-locales-049.md).
+
+4 de noviembre, revisión del timbre. El clasificador compacto alternaba voces
+en los tramos de los minutos cinco y quince. Se incorpora un modelo local
+alternativo con incertidumbre explícita y CPU acotada; sus predicciones no
+establecen la identidad de una persona. Se conservan los ensayos fallidos y
+la falta de verificación integral. [Modelo, mediciones y límites](traduccion-auditiva-timbre-048.md).
+
+4 de noviembre, diagnóstico independiente de la fuente. Tres perfiles aislados
+sin extensión reprodujeron el vaciado de YouTube a los 43–44,5 s de un video
+de 24:55; la causa sigue sin demostrarse. El banco comprueba identidad,
+duración, ancla y pérdida de fuente, y no acepta ese vaciado como fin normal.
+[Comprobaciones reales sin traducción y regresión local](traduccion-auditiva-fuente-048.md).
+
+4 de noviembre, preparación anticipada y revisión de calidad. La extensión
+prepara siete segundos antes de activar y continúa desde ese límite. Se
+conservan los ensayos fallidos y la corrección del criterio de continuidad.
+La escucha del fragmento resultó clara y natural, pero el usuario confirmó
+asignaciones femeninas incorrectas al presentador masculino. El ensayo de
+31,7 s también acumuló 10,415 s de retraso. El objetivo continúa abierto.
+[Preparación, continuidad y límites](traduccion-auditiva-inicio-047.md).
+
+4 de noviembre, rendimiento de Brivany en reposo. Una verificación completa
+del bundle nativo se repetía en los sondeos de estado. La corrección redujo
+el consumo observado de 1,993 a 0,050 núcleos; las acciones conservan su
+verificación de integridad. [Cambio y medición](traduccion-auditiva-rendimiento-048.md).
+
+4 de noviembre, banco de Traducción auditiva. Se registra el nuevo aviso de
+Meta y la lentitud reportada en Brave. La versión 0.4.6 recupera turnos ante
+demoras de Meta y reduce la carga de captura. El banco integrado ejecutó un
+ensayo real del video de Tecnonauta. Dos frases llegaron a Web Audio a 1,166×
+y 1×. Ambas recibieron timbre femenino. [Cambios, consumo y evidencia](traduccion-auditiva-banco-046.md).
+
+4 de noviembre, estabilidad de Traducción auditiva en Brave. Se registran las
+voces trabadas y lentas, la atribución incorrecta y el bloqueo del PC reportado
+por el usuario. La extensión 0.4.5 limita la captura, evita pausas repetidas y
+devuelve el reproductor ante fallos. Brivany adelanta la entrada a Muse y la
+síntesis, corrige la asignación de timbres y guarda diagnósticos sin contenido.
+Pruebas con Brave aislado y proveedores sustituidos. Quedan pendientes el
+ensayo con el video del usuario y la causa exacta del bloqueo de Windows.
+[Cambios, pruebas y límites](traduccion-auditiva-estabilidad-045.md).
+
+4 de noviembre, recuperación de Traducción auditiva. Se documentan el turno
+abierto que retenía la imagen, el hueco del grabador y la recuperación con
+audio original. Se prueban selección única, espera en pausa y reanudación del
+doblaje. [Cambios y pruebas](traduccion-auditiva-recuperacion-044.md).
+
+4 de noviembre, continuación. Extensión 0.4.3 con imagen y doblaje en la
+misma pestaña, margen inicial de cuatro segundos y voz a velocidad natural.
+Se comprueban tres turnos con voces propias y tres tramos del video público
+en Brave aislado. Sigue pendiente el objetivo de latencia para frases largas.
+[Cambios, pruebas y límites](traduccion-auditiva-en-pestana-043.md).
+
+4 de noviembre, continuación. Traducción auditiva activa la extensión desde
+WorkSpace con acceso concedido al sitio. La transcripción visible es opcional
+y se guarda en Ajustes. Se corrigen desbordamiento de entrada a Muse y rechazo
+de bloques agrupados. Prueba real de 42 s con dos voces sintéticas propias y
+salida WinMM comprobada, con coste desconocido.
+[Cambios, pruebas y alcance](traduccion-auditiva-workspace-042.md).
+
+4 de noviembre, corrección posterior: se reproduce un fallo de lectura nativa
+que mostraba el error genérico del enlace. Extensión 0.4.1 confirma recepción
+desde Brivany, limita bloques pendientes y negocia protocolo antes de capturar.
+Pruebas locales y trayecto completo Brave aislado → proveedores → WinMM
+registrados por separado, con voz propia y coste desconocido de los ensayos reales.
+[Corrección, evidencias y límites](traduccion-auditiva-acuse-nativo.md).
+
+4 de noviembre: auditoría de registros, copias de evidencia, documentación e
+informes. Cadena y 1.767 snapshots iniciales íntegros. Se completan referencias
+documentales y se recuperan 118 informes históricos con metadatos depurados,
+conservando fallos y resultados no concluyentes como retrospectivos.
+[Alcance, reconciliación y comprobación](auditoria-bitacora-2026-11-04.md).
+
+4 de noviembre, continuación: extensión 0.4.0 une transcripción y traducción
+progresivas, comparte ASR y corrige cancelación por ACK/ráfagas. Pruebas locales,
+Brave con demoras provocadas y ensayo propio con APIs reales diferenciados.
+[Implementación y límites](traduccion-progresiva-video.md).
+
+4 de noviembre: se corrige la apertura del reproductor vacío desde la extensión.
+Pin por video, YouTube único automático, transcripción silenciosa y fuente
+seleccionada para WorkSpace. Dos tonos propios comprobaron audio separado en
+Brave aislado. [Cambios, fallos y evidencia](videos-seleccionados-y-transcripcion-silenciosa.md).
+
+3 de noviembre, continuación: Brave 0.2.0 prepara frases futuras desde los
+subtítulos disponibles sin hablar antes del ASR ni inferir identidad de un nombre
+de subtítulo. Caché acotada, cancelación y alternativa de audio verificadas con
+sustitutos; carga de extensión y pistas de video propias verificadas en Brave
+real aislado. [Implementación, fallos conservados y límites](brave-traduccion-anticipada.md).
+
+3 de noviembre: traducción continua con agentes de hablantes y clonación en
+segundo plano, permiso explícito, caché temporal por sesión y limpieza de IDs
+propios. Filtro local de canto, con fallo a cappella inicial preservado y cinco
+casos controlados reales tras corregir. Protocolos, UI y cancelación sustituidos;
+clonación personal real y fidelidad pendientes. [Implementación y límites](traduccion-canciones-y-voces-temporales.md).
+
+1 de noviembre, siguiente dirección del usuario: comandos suficientes con 65
+aprobados; se detiene su ampliación, conservando el rechazo de CLIP antes de su
+ejecución y el portapapeles intacto. Agentes de medios y soporte conectados al
+chat/voz: extracción y traducción de video probadas con Melodi real y una muestra
+propia, lectura del manual oficial Epson contrastada, búsqueda de controladores
+en Windows Update sin instalaciones durante la comprobación. Interfaz de medios
+verificada en tres anchuras con sustitutos. La nueva instalación física de un
+controlador queda sin certificar. [Implementación y siguiente web pública](melodi-medios-documentacion-y-web.md).
+
+1 de noviembre, comprobación posterior: Office quedó instalado sin activar por
+elección del usuario, con seis aplicaciones firmadas por Microsoft y apertura
+real de Word/Excel/PowerPoint. Se conservan los intentos interrumpidos y se
+distingue instalación de licencia. La checklist alcanzó 64 aprobados, con
+CHKDSK sólo de lectura revisado. El ensayo completo de clonación y evidencia por
+Melodi y una muestra EXE C# sí pasaron; uso dentro del IDE, checklist completa y
+macOS continúan pendientes. [Office y equipo](terminal-equipo-y-office.md#cierre-comprobado-de-esta-instalación),
+[pruebas de terminal](terminal-melodi.md#comprobaciones-posteriores-del-1-de-noviembre).
+
+1 de noviembre: consultas reales de tiempo de arranque, virtualización y
+hardware conectadas a Melodi. Esperas cancelables de apagado con pruebas de
+reloj/acción sustituidas, sin apagar el equipo. Instalador Office por productos
+y apps, herramientas Microsoft firmadas y descarga oficial en curso, sin
+activación. El usuario confirmó no tener licencia y eligió instalar sin activar.
+[Implementación y alcance](terminal-equipo-y-office.md).
+
+1 de noviembre, corrección de alcance solicitada por el usuario: se retiran
+servidores y administración empresarial del catálogo de Melodi. Selección
+activa: 190 comandos de escritorio y 231 atajos, más el índice macOS preliminar.
+Se conservaron los 36 aprobados durante la migración y sus recibos; los retirados
+no se aprobaron. La checklist continúa con comandos de escritorio útiles.
+[Alcance vigente](terminal-melodi.md#alcance-vigente-corregido-por-el-usuario).
+
+1 de noviembre: nuevo objetivo de terminal. Catálogo documentado y checklist
+secuencial con recibos/revisión, especialista del chat, bloqueo del registro y
+copia aislada de ProjectFixture-Trading-Operator. Compilación y salud local comprobadas;
+captura real y corrección del guardado en Bloc de notas. El catálogo no equivale
+a miles de ejecuciones aprobadas. Se conservan los fallos de PS1, limpieza del
+test y plan incompleto. [Implementación y límites](terminal-melodi.md).
+
+31 de octubre: reintento de acceso al navegador integrado confirmado y Brivany
+iniciado con WorkSpace. El argumento de inicio ya no fuerza Pantalla desplegada;
+`work` pasó 26 pruebas locales. La inspección nativa confirma barra y reserva,
+sin acreditar todavía toda la interacción de arranque. Google y el diagnóstico
+del corte de audio siguen pendientes con el objetivo general pausado.
+[Alcance y evidencia](workspace-reinicio-intencional.md).
+
+Spotify ya tiene un retorno HTTPS desplegado en
+`https://brivany.example/spotify/callback`, con PKCE nativo y puente temporal en
+Cloudflare. Se configuró el Client ID público y se corrigió un rechazo de
+certificados en el transporte Python hacia Spotify, manteniendo TLS verificado.
+Se distinguen pruebas locales, puente HTTPS con proveedor sustituido y transporte
+Spotify real sin credenciales; la autorización de la cuenta queda en el usuario.
+[Implementación y alcance](spotify-retorno-https.md).
+
+31 de octubre: WorkSpace compacto con curvas en cuatro esquinas, herramientas
+solo de texto, ojos en una zona central propia, apertura por intención y cambio
+rápido entre paneles. Música muestra un botón de vinculación; su Client ID de
+editor sigue pendiente de registrar/configurar. [Cambio y pruebas](melodi-workspace-compacto.md).
+
+También se preparó `https://brivany.example` como Custom Domain de un Worker
+independiente, con una página temporal de preparación. DNS público y HTTPS 200
+se comprobaron; la web oficial queda para el siguiente hito. Código y despliegue
+declarativo en `official-site/`, sin exponer el servidor local ni un callback OAuth
+en la web pública.
+
+Nueva revisión de Melodi WorkSpace: negro opaco, herramientas horizontales,
+panel anclado al cursor, ojos itinerantes con reposo y reproductor Spotify con
+vinculación PKCE, dispositivos y letra local. Se retiraron las tarjetas y los
+módulos de Voz/Tareas de esta superficie. Las pruebas locales y la comprobación
+nativa se distinguen de la vinculación Spotify real, que sigue pendiente del
+usuario. [Implementación, evidencias y límites](melodi-workspace-premium.md).
+
+Melodi WorkSpace reemplaza el nombre Mini Melodi e incorpora una barra superior
+de ancho completo con reserva AppBar de 40 px en Windows y panel flotante
+independiente. Ventanas propias ya maximizadas/nuevas respetaron la franja; el
+despliegue no amplió la reserva y salir restauró el área anterior. Se conservan
+transparencia, proximidad tolerante, ojos ocasionales y exclusión de la barra de
+tareas. [Arquitectura, pruebas y límites](melodi-workspace.md).
+
+Mini Melodi: isla nativa superior con expansión por proximidad, tolerancia de
+salida, ojos ocasionales y transparencia regulable. La arquitectura de extensión
+y Office quedó postergada por indicación del usuario. Se distinguen UI sustituida
+y comprobación real de región/alfa de ventana, sin activar audio ni modelos.
+[Diseño, comportamiento y comprobaciones](mini-melodi-isla.md).
+
+Actualización del 30 de octubre: Edits MCP, habilidades desde voz live, Work y
+esperas de Melodi. Ensayos reales aislados de MCP/exportación y ventanas nativas;
+reloj, detección/traducción y entregas se verificaron con sustitutos. Audio físico
+y Drive/WhatsApp reales siguen pendientes. Se conserva también el fallo y la
+corrección de una expectativa antigua de agrupación de frases.
+[Implementación, evidencias y límites](melodi-edits-work-eventos.md).
+
+Actualización del 30 de octubre: chat de escritorio, referencias visuales y
+agentes locales con resultados revisables. UI y voz sustituidas se distinguen
+de visión Meta y Paint reales con imágenes sintéticas. No acredita hardware live
+ni gestión completa de Google.
+[Implementación, pruebas y límites](melodi-chat-imagenes-agentes.md).
+
+El hito 55 incorpora expresividad live, chistes por turnos y pausas silenciosas.
+La interrupción automática se habilita con AEC confirmado, conserva un pre-roll
+local acotado y el contexto efímero. Las suites usan señales/modelos sustituidos;
+la comprobación HTTP local usa casos sintéticos conocidos sin inferencia. Una
+síntesis real separada aceptó `[laughter]`, con importe desconocido, sin guardar
+audio nuevo. No acredita naturalidad ni interrupción con hardware físico.
+[Comportamiento, pruebas y límites](55-melodi-expresiva-y-turnos.md).
+
+El hito 54 cambia el ritmo inicial a 1,05, enviado a Cartesia con reproducción
+PCM nativa, y despacha el final Muse sin esperar el medidor. Suites locales
+con sustitutos y una síntesis real separada, sin retries; importe desconocido.
+[Cambio y alcance](54-melodi-ritmo.md).
+
+El hito 53 simplifica Melodi a Comenzar y elimina la segunda espera acústica
+después del final de Muse. `live-ui`, `app-ui` y `javascript` verifican inicio,
+ruido continuo, reproducción y cancelación con sustitutos. La herramienta
+separada `tools/check_melodi_real.cjs --allow-paid` ejecutó una única sesión
+real con fixture sintética reutilizada: Muse, una respuesta Meta y una síntesis
+Cartesia, con PCM reproducido por el navegador. Importe desconocido; sin prueba
+física de micrófono/altavoz ni conservación de conversación/audio nuevo.
+[Alcance y resultados](53-melodi-un-boton.md).
+
+El hito 52 cambia la voz de Melodi a Cartesia con IDs propios de español e
+inglés. `melodi-cartesia` recorre protocolos WebSocket/HTTP locales con servidor
+de voz sustituto; `live-ui` usa micrófono/ASR/Meta/TTS sustituidos y verifica el
+idioma y la interrupción. No hacen inferencia pagada ni prueban micrófono o
+altavoz físico. La prueba live real queda al usuario. [Detalle](52-melodi-cartesia-live.md).
+
+El hito 51 conecta la traducción vigente a `/dubbing` y al arranque compartido
+web/Desktop. `brivany-translation` comprueba rutas, factories y estado local;
+`main-navigation` requiere el servidor principal activo y solo lee portada/UI;
+`river-ui` recorre YouTube sustituido y un archivo sintético realmente decodificado
+dos veces, con modelos/dispositivo sustituidos. No consumen inferencia externa.
+Las herramientas de UI de doblaje anteriores son históricas y no acreditan la
+página sustituida. [Integración y resultados](51-traduccion-integrada.md).
+
+El hito 50 retira las cuotas de aplicación de la página de traducción por
+petición expresa del usuario. `river-translation`, `river-ui` y
+`meta-translation` siguen siendo pruebas locales con modelos sustituidos.
+Los relojes acelerados no acreditan una reproducción real larga.
+`tools.check_river_voices --check-access` consulta dos metadatos reales sin
+síntesis y queda fuera de `tools.verify`. [Cambios y evidencia](50-traduccion-continua-y-voces.md).
+
+Desde el hito 49, `river-translation` y `river-ui` usan traducción Meta Spark
+sustituida. `meta-translation` prueba su transporte SSE y presupuesto local;
+`native-audio` comprueba además regulación de ráfagas y cancelación con driver
+sustituido. No hacen inferencia externa. Los registros del recorrido Groq
+anterior permanecen como histórico. [Cambio, pruebas y límites](49-meta-cartesia-y-ritmo-de-audio.md).
+
+`river-translation` y `river-ui` verifican la ruta Muse → Groq → Cartesia con
+proveedores, YouTube/captura y salida de dispositivo sustituidos; no consumen
+inferencia externa. La comprobación manual `tools.check_river_access
+--check-access` sí consulta dos endpoints reales de metadatos y queda fuera de
+`tools.verify`. La herramienta `tools.check_river_real --allow-paid` tampoco
+pertenece a esas suites: consume una sesión real con una única fixture sintética
+aprobada, sin retries ni conservación de audio/transcripción. El importe queda
+desconocido hasta contrastar facturación. [Arquitectura y resultados](48-muse-llama-cartesia.md).
+
+27 de octubre de 2026. Abrir [Bitácora](http://127.0.0.1:8765/activity) con el servidor habitual de Brivany. Permite buscar, filtrar por tipo/estado, revisar evidencias, cargar páginas anteriores y exportar lo consultado como JSON.
+
+## Qué se registra
+
+Actividades de desarrollo: ideas pendientes, decisiones, implementaciones y resultados de pruebas. Cada registro conserva fecha de anotación UTC (la web muestra La Paz), resumen, estado, consumo conocido y evidencias opcionales. Una prueba con resultado necesita al menos una evidencia adjunta. Un valor de consumo desconocido permanece sin registrar; no se convierte a cero.
+
+Las evidencias se copian al registrarlas y se identifican con SHA-256. Cambiar el archivo original después no altera la copia conservada. La web comprueba hash y tamaño al consultar, muestra si falta o cambió la copia y bloquea servir una evidencia alterada. El contenido adjunto permite revisar la afirmación: un hash por sí solo no confirma su corrección ni la precisión de un modelo.
+
+Los registros se añaden en transacciones SQLite, enlazando cada entrada al hash anterior. Esta cadena detecta ciertas alteraciones accidentales; **es local, no está firmada y no es una auditoría independiente**. Quien controla el disco puede sustituir la base completa o recalcular la cadena; borrar el último tramo tampoco se detecta sin una referencia externa conservada. La aplicación no ofrece edición o borrado de entradas; una corrección se registra como otra actividad.
+
+El histórico empieza al crear esta bitácora. Las etapas anteriores pueden incorporarse como retrospectivas que enlazan informes existentes y lo indican expresamente. No se inventan fechas de ejecución ni pruebas pasadas. La fecha visible es la de registro, no necesariamente la del trabajo descrito.
+
+## Guardado y límites
+
+Base: `.local/activity/activity.sqlite3`. Evidencias: `.local/activity/artifacts/<sha256>`. Todo permanece en el equipo y está excluido de Git. No registra conversaciones, audio, videos originales, secretos o sesiones de uso automáticamente. Es una herramienta de desarrollo, distinta de un historial del usuario de Melodi.
+
+Cada entrada admite ocho evidencias de hasta 2 MiB, dentro del proyecto y con extensiones de documento, código, informe o PNG. Se rechazan rutas externas y carpetas ocultas, incluida `.local`; `.env` tampoco es una evidencia admitida. La API es solo de lectura, aplica la protección local de Host/origen y conserva `no-store`. La PWA guarda el shell de la vista, no los registros ni las evidencias. No hay publicación, cuentas ni sincronización remota todavía.
+
+## Registrar cambios e ideas
+
+Desde la raíz del proyecto:
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.activity idea --status pending --title "Nueva capacidad" --summary "Alcance previsto; pendiente de implementación."
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.activity implementation --status implemented --title "Cambio terminado" --summary "Qué cambió y su alcance comprobado." --evidence docs/17-bitacora.md --external-calls 0 --gpu-seconds 0
+```
+
+Los tipos son `idea`, `decision`, `implementation` y `test`. Los estados son `pending`, `implemented`, `passed` y `failed`; solo las pruebas usan `passed`/`failed`. Para una corrección, añadir un registro que mencione el ID anterior.
+
+## Pruebas con registro automático
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify python
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify spatial
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify spatial-worker
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify spatial-vendor
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify spatial-ui
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify spatial-local
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify javascript
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify contracts
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify activity-ui
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify app-ui
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify activity-local
+```
+
+Elegir la suite que resuelva la duda del cambio; no es necesario ejecutar todas siempre. El comando conserva inicio/fin, duración, argumentos, código de salida y salida de consola en `docs/verification-history/`, guarda una copia en la bitácora y termina con el código real de la prueba. Un fallo también queda registrado. Límite por suite: 180 segundos; salida conservada hasta 100 000 caracteres. Las suites listadas son locales con proveedores simulados y no consumen inferencia Meta/Modal. No ejecutar pruebas de proveedor real a través de este comando sin actualizar primero esa declaración.
+
+`javascript` incluye las ventanas de energía del doblaje. `dubbing-timing`
+recorre la interfaz, AudioWorklet y relay reales con upstream de traducción
+simulado; requiere Playwright/Edge y FFmpeg, sin inferencias pagadas. Conserva
+referencias de energía y timestamp estimado del dispositivo, sin acreditar audio
+físico ni el objetivo de 500 ms. El ensayo real de `tools/measure_dubbing_browser.cjs`
+exige `--allow-paid`, usa una sola fixture sintética fija y una sesión sin
+reintentos; su informe se registra explícitamente como prueba real, fuera de
+estas suites gratuitas.
+
+`dubbing-stream-timing` usa el mismo recorrido simulado con dos frases sintéticas
+de hash fijo. Requiere preparar antes la fixture con
+`python -m tools.prepare_dubbing_stream_fixture` en un equipo con Windows Zira y
+FFmpeg; el WAV debe coincidir con la versión aprobada. Rechaza fuentes distintas
+antes de abrir la sesión. No debe confundirse una salida rápida del proveedor
+simulado con traducción real. [Preparación y evidencia](27-doblaje-por-fragmentos.md).
+
+`openai-translation-pipeline` comprueba el mismo reproductor contra un stub
+OpenAI exclusivo de loopback: frames, ráfaga de salida, subtítulos y cierre.
+No usa la clave real ni evalúa un modelo. `http` ejecuta las pruebas locales de
+la API y los formularios en directorios temporales. Ambas registran cero
+llamadas externas. El ensayo real con OpenAI exige credencial separada y
+`--allow-paid`; queda fuera de estas suites.
+
+`dubbing-review-pipeline` y `dubbing-review-rejection` usan el upstream OpenAI
+simulado para comprobar la conservación optativa y su rechazo sin repetir una
+sesión. Solo pueden conservar la salida de las fixtures sintéticas aprobadas;
+los WAV quedan fuera de la bitácora. [Detalle y límites](29-revision-audio-sintetico.md).
+
+`activity-ui` necesita Playwright y Edge como las otras comprobaciones de interfaz; acepta `BRIVANY_PLAYWRIGHT_PATH` y `BRIVANY_BROWSER_CHANNEL`. Comprueba archivos reales de la interfaz con datos simulados; la lectura de API y evidencia reales se comprueba aparte.
+
+`activity-local` requiere servidor activo y al menos un registro con evidencia. Comprueba la página y API reales, descarga una evidencia y compara su SHA-256; conserva capturas de móvil/escritorio. Solo hace lecturas locales y no verifica el significado de los informes.
+
+`spatial` comprueba contratos, cola, almacenamiento, presupuesto y worker con
+modelos sustituidos. `spatial-worker` revisa la definición preparada sin importar
+el SDK Modal ni ejecutar GPU; `spatial-vendor` verifica hashes e imports locales.
+`spatial-ui` recorre servidor temporal, SQLite y WebGL reales, mueve un objeto
+con el control de ejes y prepara seis fotogramas de un video sintético. Permite
+renderizado por software. `spatial-local` requiere el servidor activo en 8765
+y comprueba solo lecturas, selección y adaptación en la instalación disponible.
+Las capturas de pantalla muestran geometría procedural de demostración. Estas
+suites no invocan modelos ni demuestran reconstrucción, medidas, física o
+funcionamiento en dispositivos físicos. [Alcance del visor](31-infraestructura-y-visor.md).
+
+La continuación espacial agrega pruebas de historial persistente, variantes,
+exportación, revisión manual y recuperación offline dentro de `spatial`. El
+respaldo se comprueba con fixtures temporales y sondas de servidor simuladas;
+no se copia la instalación privada real. La revisión de imagen no acredita
+reconocimiento, cobertura ni fidelidad. [Métodos y límites](32-revision-y-edicion-espacial.md).
+
+## API y archivos
+
+Las suites `spatial-render`, `spatial-physics`, `sous-ui`, `sous-pipeline` y
+`desktop` verifican los nuevos componentes locales. El render permite WebGL por
+software y la física usa parámetros asumidos. Sous usa proveedores sustituidos;
+`desktop` comprueba servicios y puente sin ventana nativa. No consumen inferencia
+externa y no acreditan reconstrucción, reconocimiento, realismo físico ni
+compatibilidad con dispositivos físicos. [Alcance y evidencia](34-render-local-sous-y-proyectos.md).
+
+`sous-voice` y `sous-voice-pipeline` prueban contexto/HTTP y conversación con
+proveedores/micrófono sustituidos. `desktop-ui` usa archivos reales con selector
+nativo sustituido; `spatial-modal` usa un SDK sustituido, sin autenticación ni
+GPU. La consulta real `tools.check_sous_vision_real --allow-paid` queda fuera de
+`tools.verify`: hace una solicitud pagada como máximo, registra tokens e importe
+desconocido y no utiliza fotos del usuario. [Entrega y límites](35-voz-sous-desktop-y-modal.md).
+
+`google-oauth`, `personal-providers`, `connections-http`, `connections`,
+`whatsapp-gateway`, `sous-catalog`, `floorplan-ui`, `plan-settings` y
+`portable-floorplan` usan cuentas/modelos/transportes externos sustituidos.
+OAuth comprueba cifrado DPAPI real sólo de secretos sintéticos. Las pruebas de
+planos usan geometría y medidas de demostración; no certifican escala, física,
+precisión arquitectónica ni selectores nativos. No son pruebas de entrega de
+WhatsApp ni autorizaciones Google reales. [Alcance](36-conexiones-planos-y-catalogo.md).
+
+| Recurso | Función |
+|---|---|
+| `GET /api/activity?before=<secuencia>` | Hasta 200 registros más recientes; cursor para anteriores e integridad de la cadena |
+| `GET /api/activity/<id>/evidence/<índice>` | Copia conservada; texto plano o PNG, después de verificar su hash |
+| `services/activity.py` | Registro transaccional y copias de evidencias |
+| `tools/activity.py` | Anotación explícita desde terminal |
+| `tools/verify.py` | Ejecución acotada de una suite y registro del resultado |
+| `web/activity.html`, `activity.css`, `activity.js` | Vista responsive, filtros y exportación |
+
+La exportación JSON conserva metadatos, hashes y URLs locales de lo cargado. No incluye automáticamente los bytes de las evidencias ni toda la base si quedan páginas por consultar. Para respaldo completo se deben conservar la base y su carpeta de artefactos juntas; este respaldo y su restauración siguen pendientes de automatización.
+
+Las suites `spatial-ingest`, `ingest-ui`, `personal-notes`, `personal-ui`, `social` y `social-ui` comprueban publicación local de resultados, recordatorios/notas y borradores/revisión social. Usan geometría generada y transportes SDK/Graph sustituidos; no acreditan reconstrucción, alarmas del sistema, cuentas, visibilidad o gasto real. `connections-http` incorpora los endpoints sociales privados. [Detalle del hito](37-resultados-3d-recordatorios-y-redes.md).
+
+`spatial-room`, `spatial-room-render`, `spatial-assistant`, `spatial-assistant-ui`, `presentation`, `presentation-ui` y `chat-requests` prueban geometría conocida, comandos/contexto y recorridos privados con datos generados y proveedores sustituidos. `request-latency-local` mide HTTP/SQLite temporal, sin pintado, red remota ni audio. El control `TurnBudget` se comprueba en `javascript`; su cancelación no acredita latencia del proveedor. [Hito38](38-multivista-asistencia-y-solicitudes.md), [respuesta](39-tiempo-de-respuesta.md).
+
+La auditoría del 29 de octubre reúne resultados locales y sustituidos en [docs/40-auditoria-casos-de-uso.md](40-auditoria-casos-de-uso.md). `portable-presentation` comprueba carpeta, cámara, revisiones, ZIP y puente nativo sustituido; `chat-requests-ui` usa mensajes sintéticos firmados y proveedores sustituidos. `additional-usecases` recorre seis usos exploratorios locales y no prueba demanda de mercado. `live-ui` y `human-skills-ui` preservan audio/modelos sustituidos; `room-dispatch` usa SDK Modal sustituido. El PDF se conserva en la raíz; su manifiesto/validación/render son evidencia admisible, sin ampliar la lista de extensiones para adjuntar PDFs arbitrarios a la bitácora.
+
+`room-ingest` y `room-ingest-ui` comprueban resultados multivista, cámaras, fuentes
+firmadas, biblioteca, render, respaldo y portabilidad con geometría sintética y
+SDK Modal sustituido. No ejecutan proveedores ni GPU de inferencia. Un resultado
+rápido de fixture o su coherencia de hashes no acredita reconstrucción real,
+precisión profesional ni dispositivos físicos. [Hito41](41-ingreso-multivista-y-portabilidad.md).
+
+`palabra-live`, `youtube-source` y `youtube-dubbing` comprueban protocolo, captura,
+iframe sustituido y salida separada con datos sintéticos; no se ejecuta inferencia
+externa. La herramienta `check_youtube_embed_real` queda fuera de esas suites:
+consulta el iframe público real sin Play ni traducción y sí hace tráfico de red
+normal de YouTube. [Uso y evidencia](44-youtube-live-con-palabra.md).
+
+La comprobación de control del navegador del 30 de octubre usa perfiles nuevos de
+Chrome/Windows. Google y lectura de resultados, pestañas/clic, búsqueda de canción y
+artista en YouTube, pausa/reanudación y entrega de acceso GitHub quedaron comprobados
+nativamente dentro del alcance descrito. Una orden completa pasó por HTTP, router y
+planificador Meta y actuó en páginas sintéticas con el ejecutor real. No acredita
+credenciales, micrófono/altavoz físicos ni todos los navegadores. Se conservan fallos,
+coste desconocido y pruebas sustituidas por separado. [Detalle y repetición deliberada](pruebas-navegador-melodi.md).
+
+La preparación local del backend de Melodi del 30 de octubre empaqueta los módulos
+fijados de Cognira con Electron/Three.js, sin copiar perfiles ni claves. Arrancó el
+ejecutor, escribió una nota sintética y publicó tres GLB con el runtime incluido,
+sin Node global ni inferencia. El paquete quedó activado; una alteración no habilita
+un fallback silencioso. Las suites locales comprobaron también cancelación del
+compilador y el recorrido sustituido de live/visor. macOS/Linux y el instalador
+completo siguen pendientes. [Evidencia y alcance](backend-local-melodi.md).
+
+La prueba sintética de creación 3D del 30 de octubre recibió cuatro respuestas de
+Meta y publicó una mesa de cinco piezas mientras otra conversación se respondía.
+Importe desconocido; no se usaron micrófono, Muse ni Cartesia. La inspección visual
+encontró el micrófono fuera de pantalla y el visor detrás de la biblioteca: se
+conserva ese resultado y se añade la corrección de barra, vista incrustada y estado
+de voz visible. La escena se reutilizó sin nueva inferencia para verificar siete
+tamaños y los cierres de opciones/contexto. [Resultados y límites](modelo-real-y-live-melodi.md).
+
+
+31 de octubre: reproductor Spotify horizontal, biblioteca paginada y letras
+automáticas con LRCLIB y respaldo Lyrics.ovh. Se retiraron la importación local
+LRC/TXT y la desconexión de WorkSpace; las cuentas se gestionan en Conexiones.
+Permisos de biblioteca desplegados en el puente HTTPS; autorizaciones anteriores
+requieren ampliar acceso para biblioteca y conservan reproducción. Se distinguen
+pruebas sustituidas, geometría Windows real y proveedores HTTPS anónimos reales:
+LRCLIB devolvió 502 y el respaldo respondió 200. No acredita toda la cobertura de
+letras ni reproducción física de la cuenta. [Implementación y límites](spotify-biblioteca-letras.md).
+
+
+31 de octubre: portadas mosaic corregidas, distinción de reproducción actual e
+historial, ondas ambientales/degradados de portada y teleprompter de tres filas.
+Se eliminan enlaces, controles de letra y paginación visibles. Se incorpora host
+nativo aislado del SDK como dispositivo Brivany, con permisos publicados. Windows
+real admitió Widevine; registro/audio de la cuenta requieren ampliar autorización
+Premium. No se confunden fixtures con reproducción física. [Implementación,
+pruebas y límites](spotify-workspace-dispositivo.md).
+
+
+31 de octubre, hora de La Paz: corregido audio local del SDK mediante host fuera
+de pantalla renderizado; usuario confirmó audibilidad. Controles directos,
+permanencia de ondas cinco minutos, nuevo personaje, letras con tiempos de
+SyncLRC y cola multipista con continuidad. Se retira Recientes y se conserva el
+histórico de fallos. La prueba real final pasó anterior/siguiente, progreso,
+volumen, aleatorio, repetición y cambio natural de pista sin orden next.
+[Implementación, evidencia y límites](spotify-audio-personaje-continuidad.md).
+
+
+31 de octubre: Melodi musical incorpora audífonos y baile suave/rítmico/animado,
+con estimación local de metadatos y letra temporizada, sin captura de audio ni
+inferir BPM real. Letras con transiciones de filas y mezcla progresiva de paleta
+entre canciones; conserva permanencia de ondas y movimiento reducido.
+[Implementación, pruebas y límites](melodi-musica-expresiva.md).
+
+
+31 de octubre: proyecto Google independiente Brivany, web pública de privacidad y
+condiciones publicada y enlaces registrados en Google. Se corrigió el retorno
+OAuth con emisor `iss` y se vincularon realmente los tres servicios de la cuenta
+personal indicada, separada de la administradora. Las consultas reales de Gmail,
+Drive y Calendar pasaron con permisos de lectura; no se guardó contenido privado
+en evidencias ni se ejecutaron escrituras. El estado de Google continúa siendo de
+prueba. [Proyecto y web](google-proyecto-y-web-legal.md),
+[vinculación real, pruebas y límites](google-vinculacion-real.md).
+
+
+31 de octubre: se simplifican Conexiones y los avisos de agentes; Brivany incorpora
+bandeja residente Windows con el icono original `b` y punto azul. La combinación
+vigente es Georgia para títulos y Segoe UI para texto y controles. Por petición
+del usuario se retira la edición local de navegador y se cierran sus pestañas;
+el renderizador se conserva dentro de la ventana nativa. WorkSpace y las tres
+autorizaciones Google siguen activos tras el reinicio. Se mantienen las páginas
+legales públicas, dejando la web de presentación para después. Se distinguen las
+suites con sustitutos, los ensayos nativos aislados y las lecturas de estado de
+la aplicación real. [Implementación, correcciones y límites](escritorio-identidad-y-bandeja.md).
+
+
+31 de octubre: WorkSpace se reduce a Traducir, Música y Abrir app; se retiran la
+hora y los accesos señalados. Traducir reúne selección de área, acceso a video y
+detección de idioma del audio sin el texto ornamental. Chat sin símbolo de barras
+ni «Estoy contigo», controles SVG unificados y botones sin contornos de foco.
+Pasaron `work` (28 pruebas), UI del chat y UI de WorkSpace con sustitutos; se
+conservan los fallos previos y la corrección de la zona central a ancho pequeño.
+[Implementación y límites](workspace-traduccion-y-controles.md).
+
+
+31 de octubre: logo completo a la izquierda y accesos directos Traducción auditiva
+y Selección de área en WorkSpace; se retiran el modal intermedio, el detector de
+idioma y Explicar. Reducción gradual de la música local de Brivany ante otros
+sonidos, con exclusiones de juegos y sin grabar audio. Por la última indicación,
+su control se retira de la barra y queda activado por defecto en Ajustes de la
+app. Se distinguen simulaciones, detección Core Audio real con tono sintético y
+estado real de la app reiniciada; se conserva el primer fallo del comprobador.
+[Implementación, evidencia y límites](workspace-accesos-y-musica-automatica.md).
+
+1 de noviembre: web oficial publicada en https://brivany.example, conservando
+Worker, dominio, páginas legales y retorno OAuth. Georgia/Segoe UI, modelos 3D
+operables de ordenador, móvil y gafas, habitación con selección y movimiento
+limitado de silla, exportación PNG, instrucciones copiables y extracción WAV
+local en el navegador. Anchos 320/390/768/1280 sin desbordamiento; pruebas HTTP
+en producción, extracción real de un video propio y suite OAuth aislada de 34
+casos. Se conserva el primer fallo de descarga PNG y su corrección a Blob.
+Móvil/gafas son conceptos; la instalación física de drivers continúa sin
+certificarse. Brivany está ejecutándose con WorkSpace visible y panel oculto.
+[Implementación, evidencia, publicación y límites](web-oficial-interactiva.md).
+
+1 de noviembre, continuación del objetivo de terminal: se corrige la detección
+que confundía Antigravity 2.x con Antigravity IDE. Melodi abre una copia local
+existente, prepara un workspace independiente y ejecuta una configuración
+observada del depurador, sin escribir comandos en una terminal ni capturar el
+ratón. Pasó el ensayo real por planificador y adaptador nativo, salud HTTP y
+fuente Git limpia; captura nueva en Escritorio/Evidencia Melodi. Se verificaron
+parada, nuevo arranque y reconocimiento de sesión activa sin repetir F5.
+Quedan los tres fallos previos y sus correcciones, incluidas espera de arranque
+lenta y conversión del handle UIA. Suites: terminal 44, terminal-ide 11, computer
+24 y computer-native 30; los sustitutos no cuentan como comandos aprobados.
+Seis planificaciones reales, importe desconocido y red total no medida. Brivany
+reiniciado con WorkSpace activo y panel con región vacía; cerrados sólo dos
+servidores de prueba propios. Checklist sin avanzar: 65 aprobados. No se declara
+cumplimiento de 2.000 comandos, macOS ni navegación Regedit.
+[Implementación, fallos, evidencia y límites](terminal-ide-real.md).
+
+1 de noviembre, entrega posterior solicitada por el usuario: Normal y Acceso
+completo en Ajustes, guardados por el backend; revisión concreta para papelera
+y sobrescritura en ambos modos, y para movimientos en Normal. Caducidad, un uso,
+revocación y comprobación de contenido/identidad. Copia anterior al sustituir;
+papelera sin borrado permanente alternativo. La limpieza conversacional de
+temporales sólo prepara una vista previa, sin retirar archivos. Interfaz local
+con sustitutos comprobada entre 320 y 1280 px; transporte nativo y papelera real
+comprobados aparte con documentos sintéticos propios. Se preserva el primer
+fallo de dependencia de Playwright y su corrección con el runtime ya disponible.
+Se revisó Cognira Remote Host sin modificarlo: su documentación distingue control
+humano remoto de aceptación automática de UAC. No se instala servicio SYSTEM,
+no se acepta UAC ni se cambia el registro. El selector no otorga acceso global
+administrativo y no certifica macOS/2.000 comandos. El usuario solicita esperar
+instrucciones al cerrar esta entrega.
+[Implementación, evidencias y límites](modos-acceso-y-aprobaciones.md).
+
+1 de noviembre, nueva petición: Bang Motion MIT 1.19.0 fijado por commit,
+licencia y hashes. Agente motion conectado al chat y la ruta Live, con cola
+independiente y planes tipados; no ejecuta código del modelo. Dos videos reales
+de 24 s/1080p/30 fps: WorkSpace y habitación conceptual, con Georgia/Segoe UI y
+logo propio. Cuatro planificaciones reales, importe desconocido; renders
+iniciales de 67,532 y 70,453 s, ensayo conjunto de 151,188 s. Se conservan fallo
+inicial de configuración, rechazo del analizador a bibliotecas empaquetadas y
+revisión editorial. El MP4 reveló una superposición en el cierre que el check
+técnico no detectó: corregida opacidad anidada y añadida comprobación de píxel,
+sin nueva inferencia. Se conservan versiones anteriores. Productor/puente
+sustituidos para QA de interfaz, MP4 reproducido realmente y cuatro anchuras
+comprobadas. Sin ratón, UAC, micrófono físico, publicación ni música de referencia.
+Música y locución ausentes en esta entrega; sólo dos familias de escena y
+compatibilidad real Windows. [Implementación y resultados](melodi-bang-motion.md).
+
+Corrección del mismo hito: una regresión UI mostró que una respuesta de estado
+vacía o antigua podía cerrar la aprobación visible. Se conserva ese fallo y se
+añade la corrección: mantener la solicitud hasta decisión/caducidad/cancelación,
+descartar respuestas fuera de orden y recuperar el estado por el puente nativo
+si caducó el grant HTTP. La nueva prueba `observe([])` pasa. Ocho pruebas de
+política y siete de archivos, incluida protección frente a Guardar/autoguardado
+genérico, y rechazo de rutas HTTP de autoaprobación. Brivany reiniciado con
+Normal y control desactivado; WorkSpace visible y panel con región vacía. No
+hubo aprobación UAC ni cambios de archivos del usuario. El usuario pidió quedar
+en espera; no se certifica como logrado el acceso UAC automático.
+
+1 de noviembre, corrección creativa solicitada: se rehacen las dos promociones
+con mundos más expresivos: cintas 3D reactivas al PCM/filmstrip y construcción
+arquitectónica con despiece, materiales y cámara. Se añade locución opcional
+por la voz española ya configurada de Melodi/Cartesia, cuatro frases acotadas,
+duraciones reales sin truncación, AAC en MP4 y transporte sincronizado en HTML.
+Ocho llamadas reales a TTS, cero nueva inferencia de planificación, importe
+desconocido. Los ajustes visuales reutilizan el audio, sin nuevas llamadas.
+Doce pruebas de motion y reproducción/decodificación del MP4 en chat a cuatro
+anchuras; proveedor/puente sustituidos en esa suite. HyperFrames y FFprobe
+comprobados, fotogramas finales inspeccionados y loudness medido. Se conservan
+las versiones rechazadas, el fallo del parser de loudness y la corrección de
+cruces de cintas. Sin micrófono, escucha humana, música ajena ni publicación.
+[Implementación, evidencia y límites](melodi-motion-con-voz.md).
+
+1 de noviembre, hito posterior de WorkSpace: selector de dos botones sin título
+ni X, chat compacto, Live existente, onda de voz y pulso. Se corrige el HTTP 410
+causado por borrado de cookies entre ventanas privadas, manteniendo el cierre de
+la interfaz web. Spotify prioriza la sesión de cuenta/móvil frente al SDK viejo,
+retiene biblioteca durante 429 y guarda un punto protegido de canción/posición
+para el próximo arranque; se retira el sustituto de escuchas recientes. Ducking
+excluye la mezcla de FxSound, conserva el navegador original y baja al 12 % por
+petición posterior. Las ondas de música y voz se comprueban en WebView2 real con
+señal sintética; la cuenta y los picos del sistema se consultan de forma acotada,
+sin PCM ni micrófono físico. Se conservan intentos fallidos de los arneses y
+sus correcciones. Coste externo desconocido; pruebas locales sin inferencia.
+[Implementación, evidencia y límites](workspace-chat-live-y-spotify.md).
+
+
+
+1 de noviembre, corrección posterior de apertura: fondos nativos de WinForms y
+WebView2 fijados a negro antes de mostrar, selector con forma definitiva y
+fundido de 180 ms en vez de recorte creciente. Se retira la vista anterior al
+cambiar de panel. Música resuelve conexión y subvista localmente para abrir con
+dimensiones definitivas, sin el reproductor compacto provisional. Se añaden
+comprobaciones de RGBA, alfa, movimiento reducido y tamaño inicial, con ventanas
+reales y servicios sustituidos; no se certifican todos los fotogramas del
+compositor ni otras plataformas. [Corrección y alcance](workspace-apertura-sin-destellos.md).
+
+1 de noviembre, traducción auditiva directa solicitada: un clic inicia captura
+de salida desde WorkSpace sin abrir `/dubbing`. Original al 12 % después del
+punto de captura y restauración al detener. Ruta Windows/FxSound separa la voz
+traducida para no recapturarla. Se corrigió el análisis de voz por inicio de
+turno y se probaron dos frases propias en español traducidas al inglés con
+voces masculina y femenina. Se distinguen ventanas nativas/servicios sustituidos
+y pipeline real. La última prueba completó tres segmentos; no certifica escucha
+física ni clasificación infalible. Se conservan ensayos previos incompletos y
+fallo inicial de sincronización UI. Consumo conocido y coste desconocido están
+detallados; sin audio del usuario adjunto. El objetivo de terminal sigue pausado.
+[Implementación, pruebas y límites](workspace-traduccion-auditiva.md).
+
+1 de noviembre, corrección posterior del rechazo de ritmo en WorkSpace:
+reproducida la ráfaga tras una demora de 360 ms. Reloj compartido de PCM sin
+recuperación en ráfagas, bloque pendiente conservado durante pausa y receptor
+que mide llegada en vez de procesamiento. Se mantiene el rechazo de un envío
+realmente acelerado. Pasaron 56 pruebas locales, dos ensayos de 35 s con siete
+demoras provocadas (uno con WASAPI real) y la regresión WebView2 nativa. Los
+proveedores/salida de estos ensayos fueron sustituidos; sin llamadas externas
+ni PCM/transcripciones guardados. Reiniciado con WorkSpace activo; se conserva
+el fallo inicial. [Corrección, evidencia y límites](workspace-ritmo-traduccion.md).
+
+
+1 de noviembre, continuidad audible posterior: corregidas serialización MT/TTS, pausa ASR externa, doble buffering Cartesia, reloj WASAPI y cierre SSE completo sin EOF. Diez ensayos reales preservan fallos y una fuente insuficiente; el final de video terminó sin error y el usuario confirmó fluidez y voces distinguibles. Labels y voces estables por hablante. 118 pruebas locales, UI/nativo, consumo conocido e importe desconocido. La anticipación A/V y extensión son el hito siguiente, no acreditado por estas pruebas. [Evidencia y límites](workspace-traduccion-continuidad.md).
+
+2 de noviembre, anticipación audiovisual y espera: incorporados modos
+Preproducción/Navegador, relay local revocable y extensión Chromium con búfer
+acotado. Preparación de proveedores/TLS adelantada y análisis Meta de prefijo
+en paralelo. Siete ensayos propios reales, incluido un fallo conservado:
+el último preparó en 5,78 s, primera voz a 7,12 s desde clic; **no acredita el
+máximo de seis segundos**. Las pruebas locales de UI, WebView2, relay y carga
+de extensión se distinguen de instalar/capturar en Brave del usuario, pendiente.
+Emoción consultiva y tiempos de procesamiento ASR, sin promesa labial. Consumo
+conocido e importe desconocido documentados. El usuario retiró el objetivo de
+terminal. [Implementación, métodos, evidencia y límites](workspace-traduccion-sincronizada.md).
+
+2 de noviembre, diseño de iPhone en curso: referencia ProjectFixture App consultada sin
+modificarla; vista local interactiva con compositor, menú/historial de chats,
+cinco módulos, Live al estilo ProjectFixture, iconos Lucide y ajustes con documentos
+internos. Pruebas aisladas de controles/historial/legal y tres tamaños pasaron;
+no activaron micrófono ni APIs. Base SwiftUI y gateway candidatos, aún sin
+compilación iOS ni validación física. Quince pruebas sustituidas del gateway
+pasaron. A petición del usuario **no se genera el IPA hasta terminar el diseño**;
+workflow protegido con opción manual desactivada por defecto. No se creó repo
+ni se publicaron fuentes. [Estado y límites](iphone-diseno-en-curso.md).
+
+2 de noviembre, cuenta Brivany y control entre dispositivos: servicio publicado,
+sesiones protegidas, host Windows saliente automático y selección de equipo
+común a chat/Live. Cuenta propia de prueba iniciada en escritorio y vista móvil.
+29 pruebas del gateway, 7 del host, UI aislada y regresiones pasaron; consulta
+real de encendido por chat y por ASR con voz sintética terminaron en Windows.
+Selección con segundo host simulado comprobada y fixture revocado. Reconexión
+tras reinicio confirmada. Se conservan fallos de fetch, selección y test UI.
+Consumo real e importe desconocido documentados, sin audio ni claves adjuntos.
+Política pública actualizada. Fuente iOS sin compilar/probar físicamente;
+**no se genera IPA**. [Implementación, evidencias y límites](cuenta-brivany-y-control-entre-dispositivos.md).
+
+Revisión posterior del mismo hito: 30 pruebas de gateway y 8 del host; se añadió
+aislamiento de elección por conversación y se corrigió la ruta del chat de
+escritorio ya armado para usar también la cuenta compartida. Cerrar sesión
+limpia seguimientos antes de cambiar de cuenta. Pasaron además 30 regresiones
+de voz/conversación con sustitutos. Se conservan los registros anteriores.
+
+Cierre posterior: nueve pruebas del host incluyen un acuse que llega después de
+cerrar sesión, sin iniciar tareas nuevas. Confirmada de nuevo la reconexión real
+con el código final, sin inferencias adicionales. Documentos internos de la vista
+móvil sincronizados con la política pública. Se mantiene iOS físico pendiente.
+
+3 de noviembre: Melodi coordina equipos con dependencias, ejecución concurrente,
+revisión estructurada Meta y corrección acotada de artefactos; incorpora imagen
+Muse y búsqueda documentada. Dos documentos reales terminaron aceptados con
+2,828 s de solapamiento; imagen/documento/investigación propios se reevaluaron
+sin regenerarlos. Se conservan rechazos e intentos fallidos. Consumo conocido:
+27 peticiones a Meta; factura e internos de búsqueda sin cuantificar.
+
+WorkSpace muestra miniagentes completos, pulso azul y salida suave al terminar;
+el trabajo evita el sueño de Melodi. Instalado Glisse 0.5.0 para resultados en
+panel glass compacto, con ajuste de texto, scroll exclusivamente vertical y
+barras ocultas. CSS local compatible con CSP, lectura temporal de medios y
+restauración del fondo nativo comprobados. Pasaron la suite de orquestación,
+UI de agentes/visor, visor WebView2 y regresión de chat/voz sustituida; se
+conservan también sus fallos iniciales. Sin nuevo micrófono físico ni IPA.
+[Cambios, pruebas reales/locales y límites](melodi-orquestadora-y-agentes.md).
+
+3 de noviembre, continuación: chat compacto de 148 a 404 px con «Pensando…»,
+expansión suave y cierre tolerante al salir, sin cortar Live. Melodi despierta
+por trabajo/escucha/respuesta y confirma encargos sin exponer acuses del PC.
+Se corrigen mutex sobre llamadas de ventana y notificaciones bloqueantes de
+WebView2; idiomas con botones, reinicio cancelable y salida silenciada antes de
+limpieza de proveedores. Estrés nativo y parada de dispositivo con PCM cero
+pasaron, distinguidos de calidad audible de una nueva traducción real.
+
+Letras consultadas sin bloquear pista anterior y con caché; estado musical
+directo desde SDK. La pista del usuario no obtuvo tiempos de los proveedores;
+una pista de referencia sí cargó en 0,391 s. Se retira el aviso de letra no
+disponible sin inventar sincronización. Aplicación nativa propia de facturas e
+inventario completó dos borradores y reutilizó una receta de cuatro pasos con
+datos nuevos; el usuario no tiene un programa comercial para probar. Inicio
+de app de prueba en segundo plano sin borde/cursor/foco comprobado. Se conservan
+fallos de UIA, pruebas, foco y primer plan incompleto. Tres peticiones Meta y
+ocho consultas públicas de letras conocidas, importe sin medir.
+[Implementación, evidencias y límites](workspace-fluidez-y-aprendizaje.md).
+
+Corrección posterior: el chat de WorkSpace ya no se oculta por mover el cursor.
+Se oculta suavemente al escribir en otra app en modo Automático; Manual permanece
+abierto hasta ×/Escape. Ambos modos con ejemplos en Ajustes, elección persistida,
+señal Windows sin guardar teclas/texto y desactivada fuera del chat. Pruebas de
+interfaz, puente nativo, política y hook aprobadas; fallo del cursor simulado
+conservado. Apertura sencilla restringida a un inicio verificado, sin foco añadido.
+[Pruebas y alcance](workspace-fluidez-y-aprendizaje.md).
+
+Cierre de comprobación: Brivany reiniciado y cuenta/dispositivo en línea, barra y
+reserva de 40 px, WorkSpace sin estilo de barra de tareas. Una lectura adicional
+al servicio de dispositivos; sin inferencia ni acciones. Expectativa fallida del
+sondeo de panel cerrado conservada en tmp/workspace-fluidez-runtime.json.
+
+3 de noviembre, corrección de apertura y respuestas: Word había fallado antes
+de ejecutarse por el plan de coordinación. Ruta directa, agente de instalación,
+respuesta final en el chat, input adaptable y aprendizaje progresivo de recetas.
+Word real abierto minimizado sin tomar foco; nuevas consultas compuestas de
+Windows elegidas por Meta y respuestas cotejadas con hechos actuales. Se distinguen
+prueba propia, real, sustitutos, consumo conocido y límites de disponibilidad.
+[Implementación y evidencias](melodi-aperturas-y-diagnostico-adaptable.md).
+
+3 de noviembre, cierre de interacción: confirmaciones naturales/contextuales,
+aviso glass bajo Melodi cuando el chat está cerrado, texto de tres líneas y
+ventana física de 420x80. Se corrigió el backdrop que excedía la tarjeta pese
+al recorte aparente: nuevas pruebas miden el viewport nativo. Diagnóstico
+compuesto por Meta y ejecutado con datos reales, respuesta final en WebView2.
+Diez inferencias conocidas de prueba; coste monetario sin medir y fallos sin
+contador diferenciados de consumo cero. [Evidencia](melodi-aperturas-y-diagnostico-adaptable.md).
+
+3 de noviembre, operaciones nuevas en programas y reanudación. El recibo del
+caso Paint mostró una apertura seguida de una revisión rechazada y una
+investigación incompleta. El agente que debía escribir nunca arrancó. Ahora la
+inspección del programa puede usar sus controles y una captura de la ventana
+observada. La documentación se consulta cuando el encargo la necesita. Una
+investigación incompleta puede tener un segundo intento de sólo lectura.
+
+Una intervención de escritorio conserva los recibos en memoria, libera el
+control nativo y deja en espera a los agentes que dependen de ella. Continuar
+desde el chat o la barra vuelve a observar la aplicación con la autorización
+vigente. Se probó la continuación con una aplicación simulada. Para el ensayo
+real de Paint, Melodi redactó un poema sintético, abrió el PNG nuevo, verificó
+la ventana y aprobó el resultado. El lienzo contiene texto rasterizado. Los
+intentos anteriores se conservan como fallidos. Hubo 14 llamadas Meta
+registradas entre los ensayos de Paint, con coste monetario desconocido.
+
+3 de noviembre, corrección de Paint y de la capa de voz. La nueva petición de
+boxeo falló antes de dejar un paso verificado. El recibo anterior no conservó
+la excepción específica. La acción actual abre un lienzo nuevo, identifica la
+herramienta Texto por accesibilidad, dibuja el cuadro y lee el valor exacto del
+editor de Paint. Deja el cuadro abierto para editar y no crea un PNG. Se
+confirmó en Paint clásico en español. Tres ensayos nativos detectaron el
+límite de UI Automation y un problema de comprobación de coordenadas. El
+cuarto verificó texto multilínea con acentos sin llamadas de inferencia.
+La prueba completa de boxeo con Meta y Paint pasó con tres llamadas. Un ensayo
+completo anterior falló con dos llamadas. Coste monetario desconocido.
+
+La onda de WorkSpace usa un fondo transparente en Windows y sólo se muestra
+con señal de voz y con los paneles cerrados. La prueba nativa con señal
+sintética confirmó que se oculta durante silencio y al abrir el chat. Los
+avisos glass se comprobaron por separado en la misma suite.
+La verificación final consulta también la visibilidad del HWND en el arranque.
+WebView2 podía exponer la ventana inicial a pesar de la opción de arranque
+oculta. Ahora se enlaza con región vacía y se oculta antes de publicar el estado.
+
+3 de noviembre, búsqueda web de Melodi. Se verificó la herramienta web_search
+de Meta en Responses API y se corrigió la entrega del texto con citas al chat
+y a WorkSpace. El proveedor comprueba llamada de búsqueda, respuesta final
+completa y fuentes públicas HTTPS. Se separan los errores de falta de
+búsqueda, respuesta incompleta y ausencia de citas. Hay un único reintento de
+evidencia. Meta admite hasta cuatro operaciones internas de búsqueda por
+solicitud y se conserva el presupuesto global de planificación.
+
+Las pruebas reales incluyeron documentación Microsoft y el clima de Las
+Terrenas. Una respuesta de clima llegó correctamente por la cuenta, pero
+usó el día UTC. Ese defecto se registra separado de la prueba de transporte.
+El proveedor recibe ahora la hora local y UTC, junto a la instrucción de
+comprobar la fecha en el lugar consultado. Un ensayo posterior reconoció
+el 3 de noviembre local. Fuentes y metadatos de prueba se guardan sin
+conversaciones originales. El coste monetario de Meta no fue medido.
+
+La comprobación posterior encontró que el coordinador cambiaba «hoy» por una
+fecha absoluta equivocada. Las búsquedas sencillas reciben ahora la pregunta
+original, y la planificación y revisión reciben la hora local. Los resultados
+brutos de Meta pueden traer fragmentos vacíos. Se añade una lectura de hasta
+dos páginas citadas, con límites de tamaño, tiempo, redirecciones y direcciones
+públicas. Los extractos se usan durante la revisión y se retiran de la memoria
+del trabajo al terminarla. Si faltan las citas de la respuesta, se admite una
+síntesis basada sólo en fuentes realmente recuperadas y leídas. El modelo
+selecciona índices de esas fuentes y el ejecutor rechaza índices inventados.
+
+El cierre real por cuenta y escritorio pasó con fecha local 2026-11-03,
+respuesta y tres fuentes, en 32,97 s. El host registró cinco solicitudes
+externas y la prueba catorce llamadas a la cuenta. El tráfico del gateway y el
+importe facturado no se midieron en ese contador. Se conservan los ensayos
+fallidos de fecha, ausencia de citas y revisión sin extractos. La suite
+orchestration pasó 27 pruebas, account-host 11 y la interfaz comprobó fuentes
+en ambos chats, apertura voluntaria del enlace y rechazo de un esquema de URL
+inseguro. No hubo captura de micrófono en estas pruebas.
+
+3 de noviembre, corrección posterior por petición del usuario: fuentes ocultas
+en las respuestas normales y procedencia recuperable al preguntar, sin otra
+llamada al modelo. Ruta breve de búsqueda con una llamada Meta, sin clasificación,
+planificación ni lectura adicional de páginas. Pruebas reales completas de
+4,781–5,985 s, sin caché: mejora frente a 32,97 s, sin acreditar máximo fijo de
+cinco segundos. Suites locales y UI aprobadas, gateway publicado y escritorio
+reiniciado. Coste monetario desconocido; sondeos y límites registrados en
+[búsqueda rápida y procedencia](melodi-busqueda-rapida-y-procedencia.md).
+
+3 de noviembre, revisión del micrófono de WorkSpace: el input ahora dicta con
+ondas de las muestras acústicas y controles de cancelar/detener/enviar. Se
+reprodujo y corrigió el permiso pendiente de WebView2 con la app principal
+oculta. Captura física local, ASR real con voz sintética propia e interfaz
+probados por separado; coste de dos intentos Meta desconocido. Durante el
+reinicio de prueba se duplicó la barra: se cerró la instancia sobrante y se
+incorporó exclusión entre procesos y serialización interna. Tres pruebas de
+instancia y dos reaperturas reales conservaron una sola barra y sus 40 px.
+[Cambios, pruebas y límites](workspace-dictado-e-instancia-unica.md).
+
+
+4 de noviembre, continuaciones 074–079. La reproducción en la pestaña conserva
+el tono entre 1 y 1,25×; la comprobación propia completó dos tonos de un segundo
+en ventanas de 0,8 s y pasaron 78 pruebas de extensión. Se actualizaron los
+veinte archivos de distribución manteniendo ID y permisos. La extensión
+personal confirmó versión 0.4.9, pero su preparación automática no quedó
+comprobada: el módulo informó «unavailable».
+
+El ensayo 075 terminó con rechazo de Cartesia. Una única solicitud propia
+posterior confirmó HTTP 402 por cuota; se detuvo la síntesis hasta el aviso del
+usuario. Se incorporaron mensajes seguros para cuota y concurrencia. Tras
+restablecerse la cuota, el único ensayo real nuevo 078 completó trece voces
+hasta 31,9294 s y volvió a fallar: retraso de 9,569062 s, crecimiento de
+4,635729 s y cierre por acumulación de entrada. ENDPOINTING fusionó el prefijo
+en un solo turno; se retiró ese experimento y se conserva DIARIZATION.
+
+Se preservan ambos fallos, los conteos de solicitudes y el importe desconocido.
+No se cambiaron planes ni sobrecostes. El control del ordenador se detuvo al
+no poder verificar la URL de Brave y no se eludió el bloqueo. La continuidad
+completa y la atribución humana de hablantes siguen pendientes.
+[Implementación, ensayos, consumo y límites](traduccion-auditiva-cierre-acotado-074-079.md).
+
+Comprobación posterior 079: tras retirar ENDPOINTING, pasaron 103 pruebas de
+sync-relay y 78 de extensión, registradas por tools.verify sin llamadas externas.
+Los informes finales y el alcance se añaden al mismo documento 074–079.
+
+
+4 de noviembre, continuación 080–081 y pausa solicitada. Se conserva el
+prefijo ya capturado al buscar, pausar o cambiar velocidad. Un fallo antes de
+enviar prefix-start permite recuperar en eventos de disponibilidad, con un
+máximo de dos preparaciones locales por fuente y sin repetir automáticamente
+un intento ya enviado. El recorrido propio de Brave con video codificado,
+protocolos sustituidos y búsqueda al inicio reutilizó una sola preparación,
+continuó desde 7000 ms, omitió música y completó cuatro voces nuevas.
+Evidencia: tmp/selected-video/inline-sync-1793828501005.json.
+
+El consejo de timbre exige ahora acuerdo entre los dos modelos locales ya
+instalados cuando el modelo primario propone una categoría. Desacuerdo o
+corroboración insuficiente conserva incertidumbre; una voz estable se mantiene
+como provisional. No añade llamadas a proveedores. Las dos muestras propias
+existentes conservaron sus categorías de catálogo con tiempos de 674,25 y
+491,02 ms. No es validación humana del video público. Evidencia:
+tmp/selected-video/local-timbre-consensus-owned-081.json.
+
+Pasaron 83 pruebas de extensión, 26 de voces, 70 de River y 104 de sync-relay,
+registradas por tools.verify. La primera comprobación integrada de desacuerdo
+no agotaba la caché del sustituto y observó su referencia masculina; se corrigió
+la preparación de esa prueba para consumir ocho piezas y comprobar inferencia
+nueva. No se modificaron resultados anteriores. Los cambios 080–081 están en
+el código fuente: no se certifica su carga en el perfil personal ni una nueva
+publicación del ZIP. No hubo nuevas solicitudes pagadas en esta continuación.
+
+El usuario pidió detener las pruebas y pasar a preparar un video de Brivany.
+El objetivo de traducción quedó pausado, sin marcarlo completo. Quedan abiertos
+la continuidad integral, la atribución humana, el prefijo personal y la carga
+nativa de los últimos cambios. Se responde primero al posicionamiento del
+producto, distinguiendo capacidades presentes y visión espacial futura.
+
+
+4 de noviembre, guion representativo de Brivany. Se redactó una película de
+180 s, once escenas, con locución propuesta de Melodi, arquitectura sencilla,
+casos de uso y plan de motion. Se mantuvieron los datos de Microsoft WTI 2025
+(80 % de encuestados sin tiempo o energía) y Gallup 2026/datos 2025 (40 % con
+estrés el día anterior), sin atribuir causalidad a IA ni crecimiento anual.
+El inventario retrospectivo contrastó 1.215 informes de tools.verify con la
+bitácora, incluidos 185 con salida no cero y regresiones repetidas. Una ronda
+reciente seleccionada de cuatro suites reúne 283 casos aprobados; no equivale
+a funciones únicas ni certifica funcionamiento integral.
+
+La investigación visual en paralelo recomendó HyperFrames, GSAP, Three.js y
+FFmpeg existentes, conservando el personaje original. El compositor cotidiano
+limitado a 18/24/30 s requiere una composición nueva para 180 s. Se propone
+acabado comercial y escenas ideales identificadas como ilustración; no se
+cambia el historial de fallos ni se afirma perfección, clonación instantánea o
+reunión presencial ya verificada. No se generaron medios, voz ni renders en
+esta fase. La consulta de usage de HyperFrames informó cuota del entorno,
+no saldo de Cartesia. Guion, narración, fuentes, inventario y plan visual:
+Exports/Brivany-presentacion-3min/. La película queda por producir tras revisar
+el guion, conforme al orden solicitado.
+
+
+4 de noviembre, producción del video Brivany · A tu ritmo. Composición ilustrada
+de tres minutos a 1080p/60, voz original de Melodi y partitura local. La ampliación
+incorpora agentes, ordenador, investigación, herramientas Meta, Sous como primera
+human-skill de Brivany y Meta Glasses como próxima etapa. No es una captura real
+del producto. Se reutilizaron siete capítulos y se generaron cuatro nuevos: total
+de producción 15 solicitudes Cartesia, 3.569 caracteres, sin reintentos; importe
+facturado desconocido. HyperFrames se actualizó de 0.8.79 a 0.9.13 y pasó check
+con 13 avisos estructurales. Tres rondas de crítica corrigieron encuadres y textos.
+La exportación y las comprobaciones del MP4 siguen pendientes en este registro.
+[Evidencia de producción](../tmp/brivany-film-production-20261104.json).
+
+
+4 de noviembre, entrega del video Brivany · A tu ritmo. Exportado MP4 de 180,000 s,
+1920×1080/60 fps y 10.800 fotogramas. Pasaron formato/color, duración, sonoridad,
+alineación de audio en ocho puntos (cero muestras de desfase frente al WAV) y
+lectura completa de audio/video. Se corrigió un desplazamiento de −256 muestras
+observado en el extracto inicial mediante empaquetado del WAV original; ambos
+resultados se conservan. Se inspeccionó la hoja de 24 fotogramas del MP4 final.
+La revisión estilística del extracto conserva un fallo de cola estática y doce
+avisos: el corte terminaba dentro de una pausa de lectura, no al final del film.
+No se declara aprobado todo el análisis estilístico ni se certifica la aplicación.
+El render/entrega no hicieron nuevas peticiones de voz; total de producción
+15 solicitudes, 3.569 caracteres, importe desconocido. Solo se registra metadata,
+sin adjuntar audio ni videos originales. [Evidencia de entrega](../tmp/brivany-film-delivery-20261104.json).
+
+
+4 de noviembre, versión inglesa de Brivany. Voz de Melodi y textos en inglés.
+Exportación de 180 s a 1080p/60, decodificación completa y sincronía comprobada en
+ocho puntos. Once solicitudes Cartesia, 2.419 caracteres y ningún reintento.
+Importe facturado desconocido. Los medios se entregaron por separado.
+
+4 de noviembre, preparación de la entrega. Credenciales retiradas, 26 variables
+explicadas y ocho rutas comprobadas sin claves. Google aceptó la revocación OAuth.
+Spotify se desvinculó localmente. La revocación remota de Spotify y el cierre
+remoto de la cuenta Brivany no se confirmaron. Los servidores locales se detuvieron.
+
+4 de noviembre, cierre de WorkSpace. El cierre de la ventana y Salir desde la
+bandeja comparten la secuencia de salida. Se libera la reserva antes del cierre
+de WebView. Una ventana propia comprobó el ciclo real de y=0 a y=40 y regreso a
+y=0 en Windows. La suite work pasó 40 pruebas. La entrega conserva la bitácora
+depurada y los informes, con los originales históricos guardados por separado.

@@ -1,0 +1,72 @@
+{
+  "purpose": "Apply headphones, dance and smooth lyric/palette UI; request restoration of previous playing context and position.",
+  "new_wrapper_pid": 15564,
+  "new_device_observed": true,
+  "prior_playing": true,
+  "playback_restore_requested": true,
+  "position_preserved_in_request": true,
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/v1/me/player",
+      "code": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/queue",
+      "code": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "code": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/me/player/play",
+      "code": 204
+    }
+  ],
+  "known_api_calls": 12,
+  "cost": "Not measured; no paid inference. SDK traffic not counted."
+}

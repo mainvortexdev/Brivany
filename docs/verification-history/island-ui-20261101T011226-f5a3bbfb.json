@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-11-01T01:12:26.538009+00:00",
+  "finished_at": "2026-11-01T01:13:09.879216+00:00",
+  "duration_seconds": 43.341207,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"status\": \"passed\",\n  \"checks\": [\n    \"opaque black surfaces; removed logos, slogans, voice/tasks modules\",\n    \"cursor-edge anchoring; brief accidental hover ignored; slower initial open, fast Video-to-Skills switching, delayed exit; no title tooltips\",\n    \"text-only tools flank a centered soft Melodi character with hands at eight widths\",\n    \"idle sleep, occasional gaze and reduced motion\",\n    \"one-button Spotify link handoff, controls and transfer with substituted configured app\",\n    \"timeline advances to timed lyric line; seek forward/back and pause reflect SDK progress; no Recientes tab; inline three-line teleprompter with blurred neighbors; timed lyrics as text; plain text never shown as a frozen verse; infinite library scrolling and observed item playback; no workspace disconnect or import\",\n    \"five panel resolutions plus secondary music views at four resolutions: bounded surfaces, reachable controls, no page scroll\",\n    \"Spotify account upgrade and disconnect live only in desktop Connections\",\n    \"mosaic thumbnails, cover-colored waves and gradients; paused waves retained for five minutes then fade over 2.4s; reduced motion; direct playback pushes without pending-button shading\",\n    \"headphones and gentle/groove/lively estimated dance; pause and reduced motion; palette interpolates and retargets without jumps; keyed lyric rows animate with cleanup\",\n    \"explicit audio consent and capture preserved\"\n  ],\n  \"native_bridge\": \"substituted\",\n  \"spotify\": \"substituted\",\n  \"external_calls\": 0,\n  \"errors\": []\n}\n"
+}

@@ -1,0 +1,129 @@
+# 18. Traducción y doblaje de videos
+
+27 de octubre de 2026. **Primera integración implementada, con prueba real completada en Palabra.** Calidad y máximo de 500 ms de inferencia pendientes de verificación. [APIs investigadas y fuentes oficiales](19-doblaje-apis.md).
+
+## Primera integración disponible
+
+Abrir [Doblaje](http://127.0.0.1:8765/dubbing), elegir un MP4 local de hasta 25 MiB,
+idioma de origen y salida en español o inglés, activar el permiso e iniciar. El
+video permanece en el navegador; se envía su audio durante la reproducción a la
+API Speech-to-Speech de **Palabra**, elegida por el usuario para el primer ensayo.
+Se reciben voz traducida y subtítulos en streaming.
+No se activa el micrófono. Los volúmenes de voz traducida y original son separados.
+
+La clave API de Palabra es independiente de Meta. Se crea en
+[Palabra → API Keys](https://platform.palabra.ai/api-keys). Conectar API abre un
+campo password local; se guarda en `.env` como `BRIVANY_PALABRA_API_KEY`, excluido de Git.
+Se carga automáticamente al abrir Brivany. No se devuelve en respuestas ni se
+guarda en localStorage. Guardarla no ejecuta inferencias ni comprueba acceso o saldo.
+El usuario autorizó crear la clave en su sesión de Palabra; quedó guardada y se
+comprobó con una sesión real, sin exponer su valor en el chat.
+
+El navegador convierte a PCM16 mono 24 kHz mediante AudioWorklet y un relay
+WebSocket local conserva la clave y aplica límites. Sesión única de hasta 60 s
+de entrada y de tiempo activo; al finalizar, hasta 10 s para drenar el proveedor.
+Sin reintentos ni reconexiones automáticas. Pausar, buscar, cambiar idioma,
+detener o dejar la página en segundo plano cancela la sesión y descarta salida
+obsoleta. El fin natural y el límite de sesión drenan el último audio. La cola de
+reproducción es acotada: un exceso de retraso detiene la prueba con un aviso.
+
+El original empieza silenciado para escuchar la traducción; no se separan música
+y diálogo ni se clona al hablante o sincronizan labios. Melodi conserva su propia
+voz y su pantalla. No se almacenan audio ni transcripciones en el servidor.
+Se reciben segmentos de transcripción original y traducción. La deduplicación
+mantiene referencias de segmento sin acumular el mismo resultado dos veces.
+
+## Medición del objetivo de 500 ms
+
+| Medición | Alcance |
+|---|---|
+| Inferencia interna | `null`; el protocolo no proporciona una duración interna que verifique ≤500 ms |
+| Primer PCM enviado → primer audio recibido | Medible, incluye red y espera de contexto además de procesamiento |
+| Primer PCM enviado → primera voz programada | Añade cola de reproducción; no mide el altavoz físico |
+| Tiempos de los segmentos | Alineación respecto al flujo de origen; no son duración de inferencia |
+| `chunk_generation_delta` de Palabra | Tiempo opcional hasta un bloque de TTS; no demuestra la inferencia del pipeline completo |
+
+La pantalla mantiene **≤500 ms · por verificar**. No se resta el último paquete
+enviado de la llegada de audio que podría corresponder a un fragmento anterior.
+Un resultado simulado rápido tampoco cumple el objetivo. Calidad y conservación
+de nombres, números y significado requieren revisión bilingüe.
+
+## Verificar y ensayar
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify dubbing
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify dubbing-ui
+```
+
+Estas pruebas son gratuitas y usan proveedores simulados. Cubren protocolo,
+consentimiento, formato, límites, ritmo, cancelación, deduplicación por ID,
+finalización y flujo de interfaz con un video sintético; no prueban el modelo real.
+
+El ensayo real exige clave con acceso, servidor activo y un WAV PCM16 mono 24 kHz
+de hasta 20 segundos. Hace una sola sesión, sin reintentos, y guarda un informe
+con metadatos, tiempos y contadores en la bitácora, sin texto ni audio traducido.
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.measure_dubbing tmp/conversation-input.wav --source es --target en --allow-paid
+```
+
+La muestra existente es habla sintética en español de la etapa anterior; el
+ejemplo solicita inglés. `--allow-paid` explicita consumo potencial y el comando
+queda fuera de las suites gratuitas. El precio público consultado es $0.04/min
+de audio: referencia de estimación, no límite garantizado de facturación.
+[Tarifa de Palabra y oferta de registro](https://www.palabra.ai/pricing).
+
+Quedan por verificar calidad, latencia de inferencia interna y plataformas físicas.
+Hoy se procesa un archivo reproducido en tiempo real dentro de Brivany. Fuentes
+externas en vivo, captura de otra pestaña, sincronización avanzada y las siguientes
+ampliaciones se incorporarán tras comprobar esta ruta.
+
+## Primer ensayo real
+
+Una sesión con 4,28 s de habla sintética en español produjo audio y texto en
+inglés. Conexión previa: 2234 ms; primer PCM enviado → primer audio traducido:
+3110 ms. Se recibieron 161 bloques, 3,207 s de salida y cierre completo. Palabra
+no comunicó tiempo interno de inferencia ni el campo opcional de generación TTS.
+Estos 3110 ms no prueban ni refutan por sí solos 500 ms de inferencia interna;
+sí muestran que el retraso inicial de esta muestra todavía no es instantáneo.
+
+Informe conservado en `tmp/dubbing-measurements/20261027T233303-c4d2d62d.json` y
+en la bitácora. Sin reintentos. La estimación por duración a $0.04/min es
+$0.002853; el cargo real se registra por separado cuando pueda comprobarse.
+La comparación de una corrección de configuración se documentará como otro ensayo.
+
+## Experiencia prevista
+
+La persona abre un video o una fuente en vivo autorizada, elige el idioma de destino y activa la traducción. Brivany conserva la continuidad del video mientras Melodi muestra subtítulos traducidos incrementales. La voz traducida será opcional, con control sobre volumen original, retraso y pausa. El primer flujo se limitará a contenido reproducido por Brivany para controlar el tiempo del medio; otras fuentes dependerán del navegador y de cómo ofrezcan el audio.
+
+Esta capacidad se añade al rumbo espacial. Puede ayudar a comprender una presentación inmobiliaria, un tutorial o una explicación de un objeto y alimentar una human-skill cuando se solicite. La traducción no demuestra que la información del video sea cierta; el original y sus tiempos seguirán siendo la referencia.
+
+## Ampliaciones y validación pendientes
+
+- [x] Elegir salidas español/inglés y MP4 local como primera fuente; preparar muestra sintética de transporte.
+- [x] Capturar audio del reproductor con activación explícita y límites de sesión, y conectarlo a una API dedicada de traducción de voz a voz.
+- [ ] Revisar con una muestra bilingüe real nombres, números, conservación de significado y calidad audible.
+- [ ] Mantener segmentos con ID, tiempo de inicio/fin, versión y estado provisional/final.
+- [x] Recibir traducción continua y subtítulos desde la sesión dedicada; deduplicar eventos por ID.
+- [ ] Mostrar original y traducción revisables, idioma, retraso y errores mediante detalle progresivo.
+- [x] Añadir voz traducida, volúmenes independientes y cola acotada; detener con aviso cuando la salida acumule demasiado audio.
+- [x] Cancelar trabajo obsoleto al pausar, buscar otro momento, cambiar idioma o cerrar la sesión.
+- [x] Limitar una sesión a 60 segundos y preparar un ensayo real único de hasta 20 s, sin reintentos automáticos.
+- [ ] Medir consumo y retraso real antes de ampliar; adaptar sincronización o salida solo de subtítulos cuando la evidencia lo justifique.
+- [ ] Probar reconexión, silencio, cambios de hablante y fallos del proveedor con datos simulados.
+- [ ] Hacer una única prueba real acotada con el adaptador preparado; conservar evidencia, consumo y límites antes de elegir mejoras.
+
+## Flujo propuesto
+
+```mermaid
+flowchart LR
+    V[Video autorizado y reloj del medio] --> A[Audio por segmentos]
+    A --> R[API dedicada de voz a voz]
+    R --> S[Subtítulos traducidos]
+    R --> Q[Cola de voz acotada]
+    Q --> P[Reproducción sincronizada]
+```
+
+La medición debe distinguir procesamiento interno, primera actualización visible y primera voz reproducida respecto al audio original. Se registrarán mediana y peor caso de la muestra, segmentos perdidos y apreciación humana de significado. El máximo de inferencia solicitado es 500 ms; el retraso total audible se evaluará por separado con el primer ensayo concreto.
+
+La captura de audio compartido, formatos y reproducción deben ensayarse en Windows, macOS, iPhone y Android por separado. Se elegirá la ruta técnica en su hito con documentación vigente y capacidades reales; no se presupone acceso universal a cualquier video de otra aplicación. Spaik Iris permanece como proyecto independiente pendiente.

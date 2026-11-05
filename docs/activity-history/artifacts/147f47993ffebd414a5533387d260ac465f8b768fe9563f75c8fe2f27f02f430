@@ -1,0 +1,15 @@
+{
+  "purpose": "Diagnose current song timed record; no lyric words or metadata saved.",
+  "http_code": 200,
+  "type": "synced",
+  "duration_difference": 0.0,
+  "title_match": true,
+  "artist_match": true,
+  "timed": true,
+  "line_count": 71,
+  "timestamp_count": 71,
+  "track_present": true,
+  "provider_requests": 1,
+  "spotify_read_invocations": 1,
+  "cost": "Not measured; no paid inference."
+}

@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "runtime": {
+    "ui_mode": "desktop-only",
+    "tray": {
+      "supported": true,
+      "active": true,
+      "closed": false,
+      "name": "Brivany",
+      "actions": [
+        "open",
+        "workspace",
+        "exit"
+      ]
+    },
+    "workspace_active": true
+  },
+  "browser_pages": {
+    "/": 410,
+    "/index.html": 410,
+    "/connections": 410,
+    "/brivany-shell": 410,
+    "/app": 410,
+    "/work-widget?surface=bar": 410
+  },
+  "linked_google_connectors": {
+    "calendar": true,
+    "gmail": true,
+    "drive": true
+  },
+  "privacy": "local read-only state; no account identifiers or content saved",
+  "browser_previews_closed": true,
+  "external_data_queries": 0,
+  "background_external_traffic": "not measured"
+}

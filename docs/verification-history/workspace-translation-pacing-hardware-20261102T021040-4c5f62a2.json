@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-translation-pacing-hardware",
+  "started_at": "2026-11-02T02:10:40.612733+00:00",
+  "finished_at": "2026-11-02T02:11:16.958666+00:00",
+  "duration_seconds": 36.345933,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_workspace_translation_pacing",
+    "--hardware"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"type\": \"actual_local_Muse_Meta_Cartesia_transports_with_substituted_providers\",\r\n  \"capture\": \"WASAPI_render\",\r\n  \"output\": \"substituted\",\r\n  \"microphone_used\": false,\r\n  \"PCM_or_transcript_persisted\": false,\r\n  \"external_calls\": 0,\r\n  \"billing_amount\": 0,\r\n  \"passed\": true,\r\n  \"injected_scheduler_stalls\": [\r\n    0.36,\r\n    0.36,\r\n    1.2,\r\n    0.11,\r\n    0.29,\r\n    0.7,\r\n    0.36\r\n  ],\r\n  \"pause_events\": 1,\r\n  \"resume_events\": 1,\r\n  \"elapsed_seconds\": 35.0,\r\n  \"session\": {\r\n    \"state\": \"translating\",\r\n    \"error\": \"\",\r\n    \"segments\": 3,\r\n    \"voice_category\": \"masculine\",\r\n    \"voice_method\": \"local_pitch_heuristic\",\r\n    \"first_audio_ms\": 797,\r\n    \"active\": true,\r\n    \"target\": \"fr\",\r\n    \"voice\": \"auto\",\r\n    \"elapsed_seconds\": 35.0,\r\n    \"buffered_seconds\": 0.0,\r\n    \"captured_seconds\": 29.76,\r\n    \"submitted_seconds\": 29.68,\r\n    \"original_gain\": 0.12,\r\n    \"microphone_captured\": false,\r\n    \"source\": \"system_output\",\r\n    \"feedback_isolated\": true,\r\n    \"audio_persisted\": false,\r\n    \"billing_amount\": null\r\n  },\r\n  \"provider_connections\": {\r\n    \"muse\": 1,\r\n    \"cartesia\": 1,\r\n    \"meta\": 3,\r\n    \"tts_messages\": 9,\r\n    \"cancel\": 1\r\n  },\r\n  \"native_output_substitute_received_audio\": true,\r\n  \"stopped\": true,\r\n  \"capture_thread_stopped\": true,\r\n  \"checked_at\": \"2026-11-02T02:11:16.886857+00:00\"\r\n}\r\nInforme: tmp\\workspace-translation-pacing\\report-20261102T021116.json\r\n"
+}

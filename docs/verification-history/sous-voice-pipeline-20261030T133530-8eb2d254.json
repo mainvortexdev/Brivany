@@ -1,0 +1,18 @@
+{
+  "suite": "sous-voice-pipeline",
+  "started_at": "2026-10-30T13:35:30.000611+00:00",
+  "finished_at": "2026-10-30T13:35:36.664011+00:00",
+  "duration_seconds": 6.6634,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_sous_voice"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Actual local HTTP/Sous/context/browser audio plumbing with simulated providers and mic/ASR events.\",\r\n  \"checks\": [\r\n    \"opening Sous performs no provider request and never activates microphone\",\r\n    \"text requires consent and streamed reply receives the actual persistent inventory\",\r\n    \"cooking session identity resolves the actual step on the server and conversation cannot mutate inventory or advance steps\",\r\n    \"substituted ASR uses the real conversation relay and PCM player; interruption cancels output and stop releases microphone tracks\",\r\n    \"permission arriving after cancellation releases the late stream without opening a conversation\",\r\n    \"contextual conversation fits small and desktop viewports\"\r\n  ],\r\n  \"screenshots\": [\r\n    \"tmp/sous-voice/sous-voice-1440.png\",\r\n    \"tmp/sous-voice/sous-voice-390.png\"\r\n  ],\r\n  \"checked_at\": \"2026-10-30T13:35:36.089034+00:00\",\r\n  \"provider_stub_calls\": {\r\n    \"conversation\": 3,\r\n    \"speech\": 1\r\n  },\r\n  \"external_calls\": 0,\r\n  \"model_executed\": false,\r\n  \"hardware_microphone_tested\": false,\r\n  \"physical_audio_tested\": false,\r\n  \"limitations\": [\r\n    \"ASR events, microphone stream and model/TTS providers are substituted; HTTP, Sous state, context and browser playback scheduling are real.\",\r\n    \"No real conversation quality, provider access, audible latency or physical microphone/speaker verified.\"\r\n  ]\r\n}\r\n"
+}

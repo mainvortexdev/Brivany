@@ -1,0 +1,71 @@
+{
+  "scope": "new isolated Chrome profile; local synthetic pages; real Google search and GitHub login handoff",
+  "provider_calls": 0,
+  "browser_background_network_unknown": true,
+  "checks": [
+    "observed browser window and tabs",
+    "real observed control click changed local page state",
+    "new local URL verified without replacing original tab",
+    "original observed tab restored and tab count preserved",
+    "real Google query URL and visible NASA result content observed",
+    "login page handoff returns to user; no credentials or submissions"
+  ],
+  "button_point": {
+    "y": 221,
+    "x": 113
+  },
+  "click_receipt": {
+    "input_sent": true,
+    "semantic_verification": false
+  },
+  "local_button_events": 1,
+  "search_navigation": {
+    "verified": true,
+    "navigation_input_count": 1
+  },
+  "search_page_shape": {
+    "title": 52,
+    "processName": 6,
+    "documentId": 20,
+    "items": 55,
+    "url": 100,
+    "windowHandle": 7
+  },
+  "status": "passed",
+  "navigation_diagnostics": [
+    {
+      "event": "diagnostic",
+      "phase": "browser-navigation",
+      "origin": "http://127.0.0.1:49727",
+      "pathname": "/b",
+      "query_keys": [],
+      "requested_query_preserved": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser-navigation",
+      "origin": "https://www.google.com",
+      "pathname": "/search",
+      "query_keys": [
+        "q"
+      ],
+      "requested_query_preserved": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser-navigation",
+      "origin": "null",
+      "pathname": "/",
+      "query_keys": [],
+      "requested_query_preserved": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser-navigation",
+      "origin": "https://github.com",
+      "pathname": "/login",
+      "query_keys": [],
+      "requested_query_preserved": true
+    }
+  ]
+}

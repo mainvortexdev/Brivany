@@ -1,0 +1,15 @@
+{
+  "checked_at": "2026-10-30T12:51:39.755795+00:00",
+  "type": "real_access_check",
+  "purpose": "Bounded metadata GET requests, no inference or synthesis; Muse not contacted.",
+  "external_calls": 1,
+  "monetary_cost": null,
+  "results": {
+    "groq": {
+      "http_status": 200,
+      "access": true,
+      "checked_model": "qwen/qwen3.8-27b",
+      "model_available": true
+    }
+  }
+}

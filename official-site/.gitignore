@@ -1,0 +1,8 @@
+node_modules/
+.wrangler/
+.env
+.dev.vars
+.env.*
+public/assets/app.js
+public/assets/app.js.map
+public/assets/audio-worker.js

@@ -1,0 +1,20 @@
+{
+  "suite": "motion",
+  "started_at": "2026-11-01T23:11:22.317187+00:00",
+  "finished_at": "2026-11-01T23:11:26.285683+00:00",
+  "duration_seconds": 3.968496,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_motion",
+    "tests.test_motion_narration"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "............\r\n----------------------------------------------------------------------\r\nRan 12 tests in 1.757s\r\n\r\nOK\r\n"
+}

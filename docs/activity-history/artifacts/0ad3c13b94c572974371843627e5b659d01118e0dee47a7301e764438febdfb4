@@ -1,0 +1,23 @@
+{
+  "suite": "sous-voice",
+  "started_at": "2026-10-29T04:19:21.384913+00:00",
+  "finished_at": "2026-10-29T04:19:24.017657+00:00",
+  "duration_seconds": 2.632744,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_sous_voice.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "........\r\n----------------------------------------------------------------------\r\nRan 8 tests in 2.151s\r\n\r\nOK\r\n"
+}

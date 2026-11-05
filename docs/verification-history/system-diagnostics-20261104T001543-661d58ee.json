@@ -1,0 +1,19 @@
+{
+  "suite": "system-diagnostics",
+  "started_at": "2026-11-04T00:15:43.824576+00:00",
+  "finished_at": "2026-11-04T00:15:44.777028+00:00",
+  "duration_seconds": 0.952452,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_system_diagnostics"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".F.\r\n======================================================================\r\nFAIL: test_diagnostic_intent_never_turns_examples_or_changes_into_reads (tests.test_system_diagnostics.DiagnosticsTests.test_diagnostic_intent_never_turns_examples_or_changes_into_reads)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_system_diagnostics.py\", line 30, in test_diagnostic_intent_never_turns_examples_or_changes_into_reads\r\n    self.assertTrue(diagnostic_question('¿Qué servicios automáticos están detenidos ahora?'))\r\nAssertionError: False is not true\r\n\r\n----------------------------------------------------------------------\r\nRan 3 tests in 0.147s\r\n\r\nFAILED (failures=1)\r\n"
+}

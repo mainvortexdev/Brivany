@@ -1,0 +1,156 @@
+# Guion completo · Brivany, a tu ritmo
+
+Borrador editorial para una película de **180 segundos**, con voz española original de Melodi. Tono cercano y seguro; la intensidad está en la puesta en escena y los datos se mantienen exactos. Todavía no hay locución sintetizada ni render.
+
+Los tiempos fijan la estructura editorial, no una duración de voz ya medida. La narración final permitirá ajustar pausas dentro de los 180 segundos.
+
+## 00:00–00:14 · Presión cotidiana
+
+**Locución**
+
+> Cada día llegan más mensajes, reuniones y herramientas que prometen hacernos más productivos. La inteligencia artificial acelera el trabajo. Pero nuestra atención, nuestro tiempo y nuestra energía siguen teniendo un límite.
+
+**Imagen y movimiento.** Ventanas, calendario y mensajes compiten por el encuadre. El espacio se comprime con tipografía cinética y una cámara cercana. Ritmo creciente sin efectos de destello agresivos.
+
+**Texto en pantalla.** Más herramientas. La misma atención.
+
+**Alcance editorial.** Diseño editorial; no una medición del estrés de una persona.
+
+## 00:14–00:30 · Datos que sostienen el problema
+
+**Locución**
+
+> Un estudio de Microsoft encontró falta de tiempo o energía en ocho de cada diez encuestados. Gallup registró estrés durante gran parte del día anterior en cuatro de cada diez empleados.
+
+**Imagen y movimiento.** El 80 % se compone a partir de diez figuras; ocho quedan ocupadas. Una segunda capa revela 40 %. Bajamos el ruido para leer las cifras.
+
+**Texto en pantalla.** 80 % · Microsoft WTI 2025 / 40 % · Gallup 2026, datos 2025.
+
+**Alcance editorial.** Fuentes y poblaciones en un pie legible; no atribuir causalidad a la IA.
+
+## 00:30–00:43 · Nace Melodi
+
+**Locución**
+
+> De esa presión nace Brivany: un asistente que te acompaña cada día. Soy Melodi. Contigo, la información se convierte en comprensión, y las ideas empiezan a tomar forma.
+
+**Imagen y movimiento.** La cámara encuentra a Melodi entre las ventanas. Mira a la persona, respira, aparta suavemente la saturación y saluda. El encuadre gana luz y espacio.
+
+**Texto en pantalla.** Brivany · Melodi
+
+**Alcance editorial.** Identidad original, cuerpo blanco, ojos oscuros y manos pequeñas.
+
+## 00:43–01:07 · La reunión que queremos acercar
+
+**Locución**
+
+> Imagina una reunión importante. Entra esa persona que admiras. Tiene algo que enseñarte, pero habla otro idioma. Activas Traducción auditiva y sigues el hilo, con intervenciones y voces diferenciadas. Y cuando cada participante lo autoriza, la experiencia contempla personalizar su voz mediante clonación. La conversación vuelve a acercar personas.
+
+**Imagen y movimiento.** Reunión ilustrada, dos interlocutores y sus ondas con colores estables. La barrera idiomática se ve como una línea interrumpida que Melodi conecta. Una tarjeta de consentimiento precede a la personalización de voz.
+
+**Texto en pantalla.** Escuchar. Comprender. Conectar.
+
+**Alcance editorial.** Demostración ilustrada · visión de experiencia. La autorización es explícita; no mostrar tiempo de clonación ni voces reales sin permiso.
+
+## 01:07–01:27 · Cómo se organiza la traducción
+
+**Locución**
+
+> En Brave, la extensión prepara una apertura de siete segundos y continúa transcribiendo al activar la herramienta. Brivany organiza transcripción, traducción y voz en una misma línea de tiempo. Las canciones se filtran, mientras tú concentras la atención en lo que importa: el contenido.
+
+**Imagen y movimiento.** Transición a un video en Brave y una línea de tiempo en tres pistas: audio original, texto y voz. La apertura de siete segundos se prepara; un bloque de canción continúa sin doblaje.
+
+**Texto en pantalla.** 7 s de contenido preparado → continuación / Imagen + voces en una línea de tiempo
+
+**Alcance editorial.** Sitio autorizado y video elegible. La animación explica el diseño; no representa siete segundos garantizados de espera ni latencia cero.
+
+## 01:27–01:43 · Para quién y para qué
+
+**Locución**
+
+> Piensa en un curso, una entrevista o un tutorial técnico. Brivany está pensado para estudiantes, profesionales y creadores que necesitan acceder a información en otros idiomas. Melodi acompaña ese trabajo con consultas, materiales y tareas desde WorkSpace.
+
+**Imagen y movimiento.** La misma ventana cambia de curso a entrevista y tutorial técnico. Aparecen estudiante, profesional y creador en situaciones concretas; WorkSpace permanece como hilo visual.
+
+**Texto en pantalla.** Aprender · Trabajar · Crear
+
+**Alcance editorial.** Seleccionar pantallas existentes y ejemplos propios al producir.
+
+## 01:43–01:57 · Aprendizaje y espacios
+
+**Locución**
+
+> Su propuesta diferencial reúne traducción auditiva, herramientas y aprendizaje alrededor de ti. Un video se convierte en ejercicios; una presentación, en práctica; una escena tridimensional, en un espacio para explorar y crear.
+
+**Imagen y movimiento.** Un tramo de tutorial se convierte en pasos de práctica. La lista dibuja un plano y abre una escena 3D editable. Melodi sigue el proceso con la mirada.
+
+**Texto en pantalla.** Human-skills · Práctica · Espacios
+
+**Alcance editorial.** Escena conceptual; no presentar reconstrucción real ni precisión profesional no comprobadas.
+
+## 01:57–02:21 · Arquitectura sencilla
+
+**Locución**
+
+> Por dentro, WorkSpace y la extensión se conectan con un coordinador local en Python. Muse transcribe; Muse Spark interpreta y traduce; Cartesia Sonic genera la voz. WebSockets comunica los componentes. Web Audio gestiona captura y reproducción. Modelos locales apoyan el análisis de hablantes y timbre. Las herramientas especializadas producen los resultados.
+
+**Imagen y movimiento.** El espacio se abre en cuatro capas: entradas, coordinador, modelos/herramientas y resultados. Un único paquete recorre el circuito mientras aparece cada nombre técnico.
+
+**Texto en pantalla.** Python / Muse / Muse Spark / Cartesia Sonic / WebSockets / Web Audio / ONNX Runtime
+
+**Alcance editorial.** Diagrama explicativo. Separar procesamiento local de los servicios remotos.
+
+## 02:21–02:36 · Lo difícil es coordinar
+
+**Locución**
+
+> La complejidad está en coordinar todo al mismo tiempo: anticipar texto, distinguir intervenciones, filtrar canciones y entregar cada audio en su momento. Con colas limitadas, cancelación y recuperación cuando una etapa falla.
+
+**Imagen y movimiento.** Zoom al reloj compartido. Fragmentos distintos se procesan en paralelo y se entregan en orden. Se ve un límite de cola y un control de parada; cada voz conserva su lugar.
+
+**Texto en pantalla.** Capturar → Transcribir → Traducir → Sintetizar → Reproducir
+
+**Alcance editorial.** No simular una ejecución exitosa real ni afirmar ausencia de fallos.
+
+## 02:36–02:50 · Evidencia de construcción
+
+**Locución**
+
+> La bitácora conserva mil doscientos quince informes de verificación y regresiones documentadas. Una ronda reciente de cuatro suites reunió doscientas ochenta y tres pruebas automatizadas aprobadas. Cada avance deja evidencia.
+
+**Imagen y movimiento.** El reloj se convierte en registros. Contador 1.215, luego 283 y su desglose 83 + 26 + 70 + 104. Un registro fallido permanece documentado, sin ocupar el titular comercial.
+
+**Texto en pantalla.** 1.215 informes históricos / 283 casos aprobados · 4 suites recientes
+
+**Alcance editorial.** Histórico con regresiones repetidas y fallos. Casos locales y de integración, incluidos proveedores sustituidos. Corte 04/11/2026.
+
+## 02:50–03:00 · Cierre
+
+**Locución**
+
+> Brivany reúne voz, herramientas y aprendizaje alrededor de ti. Para comprender más, crear con intención y avanzar a tu ritmo. Melodi, contigo.
+
+**Imagen y movimiento.** Volvemos al mismo espacio inicial, ahora ordenado. Melodi mira a cámara, saluda una vez y se coloca junto al wordmark. Pausa final suficiente para recordar la marca.
+
+**Texto en pantalla.** Brivany · A tu ritmo
+
+**Alcance editorial.** Sin promesa de perfección, disponibilidad universal o exclusividad no verificada.
+
+## Referencias y producción
+
+Fuentes externas y recuento de pruebas en [FUENTES_Y_EVIDENCIAS.md](FUENTES_Y_EVIDENCIAS.md). Dirección, arquitectura y cadena técnica en [PLAN_VISUAL.md](PLAN_VISUAL.md). Locución sin acotaciones en [LOCUCION.txt](LOCUCION.txt).
+
+Locución: 387 palabras por el conteo editorial; promedio orientativo 129.0 palabras/minuto. Los números están escritos para narrarse. La duración exacta requiere medir la voz final.
+
+## Cobertura de las preguntas
+
+| Pregunta | Tramo que la responde |
+| --- | --- |
+| Qué hace Brivany | Nacimiento de Melodi, traducción y herramientas |
+| Para qué sirve y qué problema aborda | Presión inicial, datos y escena de idioma |
+| Para quién es | Estudiantes, profesionales y creadores |
+| Pitch | Presentación de Melodi y cierre de marca |
+| Diferenciación | Traducción auditiva integrada con aprendizaje y herramientas; sin declarar exclusividad absoluta |
+| Arquitectura y tecnologías | 01:57–02:21 |
+| Complejidad | 02:21–02:36 |
+| Cantidad de pruebas | 02:36–02:50, con inventario y fuentes |

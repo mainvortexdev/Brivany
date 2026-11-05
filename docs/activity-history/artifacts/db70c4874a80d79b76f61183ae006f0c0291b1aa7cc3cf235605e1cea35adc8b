@@ -1,0 +1,28 @@
+{
+  "checked_at": "2026-10-29T04:30:12.984785+00:00",
+  "status": "passed",
+  "scope": "Read-only startup instrumentation inside the actual Brivany pywebview window.",
+  "snapshot": {
+    "documentReady": true,
+    "bridgeAvailable": true,
+    "nativeControlsVisible": true,
+    "sceneReady": true,
+    "drawCalls": 124,
+    "objects": 22,
+    "portableProject": false,
+    "viewportWidth": 1284,
+    "viewportHeight": 911,
+    "canvasPresent": true
+  },
+  "error_code": null,
+  "elapsed_seconds": 3.281,
+  "native_window_started": true,
+  "native_render_verified": true,
+  "native_editing_verified": false,
+  "native_picker_verified": false,
+  "native_reopen_verified": false,
+  "physical_gpu_measured": false,
+  "external_model_calls_triggered": 0,
+  "ui_actions_automated": 0,
+  "macos_verified": false
+}

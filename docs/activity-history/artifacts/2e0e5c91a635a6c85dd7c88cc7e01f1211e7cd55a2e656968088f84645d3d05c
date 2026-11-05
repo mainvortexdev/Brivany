@@ -1,0 +1,10 @@
+{
+  "type": "real_read_only_account_checkpoint_before_restart",
+  "explicit_requests": 2,
+  "methods": [
+    "GET",
+    "GET"
+  ],
+  "protected_checkpoint_reloads_same_track_and_position": true,
+  "active_playback": true
+}

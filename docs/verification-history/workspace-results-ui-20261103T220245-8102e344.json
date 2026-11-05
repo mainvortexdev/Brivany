@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-results-ui",
+  "started_at": "2026-11-03T22:02:45.685570+00:00",
+  "finished_at": "2026-11-03T22:03:47.074574+00:00",
+  "duration_seconds": 61.389004,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-results"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"passed\":true,\"type\":\"isolated_local_UI_with_synthetic_results\",\"glisse\":\"0.5.0\",\"external_calls\":0,\"native_desktop_backdrop_verified\":false,\"widths\":[1280,800,375,320],\"checks\":[\"actual_Glisse_component\",\"compact_maximum_height\",\"wrapped_documents\",\"vertical_scroll_hidden_bar\",\"no_horizontal_scroll\",\"literal_safe_content\",\"image\",\"team_child\",\"scoped_media_header\",\"pause_on_switch\",\"close_and_escape\",\"no_big_app_open\",\"reduced_motion\"],\"errors\":[]}\n"
+}

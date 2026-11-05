@@ -1,0 +1,97 @@
+{
+  "$defs": {
+    "Event": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "format": "uuid",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "workspace_id": {
+          "format": "uuid",
+          "title": "Workspace Id",
+          "type": "string"
+        },
+        "session_id": {
+          "format": "uuid",
+          "title": "Session Id",
+          "type": "string"
+        },
+        "seq": {
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "enum": [
+            "session.started",
+            "observation.accepted",
+            "guidance.ready",
+            "verification.completed",
+            "command.requested",
+            "command.completed",
+            "session.paused",
+            "session.completed",
+            "session.cancelled"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "correlation_id": {
+          "format": "uuid",
+          "title": "Correlation Id",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Payload",
+          "type": "object"
+        }
+      },
+      "required": [
+        "event_id",
+        "workspace_id",
+        "session_id",
+        "seq",
+        "type",
+        "occurred_at",
+        "correlation_id",
+        "payload"
+      ],
+      "title": "Event",
+      "type": "object"
+    },
+    "JsonValue": {}
+  },
+  "additionalProperties": false,
+  "properties": {
+    "events": {
+      "items": {
+        "$ref": "#/$defs/Event"
+      },
+      "title": "Events",
+      "type": "array"
+    },
+    "next_seq": {
+      "minimum": 0,
+      "title": "Next Seq",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "events",
+    "next_seq"
+  ],
+  "title": "EventPage",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:EventPage:0.1.0"
+}

@@ -1,0 +1,16 @@
+{
+  "suite": "computer-native",
+  "started_at": "2026-10-30T18:51:04.791311+00:00",
+  "finished_at": "2026-10-30T18:51:05.201469+00:00",
+  "duration_seconds": 0.410158,
+  "command": [
+    "node",
+    "--test",
+    "tests/computer-native.test.cjs",
+    "tests/computer-browser.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ YouTube playback requires two content advances, then pause and resume are verified (83.8165ms)\n✔ Advertisement timer is not music; only the observed skip control is used (2.5936ms)\n✔ A frozen playing label never confirms audible content progress (1.2833ms)\n✔ Unrelated timers and advertising cannot supply content progress (0.2792ms)\n✔ A result replaced during reasoning is never clicked (2.7805ms)\n✔ Browser search and login are typed actions; credentials are not tool parameters (1.8326ms)\n✔ Delayed accessible document is polled without repeating navigation (2.3767ms)\n✔ Changed foreground aborts before another read or action (1.0117ms)\n✔ Wrong destination never becomes verified (0.885ms)\n✔ YouTube UI refresh is accepted only with the same query and origin (0.9144ms)\n✔ Unsafe navigation schemes and credentials never reach input (0.6512ms)\n✔ Win32 editor fallback uses observed identity and literal data (2.8347ms)\n✔ Literal input cannot interpolate shell syntax or SendKeys commands (0.7289ms)\n✔ Only typed native actions; no code, invented control or shell entry (0.6462ms)\n✔ File scopes reject root modification, traversal, sibling prefixes and symlinks (66.5801ms)\nℹ tests 15\nℹ suites 0\nℹ pass 15\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 264.0482\n"
+}

@@ -1,0 +1,47 @@
+"""Read-only metadata for a known Brivany development PID. No GUI input/capture."""
+import argparse
+import ctypes
+from ctypes import wintypes
+import json
+from pathlib import Path
+from desktop.experience.appbar import Rect,MonitorInfo,rect_value
+
+
+def inspect(pid):
+    user=ctypes.WinDLL('user32',use_last_error=True)
+    user.GetWindowThreadProcessId.argtypes=[wintypes.HWND,ctypes.POINTER(wintypes.DWORD)]
+    user.GetWindowTextW.argtypes=[wintypes.HWND,wintypes.LPWSTR,ctypes.c_int]
+    user.GetWindowRect.argtypes=[wintypes.HWND,ctypes.POINTER(Rect)]
+    user.GetWindowRgnBox.argtypes=[wintypes.HWND,ctypes.POINTER(Rect)];user.GetWindowRgnBox.restype=ctypes.c_int
+    user.GetWindowLongW.argtypes=[wintypes.HWND,ctypes.c_int];user.GetWindowLongW.restype=ctypes.c_long
+    user.IsWindowVisible.argtypes=[wintypes.HWND];user.IsWindowVisible.restype=wintypes.BOOL
+    user.GetLayeredWindowAttributes.argtypes=[wintypes.HWND,ctypes.c_void_p,ctypes.c_void_p,ctypes.c_void_p];user.GetLayeredWindowAttributes.restype=wintypes.BOOL
+    user.MonitorFromWindow.argtypes=[wintypes.HWND,wintypes.DWORD];user.MonitorFromWindow.restype=wintypes.HMONITOR
+    user.GetMonitorInfoW.argtypes=[wintypes.HMONITOR,ctypes.POINTER(MonitorInfo)]
+    windows=[];monitor=None
+    callback_type=ctypes.WINFUNCTYPE(wintypes.BOOL,wintypes.HWND,wintypes.LPARAM)
+    def visit(hwnd,_):
+        nonlocal monitor
+        owner=wintypes.DWORD();user.GetWindowThreadProcessId(hwnd,ctypes.byref(owner))
+        if owner.value!=pid:return True
+        title=ctypes.create_unicode_buffer(256);user.GetWindowTextW(hwnd,title,256)
+        if title.value not in {'Brivany','Melodi WorkSpace','Melodi WorkSpace · Panel','Melodi WorkSpace · Voz'}:return True
+        bounds=Rect();user.GetWindowRect(hwnd,ctypes.byref(bounds));style=user.GetWindowLongW(hwnd,-20)
+        color=ctypes.c_ulong();alpha=ctypes.c_ubyte();flags=ctypes.c_ulong()
+        layered=bool(user.GetLayeredWindowAttributes(hwnd,ctypes.byref(color),ctypes.byref(alpha),ctypes.byref(flags)))
+        clip=Rect();region=user.GetWindowRgnBox(hwnd,ctypes.byref(clip))
+        windows.append({'title':title.value,'native_handle':int(hwnd),'visible':bool(user.IsWindowVisible(hwnd)),'bounds':rect_value(bounds),'clip_bounds':rect_value(clip) if region>1 else None,'region_type':region,'empty_region':region==1,'tool_window':bool(style&0x80),'app_window':bool(style&0x40000),'alpha':alpha.value if layered else None})
+        monitor=user.MonitorFromWindow(hwnd,2);return True
+    callback=callback_type(visit);user.EnumWindows.argtypes=[callback_type,wintypes.LPARAM];user.EnumWindows(callback,0)
+    if monitor is None:monitor=user.MonitorFromWindow(None,2)
+    info=MonitorInfo();info.cbSize=ctypes.sizeof(info)
+    if not user.GetMonitorInfoW(monitor,ctypes.byref(info)):raise OSError('No se pudo leer el área de trabajo.')
+    return {'scope':'read-only metadata of selected Brivany PID; no GUI input, screenshot, audio or inference','windows':windows,'work_area':rect_value(info.work)}
+
+
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--pid',type=int,required=True);parser.add_argument('--output',required=True);args=parser.parse_args()
+    result=inspect(args.pid);path=Path(args.output);path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8');print(json.dumps(result,ensure_ascii=False))
+
+
+if __name__=='__main__':main()

@@ -1,0 +1,17 @@
+{
+  "suite": "workspace-sync-extension",
+  "started_at": "2026-11-02T03:52:32.634951+00:00",
+  "finished_at": "2026-11-02T03:52:32.948863+00:00",
+  "duration_seconds": 0.313912,
+  "command": [
+    "node",
+    "--test",
+    "browser-extension/tests/sync-timeline.test.mjs",
+    "browser-extension/tests/background.test.mjs",
+    "browser-extension/tests/stream-setup.test.mjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ browser action captures its granted source into a separate consumer and navigation stops it (9.3092ms)\n✔ provider preparation waits for ready before the capture phase and creates one session (36.1853ms)\n✔ cancellation during provider preparation rejects instead of activating later capture (18.0348ms)\n✔ provider rejection is surfaced without a second start request (0.3684ms)\n✔ pairing accepts only a loopback WebSocket with a six digit code and binds sync origin (3.4055ms)\n✔ four seconds alone cannot start a picture before real ASR progress (0.6114ms)\n✔ a late provider holds the matching picture before the speech and resumes with its cue (0.9677ms)\n✔ late audio is rejected rather than played over an unrelated picture (0.8765ms)\n✔ old epochs never enter the new session and transcript-only markers cannot be cues (0.4678ms)\n✔ buffer has a hard thirty second horizon even while paused (0.2688ms)\n✔ preproduction requires five prepared seconds and explicit playback (0.3765ms)\n✔ cue IDs are unique and completed intervals can be released from memory (0.3088ms)\n✔ an eight second utterance with seven seconds provider work holds at its source onset instead of dropping content (0.3553ms)\n✔ preproduction can start with the first cue while a second utterance crossing five seconds is still being translated (1.0615ms)\n✔ six seconds without the first cue signals a missed budget without dropping audio or silently extending a promise (0.3229ms)\nℹ tests 15\nℹ suites 0\nℹ pass 15\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 207.9854\n"
+}

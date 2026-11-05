@@ -1,0 +1,113 @@
+# Spotify: biblioteca, reproductor y letras automáticas
+
+Implementado el 31 de octubre de 2026 en la adaptación de escritorio de Brivany.
+Se conservan el chat, la voz live, las human-skills y los demás servicios.
+
+## Uso
+
+En Melodi WorkSpace → Música, el reproductor horizontal reúne portada, canción,
+artista, anterior, pausa/reanudación, siguiente, aleatorio, repetición, progreso,
+volumen y dispositivos. Biblioteca abre playlists, álbumes y canciones guardadas,
+con páginas de 20 elementos; seleccionar uno solicita su reproducción en un
+**dispositivo Spotify disponible**. Brivany usa Spotify Connect / Web API, no
+transmite audio ni incorpora el Web Playback SDK. Las restricciones de Spotify,
+Premium y disponibilidad del dispositivo siguen aplicando.
+
+La vista Letra consulta automáticamente el tema actual; ya no hay importador
+LRC/TXT ni las pestañas antiguas del reproductor. La fuente se muestra junto al
+texto. LRCLIB es la primera opción: consulta título, artista, álbum y duración;
+se comprueba el título, artista y duración de la respuesta antes de mostrarla.
+Cuando ofrece tiempos, se destaca la línea actual siguiendo el progreso real de
+Spotify. El texto sin tiempos admite páginas. Lyrics.ovh es el respaldo cuando
+LRCLIB no encuentra la canción o falla. Ese proveedor no confirma álbum/duración:
+se identifica como **sin sincronizar, versión no verificada**. No se inventa texto
+cuando ninguna fuente responde. La disponibilidad y exactitud dependen del catálogo.
+
+La vinculación sigue abriéndose en el navegador con PKCE y retorno HTTPS del
+dominio de Brivany. **Actualizar acceso** y **Desvincular cuenta** están en
+Conexiones e integraciones del programa; WorkSpace no ofrece desconexión. Los
+permisos anteriores conservan la reproducción. Para cargar la biblioteca hay que
+actualizar el acceso una vez y aceptar los permisos nuevos en Spotify:
+`playlist-read-private`, `playlist-read-collaborative`, `user-library-read`.
+No se pide permiso de escritura de biblioteca ni acceso al correo del perfil.
+
+## Implementación
+
+- `services/spotify.py`: permisos concedidos en el almacén protegido; migración
+  de autorizaciones anteriores; lectura paginada y caché acotada de biblioteca;
+  reproducción limitada a URIs observadas y dispositivos disponibles. Las
+  mutaciones se envían una sola vez. Nueva autorización/desconexión limpia cachés
+  para no mezclar bibliotecas de cuentas distintas.
+- `services/lyrics.py`: consultas HTTPS verificadas a hosts fijos, sin redirección,
+  sin credenciales Spotify; únicamente metadatos públicos del tema actual.
+  Cuerpo máximo 256 KiB, letra hasta 64 KiB / 800 líneas, caché de 32 resultados en
+  memoria, solicitudes secuenciales y espera de proveedor con jitter. No se
+  descarga toda la biblioteca ni se guardan letras en la bitácora.
+- `desktop/experience/music.py`, `island.js/css`, `work-widget.html`: puente nativo,
+  controles SVG, selector de dispositivos propio, biblioteca y letras opcionales.
+  Texto externo se inserta mediante `textContent`, sin interpretar HTML ni órdenes.
+  En pantallas bajas, las vistas secundarias permiten desplazamiento accesible sin
+  barras visibles; el contorno permanece dentro de la región nativa.
+- `spotify-connections.js/css`: tarjeta de gestión inyectada únicamente en el
+  módulo de conexiones de escritorio. No modifica los módulos web originales.
+- `island.py`: reproductor de 620 × 232 px preferidos, reducido al espacio
+  disponible; biblioteca/letras hasta 404 px de alto. Host transparente a clics
+  fuera de su región, negro opaco dentro, con los demás paneles compactos.
+- `work.py` e `island.js`: se cancela un cierre pendiente durante la interacción
+  mantenida por el puente nativo; se detienen temporizadores al destruir las
+  ventanas. Se conservan la reserva AppBar de 40 px y la exclusión de la barra de tareas.
+
+El puente HTTPS se actualizó mediante Wrangler 4.127.1, sin cambiar dominio,
+secreto de firma ni Durable Object. Versión desplegada:
+`8dcf64c3-5801-44d0-b8d5-70b2685cc4cf`. Durante la regresión se detectó que una
+firma base64url admitía codificaciones no canónicas equivalentes; ahora se
+rechazan antes de verificar la firma. Se conserva el informe de fallo y la prueba
+explícita de bits de relleno que verifica la corrección.
+
+## Comprobaciones y límites
+
+- `tools.verify spotify`: 21 pruebas locales con transportes y credenciales
+  sintéticos, incluidos migración de permisos, cachés, reproducción de biblioteca
+  sin tema activo, restricciones, proveedor alternativo y límites de texto.
+- `tools.verify island-ui`: puente y Spotify sustituidos, cero llamadas externas;
+  nueve paneles en cinco tamaños, barra en ocho anchos y vistas secundarias de
+  Música en cuatro tamaños. Se comprobó reproducción, dispositivos, paginación,
+  letras sincronizadas / alternativas, inserción segura de texto y gestión de
+  cuenta desde Conexiones. Capturas con contenido sintético revisadas visualmente.
+- `tools.verify work`: 26 pruebas locales; `desktop`: 21 pruebas locales.
+- `tools.verify spotify-relay`: 23 comprobaciones en workerd/Miniflare local con
+  SQLite. Runtime local con fecha de compatibilidad 2026-09-04; producción conserva
+  2026-10-31. No llama a Spotify ni autoriza cuentas reales.
+- `tools.check_work_native --run`: ventanas Windows propias reales, Spotify
+  sustituido, anclajes de 620 px a ambos extremos, coincidencia CSS/región nativa,
+  reserva/restauración AppBar, maximización, opacidad y exclusión de barra de tareas.
+  Durante iteración fallaron comprobaciones por cierres pendientes y hubo un error
+  de callbacks al destruir el fixture; se conservan evidencias anteriores y la
+  comprobación final terminó correctamente, incluido su código de salida.
+- Proveedores reales: cinco peticiones HTTPS anónimas deliberadas en total.
+  LRCLIB devolvió 502 en sus tres consultas (incluida una de diagnóstico);
+  Lyrics.ovh devolvió 200 en dos. El recorrido real implementado pasó de LRCLIB
+  502 a Lyrics.ovh 200 y obtuvo texto, sin imprimir ni guardar sus palabras.
+  No se usó una cuenta de usuario ni tokens Spotify; no hay inferencia de pago.
+  El importe monetario no se midió. Esto prueba transporte y un caso de catálogo,
+  no cobertura completa ni exactitud semántica de todas las letras.
+- Brivany y WorkSpace se reiniciaron; se retiró primero la reserva anterior y se
+  verificó una nueva reserva de 40 px. No se reprodujo música ni se concedieron
+  permisos de una cuenta real durante estas pruebas.
+
+Los informes están en `tmp/verification/`, `tmp/spotify-music/`,
+`tmp/workspace-compact-ui/` y `tmp/workspace-compact-native/`. Los registros de
+`tools.activity` adjuntan copias de evidencia, no claves, letras, audio, imágenes
+originales del usuario ni información de su biblioteca. macOS/Linux y la
+reproducción física de la cuenta real no quedan acreditados por estas pruebas.
+
+Fuentes primarias consultadas: [LRCLIB API](https://lrclib.net/docs.txt),
+[Lyrics.ovh API](https://github.com/NTag/lyrics.ovh),
+[biblioteca Spotify](https://developer.spotify.com/documentation/web-api/reference/get-users-saved-tracks),
+[reproducción Spotify](https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback).
+
+
+Revisión posterior del 31 de octubre: el reproductor pasa a SDK en host nativo
+aislado, con token corto solo para ese host, historial opcional, portadas mosaic,
+ondas ambientales y teleprompter integrado. Actualiza los límites de la versión
+anterior sin reescribirla. [Arquitectura y evidencias](spotify-workspace-dispositivo.md).

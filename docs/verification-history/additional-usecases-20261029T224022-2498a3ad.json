@@ -1,0 +1,18 @@
+{
+  "suite": "additional-usecases",
+  "started_at": "2026-10-29T22:40:22.639049+00:00",
+  "finished_at": "2026-10-29T22:40:24.388373+00:00",
+  "duration_seconds": 1.749324,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_additional_usecases"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"checked_at\": \"2026-10-29T22:40:24.299619+00:00\",\r\n  \"scope\": \"Exploratory local product-service journeys in disposable folders, not market demand or human usability validation.\",\r\n  \"cases\": [\r\n    {\r\n      \"id\": \"N01\",\r\n      \"use\": \"Planificar una mudanza o una sala para un evento\",\r\n      \"result\": \"probado_local\",\r\n      \"observation\": \"Dos distribuciones, aplicar y deshacer conservan objetos e historial.\",\r\n      \"limits\": \"No comprueba espacio de paso, accesibilidad física ni medidas reales.\"\r\n    },\r\n    {\r\n      \"id\": \"N02\",\r\n      \"use\": \"Catálogo de colección o pequeño museo privado\",\r\n      \"result\": \"probado_local\",\r\n      \"observation\": \"Punto de interés y ficha sobreviven al proyecto portátil y a un respaldo/restauración reales.\",\r\n      \"limits\": \"Sin audio guía curada, digitalización fotorealista, derechos de colección o enlaces públicos verificados.\"\r\n    },\r\n    {\r\n      \"id\": \"N03\",\r\n      \"use\": \"Diario de obra, estudio o mantenimiento\",\r\n      \"result\": \"probado_local\",\r\n      \"observation\": \"Comando tipado prepara una nota; sólo se guarda tras confirmación local y persiste al reabrir.\",\r\n      \"limits\": \"Sin cuenta WhatsApp ni dictado real. La nota no certifica que el trabajo se realizó.\"\r\n    },\r\n    {\r\n      \"id\": \"N04\",\r\n      \"use\": \"Guardar apuntes externos que contienen instrucciones o etiquetas\",\r\n      \"result\": \"probado_local\",\r\n      \"observation\": \"Se conserva como cuerpo de nota, sin reinterpretarlo como herramienta. El render de texto inerte se verifica en personal-ui.\",\r\n      \"limits\": \"Esta prueba de servicio no ejecuta HTML ni evalúa aislamiento frente a código local malicioso.\"\r\n    },\r\n    {\r\n      \"id\": \"N05\",\r\n      \"use\": \"Asistente con permisos ausentes o retirados\",\r\n      \"result\": \"probado_local\",\r\n      \"observation\": \"Falta de grant impide consultar Drive y no consume la aprobación; cero HTTP a cuentas.\",\r\n      \"limits\": \"Retirada real de un permiso en Google, su propagación y renovación siguen pendientes de cuenta.\"\r\n    },\r\n    {\r\n      \"id\": \"N06\",\r\n      \"use\": \"Checklist de viaje o preparación de equipo\",\r\n      \"result\": \"probado_local\",\r\n      \"observation\": \"Nota y recordatorio vencido se conservan localmente sin un proveedor ni worker.\",\r\n      \"limits\": \"Requiere abrir Brivany; no hay alarma con la aplicación cerrada ni entrega WhatsApp comprobada.\"\r\n    }\r\n  ],\r\n  \"external_calls\": 0,\r\n  \"gpu_seconds\": 0,\r\n  \"model_inference\": false,\r\n  \"real_account_access\": false\r\n}\r\n"
+}

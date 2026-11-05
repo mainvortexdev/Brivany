@@ -1,0 +1,704 @@
+{
+  "checks": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "key": "melodi",
+      "width": 1195,
+      "scroll": 1195,
+      "title": "Brivany · Melodi"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "key": "spaces",
+      "width": 1195,
+      "scroll": 1195,
+      "title": "Espacios · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "key": "skills",
+      "width": 1195,
+      "scroll": 1195,
+      "title": "Human skills · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "key": "practice",
+      "width": 1195,
+      "scroll": 1195,
+      "title": "Human skills · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "key": "video",
+      "width": 1195,
+      "scroll": 1195,
+      "title": "Traducción en vivo · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "key": "sous",
+      "width": 1195,
+      "scroll": 1195,
+      "title": "Sous · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "key": "connections",
+      "width": 1195,
+      "scroll": 1195,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "key": "activity",
+      "width": 1195,
+      "scroll": 1195,
+      "title": "Bitácora · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "key": "notes",
+      "width": 1195,
+      "scroll": 1195,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "key": "social",
+      "width": 1195,
+      "scroll": 1195,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "key": "services",
+      "width": 1195,
+      "scroll": 1195,
+      "title": "Servicios · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1120,
+        "height": 760
+      },
+      "key": "melodi",
+      "width": 875,
+      "scroll": 875,
+      "title": "Brivany · Melodi"
+    },
+    {
+      "viewport": {
+        "width": 1120,
+        "height": 760
+      },
+      "key": "spaces",
+      "width": 875,
+      "scroll": 875,
+      "title": "Espacios · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1120,
+        "height": 760
+      },
+      "key": "skills",
+      "width": 875,
+      "scroll": 875,
+      "title": "Human skills · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1120,
+        "height": 760
+      },
+      "key": "practice",
+      "width": 875,
+      "scroll": 875,
+      "title": "Brivany · Estudio de práctica"
+    },
+    {
+      "viewport": {
+        "width": 1120,
+        "height": 760
+      },
+      "key": "video",
+      "width": 875,
+      "scroll": 875,
+      "title": "Traducción en vivo · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1120,
+        "height": 760
+      },
+      "key": "sous",
+      "width": 875,
+      "scroll": 875,
+      "title": "Sous · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1120,
+        "height": 760
+      },
+      "key": "connections",
+      "width": 875,
+      "scroll": 875,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1120,
+        "height": 760
+      },
+      "key": "activity",
+      "width": 875,
+      "scroll": 875,
+      "title": "Bitácora · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1120,
+        "height": 760
+      },
+      "key": "notes",
+      "width": 875,
+      "scroll": 875,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1120,
+        "height": 760
+      },
+      "key": "social",
+      "width": 875,
+      "scroll": 875,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1120,
+        "height": 760
+      },
+      "key": "services",
+      "width": 875,
+      "scroll": 875,
+      "title": "Servicios · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "key": "melodi",
+      "width": 789,
+      "scroll": 789,
+      "title": "Brivany · Melodi"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "key": "spaces",
+      "width": 789,
+      "scroll": 789,
+      "title": "Espacios · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "key": "skills",
+      "width": 789,
+      "scroll": 789,
+      "title": "Human skills · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "key": "practice",
+      "width": 789,
+      "scroll": 789,
+      "title": "Brivany · Estudio de práctica"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "key": "video",
+      "width": 789,
+      "scroll": 789,
+      "title": "Traducción en vivo · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "key": "sous",
+      "width": 789,
+      "scroll": 789,
+      "title": "Sous · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "key": "connections",
+      "width": 789,
+      "scroll": 789,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "key": "activity",
+      "width": 789,
+      "scroll": 789,
+      "title": "Bitácora · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "key": "notes",
+      "width": 789,
+      "scroll": 789,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "key": "social",
+      "width": 789,
+      "scroll": 789,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "key": "services",
+      "width": 789,
+      "scroll": 789,
+      "title": "Servicios · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 600
+      },
+      "key": "melodi",
+      "width": 533,
+      "scroll": 533,
+      "title": "Brivany · Melodi"
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 600
+      },
+      "key": "spaces",
+      "width": 533,
+      "scroll": 533,
+      "title": "Espacios · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 600
+      },
+      "key": "skills",
+      "width": 533,
+      "scroll": 533,
+      "title": "Human skills · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 600
+      },
+      "key": "practice",
+      "width": 533,
+      "scroll": 533,
+      "title": "Brivany · Estudio de práctica"
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 600
+      },
+      "key": "video",
+      "width": 533,
+      "scroll": 533,
+      "title": "Traducción en vivo · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 600
+      },
+      "key": "sous",
+      "width": 533,
+      "scroll": 533,
+      "title": "Sous · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 600
+      },
+      "key": "connections",
+      "width": 533,
+      "scroll": 533,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 600
+      },
+      "key": "activity",
+      "width": 533,
+      "scroll": 533,
+      "title": "Bitácora · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 600
+      },
+      "key": "notes",
+      "width": 533,
+      "scroll": 533,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 600
+      },
+      "key": "social",
+      "width": 533,
+      "scroll": 533,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 600
+      },
+      "key": "services",
+      "width": 533,
+      "scroll": 533,
+      "title": "Servicios · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "key": "melodi",
+      "width": 327,
+      "scroll": 327,
+      "title": "Brivany · Melodi"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "key": "spaces",
+      "width": 327,
+      "scroll": 327,
+      "title": "Espacios · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "key": "skills",
+      "width": 327,
+      "scroll": 327,
+      "title": "Human skills · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "key": "practice",
+      "width": 327,
+      "scroll": 327,
+      "title": "Brivany · Estudio de práctica"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "key": "video",
+      "width": 327,
+      "scroll": 327,
+      "title": "Traducción en vivo · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "key": "sous",
+      "width": 327,
+      "scroll": 327,
+      "title": "Sous · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "key": "connections",
+      "width": 327,
+      "scroll": 327,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "key": "activity",
+      "width": 327,
+      "scroll": 327,
+      "title": "Bitácora · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "key": "notes",
+      "width": 327,
+      "scroll": 327,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "key": "social",
+      "width": 327,
+      "scroll": 327,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "key": "services",
+      "width": 327,
+      "scroll": 327,
+      "title": "Servicios · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "key": "melodi",
+      "width": 257,
+      "scroll": 268,
+      "title": "Brivany · Melodi"
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "key": "spaces",
+      "width": 257,
+      "scroll": 257,
+      "title": "Espacios · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "key": "skills",
+      "width": 257,
+      "scroll": 257,
+      "title": "Human skills · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "key": "practice",
+      "width": 257,
+      "scroll": 257,
+      "title": "Brivany · Estudio de práctica"
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "key": "video",
+      "width": 257,
+      "scroll": 257,
+      "title": "Traducción en vivo · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "key": "sous",
+      "width": 257,
+      "scroll": 257,
+      "title": "Sous · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "key": "connections",
+      "width": 257,
+      "scroll": 257,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "key": "activity",
+      "width": 257,
+      "scroll": 257,
+      "title": "Bitácora · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "key": "notes",
+      "width": 257,
+      "scroll": 257,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "key": "social",
+      "width": 257,
+      "scroll": 257,
+      "title": "Conexiones · Brivany"
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "key": "services",
+      "width": 257,
+      "scroll": 257,
+      "title": "Servicios · Brivany"
+    }
+  ],
+  "overflow_failures": [
+    {
+      "width": 257,
+      "height": 568,
+      "key": "melodi",
+      "scroll": 268,
+      "title": "Brivany · Melodi"
+    }
+  ],
+  "page_errors": [],
+  "blocked_external_origins": [],
+  "configuration": {
+    "local": true,
+    "remote_access_verified": false,
+    "services": [
+      {
+        "name": "Conversación Meta",
+        "configured": true,
+        "route": "/app"
+      },
+      {
+        "name": "Escucha Muse live",
+        "configured": true,
+        "route": "/app"
+      },
+      {
+        "name": "Voz Melodi · Cartesia",
+        "configured": true,
+        "route": "/app"
+      },
+      {
+        "name": "Traducción · Muse / Meta / Cartesia",
+        "configured": true,
+        "route": "/dubbing"
+      }
+    ]
+  },
+  "external_calls": 0,
+  "provider_inference_calls": 0,
+  "physical_microphone_verified": false
+}

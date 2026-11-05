@@ -1,0 +1,14 @@
+{
+  "suite": "spotify-relay",
+  "started_at": "2026-10-31T21:23:52.812845+00:00",
+  "finished_at": "2026-10-31T21:23:54.936861+00:00",
+  "duration_seconds": 2.124016,
+  "command": [
+    "node",
+    "tools/check_spotify_relay.cjs"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "service core:user:brivany-relay-fixture: This Worker requires compatibility date \"2026-10-31\", but the newest date supported by this server binary is \"2026-09-04\".\nMiniflareCoreError [ERR_RUNTIME_FAILURE]: The Workers runtime failed to start. There was likely a problem with the workerd binary or your configuration.\nRuntime stderr:\n{\"timestamp\":\"1793481834863\",\"level\":\"error\",\"source\":\"src/workerd/server/json-logger.c++:127\",\"message\":\"service core:user:brivany-relay-fixture: This Worker requires compatibility date \\\"2026-10-31\\\", but the newest date supported by this server binary is \\\"2026-09-04\\\".\",\"context_depth\":0}\n    at StartupLogBuffer.handleStartupFailure (<local-path>\\AppData\\Roaming\\npm\\node_modules\\wrangler\\node_modules\\miniflare\\dist\\src\\index.js:95827:13)\n    at Runtime.updateConfig (<local-path>\\AppData\\Roaming\\npm\\node_modules\\wrangler\\node_modules\\miniflare\\dist\\src\\index.js:95907:24)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async #assembleAndUpdateConfig (<local-path>\\AppData\\Roaming\\npm\\node_modules\\wrangler\\node_modules\\miniflare\\dist\\src\\index.js:113451:30)\n    at async <local-path>\\AppData\\Roaming\\npm\\node_modules\\wrangler\\node_modules\\miniflare\\dist\\src\\index.js:112258:7\n    at async Mutex.runWith (<local-path>\\AppData\\Roaming\\npm\\node_modules\\wrangler\\node_modules\\miniflare\\dist\\src\\index.js:85795:48)\n    at async #waitForReady (<local-path>\\AppData\\Roaming\\npm\\node_modules\\wrangler\\node_modules\\miniflare\\dist\\src\\index.js:113574:5)\n    at async _Miniflare.dispatchFetch (<local-path>\\AppData\\Roaming\\npm\\node_modules\\wrangler\\node_modules\\miniflare\\dist\\src\\index.js:113738:5)\n    at async <local-path>\\tools\\check_spotify_relay.cjs:18:9\n"
+}

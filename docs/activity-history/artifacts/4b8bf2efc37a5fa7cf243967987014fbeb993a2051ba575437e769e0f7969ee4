@@ -1,0 +1,169 @@
+# Validación de Brivany
+
+27 de octubre de 2026. Base local de voz, human-skills, preparación espacial y bitácora.
+
+## Resultado comprobado
+
+- **77 pruebas Python**: procedencia y límites de la práctica, incertidumbre,
+  consentimiento de envío, servidor HTTP local, relay Muse real en loopback con upstream simulado,
+  contrato Melodi PCM y adaptador Meta con transporte simulado.
+- De ese total, **15 pruebas espaciales** comprueban contratos, hashes, límites,
+  escala/física declaradas, paquetes y publicación sin carpeta parcial ante fallo;
+  **6 de bitácora** comprueban persistencia, snapshots, concurrencia, cambios de
+  evidencia/cadena, exclusión de rutas privadas y API HTTP local de lectura.
+- **10 escenarios de bitácora en navegador** con API simulada: listado, evidencia,
+  filtros, contenido escapado, búsqueda, exportación, móvil/escritorio, error,
+  vacío y paginación. Sin llamadas externas ni mutaciones HTTP.
+- Formulario local de clave Meta: campo password, borrado tras enviar, respuesta sin clave,
+  escritura atómica de .env y protección de origen. La prueba de UI intercepta el guardado;
+  nunca reemplaza una credencial real.
+- **22 pruebas JavaScript**: selección contextual explícita, citas de fragmentos,
+  contexto preparado, parciales corregidos, orden de turnos y preguntas excluidas como evidencia,
+  deduplicación, memoria acotada, muletillas, pausas acústicas, PCM 24/44.1/48 kHz,
+  reproducción con bloques impares y cancelación de voz/ASR; preparación de la siguiente frase
+  durante reproducción, pausas sin solapamientos y audio programado limitado a dos segundos.
+- **15 comprobaciones live en navegador**: ausencia de clave bloquea captura,
+  permisos, AudioWorklet real con señal sintética, parciales, final Muse → Melodi,
+  supresión de eco, interrupción, cierre con último fragmento, hablantes/reunión silenciosa y limpieza;
+  contexto preparado, ayuda provisional, retractación, final confirmado y tarjeta visible en móvil.
+- **11 escenarios de navegador** en Microsoft Edge headless con audio, voces y
+  reconocimiento simulados: permiso inicial, modo reunión silencioso, guía local,
+  voz con pausas, inicio/parada, respuestas tras pausa, borrado, frases bilingües,
+  taller conectado a la API, shell PWA offline y ausencia de errores JavaScript.
+- **15 pruebas de human-skills incluidas en Python**: contrato, proveedor simulado,
+  consentimiento y origen, límites de video y evidencia, errores sin reintentos,
+  deduplicación concurrente y tras reinicio, persistencia, progreso y borrado.
+- **11 escenarios de human-skills en navegador**, con API simulada: consentimiento,
+  creación y consulta del trabajo, fuentes con SHA-256, niveles de ayuda, progreso manual,
+  exportación, recarga, archivo incorrecto, borrado y vistas responsive.
+- Vista responsive comprobada en 320, 390, 768 y 1440 px; sin desbordamiento
+  horizontal. Capturas de escritorio, móvil y landing revisadas visualmente.
+- **11 manifiestos/ejemplos aceptados**, **18 casos inválidos rechazados**,
+  **27 esquemas actualizados**, **23 operaciones HTTP propuestas** revisadas
+  estructuralmente y **292 referencias de esquema** resueltas.
+- Enlaces Markdown locales comprobados. El validador ya permite la interfaz y
+  lee UTF-8 explícitamente en Windows.
+
+La paleta de la interfaz usa blanco, negro, grises y azul según los tokens de
+[apple.com](https://www.apple.com/). Los componentes e identidad son de Brivany.
+
+## Límites
+
+No se probaron micrófonos/cámaras físicos, calidad audible de voces instaladas,
+precisión de reconocimiento con personas, instalación real en iPhone/Android/macOS
+ni Meta Glasses. Las pruebas de audio usaron una señal sintética y mocks; ninguna
+activó dispositivos del usuario. Separadamente se llamó a Cloudflare real con frases sintéticas
+para comprobar Melodi y medir latencia; resultados en `tmp/live-latency.json` y `tmp/playback-latency.json`.
+
+Muse y Muse Spark 1.3 ya se verificaron con la clave guardada por el usuario. Inglés ofrece frases preparadas, no
+traducción libre. Reunión recupera fragmentos por coincidencias léxicas y detecta
+preguntas textuales, con etiquetas de hablantes de Muse (sin identificar personas/destinatarios) y sin verificar hechos
+externos. El resumen es extractivo. Las pausas reflejan actividad acústica
+aproximada; las muletillas son candidatos sobre texto. No se califica dominio,
+emoción, acento ni presencia automáticamente.
+
+La PWA conserva exclusivamente recursos estáticos en caché. Conversaciones y
+grabaciones permanecen en memoria, salvo una descarga decidida por el usuario.
+Muse envía audio a Meta; Melodi envía texto a Cloudflare; el ASR del navegador puede usar otro proveedor.
+Todos se seleccionan explícitamente. Las voces locales siguen disponibles sin sustitución oculta.
+
+El servidor H1 escucha solo en loopback. No es el backend de producción ni
+implementa la API `/v1`, persistencia de conversaciones, autenticación multiusuario o despliegue.
+Los borradores de human-skills y su progreso sí persisten localmente; sus videos no se conservan.
+La revisión OpenAPI no sustituye un validador completo ni pruebas de sus rutas.
+DBML sigue siendo un modelo lógico, sin migraciones PostgreSQL.
+
+## Reproducir
+
+```sh
+python -X utf8 -B tools/build_contracts.py
+python -X utf8 -B tools/build_speaking_skill.py
+python -X utf8 -B tools/validate_contracts.py
+python -X utf8 -B -m unittest discover -s tests -v
+node --test tests/context-engine.test.cjs tests/voice-engine.test.cjs tests/live-voice.test.cjs
+```
+
+Para los escenarios de navegador, iniciar el servidor con `start-h1.ps1` y
+ejecutar `node tools/check_ui.cjs`. Requiere Playwright y un navegador Chromium.
+`BRIVANY_PLAYWRIGHT_PATH` admite una instalación existente de Playwright;
+`BRIVANY_BROWSER_CHANNEL=msedge` permite usar Microsoft Edge instalado.
+`BRIVANY_TEST_URL` cambia la URL local de prueba. `node tools/check_live_ui.cjs` prueba la conexión live con proveedores simulados.
+
+Las capturas temporales se guardan en `tmp/ui/`. Los PDF se conservan como
+documentos históricos y no reflejan el alcance actual.
+
+## Apertura de la interfaz
+
+La interfaz responde en `http://127.0.0.1:8765/app` y el contexto del navegador compartido
+por el usuario confirma que fue abierta. El control automatizado del navegador sigue deshabilitado
+en Work. El usuario creó la clave y la guardó mediante el formulario local sin pasarla por el chat.
+Se comprobó su persistencia y carga en otro proceso. No se cambiaron los ajustes de Work.
+
+## Proveedores reales y latencia
+
+Muse transcribió tres frases sintéticas correctamente; final en 285–368 ms tras la última actividad.
+La salida Celeste sola tuvo 879 ms de mediana hasta programar voz en el navegador (5 muestras).
+El recorrido real Muse → Spark 1.3 → Celeste → navegador tuvo 4286 ms de mediana y 4599 ms de
+máximo en tres muestras, sin hardware físico. El primer texto de Spark (1709–3051 ms) domina
+la espera. No se garantiza fluidez instantánea. Se corrigió la confusión del modelo entre el
+nombre de la aplicación y el del usuario. Informes reproducibles en `tmp/`; detalles en
+[voz live](docs/13-voz-live.md).
+
+La ruta silenciosa de reunión se midió por separado con Muse real en DIARIZATION y una pregunta
+sintética completa de 6,852 s. Tres hechos de prueba ya estaban registrados manualmente. La primera
+cita provisional apareció 2256–2575 ms después de comenzar la pregunta, 4277–4596 ms antes de su
+final. Desde el parcial útil hasta la oportunidad de pintado transcurrieron 17–25 ms; se midió
+con `requestAnimationFrame`, sin pantalla física. No hubo llamadas de respuesta al modelo ni TTS.
+Esto prueba recuperación anticipada de citas existentes, no generación o verificación instantánea
+de respuestas desconocidas. Informe: `tmp/meeting-latency.json`; reproducción:
+`node tools/measure_meeting.cjs` con la muestra sintética preparada.
+
+Fluidez de voz: tres comparaciones alternadas con Cloudflare real redujeron el intervalo de actividad
+entre frases de 1150 a 416 ms de mediana (PCM: 794 a 89 ms), conservando la pausa intencional.
+Se probó además liberar el bloqueo de síntesis antes de anunciar EOF, para que la siguiente petición
+no encuentre una operación ya terminada todavía ocupando el servidor. Informe: `tmp/voice-fluency.json`.
+
+Doce solicitudes sintéticas compararon versiones de Spark e instrucciones compactas; todas finalizaron.
+Se mantuvo Spark 1.3 con las instrucciones compactas. La comparación completa antes/después de tres
+muestras por variante pasó de 4290 a 4155 ms de mediana hasta programar la primera voz: mejora pequeña
+frente a la variabilidad, sin garantía de respuesta instantánea. Informes: `tmp/model-comparison.json`,
+`tmp/conversation-before-fluency.json` y `tmp/conversation-after-fluency.json`.
+
+## Human-skills desde video
+
+Una sola solicitud real a Spark 1.2 procesó una demostración sintética de nueve segundos sin audio
+y generó tres pasos con referencias correctas a sus tres pantallas. Tardó 8281 ms y usó 3598 tokens
+(1908 entrada, 1690 salida). Se guardó en la biblioteca local. No se repitió la llamada ni se compararon
+modelos; las demás comprobaciones fueron simuladas. Informe: `tmp/human-skills-test/real-check.json`.
+La prueba no establece calidad con audio ni videos complejos. [Método y límites](docs/14-human-skills.md).
+
+## Preparación espacial S1
+
+Se preparó el MP4 sintético existente de nueve segundos con FFmpeg: seis JPEG,
+cuatro hashes únicos y dos duplicados exactos. Se generaron manifiesto, plan Modal
+desactivado, preflight y ZIP sin el video original. Evidencias en
+`tmp/spatial-capture-s1/`, conservadas también en la bitácora.
+
+El paquete comprueba extracción y trazabilidad; no representa una habitación real,
+no evalúa cobertura/nitidez y no contiene una reconstrucción 3D. Los 180 segundos GPU
+del plan son un límite declarativo pendiente de ejecutor. No hubo inferencias Meta
+ni Modal en S1. [Arquitectura y reproducción](docs/15-plataforma-espacial.md).
+
+## Bitácora de construcción
+
+`/activity` funciona con el servidor local. Las seis pruebas Python de bitácora
+usan almacenamiento temporal y HTTP real en loopback; las diez de interfaz usan
+API simulada. Una comprobación adicional abrió la página y API reales, consultó
+13 entradas existentes en ese momento y descargó una evidencia cuyo SHA-256
+coincidió. Capturas reales en `tmp/ui/activity-local-1440.png` y
+`tmp/ui/activity-local-390.png`; informe en `tmp/ui/activity-local-check.json`.
+
+La actualización del shell PWA y los enlaces pasaron los 11 escenarios existentes
+de la app con proveedores simulados. Los informes de suites ejecutadas en esta
+etapa están en `tmp/verification/` y como copias persistentes en la bitácora.
+
+El histórico incorporado distingue retrospectivas y nuevas comprobaciones.
+Persistencia, hashes y cadena local no constituyen una auditoría independiente ni
+prueban el significado de los informes. Traducción de video en vivo, reconstrucción
+GPU y física interactiva siguen pendientes. Esta ampliación no hizo nuevas
+llamadas de inferencia Meta/Modal. [Registro y límites](docs/17-bitacora.md).

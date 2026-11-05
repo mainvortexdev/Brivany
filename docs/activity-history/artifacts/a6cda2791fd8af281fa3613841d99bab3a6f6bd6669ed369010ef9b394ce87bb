@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "native_bridge": "substituted",
+  "external_calls": 0,
+  "one_click_starts_english_auto": true,
+  "workspace_triggers_browser": true,
+  "transcript_preference_default_and_reload": true,
+  "no_app_navigation": true,
+  "repeated_click_does_not_duplicate": true,
+  "stop_and_voice_controls": true,
+  "widths": [
+    780,
+    460,
+    390,
+    320,
+    280
+  ],
+  "errors": []
+}

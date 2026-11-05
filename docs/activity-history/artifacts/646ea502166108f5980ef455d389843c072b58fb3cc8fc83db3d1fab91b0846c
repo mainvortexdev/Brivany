@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-translation-ui",
+  "started_at": "2026-11-04T05:43:45.123854+00:00",
+  "finished_at": "2026-11-04T05:44:02.563237+00:00",
+  "duration_seconds": 17.439383,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-translation"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'start',\n+   'en',\n-   'es',\n    'feminine'\n  ]\n\n    at <local-path>\\tools\\check_workspace_translation_ui.cjs:39:88 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: [Array],\n  expected: [Array],\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\n"
+}

@@ -1,0 +1,278 @@
+{
+  "type": "real_native_capture_calibration_summary",
+  "provider_calls": 0,
+  "source_audio_persisted": false,
+  "screenshots_attached": false,
+  "extension_loaded": false,
+  "rows": [
+    {
+      "requested_start_seconds": 24,
+      "metadata": {
+        "page_video_id": "sr_iLGKNsxU",
+        "player_video_id": "sr_iLGKNsxU",
+        "response_video_id": "sr_iLGKNsxU",
+        "media_duration_seconds": 1495.781,
+        "player_duration_seconds": 1495.781,
+        "response_length_seconds": 1496,
+        "current_time": 24,
+        "ad_showing": false,
+        "ad_interrupting": false,
+        "playback_rate": 1,
+        "selected_audio_track": {
+          "id": "und",
+          "name": "Default",
+          "isDefault": true,
+          "isAutoDubbed": false,
+          "languageCode": null
+        },
+        "available_audio_tracks": []
+      },
+      "identity_observations": 29,
+      "native_sample_rate": 48000,
+      "frames": 336000,
+      "sample_seconds": 7,
+      "source_seconds": 7.0369980000000005,
+      "wall_seconds": 7.0891000000014905,
+      "audio_seconds": 7.0906666666666665,
+      "register": "high",
+      "register_evidence": {
+        "f0_lower": 200,
+        "f0_median": 242,
+        "f0_upper": 286,
+        "resonance_hz": 2928,
+        "voiced_windows": 56,
+        "resonance_windows": 15
+      },
+      "native_yin": {
+        "voiced_windows": 83,
+        "f0_hz_percentiles": [
+          186.15,
+          207.34,
+          256.19,
+          299.01,
+          325.29
+        ],
+        "mean_periodicity": 0.9271
+      },
+      "compact_votes": [
+        "feminine",
+        "feminine",
+        "uncertain",
+        "uncertain",
+        "feminine"
+      ],
+      "candidate_votes": [
+        "masculine",
+        "feminine",
+        "feminine",
+        "feminine",
+        "feminine"
+      ],
+      "candidate_confidences": [
+        0.821149,
+        0.928482,
+        0.735004,
+        0.851185,
+        0.983602
+      ],
+      "central_candidate": {
+        "source_seconds": 3,
+        "female_style_probability": 0.735004,
+        "male_style_probability": 0.264996,
+        "voice_timbre": "feminine",
+        "confidence": 0.735004,
+        "logits": [
+          0.50079,
+          -0.51937
+        ],
+        "wall_ms": 612.38,
+        "cpu_ms": 609.38
+      }
+    },
+    {
+      "requested_start_seconds": 300,
+      "metadata": {
+        "page_video_id": "sr_iLGKNsxU",
+        "player_video_id": "sr_iLGKNsxU",
+        "response_video_id": "sr_iLGKNsxU",
+        "media_duration_seconds": 1495.781,
+        "player_duration_seconds": 1495.781,
+        "response_length_seconds": 1496,
+        "current_time": 300.019155,
+        "ad_showing": false,
+        "ad_interrupting": false,
+        "playback_rate": 1,
+        "selected_audio_track": {
+          "id": "und",
+          "name": "Default",
+          "isDefault": true,
+          "isAutoDubbed": false,
+          "languageCode": null
+        },
+        "available_audio_tracks": []
+      },
+      "identity_observations": 29,
+      "native_sample_rate": 48000,
+      "frames": 336000,
+      "sample_seconds": 7,
+      "source_seconds": 7.096973999999989,
+      "wall_seconds": 7.09729999999702,
+      "audio_seconds": 7.093333333333334,
+      "register": "high",
+      "register_evidence": {
+        "f0_lower": 178,
+        "f0_median": 200,
+        "f0_upper": 225,
+        "resonance_hz": 2726,
+        "voiced_windows": 59,
+        "resonance_windows": 13
+      },
+      "native_yin": {
+        "voiced_windows": 70,
+        "f0_hz_percentiles": [
+          165.87,
+          178.77,
+          207.21,
+          235.11,
+          251.82
+        ],
+        "mean_periodicity": 0.9259
+      },
+      "compact_votes": [
+        "feminine",
+        "feminine",
+        "feminine",
+        "masculine",
+        "feminine"
+      ],
+      "candidate_votes": [
+        "masculine",
+        "masculine",
+        "masculine",
+        "masculine",
+        "masculine"
+      ],
+      "candidate_confidences": [
+        0.973995,
+        0.990559,
+        0.998719,
+        0.996261,
+        0.995756
+      ],
+      "central_candidate": {
+        "source_seconds": 3,
+        "female_style_probability": 0.001281,
+        "male_style_probability": 0.998719,
+        "voice_timbre": "masculine",
+        "confidence": 0.998719,
+        "logits": [
+          -3.12809,
+          3.530828
+        ],
+        "wall_ms": 648.4,
+        "cpu_ms": 640.62
+      }
+    },
+    {
+      "requested_start_seconds": 900,
+      "metadata": {
+        "page_video_id": "sr_iLGKNsxU",
+        "player_video_id": "sr_iLGKNsxU",
+        "response_video_id": "sr_iLGKNsxU",
+        "media_duration_seconds": 1495.781,
+        "player_duration_seconds": 1495.781,
+        "response_length_seconds": 1496,
+        "current_time": 900.01952,
+        "ad_showing": false,
+        "ad_interrupting": false,
+        "playback_rate": 1,
+        "selected_audio_track": {
+          "id": "und",
+          "name": "Default",
+          "isDefault": true,
+          "isAutoDubbed": false,
+          "languageCode": null
+        },
+        "available_audio_tracks": []
+      },
+      "identity_observations": 25,
+      "native_sample_rate": 48000,
+      "frames": 336000,
+      "sample_seconds": 7,
+      "source_seconds": 7.075614999999971,
+      "wall_seconds": 7.13729999999702,
+      "audio_seconds": 7.146666666666667,
+      "register": "low",
+      "register_evidence": {
+        "f0_lower": 160,
+        "f0_median": 200,
+        "f0_upper": 211,
+        "resonance_hz": 2574,
+        "voiced_windows": 53,
+        "resonance_windows": 10
+      },
+      "native_yin": {
+        "voiced_windows": 91,
+        "f0_hz_percentiles": [
+          156.42,
+          169.81,
+          205.59,
+          212.92,
+          229.7
+        ],
+        "mean_periodicity": 0.9355
+      },
+      "compact_votes": [
+        "uncertain",
+        "masculine",
+        "feminine",
+        "feminine",
+        "feminine"
+      ],
+      "candidate_votes": [
+        "masculine",
+        "masculine",
+        "masculine",
+        "masculine",
+        "masculine"
+      ],
+      "candidate_confidences": [
+        0.957381,
+        0.993917,
+        0.990602,
+        0.995507,
+        0.992122
+      ],
+      "central_candidate": {
+        "source_seconds": 3,
+        "female_style_probability": 0.009398,
+        "male_style_probability": 0.990602,
+        "voice_timbre": "masculine",
+        "confidence": 0.990602,
+        "logits": [
+          -2.190481,
+          2.467299
+        ],
+        "wall_ms": 614.9,
+        "cpu_ms": 625
+      }
+    }
+  ],
+  "prior_seek_failures": [
+    {
+      "requested_start_seconds": 300,
+      "phase": "seek_readiness",
+      "deadline_seconds": 15
+    },
+    {
+      "requested_start_seconds": 300,
+      "phase": "seek_readiness",
+      "deadline_seconds": 20,
+      "media_time": 0,
+      "media_duration_available": false,
+      "ready_state": 0,
+      "player_state": -1
+    }
+  ],
+  "semantic_limit": "The user described dominant masculine speech in the whole video, not labels at these exact intervals; model confidence does not establish identity or semantic quality."
+}

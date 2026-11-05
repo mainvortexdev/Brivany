@@ -1,0 +1,169 @@
+# Melodi: equipos de agentes y resultados compactos
+
+3 de noviembre de 2026. Continuación de cuenta compartida, chat y voz existentes.
+No se genera IPA mientras el diseño móvil sigue en revisión.
+
+## Ejecución y revisión
+
+La petición de acción de la cuenta llega al coordinador `orchestrator` en el
+ordenador elegido. Meta propone hasta seis tareas mediante function calling
+paralelo. El plan valida tipos, identificadores, dependencias y ausencia de
+ciclos antes de desplegar especialistas. La petición original del usuario viaja
+separada de la instrucción resuelta por el modelo; esta última no puede ampliar
+la autorización.
+
+Documentos, imágenes, investigación, modelos y medios pueden avanzar en colas
+independientes, con seis plazas de ejecución globales. El coordinador y la
+revisión no retienen una plaza de trabajo. Ordenador y terminal comparten una
+sola vía de entrada nativa: dos agentes no pueden controlar simultáneamente el
+mismo ratón o foco. La voz utiliza su motor existente y puede seguir conversando.
+No se acredita aquí una nueva prueba de micrófono físico.
+
+Meta Image usa `muse-image-1.0`, con salida PNG validada y archivos nuevos.
+Investigación usa Responses con `web_search` y exige búsqueda completada y
+citas HTTPS. Los dos transportes tienen destino fijo, límites de tamaño,
+cancelación y errores sin credenciales. La última respuesta del asistente se
+extrae aparte del progreso; esta última extracción tiene prueba local, sin una
+segunda consulta pagada de investigación después del cambio.
+
+Melodi recibe el contenido o miniatura del artefacto, los criterios del encargo
+y la evidencia técnica del ejecutor. La evaluación usa la función estructurada
+`evaluate_agent`; todos los criterios deben pasar. Ejecución correcta y calidad
+del contenido son comprobaciones distintas. La evaluación semántica de un
+modelo no certifica exactitud absoluta ni geometría o física realista.
+
+Las tareas seguras de producción de artefactos admiten dos intentos en total,
+con instrucciones de corrección y un UUID nuevo; no sobrescriben el anterior.
+No se repiten automáticamente tareas con efectos sobre programas, cuentas o
+archivos ajenos. La duda pasa a intervención del usuario. Cancelar el equipo
+cancela sus hijos y una revisión tardía no puede resucitarlo como exitoso.
+Las dependencias esperan resultados aceptados, no solo archivos existentes.
+
+Hay un presupuesto de 48 peticiones de proveedor por equipo, más límites por
+trabajo. El contador no equivale a coste monetario ni contabiliza todas las
+operaciones internas de búsqueda alojada o servicios anteriores de voz/motion.
+Registro del sistema, UAC y aprobación de eliminación/sobrescritura conservan
+sus restricciones vigentes.
+
+## WorkSpace
+
+Los agentes pequeños se distribuyen simétricamente alrededor de Melodi, con
+espacio para personajes completos incluso cuando el equipo es impar. En poco
+ancho se desplazan por grupos completos. Trabajar, revisar, esperar y error
+tienen estados distintos. Un resultado aceptado muestra un punto azul
+`#1686ff`, pulsa durante la permanencia de doce segundos y sale con un
+desvanecimiento de 950 ms. Un intento rechazado sustituido no se presenta como
+una entrega exitosa.
+
+Melodi espera dos minutos de inactividad antes de dormir; trabajo o revisión
+en curso impiden ese estado. Se conserva movimiento reducido.
+
+«Ver resultado» abre el visor de WorkSpace sin restaurar la aplicación grande.
+Altura máxima ordinaria 340 px, anchura 520 px, acotadas a la pantalla. Texto
+ajustado incluso en palabras/URLs largas, desplazamiento solo vertical y barras
+ocultas. Documento e investigación se presentan como texto literal; imagen como
+miniatura validada; audio/video mediante una lectura temporal del artefacto;
+modelo/plano mediante su visor existente; equipo mediante sus resultados hijos.
+Otros resultados muestran sus datos resumidos: no se añade en esta entrega un
+renderizador universal para binarios Office. Cerrar o cambiar de panel pausa
+los medios. Escape y cierre están disponibles.
+
+La lectura de medios usa un ticket de un solo uso, de 60 segundos, enviado en
+cabecera, limitado al archivo del trabajo. No concede control del ordenador.
+Las rutas se validan dentro del espacio de trabajo y no se cargan documentos
+generados como HTML ejecutable.
+
+## Glisse
+
+Instalado **Glisse 0.5.0**, React/React DOM 19.3.1, versiones exactas con
+`package-lock.json` en `desktop/experience/ui`. El componente `Glass` y el botón
+de cierre son de Glisse, compilados a un recurso local del escritorio. No se
+cambia el proyecto web público. La compilación reutiliza esbuild ya instalado.
+Las licencias MIT se conservan en `workspace-results.LICENSE.txt` y los avisos
+del bundle en `workspace-results.js.LEGAL.txt`.
+
+La primera prueba detectó que el CSP de Brivany impedía la inyección de estilos
+de la biblioteca. La corrección sirve su hoja `glisse.css` localmente y reserva
+el id que usa su inyector. No se relaja el CSP. La ventana WebView2 se hace
+transparente solo para este resultado y solicita backdrop al compositor de
+Windows; el resultado de la llamada nativa se registró como aplicado en este
+equipo. En plataformas/versiones sin ese soporte queda una superficie CSS
+legible; esta prueba no certifica efecto nativo en macOS/Linux.
+
+## Pruebas y límites
+
+Pruebas locales de orquestación: 20 casos, incluyendo dependencias, reintento,
+cancelación, presupuesto y lectura de resultados/tickets. Pruebas de host de
+cuenta, ordenador y referencias/agentes también ejecutadas. Los informes en
+`tmp/verification` conservan sus comandos y salida. Son simulaciones donde se
+indica, no sustituyen cuentas ni hardware reales.
+
+UI de agentes: seis agentes y equipos impares de uno/tres/cinco en anchos
+1280, 1024, 800, 640 y 375. Pulso azul, salida intermedia, sueño a los dos
+minutos y permanencia despierta durante trabajo comprobados con reloj y
+trabajos propios sustituidos. UI Glisse: anchos 1280, 800, 375 y 320, texto
+largo, imagen, equipo, cabecera del medio, pausa/cierre/Escape y movimiento
+reducido. La inspección de las capturas propias confirmó legibilidad y tamaño.
+
+La prueba nativa específica `workspace-results-native` pasó en ventanas propias
+WebView2: 520 × 340 desde antes de mostrar, fondo RGBA transparente, blur CSS,
+compositor aplicado, sin barra de tareas y restauración a negro al cambiar de
+panel. No inyectó entrada, no registró otra AppBar, no usó micrófono ni APIs.
+Informe: `docs/verification-history/workspace-results-native-20261103T220546-78243d55.json`.
+
+Ensayos de proveedor reales con contenido propio, sin enviar mensajes ni
+modificar originales:
+
+1. Equipo de imagen/documento/investigación: generó artefactos pero la primera
+   evaluación rechazó las tres tareas y sus reintentos. Informe
+   `tmp/orchestration/real-team-20261103T212628.json`. Se corrigió la separación
+   entre contenido y restricciones técnicas de ejecución.
+2. Primera reevaluación reutilizando esos artefactos falló con `ValueError`; el
+   detalle no quedó registrado y no se atribuye una causa exacta.
+   `tmp/orchestration/review-reuse-20261103T213224.json`.
+3. Reevaluación estructurada posterior aceptó los tres artefactos, sin regenerar
+   imágenes: `tmp/orchestration/review-reuse-20261103T213603.json`.
+4. Equipo nuevo de dos documentos, de cuenta a Windows y Meta, terminó con ambos
+   aceptados al primer intento en 22,98 s. Intervalos reales de ejecución se
+   solaparon 2,828 s. `tmp/orchestration/real-team-20261103T213759.json`.
+
+Consumo conocido de esos ensayos: **27 peticiones exteriores a Meta**, incluidas
+dos generaciones de imagen y dos consultas Responses con búsqueda. No se
+calculó factura; operaciones internas del buscador y coste Cloudflare no están
+cuantificados. Las comprobaciones locales posteriores no hicieron inferencia.
+La instalación npm sí accedió al registro; no es una llamada de inferencia.
+
+Se conservan los fallos de pruebas: expectativa antigua de botón y selección
+frágil de iframe del test UI, fixture de voz que se instalaba después de cargar
+la configuración, CSP de Glisse y prueba nativa general con timeout/espera de
+publicación. Las correcciones y sus nuevas ejecuciones son registros añadidos;
+no convierten los intentos fallidos en éxitos. La prueba nativa específica del
+visor se distingue de la suite general de voz/chat.
+
+Cierre de las comprobaciones locales del hito:
+
+- `orchestration-20261103T220606-837b780c.json`: 20 pruebas aprobadas.
+- `workspace-agents-ui-20261103T220607-cac27d11.json`: compañeros y estados.
+- `workspace-results-ui-20261103T220245-8102e344.json`: visor y contenido.
+- `computer-images-agents-ui-20261103T220733-896246e2.json`: chat, referencias,
+  plano, documento, ajustes y Live con ASR/salida sustituidos; pasó después de
+  corregir la configuración anticipada y seleccionar el iframe correspondiente.
+- `mobile-gateway-20261103T220746-6f619b6b.json`: 30 pruebas; incluye instrucciones
+  con saltos de línea, rechazo de controles inválidos y petición original aparte.
+- `workspace-chat-native-20261103T221030-db185a3d.json`: la suite general nativa
+  también pasó tras esperar la publicación de mensajes; conversación ida/vuelta,
+  historial al cerrar, despacho Live y ondas sintéticas, visor Glisse y
+  supervivencia al borrado de cookies. No usó micrófono ni proveedor real.
+
+Gateway publicado con Wrangler instalado 4.156.0, versión
+`cca53e26-8979-44a7-8973-d45e88f65d39` en `mobile.brivany.example`.
+Escritorio reiniciado con `--island`, retirando antes la reserva AppBar de su
+ventana anterior. No se publica el código fuente ni se modifica la web oficial.
+
+Fuentes primarias:
+
+- [Glisse y licencia](https://github.com/0kzh/glisse).
+- [Meta: function calling](https://dev.meta.ai/docs/tool-calling).
+- [Meta: generación de imágenes](https://dev.meta.ai/docs/image-generation).
+- [Meta: búsqueda](https://dev.meta.ai/docs/search-grounding).
+- [Windows: DwmExtendFrameIntoClientArea](https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmextendframeintoclientarea).

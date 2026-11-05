@@ -1,0 +1,106 @@
+name: Brivany iPhone · unsigned build
+
+on:
+  workflow_dispatch:
+    inputs:
+      generate_ipa:
+        description: 'Generate unsigned IPA only after the interface design is finished'
+        type: boolean
+        default: false
+  push:
+    paths:
+      - 'ios/**'
+      - 'scripts/verify-iphone-ipa.py'
+      - '.github/workflows/ios-unsigned.yml'
+  pull_request:
+    paths:
+      - 'ios/**'
+      - 'scripts/verify-iphone-ipa.py'
+      - '.github/workflows/ios-unsigned.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: brivany-ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect selected Xcode and install project generator
+        run: |
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+          brew install xcodegen
+      - name: Generate native project
+        working-directory: ios
+        run: xcodegen generate
+      - name: Select and boot an available iPhone simulator
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; data=json.load(sys.stdin); choices=[device for runtime,devices in sorted(data["devices"].items(),reverse=True) if ".iOS-" in runtime for device in devices if device.get("isAvailable") and device["name"].startswith("iPhone")]; assert choices,"No available iPhone simulator"; print(choices[0]["udid"])')
+          echo "BRIVANY_SIMULATOR=$DEVICE_ID" >> "$GITHUB_ENV"
+          xcrun simctl boot "$DEVICE_ID" || true
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+          xcrun simctl ui "$DEVICE_ID" appearance light
+          xcrun simctl status_bar "$DEVICE_ID" override --time 9:41 --batteryState charged --batteryLevel 100 --wifiMode active --wifiBars 3
+      - name: Run XCTest unit and interface suites
+        run: |
+          mkdir -p build/reports
+          set -o pipefail
+          xcodebuild test -project ios/Brivany.xcodeproj -scheme Brivany \
+            -destination "platform=iOS Simulator,id=$BRIVANY_SIMULATOR" \
+            -derivedDataPath build-tests -resultBundlePath build/reports/Brivany.xcresult \
+            -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO \
+            | tee build/reports/xcode-tests.log
+      - name: Capture native Inicio, Módulos, Ajustes and Live previews
+        run: |
+          mkdir -p build/captures
+          xcrun simctl install "$BRIVANY_SIMULATOR" build-tests/Build/Products/Debug-iphonesimulator/Brivany.app
+          for ITEM in 'Inicio:home' 'Modulos:modules' 'Ajustes:settings' 'Live:live'; do
+            NAME=${ITEM%%:*}
+            PREVIEW=${ITEM#*:}
+            xcrun simctl terminate "$BRIVANY_SIMULATOR" es.ProjectFixture.brivany || true
+            xcrun simctl launch "$BRIVANY_SIMULATOR" es.ProjectFixture.brivany --ui-testing "--preview-$PREVIEW"
+            sleep 2
+            xcrun simctl io "$BRIVANY_SIMULATOR" screenshot "build/captures/Brivany-iPhone-$NAME.png"
+          done
+      - name: Build unsigned arm64 app for physical iPhone
+        if: github.event_name == 'workflow_dispatch' && inputs.generate_ipa
+        run: |
+          set -o pipefail
+          xcodebuild build -project ios/Brivany.xcodeproj -scheme Brivany \
+            -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' \
+            -derivedDataPath build-device ARCHS=arm64 ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' \
+            | tee build/reports/xcode-device.log
+      - name: Package and independently verify unsigned IPA
+        if: github.event_name == 'workflow_dispatch' && inputs.generate_ipa
+        run: |
+          mkdir -p build/package/Payload
+          cp -R build-device/Build/Products/Release-iphoneos/Brivany.app build/package/Payload/
+          (cd build/package && zip -qry ../Brivany-unsigned.ipa Payload)
+          python3 scripts/verify-iphone-ipa.py build/Brivany-unsigned.ipa \
+            --expected-version 0.1.0 --report build/reports/Brivany-iPhone-verification.json
+          du -sh build/package/Payload/Brivany.app build/Brivany-unsigned.ipa | tee build/reports/size-report.txt
+      - name: Upload unsigned iPhone app
+        if: github.event_name == 'workflow_dispatch' && inputs.generate_ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: Brivany-iPhone-unsigned
+          path: build/Brivany-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload native screenshots and XCTest evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Brivany-iPhone-evidence
+          path: |
+            build/captures/*.png
+            build/reports/**
+          if-no-files-found: warn
+          retention-days: 7

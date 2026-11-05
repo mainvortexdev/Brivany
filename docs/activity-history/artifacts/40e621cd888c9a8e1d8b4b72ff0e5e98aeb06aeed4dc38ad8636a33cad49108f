@@ -1,0 +1,30 @@
+{
+  "version": "0.4.3",
+  "files": [
+    "README.md",
+    "background.js",
+    "buffered-player.js",
+    "caption-probe.js",
+    "desktop-connect.js",
+    "icon.png",
+    "inline-translation.js",
+    "manifest.json",
+    "pcm-capture.js",
+    "pcm-sender.js",
+    "player.css",
+    "player.html",
+    "player.js",
+    "sync-timeline.js",
+    "video-loader.js",
+    "video-selection.css",
+    "video-selection.js",
+    "workspace-control.js"
+  ],
+  "verified_count": 18,
+  "archive": "dist/Brivany-Traduccion-Brave-0.4.3.zip",
+  "sha256": "2bd83f9f6deeb3cb9d0cb105343e18a78c9532324cde45851038c4d8eebf6275",
+  "unpacked": [
+    "dist/Brivany-Traduccion-Brave",
+    "dist/Brivany-Traduccion-Brave-0.4.3"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "suite": "dubbing-ui",
+  "started_at": "2026-10-28T01:29:18.396199+00:00",
+  "finished_at": "2026-10-28T01:29:23.631438+00:00",
+  "duration_seconds": 5.235239,
+  "command": [
+    "node",
+    "tools/check_dubbing_ui.cjs"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "locator.textContent: Error: strict mode violation: locator('.consent') resolved to 2 elements:\n    1) <label class=\"consent\">…</label> aka locator('label').filter({ hasText: 'Enviar el audio a PalabraSolo' })\n    2) <label hidden=\"\" class=\"consent\" id=\"gemini-tail-option\">…</label> aka locator('#gemini-tail-option')\n\nCall log:\n\u001b[2m  - waiting for locator('.consent')\u001b[22m\n\n    at <local-path>\\tools\\check_dubbing_ui.cjs:85:49 {\n  log: [ \"  - waiting for locator('.consent')\" ]\n}\n"
+}

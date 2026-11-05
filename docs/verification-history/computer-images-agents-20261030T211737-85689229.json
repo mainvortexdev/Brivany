@@ -1,0 +1,19 @@
+{
+  "suite": "computer-images-agents",
+  "started_at": "2026-10-30T21:17:37.178408+00:00",
+  "finished_at": "2026-10-30T21:17:40.236305+00:00",
+  "duration_seconds": 3.057897,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_computer_images_agents"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "..............\r\n----------------------------------------------------------------------\r\nRan 14 tests in 2.093s\r\n\r\nOK\r\n"
+}

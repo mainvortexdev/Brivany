@@ -1,0 +1,21 @@
+{
+  "workspace_id": "f480ddd6-397a-53c4-9b25-4e34cee84bd6",
+  "session_id": "5ee63234-c9f7-5ec8-bdc8-cdb0532a6422",
+  "skill_id": "5e796324-647b-532e-b3d4-9f40471d66da",
+  "skill_version": "1.0.0",
+  "skill_content_sha256": "27ac8a3e4da9480c6c27e69d7ea7f2e548ab06c4d9c1e151d76d732dc4316d4a",
+  "device_id": "301096ab-6e4d-57dd-a1a2-c367ab0ad7ac",
+  "mode": "coach",
+  "help_level": "guided",
+  "state": "active",
+  "revision": 3,
+  "parameters": {
+    "width": 2.0,
+    "depth": 1.0,
+    "height": 0.75
+  },
+  "step_states": {
+    "select-object": "verified",
+    "dimensions": "active"
+  }
+}

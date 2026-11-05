@@ -1,0 +1,70 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "skill_id": {
+      "format": "uuid",
+      "title": "Skill Id",
+      "type": "string"
+    },
+    "skill_version": {
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "title": "Skill Version",
+      "type": "string"
+    },
+    "device_id": {
+      "format": "uuid",
+      "title": "Device Id",
+      "type": "string"
+    },
+    "mode": {
+      "default": "coach",
+      "enum": [
+        "coach",
+        "demonstrate",
+        "assist",
+        "assess"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "help_level": {
+      "default": "guided",
+      "enum": [
+        "guided",
+        "hinted",
+        "independent"
+      ],
+      "title": "Help Level",
+      "type": "string"
+    },
+    "parameters": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Parameters",
+      "type": "object"
+    }
+  },
+  "required": [
+    "skill_id",
+    "skill_version",
+    "device_id"
+  ],
+  "title": "SessionRequest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:SessionRequest:0.1.0"
+}

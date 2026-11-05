@@ -1,0 +1,124 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {
+      "format": "uuid",
+      "title": "Session Id",
+      "type": "string"
+    },
+    "workspace_id": {
+      "format": "uuid",
+      "title": "Workspace Id",
+      "type": "string"
+    },
+    "skill_id": {
+      "format": "uuid",
+      "title": "Skill Id",
+      "type": "string"
+    },
+    "skill_version": {
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "title": "Skill Version",
+      "type": "string"
+    },
+    "skill_content_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Skill Content Sha256",
+      "type": "string"
+    },
+    "device_id": {
+      "format": "uuid",
+      "title": "Device Id",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "coach",
+        "demonstrate",
+        "assist",
+        "assess"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "help_level": {
+      "enum": [
+        "guided",
+        "hinted",
+        "independent"
+      ],
+      "title": "Help Level",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "created",
+        "preflight",
+        "active",
+        "paused",
+        "completed",
+        "cancelled",
+        "failed"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "revision": {
+      "minimum": 0,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "parameters": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Parameters",
+      "type": "object"
+    },
+    "step_states": {
+      "additionalProperties": {
+        "enum": [
+          "not_started",
+          "active",
+          "verified",
+          "failed",
+          "needs_review"
+        ],
+        "type": "string"
+      },
+      "title": "Step States",
+      "type": "object"
+    }
+  },
+  "required": [
+    "session_id",
+    "workspace_id",
+    "skill_id",
+    "skill_version",
+    "skill_content_sha256",
+    "device_id",
+    "mode",
+    "help_level",
+    "state",
+    "revision",
+    "parameters",
+    "step_states"
+  ],
+  "title": "SessionView",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:SessionView:0.1.0"
+}

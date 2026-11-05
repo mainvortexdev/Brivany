@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "type": "real_meta_review_reuses_own_trial_artifacts",
+  "regenerated_images": 0,
+  "originals_modified": false,
+  "source_report": "real-team-20261103T212628.json",
+  "verdicts": [
+    {
+      "kind": "image",
+      "accepted": true,
+      "technical_passed": true,
+      "checks": [
+        {
+          "index": 0,
+          "passed": true
+        },
+        {
+          "index": 1,
+          "passed": true
+        },
+        {
+          "index": 2,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "kind": "document",
+      "accepted": true,
+      "technical_passed": true,
+      "checks": [
+        {
+          "index": 0,
+          "passed": true
+        },
+        {
+          "index": 1,
+          "passed": true
+        },
+        {
+          "index": 2,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "kind": "research",
+      "accepted": true,
+      "technical_passed": true,
+      "checks": [
+        {
+          "index": 0,
+          "passed": true
+        },
+        {
+          "index": 1,
+          "passed": true
+        },
+        {
+          "index": 2,
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "known_meta_requests": 4
+}

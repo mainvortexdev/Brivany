@@ -1,0 +1,40 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "expected_revision": {
+      "minimum": 0,
+      "title": "Expected Revision",
+      "type": "integer"
+    },
+    "step_id": {
+      "maxLength": 120,
+      "pattern": "^[a-z][a-z0-9_.-]*$",
+      "title": "Step Id",
+      "type": "string"
+    },
+    "attempt": {
+      "minimum": 1,
+      "title": "Attempt",
+      "type": "integer"
+    },
+    "observation_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Observation Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "expected_revision",
+    "step_id",
+    "attempt",
+    "observation_ids"
+  ],
+  "title": "VerifyRequest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:VerifyRequest:0.1.0"
+}

@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "scope": "owned native WinForms NotifyIcon and pywebview window; menu events through component API",
+  "external_calls": 0,
+  "screen_capture": false,
+  "audio_capture": false,
+  "registered": true,
+  "icon_size": [
+    32,
+    32
+  ],
+  "menu_labels": [
+    "Abrir Brivany",
+    "Melodi WorkSpace",
+    "Salir de Brivany"
+  ],
+  "open_restores_window": true,
+  "workspace_returns_to_background": true,
+  "exit_removes_tray": true
+}

@@ -1,0 +1,33 @@
+{
+  "scope": "offline bundle with real pinned Electron, native executor, own fixture note and local GLB compiler",
+  "external_calls": 0,
+  "physical_audio_verified": false,
+  "checks": [
+    "only pinned source/runtime files and notices copied and verified",
+    "real native executor started from bundled source and bundled Electron",
+    "bundled executor wrote exact literal bytes to its own new note",
+    "bundled Electron in Node mode compiled and published three valid local GLBs without system Node",
+    "bundle remained unchanged after execution",
+    "verified bundle activated for new Brivany sessions"
+  ],
+  "bundle": {
+    "id": "f3c589b76dad6ff4c6280ea3d9a2603b",
+    "file_count": 101,
+    "bytes": 388648155,
+    "target": "win32-x64",
+    "versions": {
+      "electron": "44.8.0",
+      "node": "24.22.0",
+      "three": "0.186.1"
+    }
+  },
+  "runtime_source_mode": "bundled",
+  "compiler_versions": {
+    "node": "24.22.0",
+    "electron": "44.8.0"
+  },
+  "status": "passed",
+  "activated": true,
+  "system_node_used": false,
+  "object_count": 3
+}

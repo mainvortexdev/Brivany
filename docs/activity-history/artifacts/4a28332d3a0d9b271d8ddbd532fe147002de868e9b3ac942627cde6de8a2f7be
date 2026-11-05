@@ -1,0 +1,14 @@
+{
+  "suite": "live-ui",
+  "started_at": "2026-10-30T13:55:06.075237+00:00",
+  "finished_at": "2026-10-30T13:55:41.261783+00:00",
+  "duration_seconds": 35.186546,
+  "command": [
+    "node",
+    "tools/check_live_ui.cjs"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "page.waitForFunction: Timeout 30000ms exceeded.\n    at <local-path>\\tools\\check_live_ui.cjs:132:16 {\n  log: [],\n  name: 'TimeoutError'\n}\n"
+}

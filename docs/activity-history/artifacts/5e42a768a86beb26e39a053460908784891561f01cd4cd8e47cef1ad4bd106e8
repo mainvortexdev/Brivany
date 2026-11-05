@@ -1,0 +1,82 @@
+/* Desktop-only adapter; the original modules keep their own services and consent. */
+(() => {
+  if(location.pathname==='/spaces'&&new URLSearchParams(location.search).get('embedded')==='melodi'){
+    document.documentElement.dataset.melodiEmbedded='true';
+    document.addEventListener('DOMContentLoaded',()=>{
+      const inspector=document.querySelector('.inspector'),objects=document.querySelector('.objects-section');
+      if(inspector&&objects){const details=document.createElement('details');details.className='computer-embedded-objects';const summary=document.createElement('summary');summary.textContent='Piezas del modelo';details.append(summary,objects);inspector.prepend(details);}
+    });
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const output = window.BrivanyLive?.MelodiOutput?.prototype;
+    if (output && !output.desktopSpeechAdapted) {
+      const speak = output.speak;
+      output.speak = function (segments, options) {
+        const onState = this.onState;
+        // An empty response means the user is still thinking. It must never
+        // mute the microphone or start the post-playback suppression window.
+        const delayed = (async function* () {
+          let started = false;
+          for await (const segment of segments) {
+            if (!started) { started = true; onState(true); }
+            yield segment;
+          }
+        })();
+        this.onState = value => { if (!value) onState(false); };
+        try { return speak.call(this, delayed, options); }
+        finally { this.onState = onState; }
+      };
+      output.desktopSpeechAdapted = true;
+    }
+    // A user ending a turn can do so during the 400 ms echo suppression
+    // window. Flush the final Muse transcript after cancelling that timer.
+    const microphone = window.BrivanyVoice?.Microphone?.prototype;
+    if (microphone && !microphone.desktopFinishAdapted) {
+      const start = microphone.start;
+      microphone.start = function (options = {}) {
+        // Microphone.start enables this only when the actual track confirms AEC.
+        return start.call(this, {...options, live: {...options.live, bargeIn: true}});
+      };
+      const finish = microphone.finish;
+      const suspend = microphone.suspend;
+      microphone.suspend = function (value) {
+        suspend.call(this, value);
+        if (!value && this.active && this.stream?.getAudioTracks()[0]?.getSettings?.().echoCancellation === true) {
+          clearTimeout(this.resumeTimer);
+          this.suspended = false;
+          this.live?.suspend(false);
+        }
+      };
+      microphone.finish = async function (...args) {
+        clearTimeout(this.resumeTimer);
+        this.suspended = false;
+        this.live?.suspend(false);
+        return finish.apply(this, args);
+      };
+      microphone.desktopFinishAdapted = true;
+    }
+  });
+  if (window.parent === window) return;
+  const methods = ['status','pick_project_folder','save_current_project','save_open_project',
+    'export_open_project','get_floorplan','save_floorplan','get_presentation','save_presentation'];
+  function connectNative() {
+    if (location.pathname !== '/spaces' && location.pathname !== '/viewer') return;
+    const api = window.parent.pywebview?.api;
+    if (!api || !methods.every(name => typeof api[name] === 'function')) return;
+    window.pywebview = {api: Object.fromEntries(methods.map(name => [name, (...args) => api[name](...args)]))};
+    window.dispatchEvent(new Event('pywebviewready'));
+  }
+  window.parent.addEventListener('pywebviewready', connectNative);
+  document.addEventListener('DOMContentLoaded', () => {
+    connectNative();
+    document.addEventListener('click', event => {
+      const anchor = event.target.closest('a[href]');
+      if (!anchor || anchor.download || anchor.target === '_blank') return;
+      const url = new URL(anchor.href);
+      if (url.origin !== location.origin || url.pathname === location.pathname) return;
+      if (!['/','/app','/spaces','/viewer','/sous','/practice','/human-skills','/dubbing','/translate','/connections','/activity','/desktop-services','/computer'].includes(url.pathname)) return;
+      event.preventDefault();
+      parent.postMessage({type:'brivany-navigate', route:url.pathname + url.search + url.hash}, location.origin);
+    });
+  });
+})();

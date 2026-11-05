@@ -1,0 +1,18 @@
+{
+  "suite": "presentation-ui",
+  "started_at": "2026-10-29T21:22:12.574392+00:00",
+  "finished_at": "2026-10-29T21:22:26.980651+00:00",
+  "duration_seconds": 14.406259,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_presentation_ui"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Actual local scene viewer/WebGL, HTTP, persistent authored camera route and selection; generated fixture.\",\r\n  \"checks\": [\r\n    \"opening the actual local WebGL scene reads an empty route without saving, moving geometry or contacting a model\",\r\n    \"two authored points capture different actual camera poses and an optional object; explicit save and reload preserve them\",\r\n    \"rename, reorder and replacing a point with the current camera persist as a new route revision\",\r\n    \"stale route writers and URL notes are rejected without overwriting the saved route\",\r\n    \"presentation moves the actual rendered camera between points with previous/next and keyboard controls without geometry writes\",\r\n    \"removing a point persists independently; the entire route workflow posts only presentation metadata\",\r\n    \"route editing and presentation controls fit narrow and desktop layouts without page errors or external traffic\"\r\n  ],\r\n  \"screenshots\": [\r\n    \"tmp/presentation-ui/presentation-1440.png\",\r\n    \"tmp/presentation-ui/presentation-390.png\"\r\n  ],\r\n  \"checked_at\": \"2026-10-29T21:22:26.554656+00:00\",\r\n  \"external_calls\": 0,\r\n  \"gpu_seconds\": 0,\r\n  \"scene_geometry_unchanged\": true,\r\n  \"persistence_reopened_in_new_service\": true,\r\n  \"real_reconstruction_verified\": false,\r\n  \"limitations\": [\r\n    \"Actual loopback HTTP, SQLite, authored camera points, WebGL and shared Spaces viewer on generated synthetic fixtures.\",\r\n    \"Software WebGL is permitted. No room capture, physical device, professional measure, public sharing or reconstructed fidelity is verified.\"\r\n  ]\r\n}\r\n"
+}

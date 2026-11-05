@@ -1,0 +1,1869 @@
+{
+  "type": "public_youtube_isolated_brave_inline_sync",
+  "passed": false,
+  "source_owned_synthetic": false,
+  "encoded_video_source": false,
+  "owned_caption_track": false,
+  "provider_trial_max_seconds": 28,
+  "prefill_requested": false,
+  "continuity_trial": false,
+  "progressive_fixture": false,
+  "billing_amount": null,
+  "user_profile_used": false,
+  "physical_listening_verified": false,
+  "cloning_enabled": false,
+  "public_source_playing": true,
+  "requested_video_position": 300,
+  "source_identity": {
+    "expected_video_id": "sr_iLGKNsxU",
+    "prefix_asr_may_precede_ready_check": false,
+    "ready": {
+      "wall_ms": 7970.5999999940395,
+      "page_video_id": "sr_iLGKNsxU",
+      "player_video_id": "sr_iLGKNsxU",
+      "response_video_id": "sr_iLGKNsxU",
+      "initial_video_id": "sr_iLGKNsxU",
+      "media_duration_seconds": 1495.781,
+      "player_duration_seconds": 1495.781,
+      "response_length_seconds": 1496,
+      "initial_length_seconds": 1496,
+      "source_time_seconds": 303.551226,
+      "playback_rate": 1,
+      "ready_state": 4,
+      "network_state": 2,
+      "paused": false,
+      "ended": false,
+      "ad_showing": false,
+      "media_error_code": null,
+      "video_ids_match": true,
+      "durations_agree": true,
+      "verified": true
+    },
+    "before_activation": {
+      "wall_ms": 8588.70000000298,
+      "page_video_id": "sr_iLGKNsxU",
+      "player_video_id": "sr_iLGKNsxU",
+      "response_video_id": "sr_iLGKNsxU",
+      "initial_video_id": "sr_iLGKNsxU",
+      "media_duration_seconds": 1495.781,
+      "player_duration_seconds": 1495.781,
+      "response_length_seconds": 1496,
+      "initial_length_seconds": 1496,
+      "source_time_seconds": 304.169925,
+      "playback_rate": 1,
+      "ready_state": 4,
+      "network_state": 2,
+      "paused": false,
+      "ended": false,
+      "ad_showing": false,
+      "media_error_code": null,
+      "video_ids_match": true,
+      "durations_agree": true,
+      "verified": true
+    },
+    "final": {
+      "wall_ms": 33456.70000000298,
+      "page_video_id": "sr_iLGKNsxU",
+      "player_video_id": "sr_iLGKNsxU",
+      "response_video_id": "sr_iLGKNsxU",
+      "initial_video_id": "sr_iLGKNsxU",
+      "media_duration_seconds": 1495.781,
+      "player_duration_seconds": 1495.781,
+      "response_length_seconds": 1496,
+      "initial_length_seconds": 1496,
+      "source_time_seconds": 318.921067,
+      "playback_rate": 1,
+      "ready_state": 4,
+      "network_state": 2,
+      "paused": true,
+      "ended": false,
+      "ad_showing": false,
+      "media_error_code": null,
+      "video_ids_match": true,
+      "durations_agree": true,
+      "verified": true
+    }
+  },
+  "source_audio": {
+    "playback_rate": 1,
+    "default_playback_rate": 1,
+    "browser_language": "es-ES",
+    "selected_track": {
+      "id": "und"
+    },
+    "available_tracks": [],
+    "selected_is_dubbed": null,
+    "capture": {
+      "context_sample_rate": 24000,
+      "declared_sample_size": 16
+    }
+  },
+  "cues": [
+    {
+      "speaker": 1,
+      "category": "masculine",
+      "provisional": false,
+      "timing_quality": "asr_partial_estimate",
+      "sample_rate": 24000,
+      "source": 0.06,
+      "source_end": 1.94,
+      "picture": 0.048,
+      "recovered_gap": false,
+      "rate": 1,
+      "duration": 1.76,
+      "audio_peak": 0.8382216691970825,
+      "played": 1.76,
+      "wall": 1.752199999988079,
+      "completed": true,
+      "onset_ms": 6616,
+      "activation_onset_ms": 7828,
+      "activation_signal_ms": 7996,
+      "sync_error_ms": -12
+    },
+    {
+      "speaker": null,
+      "category": "masculine",
+      "provisional": false,
+      "timing_quality": "asr_partial_estimate",
+      "sample_rate": 24000,
+      "source": 1.94,
+      "source_end": 4.166667,
+      "picture": 1.925333,
+      "recovered_gap": false,
+      "rate": 1.18,
+      "duration": 3.12,
+      "audio_peak": 0.5893992185592651,
+      "played": 3.12,
+      "wall": 2.631100000008941,
+      "completed": true,
+      "onset_ms": 10906,
+      "activation_onset_ms": 12119,
+      "activation_signal_ms": 12295,
+      "sync_error_ms": -15
+    },
+    {
+      "speaker": null,
+      "category": "masculine",
+      "provisional": false,
+      "timing_quality": "asr_partial_estimate",
+      "sample_rate": 24000,
+      "source": 4.166667,
+      "source_end": 6.3,
+      "picture": 4.165333,
+      "recovered_gap": false,
+      "rate": 1,
+      "duration": 1.76,
+      "audio_peak": 0.5075759291648865,
+      "played": 1.76,
+      "wall": 1.763,
+      "completed": true,
+      "onset_ms": 13564,
+      "activation_onset_ms": 14777,
+      "activation_signal_ms": 14946,
+      "sync_error_ms": -1
+    },
+    {
+      "speaker": null,
+      "category": "masculine",
+      "provisional": false,
+      "timing_quality": "asr_turn",
+      "sample_rate": 24000,
+      "source": 6.54,
+      "source_end": 7.1,
+      "picture": 6.522667,
+      "recovered_gap": false,
+      "rate": 1.18,
+      "duration": 1.04,
+      "audio_peak": 0.6943897604942322,
+      "played": 1.04,
+      "wall": 0.880699999988079,
+      "completed": true,
+      "onset_ms": 15927,
+      "activation_onset_ms": 17139,
+      "activation_signal_ms": 17235,
+      "sync_error_ms": -17
+    },
+    {
+      "speaker": 2,
+      "category": "masculine",
+      "provisional": false,
+      "timing_quality": "asr_partial_estimate",
+      "sample_rate": 24000,
+      "source": 7.34,
+      "source_end": 9.7,
+      "picture": 7.353211,
+      "recovered_gap": false,
+      "rate": 1,
+      "duration": 1.92,
+      "audio_peak": 0.537806510925293,
+      "played": 1.92,
+      "wall": 1.9295,
+      "completed": true,
+      "onset_ms": 16888,
+      "activation_onset_ms": 18101,
+      "activation_signal_ms": 18270,
+      "sync_error_ms": 13
+    },
+    {
+      "speaker": null,
+      "category": "masculine",
+      "provisional": false,
+      "timing_quality": "asr_partial_estimate",
+      "sample_rate": 24000,
+      "source": 9.7,
+      "source_end": 11.02,
+      "picture": 9.685333,
+      "recovered_gap": false,
+      "rate": 1,
+      "duration": 1.12,
+      "audio_peak": 0.6260886192321777,
+      "played": 1.12,
+      "wall": 1.1341000000089407,
+      "completed": true,
+      "onset_ms": 19224,
+      "activation_onset_ms": 20437,
+      "activation_signal_ms": 20612,
+      "sync_error_ms": -15
+    },
+    {
+      "speaker": 3,
+      "category": "feminine",
+      "provisional": false,
+      "timing_quality": "asr_turn",
+      "sample_rate": 24000,
+      "source": 11.1,
+      "source_end": 13.26,
+      "picture": 11.098667,
+      "recovered_gap": false,
+      "rate": 1.18,
+      "duration": 2.72,
+      "audio_peak": 0.9351671934127808,
+      "played": 2.72,
+      "wall": 2.2955,
+      "completed": true,
+      "onset_ms": 20632,
+      "activation_onset_ms": 21845,
+      "activation_signal_ms": 22009,
+      "sync_error_ms": -1
+    },
+    {
+      "speaker": null,
+      "category": "feminine",
+      "provisional": false,
+      "timing_quality": "asr_turn",
+      "sample_rate": 24000,
+      "source": 13.26,
+      "source_end": 13.66,
+      "picture": 13.237333,
+      "recovered_gap": false,
+      "rate": 1.18,
+      "duration": 1.52,
+      "audio_peak": 0.1784248650074005,
+      "played": 0.187717,
+      "wall": 0.17189999999105932,
+      "onset_ms": 22936,
+      "activation_onset_ms": 24148,
+      "activation_signal_ms": 24320,
+      "sync_error_ms": -23
+    }
+  ],
+  "activation_to_capture_ms": 1199,
+  "source_capture_anchor_ms": 305472,
+  "activation_to_first_picture_ms": 7797,
+  "activation_to_first_signal_ms": 7996,
+  "browser_voice_played": 7,
+  "production_audio_diagnostics": {
+    "signaled_voices": 7,
+    "completed_voice_count": 7,
+    "completed_voices_with_signal": 7,
+    "first_signal_after_capture_ms": 6752.899999991059
+  },
+  "browser_cues_with_signal": 8,
+  "audio_output_detected": true,
+  "required_source_end_ms": 12000,
+  "completed_source_end_ms": 13260,
+  "ended_by_trial_limit": false,
+  "error_message": null,
+  "no_new_window": true,
+  "protocol": [
+    {
+      "type": "ready",
+      "at": 0
+    },
+    {
+      "type": "live-asr-connected",
+      "resume_from_ms": 0,
+      "at": 1
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 60,
+      "end": null,
+      "at": 772
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "source_phase": "live",
+      "at": 1909
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 60,
+      "end": 1940,
+      "at": 3087
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 1940,
+      "end": null,
+      "at": 3087
+    },
+    {
+      "type": "stage-metrics",
+      "start": 60,
+      "stage": "segment_ready",
+      "source_phase": "live",
+      "timing_quality": "asr_partial_estimate",
+      "at": 3088
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "speaker_acoustic",
+      "source_phase": "live",
+      "reason": "new_cluster",
+      "cluster": 1,
+      "similarity": null,
+      "windows": 1,
+      "latency_ms": 50.93,
+      "at": 3150
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "source_phase": "live",
+      "at": 3151
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "source_phase": "live",
+      "at": 3151
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "local_timbre",
+      "source_phase": "live",
+      "voice_timbre": "masculine",
+      "timbre_confidence": 0.986437,
+      "available": true,
+      "latency_ms": 487.86,
+      "at": 3639
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_done",
+      "source_phase": "live",
+      "available": true,
+      "at": 3817
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "source_phase": "live",
+      "at": 5446
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 1940,
+      "end": 4166.667,
+      "at": 5489
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 4166.667,
+      "end": null,
+      "at": 5490
+    },
+    {
+      "type": "stage-metrics",
+      "start": 1940,
+      "stage": "segment_ready",
+      "source_phase": "live",
+      "timing_quality": "asr_partial_estimate",
+      "at": 5491
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "source_phase": "live",
+      "duration_budget_ms": 1880,
+      "duration_budget_applied": true,
+      "source_word_count": 8,
+      "translated_word_count": 8,
+      "at": 5518
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "source_phase": "live",
+      "voice_category_provisional": false,
+      "register": "local_pitch",
+      "confidence": 0,
+      "advisory": "uncertain",
+      "voice_timbre": "masculine",
+      "timbre_source": "local_robust_voice_timbre",
+      "timbre_confidence": 0.986437,
+      "f0": 205,
+      "resonance": 2731,
+      "voiced": 46,
+      "resonanceWindows": 13,
+      "at": 5562
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "speaker_acoustic",
+      "source_phase": "live",
+      "reason": "ambiguous_match",
+      "cluster": null,
+      "similarity": 0.4621,
+      "windows": 1,
+      "latency_ms": 65.05,
+      "at": 5567
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "source_phase": "live",
+      "at": 5567
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "source_phase": "live",
+      "at": 5568
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "source_phase": "live",
+      "at": 5958
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "local_timbre",
+      "source_phase": "live",
+      "voice_timbre": "masculine",
+      "timbre_confidence": 0.906714,
+      "available": true,
+      "latency_ms": 649.81,
+      "at": 6217
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "source_phase": "live",
+      "at": 6565
+    },
+    {
+      "type": "stage-metrics",
+      "start": 60,
+      "end": 1940,
+      "stage": "cue_ready",
+      "source_phase": "live",
+      "synthesis_speed": 1.28,
+      "at": 6565
+    },
+    {
+      "type": "dub-cue",
+      "start": 60,
+      "end": 1940,
+      "speaker": 1,
+      "category": "masculine",
+      "voice_category_provisional": false,
+      "timing_quality": "asr_partial_estimate",
+      "at": 6570
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 4166.667,
+      "end": 6300,
+      "at": 7069
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 4166.667,
+      "end": 6300,
+      "at": 7069
+    },
+    {
+      "type": "stage-metrics",
+      "start": 4166.667,
+      "stage": "segment_ready",
+      "source_phase": "live",
+      "timing_quality": "asr_partial_estimate",
+      "at": 7070
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "speaker_acoustic",
+      "source_phase": "live",
+      "reason": "ambiguous_match",
+      "cluster": null,
+      "similarity": 0.5389,
+      "windows": 1,
+      "latency_ms": 51.82,
+      "at": 7134
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "source_phase": "live",
+      "at": 7134
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "source_phase": "live",
+      "at": 7135
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 6540,
+      "end": null,
+      "at": 7264
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "local_timbre",
+      "source_phase": "live",
+      "voice_timbre": "masculine",
+      "timbre_confidence": 0.999072,
+      "available": true,
+      "latency_ms": 626.52,
+      "at": 7761
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 6540,
+      "end": 7100,
+      "at": 7997
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "source_phase": "live",
+      "at": 7998
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 6540,
+      "end": 7100,
+      "at": 7999
+    },
+    {
+      "type": "stage-metrics",
+      "start": 6540,
+      "stage": "segment_ready",
+      "source_phase": "live",
+      "timing_quality": "asr_turn",
+      "at": 7999
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 7340,
+      "end": null,
+      "at": 8326
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "source_phase": "live",
+      "at": 8454
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "source_phase": "live",
+      "duration_budget_ms": 2133,
+      "duration_budget_applied": true,
+      "source_word_count": 7,
+      "translated_word_count": 5,
+      "at": 8455
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "source_phase": "live",
+      "voice_category_provisional": false,
+      "register": "local_pitch",
+      "confidence": 0,
+      "advisory": "uncertain",
+      "voice_timbre": "masculine",
+      "timbre_source": "local_robust_voice_timbre",
+      "timbre_confidence": 0.999072,
+      "f0": 110,
+      "resonance": 2632,
+      "voiced": 21,
+      "resonanceWindows": 7,
+      "at": 8661
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "source_phase": "live",
+      "at": 9002
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "source_phase": "live",
+      "at": 9214
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "source_phase": "live",
+      "at": 9339
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "source_phase": "live",
+      "at": 9938
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "source_phase": "live",
+      "duration_budget_ms": 2227,
+      "duration_budget_applied": true,
+      "source_word_count": 8,
+      "translated_word_count": 9,
+      "at": 10062
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "source_phase": "live",
+      "voice_category_provisional": false,
+      "register": "local_pitch",
+      "confidence": 0,
+      "advisory": "uncertain",
+      "voice_timbre": "masculine",
+      "timbre_source": "local_robust_voice_timbre",
+      "timbre_confidence": 0.906714,
+      "f0": 188,
+      "resonance": 2750,
+      "voiced": 38,
+      "resonanceWindows": 6,
+      "at": 10284
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "source_phase": "live",
+      "at": 10459
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "source_phase": "live",
+      "at": 10856
+    },
+    {
+      "type": "stage-metrics",
+      "start": 1940,
+      "end": 4166.667,
+      "stage": "cue_ready",
+      "source_phase": "live",
+      "synthesis_speed": 1.28,
+      "at": 10856
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "source_phase": "live",
+      "at": 10857
+    },
+    {
+      "type": "dub-cue",
+      "start": 1940,
+      "end": 4166.667,
+      "speaker": null,
+      "category": "masculine",
+      "voice_category_provisional": false,
+      "timing_quality": "asr_partial_estimate",
+      "at": 10865
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "source_phase": "live",
+      "at": 10868
+    },
+    {
+      "type": "stage-metrics",
+      "start": 4166.667,
+      "end": 6300,
+      "stage": "cue_ready",
+      "source_phase": "live",
+      "synthesis_speed": 1,
+      "at": 10868
+    },
+    {
+      "type": "dub-cue",
+      "start": 4166.667,
+      "end": 6300,
+      "speaker": null,
+      "category": "masculine",
+      "voice_category_provisional": false,
+      "timing_quality": "asr_partial_estimate",
+      "at": 10869
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_timeout",
+      "source_phase": "live",
+      "available": false,
+      "at": 11012
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_done",
+      "source_phase": "live",
+      "available": false,
+      "at": 11047
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 7340,
+      "end": 9700,
+      "at": 11117
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 9700,
+      "end": null,
+      "at": 11118
+    },
+    {
+      "type": "stage-metrics",
+      "start": 7340,
+      "stage": "segment_ready",
+      "source_phase": "live",
+      "timing_quality": "asr_partial_estimate",
+      "at": 11118
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "speaker_acoustic",
+      "source_phase": "live",
+      "reason": "new_cluster",
+      "cluster": 2,
+      "similarity": 0.435,
+      "windows": 1,
+      "latency_ms": 68.01,
+      "at": 11203
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "source_phase": "live",
+      "at": 11205
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "source_phase": "live",
+      "at": 11206
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_done",
+      "source_phase": "live",
+      "available": true,
+      "at": 11627
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "local_timbre",
+      "source_phase": "live",
+      "voice_timbre": "masculine",
+      "timbre_confidence": 0.998934,
+      "available": true,
+      "latency_ms": 634.14,
+      "at": 11838
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 9700,
+      "end": 11020,
+      "at": 11877
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 9700,
+      "end": 11020,
+      "at": 11878
+    },
+    {
+      "type": "stage-metrics",
+      "start": 9700,
+      "stage": "segment_ready",
+      "source_phase": "live",
+      "timing_quality": "asr_partial_estimate",
+      "at": 11878
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 11100,
+      "end": null,
+      "at": 11982
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "source_phase": "live",
+      "at": 12925
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "source_phase": "live",
+      "at": 12946
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "source_phase": "live",
+      "duration_budget_ms": 2360,
+      "duration_budget_applied": true,
+      "source_word_count": 6,
+      "translated_word_count": 6,
+      "at": 13062
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "source_phase": "live",
+      "voice_category_provisional": false,
+      "register": "local_pitch",
+      "confidence": 0,
+      "advisory": "uncertain",
+      "voice_timbre": "masculine",
+      "timbre_source": "local_robust_voice_timbre",
+      "timbre_confidence": 0.998934,
+      "f0": 239,
+      "resonance": 2625,
+      "voiced": 50,
+      "resonanceWindows": 12,
+      "at": 13079
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "source_phase": "live",
+      "at": 13129
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "source_phase": "live",
+      "duration_budget_ms": 560,
+      "duration_budget_applied": true,
+      "source_word_count": 2,
+      "translated_word_count": 4,
+      "at": 13131
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "source_phase": "live",
+      "at": 13280
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "source_phase": "live",
+      "voice_category_provisional": false,
+      "register": "local_pitch",
+      "confidence": 0,
+      "advisory": "uncertain",
+      "voice_timbre": "uncertain",
+      "timbre_source": "register_fallback",
+      "timbre_confidence": 0,
+      "f0": 182,
+      "resonance": null,
+      "voiced": 5,
+      "resonanceWindows": 1,
+      "at": 13344
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "source_phase": "live",
+      "at": 13542
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "source_phase": "live",
+      "at": 13714
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "source_phase": "live",
+      "at": 13716
+    },
+    {
+      "type": "stage-metrics",
+      "start": 6540,
+      "end": 7100,
+      "stage": "cue_ready",
+      "source_phase": "live",
+      "synthesis_speed": 1.28,
+      "at": 13716
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "speaker_acoustic",
+      "source_phase": "live",
+      "reason": "invalid_sample",
+      "cluster": null,
+      "similarity": null,
+      "windows": 0,
+      "latency_ms": 0,
+      "at": 13717
+    },
+    {
+      "type": "dub-cue",
+      "start": 6540,
+      "end": 7100,
+      "speaker": null,
+      "category": "masculine",
+      "voice_category_provisional": false,
+      "timing_quality": "asr_turn",
+      "at": 13719
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "source_phase": "live",
+      "at": 13721
+    },
+    {
+      "type": "stage-metrics",
+      "start": 7340,
+      "end": 9700,
+      "stage": "cue_ready",
+      "source_phase": "live",
+      "synthesis_speed": 1,
+      "at": 13722
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "source_phase": "live",
+      "at": 13722
+    },
+    {
+      "type": "dub-cue",
+      "start": 7340,
+      "end": 9700,
+      "speaker": 2,
+      "category": "masculine",
+      "voice_category_provisional": false,
+      "timing_quality": "asr_partial_estimate",
+      "at": 13723
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "local_timbre",
+      "source_phase": "live",
+      "voice_timbre": "masculine",
+      "timbre_confidence": 0.98558,
+      "available": true,
+      "latency_ms": 394.07,
+      "at": 14112
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 11100,
+      "end": 13260,
+      "at": 14115
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 11100,
+      "end": 13260,
+      "at": 14115
+    },
+    {
+      "type": "stage-metrics",
+      "start": 11100,
+      "stage": "segment_ready",
+      "source_phase": "live",
+      "timing_quality": "asr_turn",
+      "at": 14116
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 13260,
+      "end": null,
+      "at": 14116
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "speaker_acoustic",
+      "source_phase": "live",
+      "reason": "new_cluster",
+      "cluster": 3,
+      "similarity": 0.3125,
+      "windows": 1,
+      "latency_ms": 62.93,
+      "at": 14187
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "source_phase": "live",
+      "at": 14188
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "source_phase": "live",
+      "at": 14188
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 13260,
+      "end": 13660,
+      "at": 14529
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "source_phase": "live",
+      "at": 14529
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 13260,
+      "end": 13660,
+      "at": 14531
+    },
+    {
+      "type": "stage-metrics",
+      "start": 13260,
+      "stage": "segment_ready",
+      "source_phase": "live",
+      "timing_quality": "asr_turn",
+      "at": 14531
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 13660,
+      "end": null,
+      "at": 14531
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "local_timbre",
+      "source_phase": "live",
+      "voice_timbre": "feminine",
+      "timbre_confidence": 0.963433,
+      "available": true,
+      "latency_ms": 708.62,
+      "at": 14898
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "source_phase": "live",
+      "at": 15159
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_done",
+      "source_phase": "live",
+      "available": true,
+      "at": 15298
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "source_phase": "live",
+      "duration_budget_ms": 1320,
+      "duration_budget_applied": true,
+      "source_word_count": 4,
+      "translated_word_count": 5,
+      "at": 15369
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "source_phase": "live",
+      "at": 15455
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "source_phase": "live",
+      "at": 15562
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "source_phase": "live",
+      "voice_category_provisional": false,
+      "register": "local_pitch",
+      "confidence": 0,
+      "advisory": "uncertain",
+      "voice_timbre": "masculine",
+      "timbre_source": "local_robust_voice_timbre",
+      "timbre_confidence": 0.98558,
+      "f0": 242,
+      "resonance": 2774,
+      "voiced": 29,
+      "resonanceWindows": 7,
+      "at": 15580
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "source_phase": "live",
+      "duration_budget_ms": 2160,
+      "duration_budget_applied": true,
+      "source_word_count": 8,
+      "translated_word_count": 9,
+      "at": 15651
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "source_phase": "live",
+      "voice_category_provisional": false,
+      "register": "local_pitch",
+      "confidence": 0,
+      "advisory": "uncertain",
+      "voice_timbre": "feminine",
+      "timbre_source": "local_robust_voice_timbre",
+      "timbre_confidence": 0.963433,
+      "f0": 286,
+      "resonance": 2768,
+      "voiced": 49,
+      "resonanceWindows": 10,
+      "at": 15665
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "source_phase": "live",
+      "at": 15775
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "source_phase": "live",
+      "at": 15849
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "source_phase": "live",
+      "at": 15988
+    },
+    {
+      "type": "stage-metrics",
+      "start": 9700,
+      "end": 11020,
+      "stage": "cue_ready",
+      "source_phase": "live",
+      "synthesis_speed": 1.263,
+      "at": 15988
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "source_phase": "live",
+      "at": 15988
+    },
+    {
+      "type": "dub-cue",
+      "start": 9700,
+      "end": 11020,
+      "speaker": null,
+      "category": "masculine",
+      "voice_category_provisional": false,
+      "timing_quality": "asr_partial_estimate",
+      "at": 15991
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "source_phase": "live",
+      "at": 15994
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "source_phase": "live",
+      "at": 16488
+    },
+    {
+      "type": "stage-metrics",
+      "start": 11100,
+      "end": 13260,
+      "stage": "cue_ready",
+      "source_phase": "live",
+      "synthesis_speed": 1.28,
+      "at": 16488
+    },
+    {
+      "type": "dub-cue",
+      "start": 11100,
+      "end": 13260,
+      "speaker": 3,
+      "category": "feminine",
+      "voice_category_provisional": false,
+      "timing_quality": "asr_turn",
+      "at": 16493
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 13660,
+      "end": 15580,
+      "at": 16604
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 13660,
+      "end": 15580,
+      "at": 16604
+    },
+    {
+      "type": "stage-metrics",
+      "start": 13660,
+      "stage": "segment_ready",
+      "source_phase": "live",
+      "timing_quality": "asr_turn",
+      "at": 16608
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 15660,
+      "end": null,
+      "at": 16629
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_done",
+      "source_phase": "live",
+      "available": true,
+      "at": 16641
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "speaker_acoustic",
+      "source_phase": "live",
+      "reason": "ambiguous_match",
+      "cluster": null,
+      "similarity": 0.4764,
+      "windows": 1,
+      "latency_ms": 48.31,
+      "at": 16665
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "source_phase": "live",
+      "at": 16665
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "source_phase": "live",
+      "at": 16665
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "source_phase": "live",
+      "at": 16865
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_done",
+      "source_phase": "live",
+      "available": true,
+      "at": 16919
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "source_phase": "live",
+      "duration_budget_ms": 400,
+      "duration_budget_applied": true,
+      "source_word_count": 2,
+      "translated_word_count": 2,
+      "at": 16920
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "source_phase": "live",
+      "voice_category_provisional": false,
+      "register": "local_pitch",
+      "confidence": 0,
+      "advisory": "uncertain",
+      "voice_timbre": "uncertain",
+      "timbre_source": "register_fallback",
+      "timbre_confidence": 0,
+      "f0": 229,
+      "resonance": null,
+      "voiced": 9,
+      "resonanceWindows": 2,
+      "at": 17129
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "local_timbre",
+      "source_phase": "live",
+      "voice_timbre": "uncertain",
+      "timbre_confidence": 0.809481,
+      "available": true,
+      "latency_ms": 517.99,
+      "at": 17183
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "source_phase": "live",
+      "at": 17372
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "source_phase": "live",
+      "at": 17466
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "source_phase": "live",
+      "at": 17554
+    },
+    {
+      "type": "stage-metrics",
+      "start": 13260,
+      "end": 13660,
+      "stage": "cue_ready",
+      "source_phase": "live",
+      "synthesis_speed": 1,
+      "at": 17554
+    },
+    {
+      "type": "dub-cue",
+      "start": 13260,
+      "end": 13660,
+      "speaker": null,
+      "category": "feminine",
+      "voice_category_provisional": false,
+      "timing_quality": "asr_turn",
+      "at": 17559
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "source_phase": "live",
+      "at": 18304
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "source_phase": "live",
+      "duration_budget_ms": 1920,
+      "duration_budget_applied": true,
+      "source_word_count": 5,
+      "translated_word_count": 5,
+      "at": 18395
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "source_phase": "live",
+      "voice_category_provisional": true,
+      "register": "local_pitch",
+      "confidence": 0,
+      "advisory": "uncertain",
+      "voice_timbre": "uncertain",
+      "timbre_source": "provisional_catalog",
+      "timbre_confidence": 0.809481,
+      "f0": 276,
+      "resonance": 2621,
+      "voiced": 35,
+      "resonanceWindows": 8,
+      "at": 18614
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 15660,
+      "end": 17540,
+      "at": 18675
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 17540,
+      "end": null,
+      "at": 18675
+    },
+    {
+      "type": "stage-metrics",
+      "start": 15660,
+      "stage": "segment_ready",
+      "source_phase": "live",
+      "timing_quality": "asr_partial_estimate",
+      "at": 18676
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "speaker_acoustic",
+      "source_phase": "live",
+      "reason": "ambiguous_match",
+      "cluster": null,
+      "similarity": 0.5599,
+      "windows": 1,
+      "latency_ms": 61.51,
+      "at": 18745
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "source_phase": "live",
+      "at": 18746
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "source_phase": "live",
+      "at": 18746
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "source_phase": "live",
+      "at": 18785
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "source_phase": "live",
+      "at": 18934
+    },
+    {
+      "type": "stage-metrics",
+      "start": 13660,
+      "end": 15580,
+      "stage": "cue_ready",
+      "source_phase": "live",
+      "synthesis_speed": 1,
+      "at": 18934
+    },
+    {
+      "type": "dub-cue",
+      "start": 13660,
+      "end": 15580,
+      "speaker": null,
+      "category": "masculine",
+      "voice_category_provisional": true,
+      "timing_quality": "asr_turn",
+      "at": 18936
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "local_timbre",
+      "source_phase": "live",
+      "voice_timbre": "masculine",
+      "timbre_confidence": 0.990856,
+      "available": true,
+      "latency_ms": 569.71,
+      "at": 19315
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_first",
+      "source_phase": "live",
+      "at": 20065
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_done",
+      "source_phase": "live",
+      "duration_budget_ms": 1880,
+      "duration_budget_applied": true,
+      "source_word_count": 8,
+      "translated_word_count": 8,
+      "at": 20123
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_request",
+      "source_phase": "live",
+      "voice_category_provisional": false,
+      "register": "local_pitch",
+      "confidence": 0,
+      "advisory": "uncertain",
+      "voice_timbre": "masculine",
+      "timbre_source": "local_robust_voice_timbre",
+      "timbre_confidence": 0.990856,
+      "f0": 216,
+      "resonance": 2597,
+      "voiced": 43,
+      "resonanceWindows": 12,
+      "at": 20460
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_timeout",
+      "source_phase": "live",
+      "available": false,
+      "at": 20478
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_done",
+      "source_phase": "live",
+      "available": false,
+      "at": 20504
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_first",
+      "source_phase": "live",
+      "at": 20677
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "tts_done",
+      "source_phase": "live",
+      "at": 21013
+    },
+    {
+      "type": "stage-metrics",
+      "start": 15660,
+      "end": 17540,
+      "stage": "cue_ready",
+      "source_phase": "live",
+      "synthesis_speed": 1.28,
+      "at": 21013
+    },
+    {
+      "type": "dub-cue",
+      "start": 15660,
+      "end": 17540,
+      "speaker": null,
+      "category": "masculine",
+      "voice_category_provisional": false,
+      "timing_quality": "asr_partial_estimate",
+      "at": 21020
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 17540,
+      "end": 19364,
+      "at": 21272
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 19364,
+      "end": null,
+      "at": 21273
+    },
+    {
+      "type": "stage-metrics",
+      "start": 17540,
+      "stage": "segment_ready",
+      "source_phase": "live",
+      "timing_quality": "asr_partial_estimate",
+      "at": 21273
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "speaker_acoustic",
+      "source_phase": "live",
+      "reason": "matched",
+      "cluster": 1,
+      "similarity": 0.6637,
+      "windows": 1,
+      "latency_ms": 53.58,
+      "at": 21333
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "source_phase": "live",
+      "at": 21334
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "source_phase": "live",
+      "at": 21334
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 19364,
+      "end": 20780,
+      "at": 21636
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 19364,
+      "end": 20780,
+      "at": 21637
+    },
+    {
+      "type": "stage-metrics",
+      "start": 19364,
+      "stage": "segment_ready",
+      "source_phase": "live",
+      "timing_quality": "asr_partial_estimate",
+      "at": 21637
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "speaker_acoustic",
+      "source_phase": "live",
+      "reason": "ambiguous_match",
+      "cluster": null,
+      "similarity": 0.5334,
+      "windows": 1,
+      "latency_ms": 41.53,
+      "at": 21687
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_start",
+      "source_phase": "live",
+      "at": 21689
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "mt_attempt",
+      "source_phase": "live",
+      "at": 21689
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 21100,
+      "end": null,
+      "at": 21818
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "local_timbre",
+      "source_phase": "live",
+      "voice_timbre": "masculine",
+      "timbre_confidence": 0.984134,
+      "available": true,
+      "latency_ms": 406.73,
+      "at": 22094
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 21100,
+      "end": 21820,
+      "at": 22665
+    },
+    {
+      "type": "stage-metrics",
+      "stage": "prosody_start",
+      "source_phase": "live",
+      "at": 22665
+    },
+    {
+      "type": "source-turn",
+      "phase": "end",
+      "start": 21100,
+      "end": 21820,
+      "at": 22668
+    },
+    {
+      "type": "stage-metrics",
+      "start": 21100,
+      "stage": "segment_ready",
+      "source_phase": "live",
+      "timing_quality": "asr_turn",
+      "at": 22668
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 21900,
+      "end": null,
+      "at": 22781
+    }
+  ],
+  "last_processed_ms": 22960,
+  "timing_quality_counts": [
+    {
+      "quality": "asr_partial_estimate",
+      "published": 6,
+      "signaled": 5,
+      "completed": 5
+    },
+    {
+      "quality": "asr_turn",
+      "published": 4,
+      "signaled": 3,
+      "completed": 2
+    }
+  ],
+  "original_fallback": {
+    "observed_seconds": 0,
+    "classified_song_seconds": 0,
+    "other_seconds": 0,
+    "intervals": []
+  },
+  "media_lag": {
+    "initial_seconds": 6.533333,
+    "maximum_seconds": 9.701346,
+    "final_seconds": 9.690667000000001,
+    "maximum_growth_seconds": 3.1680129999999993
+  },
+  "continuity_quality": {
+    "maximum_nonsong_fallback_seconds": 1,
+    "maximum_allowed_lag_seconds": 8,
+    "maximum_observed_lag_seconds": 9.701346,
+    "maximum_allowed_lag_growth_seconds": 3,
+    "maximum_observed_lag_growth_seconds": 3.1680129999999993,
+    "observed_nonsong_fallback_seconds": 0,
+    "verified_source_end_ms": 13260,
+    "unplayed_published_cues": 0,
+    "missing_intervals": [],
+    "passed": false
+  },
+  "consumption": {
+    "pipeline_ready_events_observed": 1,
+    "muse_live_session_acks_observed": 1,
+    "muse_live_input_started": 1,
+    "prefix_mt_attempts_observed": 0,
+    "live_mt_attempts_observed": 12,
+    "prefix_tts_requests_observed": 0,
+    "live_tts_requests_observed": 10,
+    "live_prosody_stages_started": 8,
+    "billing_amount": null
+  },
+  "last_buffer": {
+    "lag": 9.690667000000001,
+    "reason": null,
+    "media": 13.429333,
+    "capture": 23.12,
+    "processed": 22.88,
+    "paused": false,
+    "ready": 4,
+    "frames": 316,
+    "buffered": [
+      [
+        7.261,
+        22.685
+      ]
+    ]
+  },
+  "recorder_track": {
+    "width": 640,
+    "height": 360,
+    "frameRate": 24
+  },
+  "source_lifecycle": {
+    "events": [
+      {
+        "type": "pause",
+        "time": 328.611756,
+        "wall_ms": 33042.5,
+        "duration_seconds": 1495.781,
+        "selected": true,
+        "ready": 4,
+        "network": 2,
+        "paused": true,
+        "ended": false,
+        "media_error_code": null
+      },
+      {
+        "type": "seeking",
+        "time": 318.921067,
+        "wall_ms": 33083.20000000298,
+        "duration_seconds": 1495.781,
+        "selected": false,
+        "ready": 1,
+        "network": 2,
+        "paused": true,
+        "ended": false,
+        "media_error_code": null
+      },
+      {
+        "type": "seeked",
+        "time": 318.921067,
+        "wall_ms": 33148.70000000298,
+        "duration_seconds": 1495.781,
+        "selected": false,
+        "ready": 4,
+        "network": 2,
+        "paused": true,
+        "ended": false,
+        "media_error_code": null
+      }
+    ],
+    "connected": true,
+    "selected": false,
+    "paused": true,
+    "time": 318.921067
+  },
+  "source_interrupted": false,
+  "source_interruption_reported": false,
+  "finished_after_source": false,
+  "correct_speaker_sequence": null,
+  "public_speaker_match_verified": false,
+  "workspace_stop_clean": false,
+  "original_replayed_to": 0,
+  "one_session": null,
+  "drained_after_reset": false,
+  "late_cues_played": false,
+  "ephemeral_sample_delivered": true
+}

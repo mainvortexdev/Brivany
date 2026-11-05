@@ -1,0 +1,392 @@
+{
+  "title": "Brivany · Auditoría de casos de uso",
+  "generated_at_la_paz": "2026-10-29T18:50:12.516652-04:00",
+  "scope": "Pruebas locales, recorridos con datos sintéticos y transportes externos sustituidos; evidencia histórica real identificada por separado.",
+  "results": [
+    {
+      "suite": "python",
+      "title": "Suite Python general",
+      "status": "passed",
+      "path": "tmp/verification/python-20261029T224112-5f0bfe2f.json",
+      "sha256": "e8d5845e56e46f053249dc956715c125edcc486f7c09172b14c2d8da7e9b5037",
+      "started_at": "2026-10-29T22:41:12.066788+00:00",
+      "duration_seconds": 176.362709,
+      "python_test_count": 610,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "spatial-ui",
+      "title": "Captura y edición espacial",
+      "status": "passed",
+      "path": "tmp/verification/spatial-ui-20261029T223847-80e578d7.json",
+      "sha256": "8bd1b18923dc8905dd0afff7f55ff54421bc326a60f6347bb6cc08db9069aaa8",
+      "started_at": "2026-10-29T22:38:47.902285+00:00",
+      "duration_seconds": 42.915596,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "floorplan-ui",
+      "title": "Plano 2D",
+      "status": "passed",
+      "path": "tmp/verification/floorplan-ui-20261029T224610-e9c6726e.json",
+      "sha256": "5e71113ec8f191630b412c1580c6337c76568e1b1a2cfeb0f4325a9a7b42ac84",
+      "started_at": "2026-10-29T22:46:10.051373+00:00",
+      "duration_seconds": 21.464853,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "portable-floorplan",
+      "title": "Plano portátil",
+      "status": "passed",
+      "path": "tmp/verification/portable-floorplan-20261029T224621-b183e290.json",
+      "sha256": "aad47b907c9058de73577b8cab7d3dac33117f87a48ebf0d34797ae11623ec7b",
+      "started_at": "2026-10-29T22:46:21.898152+00:00",
+      "duration_seconds": 18.881296,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "desktop-ui",
+      "title": "Proyecto de escritorio",
+      "status": "passed",
+      "path": "tmp/verification/desktop-ui-20261029T224341-91879e33.json",
+      "sha256": "2460a7f078d6ba855b766065bea135004312feac45983119497570071e3a2d5a",
+      "started_at": "2026-10-29T22:43:41.989955+00:00",
+      "duration_seconds": 18.476047,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "portable-presentation",
+      "title": "Recorrido portátil",
+      "status": "passed",
+      "path": "tmp/verification/portable-presentation-20261029T224525-1bf27701.json",
+      "sha256": "df0791a86b4afcc167c7c61a8b97b4b17b4e64a49f30ec56431a14abd3de2608",
+      "started_at": "2026-10-29T22:45:25.250325+00:00",
+      "duration_seconds": 17.276317,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "sous-pipeline",
+      "title": "Inventario y cocina",
+      "status": "passed",
+      "path": "tmp/verification/sous-pipeline-20261029T223453-982624ee.json",
+      "sha256": "0d475755633dca592bfc00126c52cc88d4c62f1c57ef1951f87b8a0f79cb892a",
+      "started_at": "2026-10-29T22:34:53.016124+00:00",
+      "duration_seconds": 9.050344,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "sous-catalog",
+      "title": "Recetas y compras",
+      "status": "passed",
+      "path": "tmp/verification/sous-catalog-20261029T223259-995699c3.json",
+      "sha256": "dba328c886c83e18da8a1e2b7b64d9c279d1b46148cdbe1121856562a7d9b570",
+      "started_at": "2026-10-29T22:32:59.963890+00:00",
+      "duration_seconds": 22.031045,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "sous-voice-pipeline",
+      "title": "Voz de Sous",
+      "status": "passed",
+      "path": "tmp/verification/sous-voice-pipeline-20261029T213534-fccbc39a.json",
+      "sha256": "57df1553775d892c50fe6a0b22a6919e65f789233bc3c670fa0ca7f7763cf534",
+      "started_at": "2026-10-29T21:35:34.862687+00:00",
+      "duration_seconds": 3.835766,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "live-ui",
+      "title": "Voz y reunión silenciosa",
+      "status": "passed",
+      "path": "tmp/verification/live-ui-20261029T224106-1c2c5584.json",
+      "sha256": "2d884d007e8974c53dd17365b0b2b348ce0d6606ce81b42c0da0871448a2e2c7",
+      "started_at": "2026-10-29T22:41:06.074074+00:00",
+      "duration_seconds": 5.046288,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "human-skills-ui",
+      "title": "Skill desde video",
+      "status": "passed",
+      "path": "tmp/verification/human-skills-ui-20261029T223651-63e5e060.json",
+      "sha256": "f2622cbf879db68b5fcb6ec5447ca10fdabd4d93860fc4f115ff57746875f29c",
+      "started_at": "2026-10-29T22:36:51.467897+00:00",
+      "duration_seconds": 10.60562,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "chat-requests-ui",
+      "title": "Solicitudes del chat",
+      "status": "passed",
+      "path": "tmp/verification/chat-requests-ui-20261029T223259-280512be.json",
+      "sha256": "789df60b986fb93e245da2c154c37896800370d84f6297b6fe3d6c636bf3b5a7",
+      "started_at": "2026-10-29T22:32:59.858178+00:00",
+      "duration_seconds": 22.162688,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "social-ui",
+      "title": "Redes y campañas pausadas",
+      "status": "passed",
+      "path": "tmp/verification/social-ui-20261029T224215-644c7621.json",
+      "sha256": "e4e7801734d65fc0699278d585fdab67accb545559ff6b080f626cf20f45cb88",
+      "started_at": "2026-10-29T22:42:15.863782+00:00",
+      "duration_seconds": 6.936618,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "dubbing-timing",
+      "title": "Doblaje y medición",
+      "status": "passed",
+      "path": "tmp/verification/dubbing-timing-20261029T223453-bd5721e4.json",
+      "sha256": "cf3612bf83e3d78e70f9ecfc01e1c04d01b6696119547e8cee9ddaa139946f26",
+      "started_at": "2026-10-29T22:34:53.005152+00:00",
+      "duration_seconds": 10.61873,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "spatial-physics",
+      "title": "Física sintética",
+      "status": "passed",
+      "path": "tmp/verification/spatial-physics-20261029T224535-d0a954fa.json",
+      "sha256": "630f25b7328e10eebdb277adce9517c90b78836345fccefcea202b13ff26c66d",
+      "started_at": "2026-10-29T22:45:35.721702+00:00",
+      "duration_seconds": 2.890266,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "room-dispatch",
+      "title": "Orquestación multivista",
+      "status": "passed",
+      "path": "tmp/verification/room-dispatch-20261029T224022-22c45674.json",
+      "sha256": "74f21f66a2fa4bb462e1465fd7eb751d6ffb048603bcc223e6ff26fc2dea63f2",
+      "started_at": "2026-10-29T22:40:22.639049+00:00",
+      "duration_seconds": 5.543173,
+      "python_test_count": 16,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "additional-usecases",
+      "title": "Usos adicionales",
+      "status": "passed",
+      "path": "tmp/verification/additional-usecases-20261029T224022-2498a3ad.json",
+      "sha256": "2b986acf78b462eff9be82bd142e2144f94f8038ac9ec9f79eab10f2526e5422",
+      "started_at": "2026-10-29T22:40:22.639049+00:00",
+      "duration_seconds": 1.749324,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "app-ui",
+      "title": "Interfaz y shell PWA",
+      "status": "passed",
+      "path": "tmp/verification/app-ui-20261029T224352-d0676a7e.json",
+      "sha256": "e1bce5055149763d8ef625569da78966bcfe5316cc12735d1ac8fddf9e3b8e17",
+      "started_at": "2026-10-29T22:43:52.849077+00:00",
+      "duration_seconds": 8.114905,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    },
+    {
+      "suite": "spatial-assistant-ui",
+      "title": "Melodi en el espacio",
+      "status": "passed",
+      "path": "tmp/verification/spatial-assistant-ui-20261029T213455-0679492c.json",
+      "sha256": "d4bf713bcda0f3fd1a8e74e211019eabd5d4f25fbe2bb41f1387e0dd166fb5f4",
+      "started_at": "2026-10-29T21:34:55.226642+00:00",
+      "duration_seconds": 10.137309,
+      "python_test_count": null,
+      "external_calls": 0,
+      "gpu_seconds": 0
+    }
+  ],
+  "findings": [
+    {
+      "id": "F01",
+      "kind": "Funcional / portabilidad",
+      "priority": "Alta",
+      "state": "Corregido y comprobado",
+      "problem": "Los recorridos de presentación no se incluían en la carpeta portátil ni en el respaldo.",
+      "fix": "Se conservaron configuración y revisión de escena en las versiones de proyecto; se añadieron lectura, guardado y validación del respaldo.",
+      "proof": [
+        "desktop",
+        "portable-presentation",
+        "additional-usecases"
+      ]
+    },
+    {
+      "id": "F02",
+      "kind": "Funcional / integración",
+      "priority": "Alta",
+      "state": "Corregido y comprobado",
+      "problem": "Los métodos nuevos de presentación no estaban en la lista permitida del cliente de escritorio.",
+      "fix": "Se añadieron get_presentation/save_presentation y un error claro cuando una ventana antigua aún no ofrece el método.",
+      "proof": [
+        "portable-presentation"
+      ]
+    },
+    {
+      "id": "F03",
+      "kind": "Funcional / secuencia de carga",
+      "priority": "Media",
+      "state": "Corregido y comprobado",
+      "problem": "La carpeta se marcaba como lista antes de terminar la lectura del recorrido; una llamada inmediata podía encontrar el puente ocupado.",
+      "fix": "El estado listo se publica tras finalizar esa lectura. El recorrido de prueba espera la condición correcta y acepta el aviso de escena modificada.",
+      "proof": [
+        "portable-presentation",
+        "desktop-ui"
+      ]
+    },
+    {
+      "id": "F04",
+      "kind": "Funcional / recuperación",
+      "priority": "Alta",
+      "state": "Corregido y comprobado",
+      "problem": "Un error al cargar el panel opcional de presentación podía propagarse y bloquear el visor 3D.",
+      "fix": "Se aísla el fallo en su panel. Una ventana antigua conserva el visor y muestra la necesidad de reiniciar; probado expresamente.",
+      "proof": [
+        "portable-presentation"
+      ]
+    },
+    {
+      "id": "T01",
+      "kind": "Herramienta de prueba",
+      "priority": "Media",
+      "state": "Corregido y comprobado",
+      "problem": "El selector del panel de detalles dejó de ser único al añadir presentación y Melodi.",
+      "fix": "Se añadió un identificador estable y se actualizaron las pruebas de Espacios/exportación. No se atribuye este fallo al usuario final.",
+      "proof": [
+        "spatial-ui"
+      ]
+    },
+    {
+      "id": "T02",
+      "kind": "Observación / rendimiento de pruebas",
+      "priority": "Media",
+      "state": "Registrado; causa no concluida",
+      "problem": "Al ejecutar varios navegadores con WebGL por software aparecieron agotamientos de espera al iniciar.",
+      "fix": "Se repitieron los recorridos afectados de forma controlada y pasaron. No se amplió el timeout para ocultar el fallo. No prueba rendimiento en GPU física.",
+      "proof": [
+        "spatial-ui",
+        "desktop-ui"
+      ]
+    }
+  ],
+  "new_cases": [
+    {
+      "id": "N01",
+      "use": "Planificar una mudanza o una sala para un evento",
+      "result": "probado_local",
+      "observation": "Dos distribuciones, aplicar y deshacer conservan objetos e historial.",
+      "limits": "No comprueba espacio de paso, accesibilidad física ni medidas reales."
+    },
+    {
+      "id": "N02",
+      "use": "Catálogo de colección o pequeño museo privado",
+      "result": "probado_local",
+      "observation": "Punto de interés y ficha sobreviven al proyecto portátil y a un respaldo/restauración reales.",
+      "limits": "Sin audio guía curada, digitalización fotorealista, derechos de colección o enlaces públicos verificados."
+    },
+    {
+      "id": "N03",
+      "use": "Diario de obra, estudio o mantenimiento",
+      "result": "probado_local",
+      "observation": "Comando tipado prepara una nota; sólo se guarda tras confirmación local y persiste al reabrir.",
+      "limits": "Sin cuenta WhatsApp ni dictado real. La nota no certifica que el trabajo se realizó."
+    },
+    {
+      "id": "N04",
+      "use": "Guardar apuntes externos que contienen instrucciones o etiquetas",
+      "result": "probado_local",
+      "observation": "Se conserva como cuerpo de nota, sin reinterpretarlo como herramienta. El render de texto inerte se verifica en personal-ui.",
+      "limits": "Esta prueba de servicio no ejecuta HTML ni evalúa aislamiento frente a código local malicioso."
+    },
+    {
+      "id": "N05",
+      "use": "Asistente con permisos ausentes o retirados",
+      "result": "probado_local",
+      "observation": "Falta de grant impide consultar Drive y no consume la aprobación; cero HTTP a cuentas.",
+      "limits": "Retirada real de un permiso en Google, su propagación y renovación siguen pendientes de cuenta."
+    },
+    {
+      "id": "N06",
+      "use": "Checklist de viaje o preparación de equipo",
+      "result": "probado_local",
+      "observation": "Nota y recordatorio vencido se conservan localmente sin un proveedor ni worker.",
+      "limits": "Requiere abrir Brivany; no hay alarma con la aplicación cerrada ni entrega WhatsApp comprobada."
+    }
+  ],
+  "pending": [
+    [
+      "P0",
+      "Captura → vivienda reconstruida",
+      "Pesos/licencias, build CUDA, Modal, presupuesto y captura real. El worker y el coordinador multivista están preparados/probados con sustitutos; falta su recorrido integrado con resultado real."
+    ],
+    [
+      "P0",
+      "Plano y física profesionales",
+      "Comparar geometría con medidas independientes, cobertura y orientación; calibrar parámetros físicos. La referencia declarada o una simulación de cajas no bastan."
+    ],
+    [
+      "P0",
+      "Cuentas y chat operativo",
+      "Autorizar Google/Meta/WhatsApp, publicar receptor HTTPS, comprobar permisos/renovación/entrega. Las solicitudes actuales necesitan revisión local; control remoto del equipo pendiente."
+    ],
+    [
+      "P0",
+      "Live Traductor ≤500 ms",
+      "Las mediciones históricas reales exceden el objetivo. Este ensayo nuevo comprueba la cadena y el medidor con upstream sustituido; no acredita calidad o latencia real."
+    ],
+    [
+      "P1",
+      "Cocina cotidiana completa",
+      "Catálogo ampliado con fuentes/localidad, reconocimiento real, voz física, pedidos y envío efectivo al chat. Los tres presets no prueban comida típica ni demanda de usuarios."
+    ],
+    [
+      "P1",
+      "Distribución y dispositivos",
+      "Instaladores/firma/macOS/iPhone/Android/Meta Glasses, cámaras/micrófonos/altavoces físicos, uso prolongado y GPU modestos. Viewports emulados no prueban esos dispositivos."
+    ],
+    [
+      "P1",
+      "Compartir y operar",
+      "Autenticación multiusuario, enlaces de visita revocables, permisos, sincronización, retención y recuperación en interfaz. El shell PWA offline no equivale a tener todas las funciones offline."
+    ]
+  ],
+  "new_paid_inferences": 0,
+  "new_external_calls": 0,
+  "goal_complete": false,
+  "disclaimer": "Los resultados no certifican reconstrucción, precisión arquitectónica, realismo físico, 500 ms audibles ni compatibilidad con dispositivos reales."
+}

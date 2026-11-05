@@ -1,0 +1,91 @@
+{
+  "type": "local_owned_wav2vec_timbre_candidate",
+  "model_sha256": "a0934c2f8934878f264dd5072d07b1bbd176f051d285b2a7910dfaa173747695",
+  "license_declared": "Apache-2.0",
+  "single_cpu_thread": true,
+  "provider_calls": 0,
+  "load": {
+    "wall_ms": 867.72,
+    "cpu_ms": 812.5,
+    "inputs": [
+      {
+        "name": "input_values",
+        "shape": [
+          "batch_size",
+          "sequence_length"
+        ],
+        "type": "tensor(float)"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "logits",
+        "shape": [
+          "batch_size",
+          2
+        ],
+        "type": "tensor(float)"
+      }
+    ]
+  },
+  "rows": [
+    {
+      "fixture": "masculine",
+      "first": {
+        "source_seconds": 2.48,
+        "female_style_probability": 0.000925,
+        "male_style_probability": 0.999075,
+        "voice_timbre": "masculine",
+        "confidence": 0.999075,
+        "logits": [
+          -3.263542,
+          3.721045
+        ],
+        "wall_ms": 753.37,
+        "cpu_ms": 671.88
+      },
+      "warm": {
+        "source_seconds": 2.48,
+        "female_style_probability": 0.000925,
+        "male_style_probability": 0.999075,
+        "voice_timbre": "masculine",
+        "confidence": 0.999075,
+        "logits": [
+          -3.263542,
+          3.721045
+        ],
+        "wall_ms": 646.8,
+        "cpu_ms": 625.0
+      }
+    },
+    {
+      "fixture": "feminine",
+      "first": {
+        "source_seconds": 2.0,
+        "female_style_probability": 0.996175,
+        "male_style_probability": 0.003825,
+        "voice_timbre": "feminine",
+        "confidence": 0.996175,
+        "logits": [
+          2.614887,
+          -2.947454
+        ],
+        "wall_ms": 533.71,
+        "cpu_ms": 500.0
+      },
+      "warm": {
+        "source_seconds": 2.0,
+        "female_style_probability": 0.996175,
+        "male_style_probability": 0.003825,
+        "voice_timbre": "feminine",
+        "confidence": 0.996175,
+        "logits": [
+          2.614887,
+          -2.947454
+        ],
+        "wall_ms": 705.83,
+        "cpu_ms": 625.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "model": "syntropicsignal-ai/gender-voice-classifier",
+  "revision": "248c10727b11388f40df95c0f27ef6a2a7f50436",
+  "source": "https://huggingface.co/syntropicsignal-ai/gender-voice-classifier/resolve/248c10727b11388f40df95c0f27ef6a2a7f50436/gender_classifier_200k.onnx",
+  "sha256": "e98f8bc6d7960a8a2169368fe4533636903e712790e96dbff81b679ede5de252",
+  "size_bytes": 670311,
+  "license_declared": "MIT",
+  "author": "Kamil Biduś / Syntropic Signal",
+  "model_card_sha256": "5867eb11a2a3336a824235ed89ac397fbf72d0e593600a553b15dcb5ed9f05f8",
+  "sample_rate": 16000,
+  "mfcc_coefficients": 40,
+  "maximum_window_seconds": 3,
+  "execution_provider": "CPUExecutionProvider",
+  "threads": 1
+}

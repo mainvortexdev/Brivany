@@ -1,0 +1,19 @@
+{
+  "suite": "caption-prefetch",
+  "started_at": "2026-11-04T06:42:30.771138+00:00",
+  "finished_at": "2026-11-04T06:42:32.288081+00:00",
+  "duration_seconds": 1.516943,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_caption_prefetch"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".....\r\n----------------------------------------------------------------------\r\nRan 5 tests in 0.070s\r\n\r\nOK\r\n"
+}

@@ -1,0 +1,12 @@
+{
+  "type": "native_workspace_042_ready_after_trial",
+  "passed": true,
+  "single_visible_workspace": true,
+  "workspace_active": true,
+  "selected_video_protocol": 2,
+  "translation_active": false,
+  "captured_seconds": 41.52,
+  "submitted_seconds": 39.76,
+  "first_audio_from_pipeline_ms": 5640,
+  "personal_browser_reloaded": false
+}

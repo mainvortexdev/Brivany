@@ -1,0 +1,21 @@
+(() => {
+ const $=selector=>document.querySelector(selector),owner=parent.location.origin===location.origin?parent:window,session=owner.BrivanyComputerSession ||= {token:null};
+ const notify=text=>$('#settings-status').textContent=text;
+ function render(){const values=BrivanyPreferences.get();document.querySelectorAll('[data-pref]').forEach(input=>{const value=values[input.dataset.pref];if(input.type==='checkbox')input.checked=value;else input.value=value;});for(const key of ['rate','threshold'])$('[data-value='+key+']').textContent=key==='rate'?values[key].toFixed(2)+'×':values[key].toFixed(3);}
+ document.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(tab=>tab.removeAttribute('aria-current'));button.setAttribute('aria-current','page');document.querySelectorAll('[data-section]').forEach(section=>section.hidden=section.dataset.section!==button.dataset.tab);notify('');});
+ document.querySelectorAll('[data-pref]').forEach(input=>input.onchange=()=>{const value=input.type==='checkbox'?input.checked:input.type==='range'?Number(input.value):input.value;BrivanyPreferences.set(input.dataset.pref,value);render();});
+ $('#reset-preferences').onclick=()=>{BrivanyPreferences.reset();render();notify('Preferencias restablecidas.');};
+ async function request(path,body){const response=await fetch(path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json','X-Brivany-Control':session.token||''},cache:'no-store',...(body===undefined?{}:{body:JSON.stringify(body)})});if(!response.ok)throw Error('No se pudo completar la operación.');return response.json();}
+ async function refresh(){
+  try{const status=await request('/api/computer/status');$('#control-status').textContent=status.enabled?'Activo en esta sesión':'Se activa al solicitar una acción';$('#control-toggle').textContent=status.enabled?'Desactivar':'Activar';$('#computer-folders').textContent=(status.roots||[]).join('\n')||'Carpeta local de trabajo';$('#active-jobs').textContent=(status.jobs||[]).filter(job=>['queued','planning','running'].includes(job.state)).length+' tareas en curso';
+   const services=await request('/api/desktop/services');const box=$('#settings-services');box.replaceChildren();for(const item of services.services){const row=document.createElement('div');row.className='setting-row';const name=document.createElement('span');name.textContent=item.name;const state=document.createElement('span');state.textContent=item.configured?'Configurado':'Sin configurar';if(item.configured)state.className='configured';row.append(name,state);box.append(row);}
+  }catch{notify('No se pudo consultar la configuración.');}
+ }
+ $('#control-toggle').onclick=async()=>{try{if(session.token){await request('/api/computer/disarm',{});session.token=null;}else{const result=await owner.pywebview.api.authorize_computer();if(!result.ok)throw Error();session.token=result.token;owner.BrivanyAgents?.observe(result.jobs||[]);}await refresh();}catch{notify('El control requiere la ventana de Brivany Desktop.');}};
+ $('#choose-folder').onclick=async()=>{try{await owner.pywebview.api.choose_computer_folder();await refresh();}catch{notify('No se eligió una carpeta.');}};
+ $('#stop-agents').onclick=async()=>{try{await request('/api/computer/disarm',{});session.token=null;await refresh();notify('Tareas detenidas.');}catch{notify('No se pudieron detener las tareas.');}};
+ $('#credentials-form').onsubmit=async event=>{event.preventDefault();const key=$('#credential-key').value.trim();$('#credential-key').value='';try{await request('/api/desktop/credentials',{provider:$('#credential-provider').value,key});notify('Clave guardada en este equipo.');await refresh();}catch{notify('No se pudo guardar la clave. Pégala completa, sin espacios.');}};
+ $('#clear-chat').onclick=()=>{owner.document.querySelector('#module-frame')?.contentWindow?.BrivanyChat?.clear();notify('Conversación e imágenes borradas de esta sesión.');};
+ document.querySelectorAll('a[href]').forEach(link=>link.onclick=event=>{if(owner!==window){event.preventDefault();owner.postMessage({type:'brivany-navigate',route:new URL(link.href).pathname},location.origin);}});
+ window.BrivanySettings={refresh};render();refresh();
+})();

@@ -1,0 +1,19 @@
+{
+  "id": "017c9b0c-c143-406a-9c15-5e61352ccf85",
+  "state": "installed_unactivated_observed",
+  "apps": [
+    "word",
+    "excel",
+    "powerpoint",
+    "outlook",
+    "onenote",
+    "access"
+  ],
+  "product_id": "O365HomePremRetail",
+  "activation_requested": false,
+  "activation_status": "Word window reports product activation failure",
+  "completion_observed_at": "2026-11-01T13:01:06.965121+00:00",
+  "word_launch_observed": true,
+  "binary_receipt": "d4fa7331-fbfb-4c7c-91e5-67fed7d7eaba",
+  "installer_setup_processes_finished": true
+}

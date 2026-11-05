@@ -1,0 +1,25 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/search-review-real/4dc9cbff667f4de68c30ad33294b2921/report.json",
+  "original_sha256": "3107c27a51bbd27ee20a91e6d1b3c5bbc17bbbb835472d8a993b5a6c360431a4",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "passed": true,
+    "original_conversation_saved": false
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": 23.06,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

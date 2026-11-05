@@ -1,0 +1,235 @@
+(() => {
+ const $=selector=>document.querySelector(selector),owner=parent.location.origin===location.origin?parent:window;
+ const session=owner.BrivanyChatSession ||= {messages:[],history:[]},control=owner.BrivanyComputerSession ||= {token:null};
+ session.id ||= crypto.randomUUID();
+ session.tasks ||= [];
+ document.querySelectorAll('[data-icon]').forEach(el=>window.BrivanyIcons.set(el,el.dataset.icon));
+ const list=$('#chat-messages'),input=$('#chat-message'),prefs=()=>window.BrivanyPreferences.get();
+ let config=null,controller=null,generation=0,pending=false,listening=false,starting=false,micGeneration=0,lastSpeech=performance.now(),recentSpeech='',lastBarge=0,notices=[],partial='',partialId=null,waitingThought=false;
+ let dictationPhase='idle',dictationBase='',dictationText='',dictationPartial='',dictationDraft='',dictationRevision=0,dictationGeneration=0;const dictationSeen=new Set();
+ const seen=new Set(),channel=typeof BroadcastChannel==='function'?new BroadcastChannel('brivany-live-owner'):null,voiceOwner=crypto.randomUUID();
+ let publishTimer=null,lastSignal=0;const workspaceRequests=new Set();
+ function flushWorkspace(){clearTimeout(publishTimer);publishTimer=null;owner.pywebview?.api?.workspace_chat_publish?.({messages:session.messages.slice(-80).map(m=>({role:m.role,text:m.text,continuation:m.continuation,sources:m.showSources?m.sources:undefined,showSources:m.showSources===true})),pending,starting,listening,speaking:voice.speaking,dictation:{phase:dictationPhase,draft:dictationDraft,revision:dictationRevision},error:$('#chat-state')?.dataset.error==='true'?$('#chat-state').textContent:''}).catch(()=>{});}
+ function publishWorkspace(){if(!publishTimer)publishTimer=setTimeout(flushWorkspace,70);}
+ const status=(text='',error=false)=>{$('#chat-state').textContent=text;$('#chat-state').dataset.error=String(error);publishWorkspace();};
+ const scroll=()=>{if(list.scrollHeight-list.scrollTop-list.clientHeight<180)list.scrollTop=list.scrollHeight;};
+ function render(){
+  publishWorkspace();
+  if(!session.messages.length){list.innerHTML='<div class="chat-welcome"><h1>¿Qué creamos hoy?</h1></div>';return;}
+  list.replaceChildren();for(const message of session.messages){const row=document.createElement('article');row.className='chat-message';row.dataset.role=message.role;const text=document.createElement('div');text.className='message-text';text.textContent=message.text;if(message.references){const label=document.createElement('small');label.textContent=message.references+' imagen'+(message.references===1?'':'es');text.prepend(label);}row.append(text);
+   if(message.continuation){
+    const button=document.createElement('button');button.type='button';button.textContent='Continuar';
+    button.onclick=async()=>{button.disabled=true;try{await owner.pywebview.api.continue_assistant_job(message.continuation);delete message.continuation;render();}catch{status('La tarea todavía no está disponible para continuar.',true);button.disabled=false;}};
+    row.append(button);
+   }
+   if(message.showSources)window.BrivanyCitations?.(row,message.sources,owner.pywebview?.api);
+   list.append(row);}list.scrollTop=list.scrollHeight;
+ }
+ function add(role,text,references=0,sources){const item={role,text,references,sources};session.messages.push(item);session.messages=session.messages.slice(-80);render();return {item,node:list.lastElementChild.querySelector('.message-text')};}
+ function state(){
+  publishWorkspace();
+  $('#mic-toggle').setAttribute('aria-pressed',String(listening));$('#mic-toggle').setAttribute('aria-label',listening?'Terminar voz live':starting?'Cancelar conexión de voz':'Iniciar voz live');$('#mic-toggle span').textContent=starting?'Conectando…':listening?'Live activo':'Live';
+  $('#interrupt').hidden=!pending&&!voice.speaking;$('#chat-send').disabled=pending;
+ }
+ const taskTimers=new Map();let closedPage=false;
+ function taskText(command){
+  const result=command.result||{},output=result.output||{};
+  if(command.state==='succeeded'){
+   if(output.verified===true&&typeof output.message==='string')return output.message.slice(0,2200);
+   if(output.direct_application_open){const name=output.receipts?.find(r=>r.action==='launch_app')?.result?.launched;return name?`${name} está abierto.`:'La aplicación está abierta.';}
+   return 'He terminado la tarea. Puedes revisar el resultado.';
+  }
+  if(command.state==='awaiting_approval')return 'Necesito tu aprobación en Brivany para continuar.';
+  if(command.state==='cancelled')return 'La tarea se ha detenido.';
+  return typeof result.summary==='string'?result.summary.slice(0,800):'No pude completar la tarea. Puedes revisar el resultado en la app.';
+ }
+ function watchTask(id,remote=true){
+  if(!id||taskTimers.has(id))return;
+  let entry=session.tasks.find(t=>t.id===id);if(!entry){entry={id,remote,conversation:session.id,started:Date.now()};session.tasks.push(entry);}
+  let failures=0;
+  const finish=(text,sources,provenance)=>{
+   session.tasks=session.tasks.filter(t=>t!==entry);taskTimers.delete(id);
+   if(entry.conversation!==session.id||closedPage)return;
+   const response=add('assistant',text,0,sources);if(provenance)response.item.searchProvenance=provenance;session.history.push({role:'assistant',content:text.slice(0,2400)});session.history=session.history.slice(-12);render();publishWorkspace();
+   if(listening&&prefs().voiceNotices)notices.push(text);
+  };
+  const poll=async()=>{
+   if(closedPage||entry.conversation!==session.id){taskTimers.delete(id);return;}
+   try{
+    const api=owner.pywebview?.api;let command;
+    if(entry.remote)command=(await api.account_command_status(id)).command;
+    else{const job=(await api.assistant_status()).jobs.find(j=>j.id===id);if(job)command={state:['interrupted','awaiting_user'].includes(job.state)?'failed':job.state,result:{output:job.result,summary:job.error||job.phase,phase:job.phase,continuation_id:job.state==='waiting_for_user'?job.id:job.continuation_id,intervention_revision:job.intervention_revision}};}
+    failures=0;
+    const continuation=command?.result?.continuation_id;
+    const revision=continuation?command.result.intervention_revision:null;
+    if(continuation!==entry.continuation||revision!==entry.interventionRevision){
+     for(const message of session.messages)if(message.continuation===entry.continuation&&entry.continuation)delete message.continuation;
+     entry.continuation=continuation;
+     entry.interventionRevision=revision;
+     if(continuation){add('assistant',command.result.phase||'Esta tarea espera tu intervención.').item.continuation=continuation;render();}
+     else render();
+    }
+    if(command?.state==='awaiting_approval'&&entry.lastState!=='awaiting_approval')add('assistant',taskText(command));
+    entry.lastState=command?.state;
+    if(command&&['succeeded','failed','cancelled','uncertain'].includes(command.state)){
+     const output=command.result?.output;
+     const searched=command.state==='succeeded'&&output?.verified===true&&output?.web_search_verified===true;
+     finish(taskText(command),searched?output.sources:undefined,searched?{provider:output.provider||'Meta web search',observed_at:output.observed_at}:undefined);return;
+    }
+   }catch{failures++;}
+   if(Date.now()-entry.started>1800000||failures>=8){finish('No pude confirmar el resultado de la tarea. No la repetiré automáticamente.');return;}
+   taskTimers.set(id,setTimeout(poll,Math.max(Date.now()-entry.started<5000?650:2000,session.tasks.length*700)));
+  };
+  taskTimers.set(id,setTimeout(poll,350));
+ }
+ const voice=new BrivanyVoice.VoiceOutput(speaking=>{microphone.suspend(speaking);owner.pywebview?.api?.music_voice_active?.(speaking).catch(()=>{});state();},message=>status(message,true));
+ const microphone=new BrivanyVoice.Microphone({
+  onLevel:value=>{if(value.active)lastSpeech=performance.now();if(performance.now()-lastSignal>=100){lastSignal=performance.now();owner.pywebview?.api?.workspace_live_signal?.({level:Math.min(1,value.rms||0),samples:value.samples||[]}).catch(()=>{});}},onStatus:()=>{},onError:message=>{if(dictationPhase!=='idle')cancelDictation(false);else stopLive();status(message,true);},
+  onSpeechStart:()=>{lastSpeech=performance.now();},
+  onBargeIn:()=>{lastBarge=performance.now();cancel();status();},
+  onTranscript:result=>{
+   if(dictationPhase!=='idle'){
+    if(!result.text?.trim())return;
+    if(result.final){if(dictationSeen.has(result.id))return;dictationSeen.add(result.id);dictationText=(dictationText+' '+result.text).trim().slice(0,1200);dictationPartial='';}
+    else dictationPartial=result.text.slice(0,1200);
+    return;
+   }
+   if(!listening)return;lastSpeech=performance.now();
+   if(!result.final){partial=result.text;partialId=result.id;$('#interim').textContent=result.text;return;}
+   if(!result.text.trim()){if(partialId===result.id){partial='';partialId=null;$('#interim').textContent='';}return;}
+   if(seen.has(result.id))return;seen.add(result.id);if(seen.size>80)seen.delete(seen.values().next().value);
+   if(performance.now()-lastBarge<1400&&BrivanyLive.isPlaybackEcho(result.text,recentSpeech))return;
+   partial='';partialId=null;$('#interim').textContent='';
+   if(prefs().autoReply)send(result.text,true);else{input.value=(input.value+' '+result.text).trim().slice(-1200);resize();}
+  }
+ });
+ function cancel(){generation++;controller?.abort();controller=null;pending=false;voice.cancel();state();}
+ function stopLive(){micGeneration++;starting=false;listening=false;waitingThought=false;microphone.stop();voice.cancel();$('#interim').textContent='';state();}
+ const speechOptions=()=>({voiceURI:config?.voice?.tts?.configured?'melodi-cartesia':undefined,language:prefs().language.startsWith('en')?'en':'es',rate:prefs().rate,quiet:prefs().quiet});
+ const dictationValue=()=>[dictationBase,dictationText,dictationPartial].filter(Boolean).join(' ').trim().slice(0,1200);
+ function cancelDictation(discard=true){
+  if(dictationPhase==='idle')return;
+  dictationGeneration++;micGeneration++;dictationDraft=discard?dictationBase:dictationValue();dictationRevision++;dictationPhase='idle';microphone.stop();dictationPartial='';dictationSeen.clear();input.value=dictationDraft;resize();state();
+ }
+ async function startDictation(base=''){
+  if(dictationPhase!=='idle')return;
+  cancel();stopLive();dictationBase=base.slice(0,1200);dictationText='';dictationPartial='';dictationSeen.clear();dictationPhase='starting';const token=++dictationGeneration;state();status();
+  try{
+   if(!config)config=await (await fetch('/api/status',{cache:'no-store'})).json();
+   if(token!==dictationGeneration)return;
+   if(!config.voice?.asr.available)throw Error('Configura la escucha de voz en Ajustes → Servicios.');
+   channel?.postMessage({type:'claim',owner:voiceOwner});
+   let timer;const ready=await Promise.race([microphone.start({transcribe:true,provider:'muse',language:prefs().language,threshold:prefs().threshold,live:{url:config.voice.websocket_url,mode:'practice',bargeIn:false}}),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('El micrófono tardó demasiado en conectar. Vuelve a intentarlo.')),12000);})]).finally(()=>clearTimeout(timer));
+   if(token!==dictationGeneration)return;
+   if(!ready)throw Error('No se pudo iniciar el micrófono.');dictationPhase='recording';state();
+  }catch(error){if(token!==dictationGeneration)return;cancelDictation(false);status(error.name==='NotAllowedError'?'Permite el acceso al micrófono para dictar.':error.name==='NotFoundError'?'No se encontró un micrófono conectado.':error.name==='NotReadableError'?'No se pudo abrir el micrófono. Revisa si otra aplicación lo está usando.':error.message,true);}
+ }
+ async function finishDictation(submit=false){
+  if(dictationPhase==='starting'){cancelDictation();return;}
+  if(dictationPhase!=='recording')return;
+  dictationPhase='finishing';const token=dictationGeneration;state();let timer,incomplete=false;
+  try{incomplete=!(await Promise.race([microphone.finish().then(()=>true),new Promise(resolve=>{timer=setTimeout(()=>resolve(false),3500);})]));}
+  catch{incomplete=true;}
+  finally{clearTimeout(timer);}
+  if(token!==dictationGeneration)return;
+  const draft=dictationValue();dictationGeneration++;dictationPhase='idle';microphone.stop();dictationDraft=submit&&!incomplete?'':draft;dictationRevision++;dictationPartial='';dictationSeen.clear();input.value=dictationDraft;resize();state();
+  if(incomplete)status('La transcripción no terminó. Revisa el texto antes de enviarlo.',true);
+  else if(submit&&draft)send(draft,false);
+  else if(submit)status('No se detectó voz. Puedes volver a dictar.',true);
+ }
+ async function activateLive(){
+  if(starting||listening){stopLive();return;}
+  if(dictationPhase!=='idle')cancelDictation(false);let id;
+  try{
+   // Reuse the configuration loaded with the chat so the explicit Live click
+   // reaches AudioContext.prepare before yielding its browser activation.
+   if(!config)config=await (await fetch('/api/status',{cache:'no-store'})).json();
+   if(!config.voice?.asr.available)throw Error('Configura la escucha de voz en Ajustes → Servicios.');
+   id=++micGeneration;starting=true;state();channel?.postMessage({type:'claim',owner:voiceOwner});status();
+   const ready=config.voice.tts?.configured?voice.remote.player.prepare({rate:prefs().rate,quiet:prefs().quiet}):Promise.resolve();ready.catch(()=>{});
+   let startDeadline;const capture=microphone.start({transcribe:true,provider:'muse',language:prefs().language,threshold:prefs().threshold,live:{url:config.voice.websocket_url,mode:'practice',bargeIn:true}});const result=await Promise.race([Promise.all([capture,ready]).then(([value])=>value),new Promise((_,reject)=>{startDeadline=setTimeout(()=>reject(Error('No se pudo activar el micrófono o el audio. Vuelve a pulsar Hablar con Melodi.')),12000);})]).finally(()=>clearTimeout(startDeadline));
+   if(id!==micGeneration)return;listening=result;starting=false;state();
+  }catch(error){if(id!==undefined&&id!==micGeneration)return;stopLive();status(error.name==='NotAllowedError'?'No se concedió acceso al micrófono. Puedes escribir.':error.message,true);}
+ }
+ async function executePrepared(event,signal){
+  signal.throwIfAborted();if(!control.token){const api=owner.pywebview?.api;if(!api?.authorize_computer)throw Error('Esta acción requiere la ventana de Brivany Desktop.');const grant=await api.authorize_computer();if(!grant.ok)throw Error('No se pudo habilitar la tarea.');control.token=grant.token;owner.BrivanyAgents?.observe(grant.jobs||[]);}
+  signal.throwIfAborted();const response=await fetch('/api/computer/execute-prepared',{method:'POST',signal,headers:{'Content-Type':'application/json','X-Brivany-Control':control.token},body:JSON.stringify({ticket:event.ticket})});if(!response.ok)throw Error('La tarea no se inició. No la repetiré automáticamente.');
+  return (await response.json()).job;
+ }
+ async function send(raw,speak=listening){
+  speak=speak&&!owner.BrivanyWorkState?.recording;
+  if(owner.BrivanyReferences?.busy){input.value=raw.slice(0,1200);resize();status('La imagen se está preparando. Envía el mensaje cuando esté lista.');return;}
+  const text=raw.trim().slice(0,1200);if(!text&&!window.BrivanyImageRequest?.hasImages())return;
+  const sourceQuestion=/^(?:(?:puedes |podrias |por favor )?(?:decirme |mostrarme )?)?(?:de donde (?:sacaste|obtuviste|has sacado|sale|viene)(?: .*)?|(?:cuales son|que|muestrame|dame|ver) (?:tus |las |los )?(?:fuentes|enlaces|referencias)(?: de (?:eso|esa informacion|la respuesta))?|fuentes|enlaces)[?!. ]*$/.test(text.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/^[¿¡ ]+/,''));
+  const previousSearch=sourceQuestion&&!window.BrivanyImageRequest?.hasImages()?[...session.messages].reverse().find(m=>m.role==='assistant'&&m.searchProvenance):null;
+  cancel();status();waitingThought=false;const current=generation,request=controller=new AbortController(),history=session.history.slice(-12),question=text||'¿Qué ves en esta imagen?';
+  const references=owner.BrivanyReferences?.items.length||0;add('user',question,references);session.history.push({role:'user',content:question});
+  if(previousSearch){
+   const sources=previousSearch.sources||[],answer=sources.length?'Lo consulté mediante la búsqueda web de Meta. Estas son las páginas que devolvió la búsqueda.':'Lo consulté mediante la búsqueda web de Meta, pero esta consulta no devolvió los enlaces de las páginas.';
+   const response=add('assistant',answer,0,sources);response.item.showSources=true;session.history.push({role:'assistant',content:answer});session.history=session.history.slice(-12);controller=null;render();state();
+   if(speak)voice.speak([{text:answer,pauseAfter:0}],speechOptions());return;
+  }
+  const assistant=add('assistant','');let reply='',receivedDone=false;pending=true;state();
+  let historyEntry=null;const update=part=>{reply+=part;assistant.item.text=reply.replace(/\[laughter\]/g,'').trim();assistant.node.textContent=assistant.item.text;if(!historyEntry){historyEntry={role:'assistant',content:''};session.history.push(historyEntry);}historyEntry.content=assistant.item.text.slice(0,2400);scroll();publishWorkspace();};
+  const budget=new BrivanyLive.TurnBudget(request,{onSlow:()=>status('Melodi está preparando la respuesta…'),onExpire:()=>status('La respuesta tardó demasiado. No se reintentó.',true)});
+  async function* sentences(){
+   let reader;
+   try{
+    const response=await fetch('/api/voice/turn',{method:'POST',signal:request.signal,headers:{'Content-Type':'application/json'},body:JSON.stringify({text:question,history,consent:true,source:speak?'voice':'chat',conversation_id:session.id,language:prefs().language.startsWith('en')?'en':'es'})});
+    if(!response.ok)throw Error('No se pudo conectar con Melodi. Revisa Ajustes → Servicios.');
+    reader=response.body.getReader();const decoder=new TextDecoder();let buffer='';
+    while(!request.signal.aborted&&current===generation){
+     const {value,done}=await reader.read();if(request.signal.aborted||current!==generation)break;buffer+=decoder.decode(value||new Uint8Array(),{stream:!done});let end;
+     while((end=buffer.indexOf('\n'))>=0){const line=buffer.slice(0,end);buffer=buffer.slice(end+1);if(!line)continue;const event=JSON.parse(line);
+      if(event.type==='error')throw Error(event.message);
+      if(event.type==='reference_action'){const job=await executePrepared(event,request.signal);watchTask(job.id,false);const ack=job.acknowledgement||['Me pongo con ello.','Voy con eso.','Ahora lo hago.'][session.history.filter(m=>m.role==='user').length%3];budget.firstText();update(ack);pending=false;state();yield {text:ack,pauseAfter:0};receivedDone=true;window.BrivanyComputerUI?.refresh();owner.BrivanyAgents?.refresh();}
+      if(event.type==='delta'){budget.firstText();update(event.text);}
+      if(event.type==='sentence'){pending=false;state();recentSpeech=(recentSpeech+' '+event.text).slice(-800);yield {text:event.speech_text||event.text,pauseAfter:60};}
+      if(event.type==='computer_task'){watchTask(event.job?.id,false);window.BrivanyComputerUI?.refresh();owner.BrivanyAgents?.refresh();}
+      if(event.type==='computer_job')watchTask(event.command?.id,true);
+      if(event.type==='done'){receivedDone=true;if(event.await_user===true&&!reply.trim())waitingThought=true;}
+     }if(done)break;
+    }
+    if(!receivedDone&&!request.signal.aborted)throw Error('La respuesta quedó incompleta.');
+   }finally{await reader?.cancel().catch(()=>{});reader?.releaseLock();}
+  }
+  try{
+   if(speak&&config?.voice?.tts?.configured){await voice.speak(sentences(),{...speechOptions(),signal:request.signal});}
+   else if(speak){const pieces=[];for await(const part of sentences())pieces.push(part);if(pieces.length)voice.speak(pieces,{...speechOptions(),signal:request.signal});}
+   else for await(const part of sentences()){}
+  }catch(error){if(!request.signal.aborted&&current===generation)status(error.message,true);}
+  finally{
+   budget.finish();session.history=session.history.slice(-12);
+   if(current===generation){pending=false;controller=null;if(!assistant.item.text){session.messages=session.messages.filter(item=>item!==assistant.item);render();}state();}
+  }
+ }
+ function resize(){input.style.height='auto';input.style.height=Math.min(140,input.scrollHeight)+'px';}
+ $('#chat-composer').onsubmit=event=>{event.preventDefault();const text=input.value;input.value='';resize();send(text);};input.oninput=resize;input.onkeydown=event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();$('#chat-composer').requestSubmit();}};
+ $('#mic-toggle').onclick=activateLive;$('#interrupt').onclick=()=>{cancel();status();};$('#stop-tasks').onclick=async()=>{cancel();if(owner.pywebview?.api?.stop_assistant_tasks)await owner.pywebview.api.stop_assistant_tasks();else await fetch('/api/computer/disarm',{method:'POST',headers:{'Content-Type':'application/json','X-Brivany-Control':control.token||''},body:'{}'});control.token=null;status('Tareas detenidas.');};
+ if(channel)channel.onmessage=({data})=>{if(data?.type==='claim'&&data.owner!==voiceOwner&&(listening||starting||voice.speaking||dictationPhase!=='idle')){cancelDictation(false);cancel();stopLive();status('La voz se abrió en otra ventana.');}};
+ const images=$('#chat-images'),observer=new MutationObserver(()=>{const attach=images.querySelector('.reference-attach');if(attach)$('#chat-attach-anchor').append(attach);});observer.observe(images,{childList:true,subtree:true});
+ const mount=$('#computer-mount'),drawer=$('#agent-drawer'),previewObserver=new MutationObserver(()=>{const preview=mount.classList.contains('computer-has-preview'),options=mount.querySelector('.computer-options')?.open;mount.classList.toggle('show-options',!preview&&!!options);drawer.hidden=!preview&&!options;document.body.dataset.hasPreview=String(!drawer.hidden);});previewObserver.observe(mount,{childList:true,subtree:true,attributes:true,attributeFilter:['class','open']});
+ const notificationTimer=setInterval(()=>{if(!notices.length||!listening||pending||voice.speaking||partial||waitingThought||owner.BrivanyWorkState?.recording||performance.now()-lastSpeech<2200||document.hidden&&!owner.BrivanyWorkActive||!prefs().voiceNotices)return;const text=notices.splice(0).join(' ');recentSpeech=text;voice.speak([{text,pauseAfter:0}],speechOptions());},750);
+ window.BrivanyLiveNotice={queue:message=>{if(prefs().voiceNotices){notices.push(message);notices=notices.slice(-3);}}};
+ window.addEventListener('brivany-reference-error',event=>status(event.detail,true));
+ window.addEventListener('message',event=>{if(event.origin===location.origin&&event.data?.type==='brivany-navigate'&&[...document.querySelectorAll('iframe')].some(frame=>frame.contentWindow===event.source))window.BrivanyComputerUI?.openModule(event.data.route);});
+ const videoAttach=document.createElement('button');videoAttach.type='button';videoAttach.className='chat-icon';videoAttach.setAttribute('aria-label','Adjuntar video o audio');window.BrivanyIcons.set(videoAttach,'video');$('#chat-attach-anchor').append(videoAttach);
+ const mediaSelection=document.createElement('div');mediaSelection.className='chat-media-selection';mediaSelection.setAttribute('aria-label','Videos y audios adjuntos');$('#chat-composer').append(mediaSelection);
+ function renderMedia(){mediaSelection.replaceChildren();const selected=owner.BrivanySelectedMedia||[];mediaSelection.hidden=!selected.length;if(!selected.length)return;const text=document.createElement('span');text.textContent=selected.join(' · ');const remove=document.createElement('button');remove.type='button';remove.className='chat-icon';remove.setAttribute('aria-label','Quitar videos y audios adjuntos');window.BrivanyIcons.set(remove,'close');remove.onclick=async()=>{try{await owner.pywebview.api.clear_selected_media();owner.BrivanySelectedMedia=[];renderMedia();}catch{status('No se pudieron quitar los adjuntos.',true);}};mediaSelection.append(text,remove);}
+ videoAttach.onclick=async()=>{try{const result=await owner.pywebview.api.choose_edits_media();if(!result.cancelled){owner.BrivanySelectedMedia=result.selected;renderMedia();input.focus();}}catch{status('Selecciona el video o audio desde Brivany Desktop.',true);}};renderMedia();
+ window.BrivanyChat={send,workspaceCommand:request=>{
+  if(!request?.id||workspaceRequests.has(request.id))return;workspaceRequests.add(request.id);if(workspaceRequests.size>50)workspaceRequests.delete(workspaceRequests.values().next().value);
+  if(request.action==='send')send(request.text,false);
+  if(request.action==='start'&&!listening&&!starting)activateLive();
+  if(request.action==='stop'){cancelDictation(false);cancel();stopLive();}
+  if(request.action==='dictate_start')startDictation(request.text);
+  if(request.action==='dictate_cancel'){cancelDictation();status();}
+  if(request.action==='dictate_stop')finishDictation();
+  if(request.action==='dictate_send')finishDictation(true);
+  publishWorkspace();
+ },clear:()=>{taskTimers.forEach(clearTimeout);taskTimers.clear();session.tasks=[];cancelDictation();cancel();stopLive();dictationBase=dictationText=dictationPartial=dictationDraft='';dictationRevision++;window.BrivanyImageRequest?.clear();session.id=crypto.randomUUID();session.messages=[];session.history=[];seen.clear();notices=[];render();status();input.value='';resize();},stopLive:()=>{cancelDictation(false);stopLive();},liveState:()=>({listening,speaking:voice.speaking,pending}),taskStatus:jobs=>{$('#stop-tasks').hidden=!jobs.some(job=>['queued','planning','running','reviewing'].includes(job.state));}};
+ const accountChanged=()=>{taskTimers.forEach(clearTimeout);taskTimers.clear();session.tasks=[];window.BrivanyChat.clear();};owner.addEventListener('brivany-account-change',accountChanged);
+ fetch('/api/status',{cache:'no-store'}).then(response=>response.json()).then(value=>config=value).catch(()=>{});render();
+ session.tasks.filter(t=>t.conversation===session.id).forEach(t=>watchTask(t.id,t.remote));
+ window.addEventListener('pagehide',()=>{closedPage=true;taskTimers.forEach(clearTimeout);taskTimers.clear();owner.removeEventListener('brivany-account-change',accountChanged);cancelDictation(false);cancel();stopLive();flushWorkspace();channel?.close();observer.disconnect();previewObserver.disconnect();clearInterval(notificationTimer);},{once:true});
+})();

@@ -1,0 +1,23 @@
+{
+  "suite": "spatial-modal",
+  "started_at": "2026-10-29T04:33:06.702163+00:00",
+  "finished_at": "2026-10-29T04:33:07.760545+00:00",
+  "duration_seconds": 1.058382,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_spatial_modal_transport.py"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "..E......\r\n======================================================================\r\nERROR: test_orchestrator_preserves_remote_provenance_unknown_cost_and_no_replay (test_spatial_modal_transport.ModalTransportTests.test_orchestrator_preserves_remote_provenance_unknown_cost_and_no_replay)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_spatial_modal_transport.py\", line 106, in test_orchestrator_preserves_remote_provenance_unknown_cost_and_no_replay\r\n    with fixture.budget._connect() as db:\r\n         ^^^^^^^^^^^^^^^^^^^^^^^\r\nAttributeError: 'SpatialBudget' object has no attribute '_connect'\r\n\r\n----------------------------------------------------------------------\r\nRan 9 tests in 0.560s\r\n\r\nFAILED (errors=1)\r\n"
+}

@@ -1,0 +1,722 @@
+{
+  "scope": "real Chrome profile, YouTube search and observed player",
+  "checks": [
+    "search selected one observed music result and player advanced",
+    "pause verified in the same observed player",
+    "resume verified through observed player progress"
+  ],
+  "cost_amount": null,
+  "browser_network_consumption": "unknown",
+  "hardware_audibility_verified": false,
+  "initial_tab_count": 1,
+  "search_result": {
+    "playing": true,
+    "verified": true,
+    "method": "observed-content-progress",
+    "advances": 2,
+    "position": 5,
+    "clicked": false,
+    "youtubeSearch": "Rick Astley Never Gonna Give You Up official music video",
+    "video": "Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster) 3 minutos y 34 segundos"
+  },
+  "pause_result": {
+    "paused": true,
+    "verified": true,
+    "method": "observed-player-state",
+    "clicked": true
+  },
+  "resume_result": {
+    "playing": true,
+    "verified": true,
+    "method": "observed-content-progress",
+    "advances": 2,
+    "position": 17,
+    "clicked": true
+  },
+  "left_paused": true,
+  "tabs_preserved": true,
+  "status": "passed",
+  "planner_requests": 1,
+  "native_diagnostics": [
+    {
+      "event": "diagnostic",
+      "phase": "display-metrics-changed"
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 291,
+      "tab_count": 1,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 229,
+      "tab_count": 1,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 343,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 424,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 129,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 134,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 110,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 136,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 201,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 112,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 102,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 159,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 153,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 120,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 100,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 111,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 144,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 196,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 195,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 209,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 485,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 333,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 271,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 255,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 355,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 338,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 245,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 324,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 271,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 268,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 310,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 284,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 263,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 267,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 293,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 295,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 260,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 266,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 253,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 256,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 375,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 373,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 383,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 393,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 406,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 299,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 314,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 315,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 272,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 259,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 340,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 326,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 353,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 334,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 300,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 305,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 333,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 430,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 309,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 323,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 432,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 542,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 385,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 342,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 3,
+      "player_id_matches": 12,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 359,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 4,
+      "player_id_matches": 12,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 416,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 4,
+      "player_id_matches": 12,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 486,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 5,
+      "player_id_matches": 11,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 2116,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 263,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 263,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 267,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 318,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 244,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 250,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 264,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 302,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 217,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 315,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 15,
+      "player_id_matches": 12,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 276,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 16,
+      "player_id_matches": 12,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 291,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 17,
+      "player_id_matches": 12,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 261,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 286,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 285,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 252,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 245,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 293,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 284,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 118,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "window-closed"
+    }
+  ]
+}

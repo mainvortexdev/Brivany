@@ -1,0 +1,102 @@
+# 29. Conservar una inferencia útil y separar salida física
+
+28 de octubre de 2026. La configuración OpenAI seguía sin credencial al
+comprobarse el servidor. Antes del próximo ensayo pagado se resolvió una
+carencia de evidencia: el medidor de navegador no conservaba PCM para revisar
+integridad e inteligibilidad sin repetir la inferencia.
+
+## Revisión optativa y limitada a las fixtures aprobadas
+
+`tools/measure_dubbing_browser.cjs --review-synthetic` conserva la salida de
+su navegador de prueba, nunca una sesión de uso normal. Solo admite los dos
+WAV sintéticos de ruta, SHA-256 y número de frames fijados en código: la frase
+original y las dos frases de 3,46 s. La variante doble requiere la ruta
+`tmp/stream-dubbing/build-<32 hex>/two-clauses.wav`; rechaza aliases y archivos
+distintos aunque el llamador los describa como sintéticos.
+
+Antes de abrir el navegador o una sesión del proveedor ejecuta el preflight del
+helper Python. FFmpeg recibe una instantánea de los bytes cuyo hash se validó,
+en lugar de volver a abrir la ruta durante la conversión. La captura posterior
+acepta únicamente eventos de audio y
+transcripción normalizados: máximo 20 s de PCM16 mono de 24 kHz, 1000 eventos,
+2 MiB de JSON y 512 caracteres de transcripción. El helper valida todo antes
+de crear artefactos y mantiene los filtros de datos ajenos a una traducción.
+
+Los WAV y el texto observado quedan en un UUID de
+`tmp/synthetic-dubbing-review/`, fuera de la bitácora. El recibo devuelve rutas,
+tamaños, duración y hashes; no devuelve PCM/base64 ni transcripciones en stdout.
+La bitácora conserva informes y resúmenes, sin adjuntar audio.
+
+El medidor guarda también una traza numérica acotada: frames y tiempos de cada
+buffer programado y paquete capturado. Su marca `trace_truncated` hace visible
+cualquier corte. Compara el SHA del PCM recolectado con el recibo del helper y
+el número de bytes recibidos con los programados. **Estas comprobaciones no
+demuestran traducción correcta, naturalidad, orden semántico ni salida física.**
+
+## Fallar la revisión no repite la inferencia
+
+Una revisión rechazada no interrumpe el envío y cierre de la sesión funcional.
+El informe conserva ambos resultados por separado y termina con código de
+revisión no satisfactorio, sin reintentar el proveedor. Si no hay recibo claro
+tras intentar persistir, el estado de persistencia queda desconocido (`null`);
+no se afirma que no haya artefactos. Si existe recibo pero falla la integridad,
+se conservan las rutas y el estado real de persistencia.
+
+Se verificaron dos recorridos con upstream **simulado**:
+
+- Captura positiva: 130570 bytes PCM, 69 buffers, hash y número de bytes
+  coincidentes; traza completa y revisión local disponible.
+- Rechazo de texto ajeno a traducción: la revisión fue indisponible, pero se
+  conservaron los 167168 bytes de entrada y un cierre funcional, sin abrir
+  otra sesión.
+
+La salida del stub es una señal sintética; no es una voz traducida real. Ninguna
+cifra rápida de estas pruebas valida los 500 ms ni el modelo de OpenAI.
+
+Evidencias:
+
+- `tmp/verification/synthetic-review-20261028T124449-22d4f453.json`: 16 pruebas locales.
+- `tmp/verification/dubbing-review-pipeline-20261028T124706-97112e00.json`.
+- `tmp/verification/dubbing-review-pipeline-20261028T125549-4f45470d.json`: comprobación posterior con instantánea validada de la fuente.
+- `tmp/verification/dubbing-review-rejection-20261028T125018-0915bdcf.json`.
+- `tmp/verification/dubbing-measure-20261028T125133-330471ab.json`: 7 pruebas del medidor.
+
+## Comandos
+
+Preflight sin modelo ni persistencia de audio:
+
+```powershell
+python -m tools.synthetic_dubbing_review --source tmp/modular-dubbing/english-room.wav --preflight
+```
+
+El siguiente ensayo real conserva revisión en esa misma sesión; requiere la
+credencial y puede consumir crédito:
+
+```powershell
+node tools/measure_dubbing_browser.cjs --provider openai --two-clauses --review-synthetic --allow-paid
+```
+
+Las suites `dubbing-review-pipeline` y `dubbing-review-rejection` usan únicamente
+loopback de red con proveedor simulado. No hay una grabación física en ellas.
+
+## Límite independiente: loopback digital y audio audible
+
+La inspección local observó Windows **10.0.19045 x64**. Microsoft publica build
+**20348** como mínimo de la activación de loopback por proceso, que permite
+incluir solo un proceso y sus hijos. El equipo queda por debajo del mínimo
+documentado. No se activó esa interfaz ni se probó captura: esto **no demuestra
+imposibilidad absoluta**, pero tampoco acredita aislamiento disponible aquí.
+[API Microsoft](https://learn.microsoft.com/en-us/windows/win32/api/audioclientactivationparams/ne-audioclientactivationparams-audioclient_activation_type),
+[ejemplo de aislamiento](https://learn.microsoft.com/en-us/samples/microsoft/windows-classic-samples/applicationloopbackaudio-sample/).
+
+No se sustituye esa comprobación por una captura global de otras aplicaciones
+ni por el micrófono. Incluso un loopback por proceso observaría audio digital;
+no mediría por sí solo altavoz, Bluetooth o sonido al oído. Las estimaciones
+de Web Audio permanecen diferenciadas de ambas mediciones.
+La lectura de entorno se conservó en
+`tmp/dubbing-audibility/host-readonly-20261028T125342244.json`; no incluye audio.
+
+Un ensayo cuyo retraso estimado ya excede 500 ms puede descartarse sin esa
+captura. Un resultado estimado inferior no basta para aprobar el objetivo:
+requiere revisar el contenido correspondiente y completar la medición de salida
+con alcance adecuado. El objetivo completo sigue pendiente.

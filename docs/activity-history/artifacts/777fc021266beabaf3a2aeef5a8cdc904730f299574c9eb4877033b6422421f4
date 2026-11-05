@@ -1,0 +1,49 @@
+{
+  "scope": "real Meta routing, conceptual plan and streamed conversation; real local GLBs and renderer",
+  "checks": [
+    "real conversation streamed while the real model request was in flight",
+    "requested round tabletop and five conceptual pieces published as valid GLBs"
+  ],
+  "physical_microphone_verified": false,
+  "physical_audio_verified": false,
+  "speech_providers_used": false,
+  "cost_amount": null,
+  "model_start_gate": "fixture waits for conversation stream before sending model request",
+  "model_state": "succeeded",
+  "object_count": 5,
+  "round_top_nominal_dimensions_match": true,
+  "source_mode": "bundled",
+  "render": {
+    "status": "passed",
+    "native_bridge": "substituted",
+    "renderer": "real WebGL; software permitted",
+    "physical_gpu_verified": false,
+    "microphone_activated": false,
+    "model_scene_matches": true,
+    "object_count": 5,
+    "mic_in_desktop_viewport": false,
+    "live_dimensions": {
+      "width": 875,
+      "height": 645
+    },
+    "horizontal_margins": [
+      1120,
+      768,
+      390,
+      320
+    ],
+    "errors": [],
+    "external_requests": []
+  },
+  "status": "passed",
+  "provider_requests_initiated": 4,
+  "provider_responses_opened": 4,
+  "provider_request_roles": [
+    "router",
+    "router",
+    "conversation",
+    "model"
+  ],
+  "request_limit": 5,
+  "provider_overlap_observed": true
+}

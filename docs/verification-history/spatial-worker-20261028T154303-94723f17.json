@@ -1,0 +1,18 @@
+{
+  "suite": "spatial-worker",
+  "started_at": "2026-10-28T15:43:03.568598+00:00",
+  "finished_at": "2026-10-28T15:43:03.845090+00:00",
+  "duration_seconds": 0.276492,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_spatial_worker"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"checked_at\": \"2026-10-28T15:43:03.816144+00:00\",\r\n  \"status\": \"passed\",\r\n  \"scope\": \"offline_contract_and_worker_definition_only\",\r\n  \"compiled_files\": [\r\n    {\r\n      \"file\": \"workers/spatial_runtime.py\",\r\n      \"sha256\": \"f7daa338af936b4da2ef2b3743c9345a23fd5882945c1cf7ef217257a687b74d\"\r\n    },\r\n    {\r\n      \"file\": \"workers/spatial_modal.py\",\r\n      \"sha256\": \"f4a09a444ad6c42275c10dee8cdb56bb0677e13022ee29b7703f2645cf77f716\"\r\n    },\r\n    {\r\n      \"file\": \"workers/sam3d_runner.py\",\r\n      \"sha256\": \"2ad030a58cd23cb1a30ac17aeaf9dc074fd5dd941721eeb0d800d507dc9a72ff\"\r\n    }\r\n  ],\r\n  \"function_options\": {\r\n    \"gpu\": \"L40S\",\r\n    \"min_containers\": 0,\r\n    \"max_containers\": 1,\r\n    \"buffer_containers\": 0,\r\n    \"retries\": 0,\r\n    \"timeout\": 180,\r\n    \"startup_timeout\": 600,\r\n    \"scaledown_window\": 2\r\n  },\r\n  \"readiness\": {\r\n    \"status\": \"prepared_not_deployed\",\r\n    \"remote_dispatch_enabled\": false,\r\n    \"pending\": [\r\n      \"remote_dispatch_disabled\",\r\n      \"dependency_lock_complete_pending\",\r\n      \"build_verified_pending\",\r\n      \"cuda_compatibility_verified_pending\",\r\n      \"base_image_digest_pending\",\r\n      \"checkpoint_revision_pending\",\r\n      \"checkpoint_hashes_pending\",\r\n      \"checkpoint_license_pending\",\r\n      \"monetary_budget_pending\"\r\n    ],\r\n    \"pipeline_version\": \"spatial-single-object-0.1.0\",\r\n    \"gpu_candidate\": \"L40S\",\r\n    \"gpu_execution_verified\": false,\r\n    \"external_calls\": 0,\r\n    \"gpu_seconds\": 0,\r\n    \"limitations\": [\r\n      \"Configuration and local tests do not verify a GPU model or actual billing.\",\r\n      \"Modal may reschedule a container after a crash even with application retries set to zero.\"\r\n    ]\r\n  },\r\n  \"modal_deployed\": false,\r\n  \"model_executed\": false,\r\n  \"external_calls\": 0,\r\n  \"gpu_seconds\": 0,\r\n  \"limitations\": [\r\n    \"Python compilation does not verify the native CUDA dependency image or checkpoint compatibility.\",\r\n    \"L40S, 180 seconds and monetary estimates require later deployment and account measurements.\"\r\n  ],\r\n  \"report\": \"tmp/spatial-worker/offline-20261028T154303816144.json\"\r\n}\r\n"
+}

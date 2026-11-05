@@ -1,0 +1,129 @@
+# Traducción auditiva directa desde WorkSpace
+
+1 de noviembre de 2026, America/La_Paz. Petición vigente: un clic en la barra,
+audio de un video en español traducido al inglés, voz apropiada para cada
+hablante y original de fondo. El objetivo de terminal permanece pausado.
+
+## Implementado
+
+El botón ya no navega a `/dubbing` ni muestra la ventana principal. Inicia un
+propietario nativo de traducción y abre un panel compacto con destino, voz,
+subtítulo actual y Detener. El valor inicial es English y Auto. Destino y voz
+quedan guardados localmente; cambiar idioma requiere parar, la voz puede
+cambiarse para el siguiente fragmento sin otra conexión. Cerrar el panel no
+detiene la escucha; Detener o salir de la app sí lo hace. La captura sólo
+comienza con el clic explícito. Iniciar también detiene el micrófono Live del
+chat para no introducir esa otra salida de voz en la fuente que se traduce.
+
+La antigua ruta de Work sólo detectaba idioma y grababa un fragmento para
+traducirlo posteriormente. Su implementación SoundCard además inicializaba COM
+antes de importar una biblioteca que rechaza el resultado S_FALSE de una
+segunda inicialización. El nuevo flujo continuo no utiliza ese recorrido:
+captura directamente el endpoint de reproducción con WASAPI, convierte su
+formato de mezcla a PCM16 mono/24 kHz y alimenta el pipeline existente
+Muse → Meta Spark → Cartesia con bloques de 80 ms.
+
+Se conserva audio en una cola temporal de memoria durante la conexión y las
+pausas de ritmo, sin descartarlo a escondidas ni grabarlo en disco. La cola
+pendiente admite 120 s; alcanzar el límite detiene con error visible. No existe
+un corte total de duración. Cada conexión es explícita, no se reconecta después
+de error. La cola se limpia al terminar. No se solicita ni abre micrófono.
+Las conexiones River comparten exclusión con el doblaje del módulo de la app.
+
+En este equipo Windows 10 build 19045, la captura por proceso de Microsoft
+requiere una compilación posterior. Se aprovecha la ruta virtual **FxSound ya
+instalada**: se captura su endpoint de entrada y la traducción se envía al
+endpoint físico que realmente usa FxSound. El destino se identifica por las
+sesiones nativas de FxSound, no por un nombre truncado ni una salida elegida al
+azar. El ID opaco del endpoint se convierte al dispositivo WinMM por el método
+documentado. Fuente y salida deben ser distintas; si no hay una ruta inequívoca,
+se muestra el error y no se abre un proveedor de pago ni una captura con eco.
+No se instala software, cambia el dispositivo predeterminado ni escribe registro.
+
+El original se reduce al **12 % de su nivel anterior** en la sesión física de
+FxSound, después del punto de captura. ASR recibe la señal completa y TTS queda
+fuera de ese control de volumen. Al detener o fallar se restaura el nivel previo
+si el usuario no lo modificó entretanto. Este control afecta a la mezcla que
+pasa por FxSound, no sólo a una pestaña; la captura también contiene cualquier
+otro audio que se reproduzca en ese endpoint. No se presenta como aislamiento
+de una pestaña concreta. Música utiliza además su política de ducking existente.
+
+La salida directa no usa la voz de conversación de Melodi para todos los
+hablantes. Usa Daniel y Skylar, las voces de catálogo ya integradas, masculina
+y femenina respectivamente. Auto estima el tono local y conserva contexto de
+hablante; no identifica de forma infalible sexo, género, identidad ni timbre.
+Masculina/Femenina permite fijar la categoría explícitamente. Se corrigió la
+ventana de análisis: ahora corresponde al inicio del turno ASR, o al reloj de
+entrada observado cuando Muse no proporciona ese timestamp, y no al audio del
+siguiente hablante. No se clona ninguna voz.
+
+Se evita volver a reproducir bloques originales de volumen cero dentro del
+mezclador de traducción. Eso reduce trabajo y colas locales sin alterar la voz.
+El reloj de envío usa el plazo acumulado para no sumar el retraso de cada espera.
+
+## Pruebas y consumo
+
+- `workspace-translation`: siete casos locales de inicio explícito, buffering,
+  orden, destino inglés/Auto, parada, liberación, errores, voces sin reconectar,
+  ruta inequívoca y conversión de PCM por bloques. Incluye selección de muestra
+  del turno masculino/femenino sintético en vez de la más reciente.
+- `river-translation`: 13 casos con proveedores locales sustituidos; voz,
+  cancelación, pacing, transporte, deduplicación y continuidad. `native-audio`:
+  13 casos del mezclador. `music-ducking`: nueve casos de la política existente.
+- `workspace-translation-ui`: cinco anchuras de 280 a 780 px, clic único,
+  segundo clic sin duplicar sesión, voz, subtítulo y Detener, sin navegación
+  a la aplicación; puente/proveedores sustituidos. `island-ui` mantiene sus
+  regresiones de música, geometría y barra con el nuevo recorrido auditivo.
+- `workspace-chat-native`: ventanas WebView2 reales, clic en el botón de la
+  barra que cruza el puente nativo, interfaz actualizada inmediatamente y
+  Detener; traducción sustituida. Se conserva el primer fallo de sincronización
+  de ese arnés y se añadió publicación inmediata a ambas superficies.
+- Comprobación real WASAPI: cinco bloques de 3.840 bytes, salida separada abierta,
+  sin micrófono ni proveedores. Otro ensayo real de volumen confirmó
+  `1,0 → 0,12 → 1,0` en la sesión original; no se guardó PCM de esa medición.
+- Dos GET de metadatos verificaron acceso de Meta y Cartesia, modelo Meta
+  configurado presente, sin inferencia en esas consultas.
+
+Ensayo real del pipeline: se generaron una sola vez dos frases propias en
+español, de 2,48 y 2,00 s, con las voces de catálogo. Se reprodujeron por el
+dispositivo predeterminado, se capturaron con WASAPI y se tradujeron al inglés
+por las APIs configuradas, con salida WinMM separada. La última ejecución
+completó tres segmentos TTS, observó masculina/masculina/femenina, comprobó
+palabras esperadas de ambas frases y entregó 207.360 bytes de voz traducida al
+mezclador, sin rechazos de cola. Su parada liberó la captura. No se persistieron
+conversaciones, transcripciones ni audio del usuario en los informes.
+
+El primer audio de proveedor se recibió a los **5,42 s desde el primer bloque
+PCM**, incluyendo el silencio inicial del ensayo y el tiempo de pronunciar la
+frase. No es latencia por palabra ni una promesa de traducción instantánea;
+no se midió la llegada acústica al oído. El subtítulo y la voz llegan por
+fragmentos. Comprobar palabras y bytes no acredita calidad semántica general,
+diarización perfecta, fidelidad de timbre ni escucha física humana.
+
+Se conservan dos ensayos previos con finalización demasiado temprana: el
+primero sólo completó la primera frase y el segundo llegó a seleccionar la
+voz femenina pero cortó antes de completar su salida. Sus etiquetas parciales
+de transporte no se usan como prueba de la entrega completa. La última prueba
+espera también la confirmación de todos los segmentos y la cola vacía.
+
+Consumo conocido total de estos tres ensayos: dos contextos TTS para crear las
+muestras, tres sesiones ASR y ocho solicitudes MT; hasta ocho contextos TTS
+traducidos iniciados. Las muestras se reutilizaron. Importe monetario desconocido.
+La prueba real final fue anterior a la optimización de no mezclar originales
+a volumen cero; esa optimización se verificó con el pipeline local sustituido.
+No se hicieron nuevas llamadas pagadas para la revisión de interfaz.
+
+## Límites vigentes
+
+La ruta de este equipo Windows/FxSound quedó comprobada. En otro dispositivo
+sin ruta separada se necesita un adaptador apropiado antes de poder ofrecer la
+misma captura sin realimentación. No se certifica macOS/Linux ni todos los
+controladores Windows. El video externo no se pausa automáticamente ante
+retraso del proveedor: la cola temporal conserva la entrada pendiente, muestra
+el retraso y se detiene si alcanza su capacidad. No se ocultan esos límites.
+
+Fuentes de protocolo:
+[captura de proceso y versión mínima](https://learn.microsoft.com/en-us/samples/microsoft/windows-classic-samples/applicationloopbackaudio-sample/),
+[captura WASAPI](https://learn.microsoft.com/en-us/windows/win32/coreaudio/capturing-a-stream),
+[formato de mezcla](https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-getmixformat),
+[correspondencia MMDevice/WinMM](https://learn.microsoft.com/en-us/windows/win32/coreaudio/device-roles-for-legacy-windows-multimedia-applications).

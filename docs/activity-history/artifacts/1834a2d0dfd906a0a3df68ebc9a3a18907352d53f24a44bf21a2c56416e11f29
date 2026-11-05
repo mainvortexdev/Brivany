@@ -1,0 +1,53 @@
+{
+  "scope": "read-only metadata of selected Brivany PID; no GUI input, screenshot, audio or inference",
+  "windows": [
+    {
+      "title": "Melodi WorkSpace",
+      "native_handle": 328682,
+      "visible": true,
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1280,
+        "bottom": 40
+      },
+      "tool_window": true,
+      "app_window": false,
+      "alpha": 255
+    },
+    {
+      "title": "Melodi WorkSpace · Panel",
+      "native_handle": 590068,
+      "visible": false,
+      "bounds": {
+        "left": 300,
+        "top": 46,
+        "right": 980,
+        "bottom": 450
+      },
+      "tool_window": true,
+      "app_window": false,
+      "alpha": 255
+    },
+    {
+      "title": "Brivany",
+      "native_handle": 263178,
+      "visible": false,
+      "bounds": {
+        "left": 80,
+        "top": 132,
+        "right": 1184,
+        "bottom": 853
+      },
+      "tool_window": false,
+      "app_window": true,
+      "alpha": null
+    }
+  ],
+  "work_area": {
+    "left": 0,
+    "top": 40,
+    "right": 1280,
+    "bottom": 994
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "suite": "request-latency-local",
+  "started_at": "2026-10-29T21:36:25.742613+00:00",
+  "finished_at": "2026-10-29T21:36:27.884281+00:00",
+  "duration_seconds": 2.141668,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.measure_request_latency"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"checked_at\": \"2026-10-29T21:36:26.509561+00:00\",\r\n  \"scope\": \"Actual loopback HTTP and SQLite against temporary generated fixtures. Server roundtrip only, excluding UI paint, network to a remote device, real providers and physical audio.\",\r\n  \"external_calls\": 0,\r\n  \"model_inferences\": 0,\r\n  \"gpu_seconds\": 0,\r\n  \"samples_per_operation\": 10,\r\n  \"operations\": {\r\n    \"focus_saved_object\": {\r\n      \"samples_ms\": [\r\n        26.346,\r\n        23.853,\r\n        3.137,\r\n        3.044,\r\n        3.012,\r\n        3.406,\r\n        3.129,\r\n        2.873,\r\n        2.66,\r\n        2.939\r\n      ],\r\n      \"median_ms\": 3.087,\r\n      \"max_ms\": 26.346\r\n    },\r\n    \"save_local_reminder\": {\r\n      \"samples_ms\": [\r\n        300.329,\r\n        7.876,\r\n        9.645,\r\n        9.353,\r\n        12.453,\r\n        9.243,\r\n        10.73,\r\n        11.768,\r\n        11.404,\r\n        10.21\r\n      ],\r\n      \"median_ms\": 10.47,\r\n      \"max_ms\": 300.329\r\n    },\r\n    \"save_private_note\": {\r\n      \"samples_ms\": [\r\n        12.055,\r\n        11.18,\r\n        9.915,\r\n        9.148,\r\n        32.242,\r\n        9.837,\r\n        9.674,\r\n        9.072,\r\n        10.558,\r\n        8.627\r\n      ],\r\n      \"median_ms\": 9.876,\r\n      \"max_ms\": 32.242\r\n    }\r\n  }\r\n}\r\n"
+}

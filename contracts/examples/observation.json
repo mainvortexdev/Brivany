@@ -1,0 +1,39 @@
+{
+  "workspace_id": "f480ddd6-397a-53c4-9b25-4e34cee84bd6",
+  "session_id": "5ee63234-c9f7-5ec8-bdc8-cdb0532a6422",
+  "observation_id": "3cbffebb-d25d-5574-ba07-af520de9c41f",
+  "device_id": "301096ab-6e4d-57dd-a1a2-c367ab0ad7ac",
+  "connector_id": "blender.example-only",
+  "connector_version": "0.1.0",
+  "application_version": "example-version-not-homologated",
+  "project_ref": "practice-project-example",
+  "project_revision": "revision-1",
+  "observed_at": "2026-10-27T10:01:00Z",
+  "signals": [
+    {
+      "key": "object.selected",
+      "value": true,
+      "unit": null,
+      "provenance": "native"
+    },
+    {
+      "key": "object.dimensions.x",
+      "value": 2.0,
+      "unit": "m",
+      "provenance": "derived"
+    },
+    {
+      "key": "object.dimensions.y",
+      "value": 1.0,
+      "unit": "m",
+      "provenance": "derived"
+    },
+    {
+      "key": "object.dimensions.z",
+      "value": 0.75,
+      "unit": "m",
+      "provenance": "derived"
+    }
+  ],
+  "artifact_ids": []
+}

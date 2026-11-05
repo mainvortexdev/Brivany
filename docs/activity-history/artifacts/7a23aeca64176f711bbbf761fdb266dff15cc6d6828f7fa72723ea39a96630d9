@@ -1,0 +1,85 @@
+{
+  "recorded_utc": "2026-11-01T20:31:53.388575+00:00",
+  "pid": 7952,
+  "metadata": {
+    "scope": "read-only metadata of selected Brivany PID; no GUI input, screenshot, audio or inference",
+    "windows": [
+      {
+        "title": "Melodi WorkSpace · Panel",
+        "native_handle": 1249214,
+        "visible": true,
+        "bounds": {
+          "left": 250,
+          "top": 46,
+          "right": 1030,
+          "bottom": 450
+        },
+        "clip_bounds": null,
+        "region_type": 1,
+        "empty_region": true,
+        "tool_window": true,
+        "app_window": false,
+        "alpha": 255
+      },
+      {
+        "title": "Melodi WorkSpace",
+        "native_handle": 591398,
+        "visible": true,
+        "bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 1280,
+          "bottom": 40
+        },
+        "clip_bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 1280,
+          "bottom": 40
+        },
+        "region_type": 2,
+        "empty_region": false,
+        "tool_window": true,
+        "app_window": false,
+        "alpha": 255
+      },
+      {
+        "title": "Brivany",
+        "native_handle": 658512,
+        "visible": false,
+        "bounds": {
+          "left": 80,
+          "top": 132,
+          "right": 1184,
+          "bottom": 853
+        },
+        "clip_bounds": null,
+        "region_type": 0,
+        "empty_region": false,
+        "tool_window": false,
+        "app_window": true,
+        "alpha": null
+      }
+    ],
+    "work_area": {
+      "left": 0,
+      "top": 40,
+      "right": 1280,
+      "bottom": 994
+    }
+  },
+  "uac_requested_by_this_check": false,
+  "base": "http://127.0.0.1:58311",
+  "access": {
+    "mode": "normal",
+    "uac_auto_approval": false,
+    "uac_requires_user": true,
+    "registry_edits_allowed": false,
+    "file_scope": "authorized_folders",
+    "delete_requires_approval": true,
+    "overwrite_requires_approval": true,
+    "move_requires_approval": true
+  },
+  "control_enabled": false,
+  "http_request_authorized": false
+}

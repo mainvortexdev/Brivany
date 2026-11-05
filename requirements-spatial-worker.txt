@@ -1,0 +1,3 @@
+# Optional development dependency. Not installed or authenticated by the local app.
+# Exact upstream wheel SHA is recorded in config/spatial-models.lock.json.
+modal==1.6.3

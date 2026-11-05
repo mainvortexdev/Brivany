@@ -1,0 +1,72 @@
+# Orientar la duración usando voz sintetizada ya medida
+
+4 de noviembre de 2026. El ensayo real
+`tmp/selected-video/inline-sync-1793812104387.json` completó trece intervenciones
+y 31,620 s de fuente, con señal en todas. El prefijo preparado y la continuación
+desde 7000 ms se verificaron sin duplicar ese tramo. Aun así, falló el criterio
+de calidad: retraso máximo de 11,515656 s, crecimiento de 7,227656 s y 2,364539 s
+de recuperación del original fuera de canciones. No se presenta como éxito.
+
+La inspección numérica separa dos causas que siguen requiriendo comprobación:
+
+| Intervalo de fuente | Palabras traducidas | Audio generado | Guía TTS | Resultado observado |
+| --- | ---: | ---: | ---: | --- |
+| 4,06–6,54 s | 10 | 4,32 s | 1,28 | Excede la fuente 1,168 s incluso reproduciendo a 1,18 |
+| 19,14–21,50 s | 7 | 3,44 s | 1 | Densidad inferior al antiguo umbral de 3 palabras/s, pero audio demasiado largo |
+| 21,50–23,463636 s | 10 | 3,04 s | 1,28 | Añade aproximadamente 0,61 s tras el ajuste de reproducción |
+
+Además hubo una espera de aproximadamente 3,1 s antes de la pieza que empieza
+en 10,4 s; su traducción tardó 4,087 s. Ajustar la duración de síntesis no resuelve
+por sí solo esa espera del proveedor ni los intervalos recuperados con original.
+
+## Cambio implementado
+
+Cada sesión inline conserva hasta cuatro observaciones numéricas por voz de
+catálogo, con un máximo de dieciséis voces. Al terminar una generación se miden
+sus muestras PCM y se cuentan las palabras traducidas. La estimación de ritmo
+usa ese audio producido y la guía solicitada, nunca el tiempo de red ni el de
+reproducción. No conserva texto, PCM, identidad ni perfiles entre sesiones.
+
+Una petición posterior de la misma voz puede recibir una guía mayor si su
+duración estimada no cabe en el intervalo de origen. La mediana limita el efecto
+de una observación atípica. Se mantienen suelo 1 y techo 1,5; antes de disponer de
+medidas se conserva la referencia de tres palabras por segundo, con el nuevo
+techo. Las piezas de menos de tres palabras o sin tiempos válidos mantienen 1.
+
+La guía queda fijada al primer texto enviado y se repite en cada continuación
+del mismo contexto. No se cambia el texto, no se vuelve a sintetizar y no se
+modifican los límites de aceptación ni las tasas del navegador.
+
+El proveedor admite orientación de velocidad hasta 1,5 y explica que su efecto
+depende de la voz, el texto y la puntuación. No es una transformación exacta de
+duración. Por ello, esta estimación es una corrección acotada que todavía debe
+medirse con contenido real; no certifica naturalidad ni ajuste exacto.
+[Documentación oficial de Cartesia](https://docs.cartesia.ai/build-with-cartesia/capability-guides/volume-speed-emotion).
+
+## Verificación local y límites
+
+Las pruebas de protocolo reutilizan un prefijo propio sustituido con tres
+intervalos de dos segundos y audio generado localmente de 3,44 s por pieza. La
+última petición de la misma voz aumenta su orientación de 1,167 a 1,5 a partir
+de una generación terminada, manteniendo íntegros los tres textos y sin añadir
+solicitudes. Las regresiones también cubren aislamiento entre voces, memoria
+acotada, descarte de valores inválidos, tolerancia a una duración atípica,
+traducciones más cortas y continuidad de la configuración entre peticiones.
+
+Son protocolos sustituidos, con cero llamadas externas de traducción; no prueban
+cómo responderá Sonic al nuevo límite ni establecen que el audio real resulte
+natural. El ensayo real anterior se conserva separado y no se recalifica como
+aprobado tras este cambio.
+
+Resultados registrados con `tools.verify`:
+
+- `tmp/verification/river-translation-20261104T171519-b94ffb26.json`: 62 pruebas
+  aprobadas. El informe conserva avisos del cierre intencionado de conexiones
+  Muse y HTTP locales durante cancelaciones.
+- `tmp/verification/sync-relay-20261104T171519-56c1561a.json`: 80 de 81
+  aprobadas. Una comprobación conservaba el techo anterior de orientación de
+  1,28; se corrigió para exigir exactamente 1,5 en su traducción densa. No era
+  un umbral de calidad del banco y no se amplió ningún criterio de aceptación.
+- `tmp/verification/sync-relay-20261104T171643-6d9e2caf.json`: 81 pruebas
+  aprobadas tras esa corrección de la expectativa. No se repitió River porque
+  no hubo más cambios en su implementación.

@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "native_windows": "real",
+  "screen_capture": false,
+  "audio_capture": false,
+  "inference_calls": 0,
+  "background_network_consumption_known": false,
+  "native_transparency_verified": true,
+  "preview_expanded_verified": true,
+  "native_region": {
+    "compact_center_present": true,
+    "compact_side_excluded": true,
+    "compact_bottom_excluded": true,
+    "expanded_center_present": true,
+    "expanded_bottom_excluded": true,
+    "repeated_collapse_excludes_bottom": true
+  },
+  "checks": [
+    "native top-center WebView2 island and local widget DOM",
+    "preview boot confirms expanded state through real native bridge",
+    "native region excludes side and bottom pixels when compact",
+    "JS expand/collapse updates the owned window region through the bridge",
+    "Work starts without audio or capture",
+    "native close interceptor preserves main window",
+    "return to main and stop companion"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-11-03T22:48:32.589418+00:00",
+  "finished_at": "2026-11-03T22:49:34.190267+00:00",
+  "duration_seconds": 61.600849,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Failure view {\n  panel: 'Música',\n  spotify: { configured: true, connected: true, pending: false },\n  body: {\n    expanded: 'false',\n    sleeping: 'false',\n    surface: 'preview',\n    motion: 'true',\n    panel: 'music',\n    characterState: 'idle',\n    musicDucked: 'false',\n    liveListening: 'false',\n    liveSpeaking: 'false',\n    liveStarting: 'false',\n    chatEmpty: 'true',\n    musicAmbience: 'true',\n    agentsWorking: 'false',\n    musicPlaying: 'false',\n    musicView: 'library',\n    musicMood: 'groove',\n    danceVariant: 'sway',\n    moodSource: 'neutral-fallback'\n  }\n}\npage.waitForFunction: Timeout 30000ms exceeded.\n    at <local-path>\\tools\\check_island_ui.cjs:73:296\n"
+}

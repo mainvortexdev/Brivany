@@ -1,0 +1,97 @@
+# Melodi WorkSpace · barra superior y panel flotante
+
+30 de octubre de 2026, America/La_Paz. Nombre vigente solicitado por el usuario.
+Evoluciona la [isla inicial Mini Melodi](mini-melodi-isla.md): la superficie
+compacta pasa a ser una barra horizontal de ancho completo, con un panel central
+que se despliega sobre las aplicaciones. La arquitectura de extensión/Office
+permanece pendiente; esta entrega continúa sólo el escritorio y su interfaz.
+
+## Dos ventanas, una sola reserva
+
+La barra tiene 40 píxeles lógicos de alto y abarca el ancho disponible del monitor
+principal. En Windows se registra como AppBar propia mediante
+[SHAppBarMessage](https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shappbarmessage).
+El diseño sigue el contrato de
+[barras del escritorio de Microsoft](https://learn.microsoft.com/en-us/windows/win32/shell/application-desktop-toolbars):
+consulta la posición, registra únicamente la franja y retira la reserva al salir.
+No sustituye globalmente el área de trabajo ni modifica el registro de Windows.
+
+Las aplicaciones que respetan el área de trabajo del sistema se maximizan por
+debajo de esa franja. El panel es otra ventana auxiliar, centrada inmediatamente
+debajo de la barra. Su despliegue ocupa temporalmente parte de las aplicaciones;
+no añade reserva, no mueve sus límites y no redimensiona las ventanas inferiores.
+Acoplar oculta sólo el panel. Volver al chat conserva la barra y su reserva.
+«Salir de WorkSpace» retira ambas ventanas y libera el espacio superior.
+
+Barra y panel se excluyen de la barra de tareas; la ventana principal de Brivany
+conserva su configuración normal. La aparición no toma el foco. El usuario puede
+dar foco al panel para usar el teclado. El cierre de ambas superficies y el
+final del lanzador liberan la reserva antes de destruir sus ventanas.
+
+Se atienden cambios de posición de la barra de tareas, recreación de Explorer,
+resolución y DPI. El proceso conserva el procedimiento de ventana original y lo
+restaura al retirarse. La reserva se mantiene separada de la animación del panel.
+Las aplicaciones de pantalla completa exclusiva/F11 pueden usar todo el monitor;
+la barra respeta esa notificación del sistema. No se fuerza su redimensionado.
+
+## Interacción y aspecto
+
+Se conserva el lenguaje visual de la primera isla: negro, acento verde de
+Brivany, rostro luminoso y tarjetas que reflejan estados observados. La barra
+muestra Melodi WorkSpace, el estado breve, ojos, señal de voz, hora local y acceso
+al chat. El panel conserva Inicio, Tareas, Voz y Ajustes.
+
+- La proximidad prepara la apertura en 160 ms. Al salir se esperan 1200 ms;
+  reentrar cancela el cierre. El área de tolerancia incluye el paso de la barra
+  al panel, aunque sean ventanas distintas. Cambiar de sección no fija el panel.
+- Los ojos miran ocasionalmente al cursor y vuelven al centro: ráfagas de
+  2,6–4,4 s, separadas por 18–42 s. No se guardan coordenadas ni recorridos.
+  El ajuste de movimiento y la preferencia del sistema pueden desactivarlo.
+- Transparencia nativa inicial del 18 %, regulable hasta 40 %, aplicada a ambas
+  ventanas. Los tamaños Compacta, Normal y Amplia afectan al panel; la barra
+  mantiene siempre su ancho y altura reservados.
+- La demostración de animaciones está identificada y no inicia agentes. Los
+  estados de trabajos/live/esperas/traducción se obtienen de los servicios reales.
+  Abrir o acercarse a WorkSpace no activa micrófono, captura ni inferencia.
+- La detección de idioma y la traducción conservan el consentimiento y los
+  controles de Work. La selección de pantalla oculta temporalmente las dos
+  superficies y vuelve a mostrarlas después, sin guardar la captura original.
+
+La reserva del escritorio y el alfa se comprobaron en Windows. Otros backends
+conservan la superficie nativa y el ajuste de tamaño/opacidad disponible, pero
+no se declara comprobada una reserva equivalente en macOS, Linux o Wayland.
+No se ha ensayado cada aplicación comercial, modo exclusivo o configuración
+física de múltiples monitores; las pruebas de geometría/DPI sustituidas tienen
+ese alcance explícito.
+
+## Evidencias
+
+- `tmp/workspace-native/report.json`: comprobación real Windows/WebView2 con
+  ventanas propias, sin capturas ni audio. Área de trabajo inicial `(0,0)` a
+  `(1280,994)`; reserva superior de 40 px. Una ventana ya maximizada y otra
+  maximizada después tuvieron límites visibles desde `y=40`. Abrir/acoplar el
+  panel no cambió el área. Volver al chat mantuvo la barra y salir restauró el
+  área inicial. También se comprobaron alfa nativo y ausencia de entradas de
+  barra de tareas para ambas superficies. Cero inferencias solicitadas; consumo
+  de red de fondo del runtime desconocido.
+- Suite `work`: PCM, consentimiento, ciclo de vida, geometría, proximidad entre
+  superficies, límites de transparencia y protocolo AppBar. El shell sustituido
+  verifica consulta→posición, respeto de otra barra, cambio de DPI, retirada
+  idempotente y ausencia de movimiento después del cierre.
+- Suite `island-ui`: Edge headless con puente/estados sustituidos, cinco tamaños,
+  proximidad/salida breve/reentrada, ojos ocasionales, transparencia, controles,
+  movimiento reducido y superficies de barra completa/panel. Capturas de
+  fixtures en `tmp/island-ui/workspace-bar.png` y `workspace-panel.png`.
+- Suites `desktop` y `work-events-ui`: regresión de los recorridos de escritorio
+  y coordinador/voz/Work con sus sustitutos. Los resultados efectivos están en
+  la bitácora, sin presentar una simulación como prueba física.
+
+No se usan capturas privadas ni videos originales como evidencia del desarrollo.
+El histórico de Mini Melodi y sus fallos/correcciones permanece intacto. Los
+motores originales de Melodi, human-skills y Cognira no se modifican.
+
+Para abrir la revisión nativa:
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m desktop.experience.launcher --island
+```

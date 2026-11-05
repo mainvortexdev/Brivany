@@ -1,0 +1,30 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/workspace-translation-real/report-20261102T013908.json",
+  "original_sha256": "3e309ce00334c9a13dc824ffcdceea99fb6d3fd8d9edd9079033361be2b44cc2",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "microphone_captured": false,
+    "user_audio_persisted": false,
+    "physical_listening_verified": false,
+    "route_separated": true,
+    "expected_voice_categories": true,
+    "stopped": true,
+    "capture_thread_stopped": true
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": 1,
+    "paid_translation_requests": 3,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

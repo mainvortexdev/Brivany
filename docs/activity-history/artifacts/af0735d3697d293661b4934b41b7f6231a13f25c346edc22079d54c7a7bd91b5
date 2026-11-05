@@ -1,0 +1,113 @@
+# Recuperación de huecos pequeños en el búfer de imagen
+
+El ensayo real `tmp/selected-video/inline-sync-1793808194417.json` llegó a
+reproducir parte de una frase masculina, pero se detuvo antes de completarla.
+La copia de imagen quedó en 0,212372 s. Sus intervalos disponibles eran
+0–0,263 s, 0,419–1,431 s y 1,620–7,559 s. El estado de Chromium seguía siendo
+`readyState=4`, aunque su petición `play()` no había terminado. El aviso de
+decodificación a los 1,5 s cerró la frase activa. No se considera una prueba
+satisfactoria de continuidad ni del producto.
+
+La recuperación anterior solo reconocía el borde de un hueco a 35 ms del
+final del intervalo, salvo cuando `readyState<=2`. La posición detenida
+estaba a 50,628 ms de ese borde. Por tanto, ese hueco conocido nunca se
+intentaba recuperar, pese a que existía imagen posterior y el reconocimiento
+ya había procesado el intervalo.
+
+## Cambio implementado
+
+El reproductor ahora considera también una petición `play()` pendiente cuando
+la posición de imagen lleva al menos 100 ms inmóvil a menos de 200 ms del
+borde. Un `play()` recién iniciado o cuyo reloj avanza no permite adelantarse
+y saltar imagen sana. Se conservan los límites existentes: salto máximo de
+750 ms, siguiente rango decodificado más un margen de 15 ms, progreso ASR
+suficiente y voz preparada si un turno empieza dentro del hueco.
+
+La recuperación se intenta antes de declarar el bloqueo del decodificador.
+Una búsqueda que avance la posición reinicia la observación de ese bloqueo;
+una pausa deliberada mientras se espera una voz no se cuenta como un atasco
+del decodificador. El plazo de fallo sigue siendo 1,5 s para un decodificador
+inmóvil, y permanecen los demás límites de captura, retraso y memoria.
+La voz activa no se reinicia ni se elimina al pasar al siguiente rango.
+
+## Comprobaciones locales
+
+Se añadieron regresiones con los tiempos numéricos del fallo real, medios
+sustituidos y sin proveedores. Antes de la corrección fallaron dos casos;
+su informe apoyado se conserva en
+`tmp/verification/workspace-sync-extension-20261104T161015-919eeb7f.json`.
+La suite final pasó 60 casos en
+`tmp/verification/workspace-sync-extension-20261104T161301-bc92b12f.json`.
+Esa última suite incluye también comprobaciones de calidad incorporadas por
+otra tarea; no todos sus casos pertenecen a este cambio.
+
+Las nuevas regresiones comprueban que se conserva la frase activa al pasar
+de 0,212372 a 0,434 s, incluso cuando el plazo del decodificador estaba por
+vencer; que el salto espera el ASR y las voces pendientes dentro del hueco;
+que un reloj sano no se adelanta; y que un decodificador que permanece inmóvil
+continúa fallando tras 1,5 s. Una prueba anterior aprobada también se conserva
+en `workspace-sync-extension-20261104T161134-b88f27ea.json`.
+
+Un ensayo de Brave aislado con MP4 sintético propio y protocolos sustituidos
+completó tres voces a 1×, con desfases de inicio de 1, 16 y 1 ms, sin recuperación
+del original y con fin natural. Informe
+`tmp/selected-video/inline-sync-1793808735897.json`. Ese proceso había copiado
+la versión previa al último refinamiento de inmovilidad de 100 ms; prueba la
+recuperación y el resto del trayecto de esa versión, pero no valida por sí
+solo el refinamiento final en Chromium. La suite local sí comprueba ese
+refinamiento. Queda pendiente la nueva prueba real del video del usuario.
+
+Estos ensayos locales no abrieron inferencias de Muse, Meta ni Cartesia y no
+usaron GPU de inferencia. El tráfico incidental del navegador no se midió.
+La prueba real fallida anterior tuvo consumo remoto y su importe sigue
+desconocido; no se atribuye consumo cero a ese informe. No se adjuntan medios
+originales ni transcripciones a la bitácora. Las pruebas no certifican
+correspondencia semántica de hablantes ni continuidad del video completo.
+
+## Revisión posterior del ensayo real desde el minuto cinco
+
+La versión final se usó en el ensayo
+`tmp/selected-video/inline-sync-1793809294737.json`, con identidad y duración
+del video verificadas, sin anuncio y sin datos del perfil personal. Aunque se
+solicitó comenzar en 300 s, la captura efectiva empezó en **305,736 s**. Por
+ello, los tiempos relativos de doblaje no deben confundirse con el minuto
+solicitado. Los dos intervalos completos fueron 0,060–1,937778 s y
+1,937778–3,751111 s respecto a esa captura; el último extremo absoluto fue
+309,487111 s del video.
+
+Ambas voces terminaron sin el corte de decodificador del ensayo anterior. Se
+midió señal en las dos, con desfases de inicio de −12 y −2 ms, y velocidades
+de 1,065 y 1,147×. No se observaron voces publicadas perdidas dentro de ese
+tramo completado, recuperación del original ni interrupción de la fuente.
+La primera señal apareció a los 7,435 s desde activar y a los 6,257 s desde
+la captura. El retraso máximo entre captura e imagen fue 6,437 s, con un
+crecimiento máximo de 0,464 s. La pausa final del banco y la devolución al
+original ocurrieron tras alcanzar la condición de dos voces completas.
+
+Ese resultado verifica reproducción corta de la versión corregida, pero
+**no verifica que se ejecutara la recuperación de un hueco**. Ambos campos
+`recovered_gap` son falsos. El último conjunto de rangos contiene su primer
+hueco entre 4,735 y 5,039 s, mientras que la última posición de imagen fue
+3,722667 s. El banco terminó antes de ese hueco. Tampoco se conservan todos
+los rangos anteriores ni un contador de acciones de recuperación, así que
+no se debe convertir la ausencia de error en una afirmación de que esa rama
+se ejercitó realmente. La regresión numérica sí recorre la recuperación
+del fallo observado anteriormente. Sigue pendiente una comprobación real
+prolongada que alcance un hueco y confirme su recuperación sin perder voces.
+
+El campo `passed=true` de este ensayo corresponde al criterio técnico corto,
+no a aceptación del producto completo. La primera voz quedó femenina con
+consejo de timbre incierto, y la segunda masculina sin etiqueta de hablante;
+la correspondencia correcta de voces sigue sin certificar y la está
+investigando otra tarea. Los límites intermedios de ambos intervalos son
+estimaciones del ASR. No hubo nueva confirmación de escucha física.
+
+El informe local del banco 49197 registró un flujo Muse confirmado y entrada
+de audio iniciada, cuatro intentos MT directos, una traducción anticipada de
+subtítulos, dos solicitudes TTS y tres intentos de prosodia. No hubo
+preparación de apertura en este ensayo profundo. Parte del trabajo quedó
+anticipado más allá de las dos voces completadas. El importe facturado, el
+uso remoto de GPU y el tráfico incidental total son desconocidos. Esta
+revisión retrospectiva no abrió nuevas inferencias. Métricas y límites en
+`tmp/selected-video/buffer-quality-audit-1793809294737.json`; sin medios ni
+transcripciones originales adjuntos.

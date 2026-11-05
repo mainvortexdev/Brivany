@@ -1,0 +1,33 @@
+{
+  "type": "local_release_staging_snapshot",
+  "recorded_at": "2026-11-04T16:10:26.129458+00:00",
+  "expected_release_files": 20,
+  "folders": {
+    "release": {
+      "version": "0.4.8",
+      "file_count": 20,
+      "current_source_matches": 20
+    },
+    "registered_folder": {
+      "version": "0.4.8",
+      "file_count": 20,
+      "current_source_matches": 20
+    },
+    "alias": {
+      "version": "0.4.8",
+      "file_count": 20,
+      "current_source_matches": 20
+    }
+  },
+  "zip": {
+    "file_count": 20,
+    "release_matches": true
+  },
+  "backup_exists": true,
+  "extension_reload_verified": false,
+  "native_current_code_loaded_verified": false,
+  "launcher_processes_observed": 2,
+  "launcher_scope": "Python processes whose command line contains desktop experience launcher, checked without retaining command lines. This is not an inventory of every possible desktop runtime.",
+  "provider_calls_for_snapshot": 0,
+  "scope": "File equality and staging only. Does not establish live loading, audio quality, speaker correctness or video continuity."
+}

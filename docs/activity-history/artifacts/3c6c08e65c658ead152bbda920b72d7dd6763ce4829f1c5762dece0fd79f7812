@@ -1,0 +1,52 @@
+{
+  "type": "real_planner_native_IDE_execution",
+  "success": true,
+  "provider_cost": "unknown",
+  "result": {
+    "title": "Proyecto ejecutándose desde el IDE",
+    "editor": {
+      "name": "Antigravity",
+      "path": "<local-path>\\AppData\\Local\\Programs\\Antigravity IDE\\Antigravity IDE.exe",
+      "pid": 20416,
+      "launch_requested": true,
+      "project_open_verified": true,
+      "work": "<local-path>\\.local\\terminal\\projects\\ProjectFixture-Trading-Operator-76d4c328\\work",
+      "launch_target": "<local-path>\\.local\\terminal\\projects\\ProjectFixture-Trading-Operator-76d4c328\\ide\\0e923f86-18c1-4474-9a90-ac83928d055b\\Melodi-ProjectFixture-0e923f86.code-workspace",
+      "method": "installed-editor-cli",
+      "message": "Apertura solicitada en el IDE; la ventana y su contenido necesitan comprobación.",
+      "run_configuration": {
+        "workspace": "<local-path>\\.local\\terminal\\projects\\ProjectFixture-Trading-Operator-76d4c328\\ide\\0e923f86-18c1-4474-9a90-ac83928d055b\\Melodi-ProjectFixture-0e923f86.code-workspace",
+        "configuration": "<local-path>\\.local\\terminal\\projects\\ProjectFixture-Trading-Operator-76d4c328\\ide\\0e923f86-18c1-4474-9a90-ac83928d055b\\preview.json",
+        "configuration_sha256": "4b17677dc68ab0e18d660dc818bca94aab4c1ea7d8c7d46bf697ac2cf3905bf0",
+        "configuration_name": "Melodi · ProjectFixture · 0e923f86",
+        "url": "http://127.0.0.1:53773",
+        "proof": "0e923f86-18c1-4474-9a90-ac83928d055b",
+        "auto_run": false,
+        "source_changed": false,
+        "launched": true
+      }
+    },
+    "verification": {
+      "verified": true,
+      "project_open_verified": true,
+      "execution_in_ide_verified": true,
+      "already_running": false,
+      "window": {
+        "handle": "3539882",
+        "process_id": 12956,
+        "title": "Melodi-ProjectFixture-0e923f86 (Workspace) - Antigravity IDE"
+      },
+      "configuration": "Melodi · ProjectFixture · 0e923f86",
+      "url": "http://127.0.0.1:53773",
+      "method": "observed-IDE-debugger-and-bound-health",
+      "mouse_captured": false,
+      "financial_actions_enabled": false
+    },
+    "verified": true,
+    "message": "La configuración observada del IDE inició el servidor local y su salud quedó comprobada."
+  },
+  "source_preserved": true,
+  "source_status_receipt": "57c71494-6244-4999-bf8c-932173983839",
+  "model_calls": 1,
+  "recorded_utc": "2026-11-01T19:32:23.270774+00:00"
+}

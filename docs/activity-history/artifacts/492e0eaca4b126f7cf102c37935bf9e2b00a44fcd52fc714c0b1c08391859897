@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "native_window_title": "Brivany",
+  "shell_http_ok": true,
+  "control_initially_disabled": true,
+  "source_lock_matches": true,
+  "backend_available": true,
+  "startup_input_sent": false,
+  "provider_calls": 0,
+  "scope": "new native application window and local HTTP read; no microphone/control activated"
+}

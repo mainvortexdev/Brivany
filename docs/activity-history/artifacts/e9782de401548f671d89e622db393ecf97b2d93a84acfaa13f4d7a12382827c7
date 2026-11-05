@@ -1,0 +1,166 @@
+{
+  "started_at": "2026-10-28T01:49:50.890676+00:00",
+  "status": "passed",
+  "source": {
+    "filename": "english-room.wav",
+    "sha256": "5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30",
+    "size_bytes": 112600,
+    "duration_seconds": 2.3442083333333334,
+    "sample_rate": 24000,
+    "channels": 1,
+    "format": "pcm16"
+  },
+  "target_language": "es",
+  "source_language": "en",
+  "provider": "Palabra",
+  "model": "speech-to-speech",
+  "maximum_sessions": 1,
+  "automatic_retries": 0,
+  "input_chunk_ms": 40,
+  "configured_trial_limit_seconds": 5,
+  "input_bytes_sent": 112522,
+  "output_audio_chunks": 14,
+  "output_audio_bytes": 126730,
+  "output_formats": [
+    {
+      "sample_rate": 24000,
+      "channels": 1,
+      "format": "pcm16",
+      "bytes": 126730,
+      "duration_seconds": 2.64
+    }
+  ],
+  "translated_text_characters": 139,
+  "original_text_characters": 27,
+  "max_audio_queue_estimate_ms": 2222.21,
+  "connect_ms": 3797.0,
+  "first_input_audio_to_first_output_audio_ms": 2562.0,
+  "first_output_relative_input_end_ms": 203.0,
+  "input_end_to_done_ms": 3453.0,
+  "relay_first_output_audio_ms": 2562.0,
+  "first_tts_chunk_generation_ms": null,
+  "inference_ms": null,
+  "mt_request_ms": [],
+  "tts_first_audio_ms": [],
+  "mt_requests_started": null,
+  "tts_requests_started": null,
+  "first_asr_partial_ms": null,
+  "first_segment_ready_ms": null,
+  "asr_received_input_ms": null,
+  "segment_wait_ms": [],
+  "segment_ready_to_first_audio_ms": [],
+  "target_inference_ms": 500,
+  "target_status": "unverified",
+  "target_audible_delay_ms": 500,
+  "audible_delay_verified": false,
+  "physical_playback_measured": false,
+  "palabra_translate_partials_requested": true,
+  "palabra_translate_partials_observed": true,
+  "estimated_base_service_usd": 0.001563,
+  "estimate_rate_usd_per_minute": 0.04,
+  "estimate_basis": "input_audio_duration_only",
+  "actual_billed_usd": null,
+  "external_calls": 1,
+  "provider_ready": true,
+  "provider_settings": {
+    "source_language": "en",
+    "target_language": "es",
+    "queue": null,
+    "observed_fields": {
+      "source_language": true,
+      "target_language": true,
+      "queue": {
+        "desired_queue_level_ms": false,
+        "max_queue_level_ms": false,
+        "auto_tempo": false,
+        "min_tempo": false,
+        "max_tempo": false
+      }
+    },
+    "observed_path": "pipeline",
+    "shape": {
+      "keys": [
+        "input_stream",
+        "output_stream",
+        "pipeline",
+        "task_status",
+        "output_modes"
+      ],
+      "objects": {
+        "input_stream": [
+          "content_type",
+          "source"
+        ],
+        "output_stream": [
+          "content_type",
+          "target"
+        ],
+        "pipeline": [
+          "turn_detection",
+          "transcription",
+          "translations",
+          "allowed_message_types"
+        ],
+        "output_modes": [
+          "es"
+        ]
+      }
+    }
+  },
+  "gpu_seconds": null,
+  "audio_persisted": true,
+  "transcripts_persisted": true,
+  "provider_finalization_verified": null,
+  "session_closed_locally": false,
+  "local_close_method": null,
+  "local_close_reason": null,
+  "full_translation_verified": false,
+  "provider_diagnostics": null,
+  "experimental_tail_silence_seconds": 0,
+  "provider_input_bytes": null,
+  "provider_input_sample_rate": null,
+  "padding_input_bytes": null,
+  "padding_input_seconds": null,
+  "provider_real_input_bytes": null,
+  "limitations": [
+    "La estimación usa $0.04/min y solo la duración del audio; no es una factura ni un máximo garantizado.",
+    "La primera salida medida incluye red y contexto; no es inferencia interna ni calidad oída.",
+    "El timing TTS opcional es generación hasta el primer chunk; no incluye ASR, traducción o red.",
+    "No se mide reproducción física ni sincronía semántica con el video.",
+    "external_calls cuenta una sesión solicitada al relay; no es telemetría de facturación del proveedor.",
+    "La referencia de fin de entrada es el último PCM enviado, no el final acústico del habla; su diferencia con primer audio no es inferencia interna.",
+    "RMS en ventanas de 20 ms observa energía PCM, no demuestra habla, inteligibilidad, naturalidad ni reproducción física. La llegada del primer bloque puede preceder a una señal con energía.",
+    "Revisión optativa de fixture sintética fija: voz y texto de salida conservados aparte en tmp/; no evaluación humana de calidad."
+  ],
+  "pcm_observation": {
+    "measurement": "pcm_window_energy",
+    "sample_format": "pcm_s16le",
+    "sample_rate_hz": 24000,
+    "channels": 1,
+    "requested_window_ms": 20,
+    "window_frames": 480,
+    "actual_window_ms": 20.0,
+    "threshold_rms": 0.005,
+    "threshold_comparison": ">",
+    "time_reference": "chunk_arrival_relative_to_first_input",
+    "first_above_threshold_ms": 2561.999999999898,
+    "received_pcm_bytes": 126730,
+    "total_pcm_seconds": 2.6402083333333333,
+    "above_threshold_seconds": 2.24,
+    "analyzed_pcm_seconds": 2.6402083333333333,
+    "analyzed_window_count": 133,
+    "maximum_window_rms": 0.3366153600991979,
+    "pending_bytes": 0,
+    "closed": true
+  },
+  "finished_at": "2026-10-28T01:50:00.507733+00:00",
+  "synthetic_review": {
+    "directory": "<local-path>\\tmp\\synthetic-dubbing-review\\68a81a0d-41aa-4a0a-bb3a-e344d0d976bf",
+    "wav_path": "<local-path>\\tmp\\synthetic-dubbing-review\\68a81a0d-41aa-4a0a-bb3a-e344d0d976bf\\translated.wav",
+    "json_path": "<local-path>\\tmp\\synthetic-dubbing-review\\68a81a0d-41aa-4a0a-bb3a-e344d0d976bf\\review.json",
+    "pcm_review_available": true,
+    "semantic_accuracy_verified": false,
+    "source_sha256": "5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30",
+    "output_sha256": "8db1d982052ada01762d01b32e467e7d8f2dcf475e9c6a697a27c93cf203baa0"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/account-remote/real-chat-20261102T124034.json",
+  "original_sha256": "ff4bc05b76789141f1bc872930b4edea93fd2f06cd3c6a1302c39a7d31f086b2",
+  "new_test_execution": false,
+  "reported_result": "failed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "physical_iphone": false,
+    "microphone_used": false,
+    "audio_persisted": false,
+    "transcripts_persisted": false,
+    "passed": false
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

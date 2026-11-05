@@ -1,0 +1,18 @@
+{
+  "suite": "workspace-chat-native",
+  "started_at": "2026-11-02T00:44:30.894952+00:00",
+  "finished_at": "2026-11-02T00:44:45.908277+00:00",
+  "duration_seconds": 15.013325,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_workspace_native"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"type\": \"actual_owned_WebView2_windows_with_synthetic_conversation\", \"passed\": false, \"external_calls\": 0, \"microphone_used\": false, \"OS_input_sent\": false, \"appbar_reserved_by_test\": false, \"phase\": \"native_chat_roundtrip\", \"error\": \"\"}\r\n"
+}

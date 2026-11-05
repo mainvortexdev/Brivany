@@ -1,0 +1,17 @@
+{
+  "suite": "contracts",
+  "started_at": "2026-11-05T00:32:08.815666+00:00",
+  "finished_at": "2026-11-05T00:32:09.828955+00:00",
+  "duration_seconds": 1.013289,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "tools/validate_contracts.py"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Traceback (most recent call last):\r\n  File \"<local-path>\\tools\\validate_contracts.py\", line 161, in <module>\r\n    main()\r\n  File \"<local-path>\\tools\\validate_contracts.py\", line 149, in main\r\n    assert target.exists(), f\"Enlace inexistente: {path.name} -> {link}\"\r\n           ^^^^^^^^^^^^^^^\r\nAssertionError: Enlace inexistente: Privacy.md -> ../README.md#binaries\r\n"
+}

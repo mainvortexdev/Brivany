@@ -1,0 +1,61 @@
+# Rango orientativo de palabras para el doblaje
+
+La tercera voz del prefijo ocupó 4,08 s de PCM en los ensayos 065 y 067
+para un intervalo de fuente de 2,32 s. La reproducción a 1,18× dejó
+aproximadamente 1,12 s de exceso en ambos casos. Para caber con esa tasa,
+el audio tendría que durar como máximo 2,738 s. Meta entregó nueve palabras
+en el primer ensayo y diez en el segundo. Las guías de síntesis de 1,293 y
+1,437 produjeron la misma duración en estas dos muestras.
+[Ensayo 065](traduccion-auditiva-ensayo-065.md),
+[ensayo 067](traduccion-auditiva-sintesis-real-067.md).
+
+En 065 también hubo piezas en vivo de unos dos segundos que excedieron su
+intervalo con la guía de síntesis ya en 1,5 y la reproducción en 1,18×.
+La tabla muestra cuánto PCM cabría según la tasa de reproducción existente.
+Los rangos se calculan a partir de los intervalos reportados por ASR, algunos
+de ellos estimados. El conteo de palabras describe el texto enviado a TTS.
+
+| Intervalo de fuente | Palabras | PCM observado | PCM que cabe entre 1× y 1,18× |
+| --- | ---: | ---: | ---: |
+| 4,220–6,540 s, 065 y 067 | 9 y 10 | 4,080 s | 2,320–2,738 s |
+| 21,180–23,193333 s, 065 | 10 | 3,440 s | 2,013–2,376 s |
+| 27,579008–29,601548 s, 065 | 8 | 2,800 s | 2,023–2,387 s |
+| 29,601548–31,460 s, 065 | 8 | 3,040 s | 1,858–2,193 s |
+
+La duración depende también de las sílabas, las pausas y la voz. Un rango
+de palabras es una guía aproximada. Los informes tampoco incluyen el texto
+original y traducido para decidir cuántas palabras son imprescindibles.
+
+La solicitud Meta de doblaje ya indicaba 2,5–3 palabras por segundo. Ahora
+el servidor añade en sus instrucciones el rango redondeado a palabras
+enteras cuando el intervalo validado mide al menos 1000 ms. Para 2320 ms
+indica unas seis a siete palabras. Pide usar los equivalentes orales más
+breves que suenen naturales, incluidas contracciones apropiadas al significado
+y al registro. Si hacen falta más palabras para conservar el contenido,
+la instrucción exige entregar la traducción completa. Tampoco pide añadir
+palabras para llegar al rango.
+
+El rango se calcula a partir de la duración validada por el servidor. El
+texto y el contexto continúan como datos separados. Se conserva el presupuesto
+de tokens y la solicitud sigue teniendo una sola traducción por fragmento.
+Los turnos menores de un segundo conservan la instrucción anterior sin un
+rango numérico. Esto evita dar un objetivo poco útil al resto de dos palabras
+que el ASR situó en 80 ms durante 065.
+
+La comparación de los primeros nueve turnos completos de cada ensayo
+aporta otro límite. El crecimiento entre el primer y último inicio de voz
+fue de 4,436 s hasta 16,833 s en 065 y 2,156 s hasta 17,454 s en 067. Las
+esperas positivas entre voces bajaron de 3,009 a 1,250 s en esos pares. Los
+excesos positivos de duración bajaron de 1,846 a 1,318 s. Los intervalos y
+respuestas del proveedor difieren, por lo que esa comparación no atribuye
+el cambio a una causa única. Acortar una voz tampoco garantiza recuperar
+tiempo si la siguiente traducción aún está pendiente.
+
+La suite `meta-translation` aprobó 35 casos con transporte sustituido o de
+bucle local. Verificó el rango de 1000, 2320 y 30000 ms, la ausencia de un
+rango adicional por debajo de un segundo, la separación entre los datos y
+las instrucciones, y que una respuesta más larga llegue completa al cliente.
+La traducción ordinaria conserva su solicitud habitual. Queda por medir el
+efecto del rango en la duración real y la fidelidad de las voces. Esta
+verificación no abrió solicitudes de proveedores. Informe
+`tmp/verification/meta-translation-20261104T193428-8049b6d5.json`.

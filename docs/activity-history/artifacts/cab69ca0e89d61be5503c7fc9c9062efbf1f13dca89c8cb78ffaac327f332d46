@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "scope": "real account, desktop and Meta search",
+  "checked_at": "2026-11-04T02:11:46.399484+00:00",
+  "cache_used": false,
+  "original_conversation_saved": false,
+  "billing_usd": null,
+  "trials": [
+    {
+      "case": "weather",
+      "ack_seconds": 0.515,
+      "completion_seconds": 5.828,
+      "state": "succeeded",
+      "account_polls": 14,
+      "host_external_requests": 1,
+      "actual_search_verified": true,
+      "source_domains": [
+        "www.weather2travel.com",
+        "www.holiday-weather.com",
+        "www.foreca.com",
+        "www.seatemperatu.re"
+      ],
+      "answer_characters": 155
+    },
+    {
+      "case": "documentation",
+      "ack_seconds": 0.187,
+      "completion_seconds": 4.781,
+      "state": "succeeded",
+      "account_polls": 11,
+      "host_external_requests": 1,
+      "actual_search_verified": true,
+      "source_domains": [
+        "docs.python.org",
+        "docs.python.org",
+        "docs.python.org",
+        "docs.python.org"
+      ],
+      "answer_characters": 211
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-translation",
+  "started_at": "2026-11-03T22:41:41.974912+00:00",
+  "finished_at": "2026-11-03T22:41:43.819030+00:00",
+  "duration_seconds": 1.844118,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_work_translation"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "..............\r\n----------------------------------------------------------------------\r\nRan 14 tests in 0.840s\r\n\r\nOK\r\n"
+}

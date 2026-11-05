@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "browser_review": {
+    "url": "http://127.0.0.1:8787/",
+    "new_tab_visible": true,
+    "both_videos_ready_state": 4,
+    "both_duration": 30,
+    "both_muted": false
+  },
+  "latest_workspace_hyperframes_check": true,
+  "receipts_validated_offline": [
+    "bb1618aa-47e4-4def-a39f-56153dbfe641",
+    "bc98b7a8-bfeb-4b40-9d15-9ab792d0dc82"
+  ],
+  "real_app_status": "motion agent available, grants remain disabled; unauthenticated HTTP redacts jobs",
+  "provider_calls_this_revision": 8,
+  "planning_calls_this_revision": 0,
+  "microphone_recorded": false,
+  "hardware_speaker_listening_tested": false
+}

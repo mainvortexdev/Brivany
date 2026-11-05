@@ -1,0 +1,173 @@
+# 24. Verificación de alternativas de voz a voz
+
+27 de octubre de 2026. Investigación de documentación oficial a partir de la
+información aportada por el usuario. Sin inferencias ni creación de cuentas.
+
+## Qué cambia la decisión
+
+Una API de traducción de audio continua evita orquestar peticiones separadas
+ASR→MT→TTS. Esto es un candidato más directo para el doblaje de Brivany, cuya
+ruta modular dio primer PCM a 5937 ms y petición MT de 2907 ms en una muestra.
+No demuestra la arquitectura neuronal interna ni un máximo de 500 ms por sí solo.
+
+| Candidato | Verificado | Precio y acceso |
+|---|---|---|
+| `gemini-3.5-live-translate-preview` | Modelo dedicado de traducción continua audio→audio, más de 70 idiomas, WSS | Cuota gratuita publicada, disponibilidad real pendiente en cuenta. Pago por audio de entrada y salida |
+| `gpt-realtime-translate` | Endpoint dedicado con WebRTC y WebSocket; subtítulos opcionales | $0.034/min publicado; acceso gratuito no soportado según ficha |
+| Eleven Realtime Translation | Servicio de traducción en vivo; elección de voz o clon autorizado | Alpha Enterprise; no hay una tarifa pública verificada aquí |
+
+Fuentes primarias: [Gemini Live Translate](https://aistudio.google.com/docs/live-api/live-translate),
+[OpenAI: modelo y precio](https://developers.openai.com/api/docs/models/gpt-realtime-translate),
+[OpenAI: protocolo](https://developers.openai.com/api/docs/guides/realtime-translation),
+[ElevenLabs: lanzamiento](https://elevenlabs.io/blog/realtime-translation).
+
+## Correcciones al material aportado
+
+- El identificador confirmado de traducción Google es **3.5 Live Translate**;
+  no confundirlo con modelos 3.8 de conversación.
+- Google publica $0.0053/min de entrada y $0.0315/min de salida. Si ambas duran
+  60 minutos, la estimación es **$2.208/h**. No se confirma $0.84/h como tarifa de
+  conexión fija; la facturación depende del consumo de audio. Gratis tiene límites
+  de cuenta/modelo y no constituye un máximo de consumo ilimitado.
+  [Precios Google](https://aistudio.google.com/docs/pricing#gemini-3.5-live-translate-preview).
+- El endpoint Google de traducción es continuo y no admite instrucciones/herramientas
+  como el agente conversacional. No trasladar automáticamente las capacidades de
+  interrupción del Live Agent a traducción.
+- No se encontró en las fuentes consultadas una garantía pública de latencia
+  máxima de 500 ms o una medición que permita afirmar retraso imperceptible aquí.
+- No se confirma que ElevenLabs sea el único con preservación de voz. Google
+  documenta replicación vocal y sus inconsistencias; eso tampoco permite prometer
+  identidad vocal perfecta. [Límites Google](https://aistudio.google.com/docs/live-api/live-translate#limitations).
+- La guía OpenAI recomienda mantener pistas por hablante separadas y una sesión
+  por idioma de salida. Esa separación la gestiona la aplicación; no demuestra
+  identificación automática de personas dentro de una pista de audio mezclada.
+
+## Integración y siguiente comprobación concreta
+
+Brivany conserva los adaptadores OpenAI y ElevenLabs, sin un ensayo real
+completado con ellos. Google está integrado como opción **Gemini Live** en
+`/dubbing`, con clave propia y consentimiento para Google. La clave suministrada
+por el usuario se guardó en `.env` sin incorporarla a evidencias. Cargar la página
+no activa audio ni ejecuta modelos.
+
+El adaptador convierte PCM continuo de 24 a 16 kHz con filtro FIR; devuelve PCM
+de 24 kHz. La prueba integral UI/HTTP/WS/AudioWorklet con Google simulado pasó:
+41 paquetes y 128340 bytes a 16 kHz, una conexión y una señal de cierre. Informe
+`tmp/verification/gemini-pipeline-20261028T003953-373d3af2.json`. Diez pruebas
+unitarias comprueban conversión, permisos, errores, cancelación y carreras.
+No demuestran inferencia ni calidad del modelo.
+
+El esquema de conexión sigue los convertidores oficiales del SDK: las opciones
+de transcripción están directamente en `setup`, y `translationConfig` dentro de
+`setup.generationConfig`. Hay discrepancia con un ejemplo de la guía. Referencias:
+[conversor](https://raw.githubusercontent.com/googleapis/python-genai/main/google/genai/_live_converters.py),
+[cliente Live](https://raw.githubusercontent.com/googleapis/python-genai/main/google/genai/live.py),
+[cabecera de API key](https://raw.githubusercontent.com/googleapis/python-genai/main/google/genai/_api_client.py).
+
+## Primer ensayo Google con acceso real
+
+Se ejecutó **una sola sesión** con la misma frase sintética EN→ES de 2,344 s usada
+en la ruta Meta modular. Gemini aceptó la configuración y entregó primer PCM a
+**3171 ms** del primer audio de entrada, con conexión previa de **500 ms**. Se
+recibieron 107 bloques, 8,95 s de PCM de salida y 21 caracteres traducidos. No se
+guardaron audio de salida ni transcripciones.
+
+**El ensayo falló por `dubbing_drain_timeout`.** No se recibió la confirmación
+de final esperada antes del límite de 12 s tras la entrada. El criterio de cierre
+local combina una señal de turno/interacción y 500 ms sin contenido nuevo; Google
+no proporciona aquí un reconocimiento de consumo del último bloque de entrada.
+Este criterio sigue sin validarse con el modelo de traducción continua, por lo
+que no se presenta la sesión como íntegramente completada.
+
+Informe `tmp/dubbing-measurements/20261028T004531-ee8c89f9.json`, conservado en la
+bitácora. Estimación por tarifas publicadas y audio observado: **$0.004906**,
+sin aplicar cuota gratuita; coste facturado desconocido. La inferencia interna
+sigue sin estar disponible y **500 ms no está demostrado**. El primer audio es
+un tiempo observado de esta muestra, no un percentil ni una garantía. Falta
+aclarar el protocolo de finalización antes de repetir una llamada.
+
+La revisión del ejemplo oficial dedicado confirmó una diferencia relevante:
+al acabar el audio, deja cuatro segundos para recibir traducción y cierra el
+cliente; no espera un acuse de EOF por `turnComplete`/`IDLE`. Es una política de
+espera, no garantía de cola completa. No se cambiaron los resultados anteriores
+ni se aceptó `generationComplete`/`transcription.finished` como confirmación del
+último audio consumido. Se añadieron contadores seguros de señales para el próximo
+ensayo motivado, sin conservar texto, PCM, nombres arbitrarios o credenciales.
+[Cookbook dedicado](https://github.com/google-gemini/cookbook/blob/main/quickstarts/Get_started_LiveTranslate.py),
+[ejemplo de línea de comandos](https://github.com/google-gemini/gemini-live-api-examples/blob/main/command-line/python/translate.py).
+
+## Corrección del cierre local
+
+El adaptador ya no exige señales de turno para terminar la recepción de
+traducción continua. Tras reenviar el último PCM/FIR y el control de fin, espera
+al menos cuatro segundos; después puede cerrar con 750 ms sin audio/subtítulos
+nuevos y sin salida pendiente por entregar. Los mensajes de uso y control no
+reinician esa ventana. A los 12 segundos cierra por presupuesto de recepción,
+aunque siga llegando contenido. Los errores reales de conexión/proveedor siguen
+siendo errores.
+
+Los plazos son una política propia de Brivany, inspirada en el ejemplo oficial,
+**no una garantía de traducción completa ni de latencia**. El estado de cierre
+incluye `session_closed_locally: true`, `completion_method:
+"bounded_post_input_drain"`, razón `quiet_window` o `drain_budget`,
+`provider_input_consumed_acknowledged: false` y `finalization_verified: false`.
+La interfaz dice que la sesión se cerró y permite revisar el final. El informe
+fallido inicial permanece intacto.
+
+El medidor distingue envío y recepción funcionales de
+`full_translation_verified: false`. También mide el primer PCM respecto al
+último PCM enviado y el tiempo hasta el cierre local; esas referencias no son
+el final acústico del habla ni la inferencia del modelo.
+
+Para detectar si un primer bloque es solo silencio, se añadió observación de
+energía PCM en ventanas de 20 ms: primer cruce de RMS normalizado `>0.005`,
+duración total y duración sobre umbral. Solo conserva una ventana en memoria y
+devuelve números. Es un indicador de señal, **no reconocimiento de habla,
+calidad, inteligibilidad o reproducción física**. Su tiempo corresponde a la
+llegada del paquete que completa la ventana. No se descuentan ventanas silenciosas
+del coste estimado del audio recibido.
+
+## Ensayo real de la corrección
+
+Después de pasar 167 pruebas Python y el recorrido de navegador con Google
+simulado sin señales de final de turno, se ejecutó **una sola sesión real** para
+comprobar la política corregida. Se reutilizó exactamente el mismo WAV sintético
+EN→ES de 2,344 s (mismo SHA-256); no hubo reintentos.
+
+Informe: `tmp/dubbing-measurements/20261028T010638-e2e9124e.json`.
+
+| Medición observada | Resultado |
+|---|---|
+| Conexión previa | 469 ms |
+| Primer PCM desde el primer audio enviado | 3390 ms |
+| Primer PCM respecto al último PCM enviado | 1031 ms después |
+| Fin de entrada hasta cierre local | 12078 ms |
+| Salida recibida | 121 bloques; 484800 bytes; 10,1 s PCM |
+| Política de cierre | `bounded_post_input_drain`, razón `drain_budget` |
+| Finalización del proveedor / traducción íntegra | Sin verificar |
+| Inferencia interna / máximo de 500 ms | Sin dato / sin verificar |
+| Estimación por tarifas publicadas | $0.005510 antes de cuota; factura desconocida |
+
+El proveedor entregó audio y subtítulos sin emitir `turnComplete`, `IDLE`,
+`generationComplete` ni `transcription.finished`; los contadores seguros del
+informe lo muestran. Se cerró localmente al alcanzar el plazo de recepción,
+con un margen de ejecución del bucle de comprobación. El resultado `passed`
+comprueba envío, salida observada y cierre local; no prueba toda la cola ni
+calidad del contenido. El fallo anterior permanece registrado como tal.
+
+El primer cruce del umbral RMS llegó con el primer paquete (3390 ms). De 10,1 s
+PCM, 0,32 s de ventanas superaron RMS 0.005. Esta cifra depende del umbral y no
+es una medida de duración de habla ni de inteligibilidad. No se conservaron PCM
+ni transcripciones, y no se evaluó reproducción física.
+
+La corrección resuelve la espera de una confirmación no documentada. **No
+demuestra una mejora de latencia** frente al ensayo anterior: esta muestra dio
+un primer bloque posterior, y no es una distribución de tiempos. El objetivo de
+500 ms sigue pendiente.
+
+Antes de otra prueba externa: completar simulación del protocolo, comprobar la
+cuenta/modelo y guardar la clave mediante el formulario local. Ejecutar una sola
+muestra sintética para confirmar entrada/salida/cierre y medir primer audio;
+conservar los tiempos de red/servicio separados de inferencia interna. Probar
+comparaciones con el mismo material e idioma, sin deducir un ranking a partir de
+una muestra aislada. Las credenciales y los medios privados no van a la bitácora.

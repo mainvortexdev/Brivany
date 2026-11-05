@@ -1,0 +1,164 @@
+# 26. Criterio vigente: retraso audible máximo de 500 ms
+
+27 de octubre de 2026. El usuario aclaró expresamente que los 500 ms se refieren
+al **retraso audible de la traducción**, no exclusivamente a inferencia interna.
+Esta definición guía las siguientes decisiones. Los informes anteriores se
+conservan con sus campos y límites originales; no se reinterpretan como pruebas
+de audio físico.
+
+## Qué se debe medir
+
+El punto de referencia es el fragmento original y su traducción correspondiente.
+Hay que distinguir:
+
+1. Inicio de audio original → primer PCM traducido recibido.
+2. Final del audio original → primer PCM traducido recibido. Es la métrica que
+   ya existe para la fixture fija, pero no representa por sí sola el desfase
+   semántico de cada palabra ni la salida física del altavoz.
+3. Recepción → programación de audio en el navegador.
+4. Programación → salida audible del dispositivo. Web Audio puede ofrecer
+   estimaciones; una prueba física o loopback delimitada debe confirmar su alcance.
+
+Una cifra hasta el primer PCM no se presenta como retraso audible validado.
+Los informes nuevos incluyen `target_audible_delay_ms: 500`,
+`audible_delay_verified: false` y `physical_playback_measured: false` hasta tener
+evidencia suficiente. La inferencia interna puede seguir siendo desconocida sin
+impedir medir el criterio que el usuario eligió.
+
+Los relojes no se desplazan al silencio final añadido ni se retrasa el original
+para fabricar una cifra favorable. Para videos largos deben correlacionarse
+segmentos/idiomas y comprobar que el audio emitido corresponde al texto original.
+
+## Línea base disponible
+
+Gemini con la fixture EN→ES y pausa final de 2 s: primer PCM a **3297 ms** desde
+el inicio y **953 ms** después del último PCM original. Se recibió texto completo
+en esa muestra. La reproducción física no se midió; ya excede 500 ms en la
+referencia al fin de fuente antes de sumar salida del dispositivo.
+[Integridad y evidencia](25-integridad-del-doblaje.md).
+
+## Ajuste de traducción a contrastar
+
+Palabra ya usa confirmación por silencio de 0,3 s, el mínimo documentado, y
+división de oraciones activada. Las colas de 2000/4000 ms son niveles de audio
+no pronunciado; no se deben describir como una espera inicial fija que pueda
+restarse del resultado.
+
+El cambio nuevo que se puede probar aisladamente es
+`translations[0].translate_partial_transcriptions: true`. La documentación
+garantiza traducción de hipótesis parciales; **no garantiza que la voz empiece
+antes**. La prueba debe decidir si adelanta voz útil o solo subtítulos, con la
+misma fixture/dirección y evidencia de contenido completo.
+[Opciones oficiales](https://docs.palabra.ai/docs/streaming_api/translation_settings_breakdown),
+[eventos oficiales](https://docs.palabra.ai/docs/streaming_api/management).
+
+El adaptador admite esa opción por sesión como `translate_partials`, desactivada
+por defecto. Los subtítulos parciales se reemplazan por ID/revisión y se muestran
+como provisionales; el final sustituye la hipótesis. Corregir el texto no puede
+retirar una hipótesis que ya se hubiera oído. La configuración solicitada y la
+observada se registran por separado, manteniendo desconocido lo que el proveedor
+no devuelva.
+
+Un ensayo acotado de cada configuración puede decidir si vale la pena seguir
+con esa ruta. No hay razón para repetir modelos sin un cambio ni presentar dos
+muestras como un percentil o un máximo garantizado.
+
+## Referencias de medición de salida
+
+`AudioContext.getOutputTimestamp()` correlaciona el reloj de audio con una
+estimación de reproducción del dispositivo. `baseLatency` y `outputLatency`
+describen otras partes del trayecto. No deben sumarse sin conocer el origen de
+la estimación ni confundirse con micrófono/loopback medido.
+[Web Audio timestamp](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/getOutputTimestamp),
+[baseLatency](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/baseLatency),
+[outputLatency](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/outputLatency).
+
+## Resultado del contraste y corrección del reproductor · 28 de octubre
+
+Dos ensayos EN→ES con la misma fixture devolvieron el texto completo:
+
+| Configuración | Primer PCM desde primera entrada | Primer PCM después del fin del archivo |
+|---|---:|---:|
+| Palabra normal | 2610 ms | 250 ms |
+| Palabra con parciales | 2562 ms | 203 ms |
+
+Informes: `tmp/dubbing-measurements/20261028T014738-bff1d04a.json` y
+`tmp/dubbing-measurements/20261028T014950-931c5dbf.json`. Una muestra por modo
+no demuestra que los parciales causaran una mejora estable. La opción continúa
+desactivada por defecto. Un intento intermedio falló por una restricción del
+recolector de revisión sintética, que rechazaba IDs válidos del adaptador;
+`20261028T014847-e8676280.json` conserva ese fallo. Se corrigió la aceptación de
+IDs antes del ensayo posterior, sin borrar el resultado anterior.
+
+Ambos ensayos recibieron 126730 bytes PCM en ráfagas; la cola teórica superaba
+2,2 s y podía detener la interfaz por su límite de 1 s. El relay ahora conserva
+todos los bytes y los entrega en bloques de hasta 40 ms, con adelanto máximo
+de 300 ms, sin acumular crédito durante silencios. El primer bloque sale sin
+esperar a completar la voz; cancelación y espera continúan acotadas.
+Veinte pruebas de Palabra pasaron, incluida la reproducción byte por byte de
+esa ráfaga, la cola estimada, el último bloque corto y cancelación durante espera:
+`docs/verification-history/palabra-20261028T015524-7a34f7b7.json`.
+
+### El silencio final cambia la interpretación
+
+La fixture WAV dura 2,344208 s. Su última ventana con RMS >0.005 termina a
+1,600 s: hay unos **744 ms finales bajo el umbral**. Por tanto, 250/203 ms tras
+el archivo no equivalen a esa espera desde el final del habla. Estos informes
+se preservan; esta anotación corrige su posible interpretación, no sus relojes.
+
+`web/dub-timing.js` detecta ventanas de energía de 20 ms en el mismo reloj de
+Web Audio para fuente y traducción. Distingue inicio→inicio, final de energía
+original→primer audio, final→final y fin del archivo→primer audio. Conserva las
+ventanas entre paquetes, descarta parciales en discontinuidades y mantiene
+desconocido lo no observado. Nueve pruebas específicas comprueban estos casos.
+La interfaz muestra el desfase inicial como **estimación de energía** y conserva
+el objetivo de 500 ms como no verificado.
+
+### Una sesión real en el navegador
+
+Se regeneró un MP4 sintético desde el WAV de hash conocido y se pasó por la
+interfaz, HTTP/WS y AudioWorklet reales contra Palabra normal. El navegador de
+prueba no solicitó micrófono ni reintentó. Terminó sin activar el límite de cola;
+programó los 63365 frames de salida en 67 bloques y recibió el texto
+«Esta habitación tiene dos ventanas.».
+
+| Referencia de energía | Estimación en el reloj de audio |
+|---|---:|
+| Inicio original → inicio traducido | **2579 ms** |
+| Fin de energía original → inicio traducido | **1099 ms** |
+| Fin del archivo capturado → inicio traducido | 336 ms |
+| Fin de energía original → fin de energía traducida | 3519 ms |
+
+La pista AAC capturada termina con unos 763 ms bajo el umbral. Esto explica la
+diferencia entre las dos referencias al final; no se suprime ni desplaza ese
+silencio para fabricar un resultado. `getOutputTimestamp()` fue válido y el
+reloj estimado del dispositivo había pasado la primera energía traducida.
+
+Informe preservado: `tmp/browser-dubbing-measurements/real-1793188472520.json`.
+Análisis posterior sin llamadas nuevas:
+`tmp/browser-dubbing-measurements/analysis-1793188472520.json`.
+Se solicitó una sesión, con 2,362667 s de audio capturado y 2,640208 s de salida.
+Estimación de servicio a la tarifa previamente consultada de $0.04/min de
+entrada: **$0.001575**; cargo efectivo desconocido. No es una factura.
+
+La referencia original se captura antes del volumen, que estaba al 0%; la
+traducción estaba al 85%. La prueba mide programación y reloj estimado del
+navegador, **no sonido físico**, inteligibilidad ni alineación semántica de cada
+fragmento. Un recorrido funcional aprobado no convierte el objetivo de latencia
+en aprobado: **la ruta actual no demuestra cumplir 500 ms** y sus estimaciones
+de inicio y de respuesta al habla los exceden.
+
+### Próxima decisión
+
+La entrega local ya evita el desbordamiento de esta ráfaga. Reducir esos bloques
+no elimina la espera de reconocimiento, contexto y generación del proveedor.
+No se repetirán inferencias para buscar una cifra favorable. Antes de otro
+ensayo se requiere un cambio concreto que permita voz útil mientras sigue
+hablando la fuente, y medición por segmentos correspondientes. Los parciales
+de texto no prueban esa capacidad de voz.
+[Opciones documentadas de Palabra](https://docs.palabra.ai/docs/streaming_api/translation_settings_breakdown).
+
+El siguiente contraste ya se realizó con dos frases distintas y correlación por
+fragmentos. No produjo voz antes del final del habla ni confirmó los 500 ms;
+solo 1 de 2 partes tenía correlación utilizable. El ajuste nuevo solicitado no
+apareció en la configuración devuelta. [Resultado y decisión posterior](27-doblaje-por-fragmentos.md).

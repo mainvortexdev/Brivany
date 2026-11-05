@@ -1,0 +1,18 @@
+{
+  "suite": "workspace-sync-extension",
+  "started_at": "2026-11-04T03:49:02.962758+00:00",
+  "finished_at": "2026-11-04T03:49:03.443502+00:00",
+  "duration_seconds": 0.480744,
+  "command": [
+    "node",
+    "--test",
+    "browser-extension/tests/sync-timeline.test.mjs",
+    "browser-extension/tests/background.test.mjs",
+    "browser-extension/tests/stream-setup.test.mjs",
+    "browser-extension/tests/caption-probe.test.mjs"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ browser action captures its granted source into a separate consumer and navigation stops it (14.5855ms)\n✖ caption probing requires a captured source and drops a reply after navigation (8.2735ms)\n✔ native captions preserve voice hints as data and select only the upcoming bounded window (6.9379ms)\n✔ only same-origin timedtext of the current exposed YouTube video can be fetched (88.225ms)\n✔ unavailable captions return an empty fallback; a cached track avoids another request (5.5291ms)\n✔ provider preparation waits for ready before the capture phase and creates one session (59.8339ms)\n✔ cancellation during provider preparation rejects instead of activating later capture (1.3684ms)\n✔ provider rejection is surfaced without a second start request (0.6049ms)\n✔ lookahead uses the active epoch and stops when playback closes or transport is congested (1.219ms)\n✔ autoplay replays only a confirmed silent prefix while the first translated cue is pending (4.8244ms)\n✔ unknown silence, insufficient ASR progress or less than the minimum buffer never bypass preparation (0.9128ms)\n✔ preproduction and an explicit user pause retain their playback requirement for a confirmed prefix (0.5767ms)\n✔ a filtered song advances without waiting for translated lyrics or audio (4.5999ms)\n✔ pairing accepts only a loopback WebSocket with a six digit code and binds sync origin (4.4513ms)\n✔ four seconds alone cannot start a picture before real ASR progress (0.3967ms)\n✔ a late provider holds the matching picture before the speech and resumes with its cue (0.6938ms)\n✔ late audio is rejected rather than played over an unrelated picture (0.6916ms)\n✔ old epochs never enter the new session and transcript-only markers cannot be cues (0.3373ms)\n✔ buffer has a hard thirty second horizon even while paused (0.4296ms)\n✔ preproduction requires five prepared seconds and explicit playback (0.6196ms)\n✔ cue IDs are unique and completed intervals can be released from memory (0.5298ms)\n✔ an eight second utterance with seven seconds provider work holds at its source onset instead of dropping content (0.6857ms)\n✔ preproduction can start with the first cue while a second utterance crossing five seconds is still being translated (0.7026ms)\n✔ six seconds without the first cue signals a missed budget without dropping audio or silently extending a promise (0.3563ms)\nℹ tests 24\nℹ suites 0\nℹ pass 23\nℹ fail 1\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 317.1764\n\n✖ failing tests:\n\ntest at browser-extension\\tests\\background.test.mjs:20:1\n✖ caption probing requires a captured source and drops a reply after navigation (8.2735ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  0 !== 1\n  \n      at TestContext.<anonymous> (file:///<local-path>/browser-extension/tests/background.test.mjs:28:178)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 0,\n    expected: 1,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n"
+}

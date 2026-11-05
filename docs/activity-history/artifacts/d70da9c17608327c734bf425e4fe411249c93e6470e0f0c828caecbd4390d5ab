@@ -1,0 +1,65 @@
+{
+  "recorded_utc": "2026-11-01T14:41:09.584529+00:00",
+  "domain": "https://brivany.example",
+  "worker": "brivany-site",
+  "version_id": "56d6bdd7-4979-49af-9ab8-895fa3b007dd",
+  "production_compatibility_date": "2026-10-31",
+  "local_dev_compatibility_override": "2026-10-30",
+  "public_asset_files": 6,
+  "build_js_bytes": 636810,
+  "deploy_status": "success",
+  "browser_media_test": {
+    "kind": "real browser local decoding of owned fixture",
+    "rate": 44100,
+    "channels": 1,
+    "frames": 195752,
+    "duration_seconds": 4.438820861678004,
+    "wav_bytes": 391548,
+    "download_sha256": "9204329817e59dd134d3ddd2f1f9296dee5412315b9de08d1557e16c58d65528",
+    "uploaded_to_service": false,
+    "semantic_or_physical_audio_certification": false
+  },
+  "interactive_checks": [
+    "laptop lid toggle",
+    "glasses arm toggle",
+    "room entry and object selection",
+    "chair first movement accepted; second blocked by table",
+    "phone room/plan toggle",
+    "PNG export verified visually",
+    "manual instruction copy status confirmed",
+    "ArrowRight tab selection",
+    "downloaded WAV real header verified"
+  ],
+  "responsive_local_checks": {
+    "320": "no horizontal overflow",
+    "390": "no horizontal overflow; visually reviewed",
+    "768": "no horizontal overflow",
+    "1280": "no horizontal overflow; visually reviewed"
+  },
+  "production_browser_errors": [],
+  "limitations": [
+    "Mobile and glasses are explicitly labelled concepts",
+    "Public desktop installer is not published; request access uses mailto",
+    "Driver installation hardware test remains pending",
+    "No universal video understanding; app samples four frames",
+    "Local browser media demo: max 128 MiB and 5 minutes; supported browser codecs"
+  ],
+  "costs": "No model calls in website QA; Cloudflare and network billing not measured.",
+  "bundle_sha256": "a5053c3abdf8f0cf040ea6a5b4a948dd1e58b8a5aca1ce5cd7a5062481b59760",
+  "screenshots": {
+    "published-desktop.jpg": {
+      "pixels": [
+        1265,
+        712
+      ],
+      "format": "JPEG"
+    },
+    "published-mobile.jpg": {
+      "pixels": [
+        375,
+        812
+      ],
+      "format": "JPEG"
+    }
+  }
+}

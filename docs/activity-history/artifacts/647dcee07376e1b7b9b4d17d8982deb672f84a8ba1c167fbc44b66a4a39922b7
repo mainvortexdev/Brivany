@@ -1,0 +1,89 @@
+{
+  "created_at": "2026-10-28T12:07:41.626839+00:00",
+  "status": "prepared",
+  "synthetic": true,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "purpose": "Test whether useful translation of clause one begins before clause two ends, without a long inter-clause silence.",
+  "limitations": [
+    "No translation provider, model latency, intelligibility, or physical audio device is evaluated by fixture preparation.",
+    "RMS landmarks identify energy windows, not forced word alignment or proof of semantic correspondence.",
+    "Reproduction uses the fixed prior synthetic PCM plus offline Windows Zira synthesis; byte reproducibility depends on the installed voice version."
+  ],
+  "format": "pcm_s16le",
+  "sample_rate_hz": 24000,
+  "channels": 1,
+  "window_frames": 480,
+  "window_ms": 20,
+  "rms_threshold": 0.005,
+  "retained_margin_frames": 2400,
+  "explicit_gap_frames": 1440,
+  "inter_clause_energy_gap_frames": 6240,
+  "inter_clause_energy_gap_ms": 260.0,
+  "audio": "tmp/stream-dubbing/build-1134363a063d4d9b90035981703cdf7d/two-clauses.wav",
+  "audio_sha256": "373acd421477dc7f1169151181f1d5dff3a6a3107ed70704c9ca894c74a46b38",
+  "pcm_sha256": "8e683f6fc9ea382a03c3400f7bd1e99629041debf7fd44750b1ee434f2fe8250",
+  "frames": 83040,
+  "duration_seconds": 3.46,
+  "clauses": [
+    {
+      "index": 1,
+      "text": "This room has two windows.",
+      "language": "en",
+      "source": "tmp/modular-dubbing/english-room.wav",
+      "source_sha256": "5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30",
+      "segment": "tmp/stream-dubbing/build-1134363a063d4d9b90035981703cdf7d/clause-1.wav",
+      "segment_sha256": "df679991464b566d89ebbc719b2fd6ec002817fa3f8a56b153444f5ec0e89b5f",
+      "retained_pcm_sha256": "0a35e12004b3a6b7d7835837dfa3069cfd3c246e34d41150ee52e69cbfb2504b",
+      "source_start_frame": 480,
+      "source_end_frame": 40800,
+      "source_energy_start_frame": 2880,
+      "source_energy_end_frame": 38400,
+      "retained_energy_start_frame": 2400,
+      "retained_energy_end_frame": 37920,
+      "combined_start_frame": 0,
+      "combined_end_frame": 40320,
+      "combined_energy_start_frame": 2400,
+      "combined_energy_end_frame": 37920,
+      "voice": {
+        "engine": "prior fixed synthetic fixture",
+        "name": null,
+        "note": "Original voice identity is not independently rechecked by this tool; fixed WAV hash is verified."
+      }
+    },
+    {
+      "index": 2,
+      "text": "The table is next to the door.",
+      "language": "en",
+      "source": "tmp/stream-dubbing/build-1134363a063d4d9b90035981703cdf7d/second-zira-24k.wav",
+      "source_sha256": "771abdc7f50150d40ad81e32a503a039260cbcde6e44f1d013120e450ba95be1",
+      "segment": "tmp/stream-dubbing/build-1134363a063d4d9b90035981703cdf7d/clause-2.wav",
+      "segment_sha256": "57f4aa87c534611e0c58c11c6a7b3053e62e40e59ea0c4f57ec28fa612137c3f",
+      "retained_pcm_sha256": "c53da830b39a859f4565805fa47f27358bab440b2c97064444b3b75e1f3c1237",
+      "source_start_frame": 480,
+      "source_end_frame": 41760,
+      "source_energy_start_frame": 2880,
+      "source_energy_end_frame": 39360,
+      "retained_energy_start_frame": 2400,
+      "retained_energy_end_frame": 38880,
+      "combined_start_frame": 41760,
+      "combined_end_frame": 83040,
+      "combined_energy_start_frame": 44160,
+      "combined_energy_end_frame": 80640,
+      "voice": {
+        "name": "Microsoft Zira Desktop",
+        "culture": "en-US",
+        "engine": "Windows System.Speech",
+        "rate": 0,
+        "volume": 100
+      }
+    }
+  ],
+  "streaming_decision_reference": {
+    "first_clause_energy_end_frame": 37920,
+    "second_clause_energy_end_frame": 80640,
+    "requires_useful_translated_audio_not_only_caption": true,
+    "target_audible_delay_ms": 500,
+    "target_verified": false
+  }
+}

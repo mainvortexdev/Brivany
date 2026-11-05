@@ -1,0 +1,7 @@
+{
+  "configured": false,
+  "connected": false,
+  "pending": false,
+  "persistent": true,
+  "scope": "Local configuration only; no Spotify requests, login, microphone or playback initiated."
+}

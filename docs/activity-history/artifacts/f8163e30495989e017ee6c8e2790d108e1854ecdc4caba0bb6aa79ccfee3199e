@@ -1,0 +1,23 @@
+{
+  "suite": "sync-relay",
+  "started_at": "2026-11-04T16:02:26.227132+00:00",
+  "finished_at": "2026-11-04T16:03:02.048319+00:00",
+  "duration_seconds": 35.821187,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_sync_relay",
+    "tests.test_prefix_translation",
+    "tests.test_inline_clauses",
+    "tests.test_dubbing_timing",
+    "tests.test_inline_timbre_pipeline"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".......INFO: Created TensorFlow Lite XNNPACK delegate for CPU.\n........Fconnection handler failed\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\.venv\\Lib\\site-packages\\websockets\\sync\\server.py\", line 609, in conn_handler\r\n    handler(connection)\r\n  File \"<local-path>\\tests\\test_sync_relay.py\", line 504, in asr\r\n    socket.recv()\r\n  File \"<local-path>\\.venv\\Lib\\site-packages\\websockets\\sync\\connection.py\", line 336, in recv\r\n    raise self.protocol.close_exc from self.recv_exc\r\nwebsockets.exceptions.ConnectionClosedOK: received 1000 (OK); then sent 1000 (OK)\r\n...........................................\r\n======================================================================\r\nFAIL: test_inline_meta_timeout_discards_partial_audio_and_next_turn_is_dubbed (tests.test_sync_relay.SynchronizedPipelineTests.test_inline_meta_timeout_discards_partial_audio_and_next_turn_is_dubbed)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_sync_relay.py\", line 521, in test_inline_meta_timeout_discards_partial_audio_and_next_turn_is_dubbed\r\n    self.assertEqual(self.fixture.counts['cancel'],1)\r\nAssertionError: 0 != 1\r\n\r\n----------------------------------------------------------------------\r\nRan 59 tests in 34.544s\r\n\r\nFAILED (failures=1)\r\n"
+}

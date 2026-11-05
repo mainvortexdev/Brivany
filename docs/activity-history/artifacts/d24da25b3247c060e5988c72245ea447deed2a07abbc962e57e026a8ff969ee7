@@ -1,0 +1,14 @@
+{
+  "suite": "live-ui",
+  "started_at": "2026-10-30T15:47:28.798181+00:00",
+  "finished_at": "2026-10-30T15:47:31.700168+00:00",
+  "duration_seconds": 2.901987,
+  "command": [
+    "node",
+    "tools/check_live_ui.cjs"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Último fragmento/. Input:\n\n'Una idea con un ejemplo.'\n\n    at <local-path>\\tools\\check_live_ui.cjs:90:12 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 'Una idea con un ejemplo.',\n  expected: /Último fragmento/,\n  operator: 'match',\n  diff: 'simple'\n}\n"
+}

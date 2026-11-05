@@ -1,0 +1,92 @@
+# Traducción auditiva: identidad y continuidad de la fuente
+
+4 de noviembre de 2026. El video solicitado es `sr_iLGKNsxU`, «No AGUANTÓ mis
+PRUEBAS!! iPhone Duo». Su duración real es 1495,781 segundos; la respuesta de
+YouTube indica 1496 segundos. El corte observado alrededor de los 43 segundos
+no representa el final del video.
+
+## Comprobaciones reales sin traducción
+
+Se compararon tres perfiles nuevos y aislados, sin extensión, relay ni servicios
+de traducción, durante 70 segundos de observación por ensayo. Se mantuvieron las
+protecciones predeterminadas de los navegadores y no se usó el perfil personal.
+
+| Navegador | Tiempo desde `playing` hasta `emptied` | Resultado |
+| --- | ---: | --- |
+| Brave sin ventana | 43,188 s | La fuente se vació |
+| Brave con ventana | 44,449 s | La fuente se vació |
+| Edge con ventana | 43,670 s | La fuente se vació |
+
+Los identificadores de página, reproductor y respuesta mantuvieron el video
+solicitado. No se observó anuncio en los muestreos. Antes del fallo, la duración
+era 1495,781 s y la velocidad, 1. Después, el elemento quedó con tiempo 0,
+duración no disponible, `readyState=0` y estado de reproductor -1. No hubo código
+de `HTMLMediaError` ni errores JavaScript de página registrados. En las pruebas
+con ventana, YouTube mostró su mensaje genérico de error aunque
+`playabilityStatus` continuaba indicando `OK`.
+
+Esto descarta que el corte de estos ensayos dependa exclusivamente de la
+extensión, del relay, de Brave o del modo sin ventana. La causa de red,
+reproductor o entorno sigue sin demostrarse. No se modificaron protecciones ni
+se intentó sortear restricciones del sitio. Las capturas temporales de los
+segundos 24 y 28 muestran contenido tecnológico del video; no se adjuntan esos
+fotogramas originales a la bitácora.
+
+Estas comprobaciones iniciaron **0 sesiones de proveedores de traducción** y
+**0 llamadas a modelos**. El tráfico y número de solicitudes del navegador a
+YouTube no se midieron; no se afirma consumo externo total nulo. No se realizó
+otra prueba pagada de continuidad extendida después de reproducir este fallo.
+
+## Diagnóstico incorporado al banco
+
+El informe y su versión saneada conservan `source_identity` al preparar la
+fuente, antes de activar la traducción y al terminar la observación. Incluyen
+los cuatro identificadores públicos, las duraciones del elemento/reproductor y
+de ambas respuestas, estado de anuncio, velocidad, estado de carga y relojes.
+Antes de activar el doblaje se exige coincidencia de identificadores y una
+diferencia máxima de dos segundos entre duraciones. La preparación ASR de los
+siete segundos es automática y puede empezar antes del primer control del
+banco; el informe declara ese límite expresamente.
+
+El ciclo de vida registra también tiempo de pared, duración, red, fin natural y
+código de error. Una fuente vaciada antes del fin marca `source_interrupted` e
+impide aceptar la prueba como traducción satisfactoria, aunque se hayan
+reproducido algunos segmentos. El diagnóstico no acredita escucha física,
+distinción semántica de hablantes ni continuidad del video completo.
+
+Para posiciones distintas de cero, el banco abre la URL con `&t=NNNs` y espera
+la reproducción en esa posición. Ya no introduce un salto manual después de
+cargar el video. Esta ruta queda pendiente de una siguiente comprobación real
+autorizada; cambiar la URL de inicio no acredita resolver el corte de la fuente.
+
+El reinicio artificial del banco solo existe con `--fixture --source-reset`.
+La pausa de limpieza del ensayo se ejecuta después del bucle de observación;
+ninguno de esos mecanismos explica los tres cortes de los perfiles limpios.
+
+## Regresión local y límites
+
+Un único ensayo local con video sintético y protocolo simulado provocó el
+vaciado del elemento. El reproductor drenó lo ya capturado, mostró el aviso
+«El video original se interrumpió», conservó `finished_after_source=false` y
+rechazó el resultado global. El proceso devolvió 1 de forma deliberada. El
+control retrospectivo verificó esas condiciones sin convertir el rechazo en
+éxito de traducción. No hubo APIs de proveedores ni escucha física.
+
+La sintaxis JavaScript y Python fue comprobada. `tools.verify
+workspace-sync-extension` pasó 52 pruebas y guardó su informe y registro local.
+El CLI tuvo un error de representación cp1252 al imprimir la marca de éxito
+después de guardar el resultado; no se repitió la suite por ese motivo.
+
+Evidencia de métricas, sin medios originales:
+
+- `tmp/selected-video/source-baseline-comparison-20261104.json`.
+- `tmp/selected-video/source-baseline-70s-1793806521550.json`.
+- `tmp/selected-video/source-baseline-headed-70s-1793806685280.json`.
+- `tmp/selected-video/source-baseline-edge-70s-1793806866760.json`.
+- `tmp/selected-video/inline-sync-1793807147089.json`.
+- `tmp/selected-video/source-reset-regression-048.json`.
+- `tmp/verification/workspace-sync-extension-20261104T154542-70d1b632.json`.
+
+Sigue pendiente conseguir una fuente estable en el entorno de comprobación y
+validar nuevamente duración larga, latencia, sincronía y voces. Estas pruebas
+no certifican el funcionamiento en el Brave personal del usuario.

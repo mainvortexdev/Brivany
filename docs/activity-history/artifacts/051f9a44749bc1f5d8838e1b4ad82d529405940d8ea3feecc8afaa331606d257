@@ -1,0 +1,33 @@
+{
+  "synthetic": true,
+  "video_seconds": 9,
+  "video_bytes": 38743,
+  "job": {
+    "id": "0bb154f2-2837-4b96-bc45-585706c023a0",
+    "status": "complete",
+    "phase": "Tu human-skill está lista para revisar y practicar.",
+    "skill_id": "8dc9e6d2-09e0-421a-bb69-1b3bbf14c50a",
+    "error": null,
+    "reused": false,
+    "request_key": "4cc2a91ddd58aeee7d4f6473042e0e705d2c7cfa281da896aa149b05c109d0fb"
+  },
+  "maximum_generation_requests": 1,
+  "analysis": {
+    "model": "muse-spark-1.2",
+    "latency_ms": 8281,
+    "usage": {
+      "input_tokens": 1908,
+      "output_tokens": 1690,
+      "total_tokens": 3598
+    }
+  },
+  "title": "Explicar una idea con ejemplo y cierre en 3 pasos",
+  "steps": 3,
+  "source": {
+    "filename": "demo-sintetica-oratoria.mp4",
+    "sha256": "3f47afe33e8e75b564787b3917c689fe5dfc4f7a997d4572e3f5e7437bf99512",
+    "size_bytes": 38743,
+    "duration_seconds": 9.0,
+    "has_audio": false
+  }
+}

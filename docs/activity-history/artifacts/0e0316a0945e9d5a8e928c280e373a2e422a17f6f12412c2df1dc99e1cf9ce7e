@@ -1,0 +1,18 @@
+{
+  "suite": "system-diagnostics-native",
+  "started_at": "2026-11-04T00:16:52.329550+00:00",
+  "finished_at": "2026-11-04T00:16:59.757698+00:00",
+  "duration_seconds": 7.428148,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_system_diagnostics_native"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"passed\": true, \"time\": \"2026-11-04T00:16:52.552955+00:00\", \"scope\": \"actual Windows read-only commands composed with filters, sorting and aggregation\", \"provider_requests\": 0, \"native_input_sent\": false, \"queries\": [{\"source\": \"processes\", \"command\": \"Get-Process\", \"row_count\": 3, \"matching_rows\": 266, \"aggregate\": null, \"verified\": true}, {\"source\": \"services\", \"command\": \"Get-Service\", \"row_count\": 3, \"matching_rows\": 6, \"aggregate\": {\"property\": null, \"op\": \"count\", \"value\": 6}, \"verified\": true}, {\"source\": \"volumes\", \"command\": \"Get-CimInstance\", \"row_count\": 1, \"matching_rows\": 1, \"aggregate\": {\"property\": \"FreeSpace\", \"op\": \"sum\", \"value\": 40497225728}, \"verified\": true}]}\r\n"
+}

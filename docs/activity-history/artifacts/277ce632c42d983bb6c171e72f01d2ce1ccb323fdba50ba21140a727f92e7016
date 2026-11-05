@@ -1,0 +1,152 @@
+{
+  "started_at": "2026-10-28T01:48:47.755716+00:00",
+  "status": "failed",
+  "source": {
+    "filename": "english-room.wav",
+    "sha256": "5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30",
+    "size_bytes": 112600,
+    "duration_seconds": 2.3442083333333334,
+    "sample_rate": 24000,
+    "channels": 1,
+    "format": "pcm16"
+  },
+  "target_language": "es",
+  "source_language": "en",
+  "provider": "Palabra",
+  "model": "speech-to-speech",
+  "maximum_sessions": 1,
+  "automatic_retries": 0,
+  "input_chunk_ms": 40,
+  "configured_trial_limit_seconds": 5,
+  "input_bytes_sent": 86400,
+  "output_audio_chunks": 0,
+  "output_audio_bytes": 0,
+  "output_formats": [],
+  "translated_text_characters": 0,
+  "original_text_characters": 0,
+  "max_audio_queue_estimate_ms": 0.0,
+  "connect_ms": 2844.0,
+  "first_input_audio_to_first_output_audio_ms": null,
+  "first_output_relative_input_end_ms": null,
+  "input_end_to_done_ms": null,
+  "relay_first_output_audio_ms": null,
+  "first_tts_chunk_generation_ms": null,
+  "inference_ms": null,
+  "mt_request_ms": [],
+  "tts_first_audio_ms": [],
+  "mt_requests_started": null,
+  "tts_requests_started": null,
+  "first_asr_partial_ms": null,
+  "first_segment_ready_ms": null,
+  "asr_received_input_ms": null,
+  "segment_wait_ms": [],
+  "segment_ready_to_first_audio_ms": [],
+  "target_inference_ms": 500,
+  "target_status": "unverified",
+  "target_audible_delay_ms": 500,
+  "audible_delay_verified": false,
+  "physical_playback_measured": false,
+  "palabra_translate_partials_requested": true,
+  "palabra_translate_partials_observed": true,
+  "estimated_base_service_usd": 0.001563,
+  "estimate_rate_usd_per_minute": 0.04,
+  "estimate_basis": "input_audio_duration_only",
+  "actual_billed_usd": null,
+  "external_calls": 1,
+  "provider_ready": true,
+  "provider_settings": {
+    "source_language": "en",
+    "target_language": "es",
+    "queue": null,
+    "observed_fields": {
+      "source_language": true,
+      "target_language": true,
+      "queue": {
+        "desired_queue_level_ms": false,
+        "max_queue_level_ms": false,
+        "auto_tempo": false,
+        "min_tempo": false,
+        "max_tempo": false
+      }
+    },
+    "observed_path": "pipeline",
+    "shape": {
+      "keys": [
+        "input_stream",
+        "output_stream",
+        "pipeline",
+        "task_status",
+        "output_modes"
+      ],
+      "objects": {
+        "input_stream": [
+          "content_type",
+          "source"
+        ],
+        "output_stream": [
+          "content_type",
+          "target"
+        ],
+        "pipeline": [
+          "turn_detection",
+          "transcription",
+          "translations",
+          "allowed_message_types"
+        ],
+        "output_modes": [
+          "es"
+        ]
+      }
+    }
+  },
+  "gpu_seconds": null,
+  "audio_persisted": false,
+  "transcripts_persisted": false,
+  "provider_finalization_verified": null,
+  "session_closed_locally": false,
+  "local_close_method": null,
+  "local_close_reason": null,
+  "full_translation_verified": false,
+  "provider_diagnostics": null,
+  "experimental_tail_silence_seconds": 0,
+  "provider_input_bytes": null,
+  "provider_input_sample_rate": null,
+  "padding_input_bytes": null,
+  "padding_input_seconds": null,
+  "provider_real_input_bytes": null,
+  "limitations": [
+    "La estimación usa $0.04/min y solo la duración del audio; no es una factura ni un máximo garantizado.",
+    "La primera salida medida incluye red y contexto; no es inferencia interna ni calidad oída.",
+    "El timing TTS opcional es generación hasta el primer chunk; no incluye ASR, traducción o red.",
+    "No se mide reproducción física ni sincronía semántica con el video.",
+    "external_calls cuenta una sesión solicitada al relay; no es telemetría de facturación del proveedor.",
+    "La referencia de fin de entrada es el último PCM enviado, no el final acústico del habla; su diferencia con primer audio no es inferencia interna.",
+    "RMS en ventanas de 20 ms observa energía PCM, no demuestra habla, inteligibilidad, naturalidad ni reproducción física. La llegada del primer bloque puede preceder a una señal con energía."
+  ],
+  "error_code": "synthetic_review_limit",
+  "pcm_observation": {
+    "measurement": "pcm_window_energy",
+    "sample_format": "pcm_s16le",
+    "sample_rate_hz": null,
+    "channels": null,
+    "requested_window_ms": 20,
+    "window_frames": null,
+    "actual_window_ms": null,
+    "threshold_rms": 0.005,
+    "threshold_comparison": ">",
+    "time_reference": "chunk_arrival_relative_to_first_input",
+    "first_above_threshold_ms": null,
+    "received_pcm_bytes": 0,
+    "total_pcm_seconds": 0.0,
+    "above_threshold_seconds": 0.0,
+    "analyzed_pcm_seconds": 0.0,
+    "analyzed_window_count": 0,
+    "maximum_window_rms": 0.0,
+    "pending_bytes": 0,
+    "closed": true
+  },
+  "finished_at": "2026-10-28T01:48:52.382311+00:00",
+  "synthetic_review": {
+    "status": "unavailable"
+  }
+}

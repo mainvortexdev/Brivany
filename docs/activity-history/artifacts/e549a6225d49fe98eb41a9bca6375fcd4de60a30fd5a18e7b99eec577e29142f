@@ -1,0 +1,154 @@
+"""Private JSON-lines child transport. Credentials stay in the Python process."""
+import json
+import os
+from pathlib import Path
+import queue
+import subprocess
+import socket
+import threading
+import time
+from uuid import uuid4
+from .backend import resolve_backend,verify_source,verify_bundle,child_environment
+
+ROOT=Path(__file__).resolve().parents[2]
+PROGRESS_STAGES=frozenset({'ide_window','ide_configuration','ide_waiting','ide_ready'})
+AVAILABILITY_TTL_SECONDS=30
+
+
+class NativeError(ValueError):
+    def __init__(self,message,code='native_action_failed'):
+        self.code=code
+        super().__init__(message)
+
+
+class NativeRuntime:
+    def __init__(self, workspace, *, proxy, token, source=None, diagnostics=False):
+        self.location=resolve_backend(source);self.source=self.location.source
+        self.workspace=Path(workspace).resolve();self.workspace.mkdir(parents=True,exist_ok=True)
+        self.proxy=proxy;self.token=token;self.diagnostics=diagnostics;self.process=None;self.responses={};self.lock=threading.RLock();self.write_lock=threading.Lock()
+        self.ready=threading.Event();self.startup_error=None
+        self.socket=None;self.port=None
+        self.diagnostic_events=[]
+        self.active_cancelled=None
+        self.start_lock=threading.Lock()
+        self.availability_lock=threading.Lock()
+        self.availability_cache=None
+
+    def _availability_stamp(self,binary):
+        paths=(self.source,binary,self.source/'bundle-manifest.json',
+               ROOT/'config/computer-source.json',ROOT/'config/computer-runtime.json')
+        stamps=[]
+        for path in paths:
+            try:
+                stat=path.stat()
+                stamps.append((stat.st_size,stat.st_mtime_ns,stat.st_ctime_ns,stat.st_ino))
+            except OSError:stamps.append(None)
+        return tuple(stamps)
+
+    def availability(self,*,refresh=False):
+        binary=self.source/'node_modules'/'electron'/'dist'/'electron.exe'
+        # UI polls share one recent verification. Action entry points below
+        # always recheck integrity before starting or sending native work.
+        with self.availability_lock:
+            now=time.monotonic();stamp=self._availability_stamp(binary)
+            cached=self.availability_cache
+            if not refresh and cached and now-cached[0]<AVAILABILITY_TTL_SECONDS and stamp==cached[1]:
+                return dict(cached[2])
+            try:
+                if self.location.error:raise ValueError(self.location.error)
+                if self.location.mode=='bundled':verify_bundle(self.source)
+                else:verify_source(self.source)
+                matched=True
+            except (OSError,ValueError,KeyError,TypeError):matched=False
+            value={'available':os.name=='nt' and binary.is_file() and matched,'source_lock_matches':matched,
+                   'source_mode':self.location.mode,'bundle_verified':self.location.mode=='bundled' and matched,
+                   'backend':'cognira-windows','platforms_verified':[], 'native_input_verified':False}
+            self.availability_cache=(now,stamp,value)
+            return dict(value)
+
+    def start(self):
+        with self.start_lock:self._start()
+    def _start(self):
+        with self.lock:
+            if self.process and self.process.poll() is None:return
+            if not self.availability(refresh=True)['available']:raise ValueError('El backend de control de Cognira no está disponible en este equipo.')
+            if self.location.mode=='bundled':verify_bundle(self.source,force=True)
+            self.ready.clear();self.startup_error=None
+            env=child_environment()
+            env.update(BRIVANY_COMPUTER_SOURCE=str(self.source),BRIVANY_COMPUTER_WORKSPACE=str(self.workspace),
+                       BRIVANY_COMPUTER_PROXY=self.proxy,BRIVANY_COMPUTER_TOKEN=self.token)
+            if self.diagnostics:env['BRIVANY_COMPUTER_TEST_DIAGNOSTICS']='1'
+            self.process=subprocess.Popen([str(self.source/'node_modules/electron/dist/electron.exe'),str(ROOT/'desktop/computer/native.cjs')],
+                cwd=ROOT,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
+                text=True,encoding='utf-8',creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0),bufsize=1)
+            process=self.process
+            def read():
+                try:
+                    for line in process.stdout:
+                        if len(line)>2000000:continue
+                        try:message=json.loads(line)
+                        except ValueError:continue
+                        if message.get('event')=='ready':self.port=message.get('port');self.ready.set();continue
+                        if message.get('event')=='unavailable':self.startup_error='El backend nativo no pudo inicializarse.';self.ready.set();continue
+                        if message.get('event')=='progress':
+                            with self.lock:target=self.responses.get(message.get('id'))
+                            if target and message.get('stage') in PROGRESS_STAGES:target.put(message)
+                            continue
+                        if message.get('event')=='diagnostic':self.diagnostic_events.append(message);continue
+                        if message.get('event')=='cancelled' and self.active_cancelled is not None:self.active_cancelled.set()
+                        with self.lock: target=self.responses.get(message.get('id'))
+                        if target:target.put(message)
+                finally:
+                    if not self.ready.is_set():self.startup_error='El backend se cerró durante el arranque.';self.ready.set()
+                    with self.lock:
+                        for target in self.responses.values():target.put({'error':'El ejecutor nativo se cerró.'})
+            threading.Thread(target=read,daemon=True,name='melodi-native-reader').start()
+        if not self.ready.wait(15) or self.startup_error:
+            self.close();raise ValueError(self.startup_error or 'El backend no confirmó su arranque.')
+        self.socket=socket.create_connection(('127.0.0.1',self.port),timeout=3)
+
+    def call(self, method, *, cancelled=None, timeout=90, on_progress=None, **params):
+        if cancelled is not None and cancelled.is_set():raise ValueError('Tarea cancelada.')
+        self.start()
+        if not self.availability(refresh=True)['available']:
+            self.cancel();raise ValueError('El backend cambió durante la sesión; se detuvo sin repetir la acción.')
+        identifier=str(uuid4());target=queue.Queue()
+        if method=='begin_task':self.active_cancelled=cancelled
+        if method=='end_task':self.active_cancelled=None
+        with self.lock:self.responses[identifier]=target
+        try:
+            with self.write_lock:
+                if cancelled is not None and cancelled.is_set():raise ValueError('Tarea cancelada.')
+                self.socket.sendall((json.dumps({'id':identifier,'method':method,'_token':self.token,**params},ensure_ascii=False)+'\n').encode())
+            deadline=time.monotonic()+timeout
+            while time.monotonic()<deadline:
+                if cancelled is not None and cancelled.is_set():self.cancel();raise ValueError('Tarea cancelada.')
+                try:result=target.get(timeout=.1)
+                except queue.Empty:continue
+                if result.get('event')=='progress':
+                    if on_progress and result.get('stage') in PROGRESS_STAGES:on_progress(result['stage'])
+                    continue
+                if 'error' in result:raise NativeError(result['error'],result.get('error_code','native_action_failed'))
+                if result.get('event')=='cancelled':
+                    if cancelled is not None:cancelled.set()
+                    raise ValueError('Tarea cancelada con Escape.')
+                return result['result']
+            self.cancel();raise ValueError('El ejecutor agotó el tiempo; no se repetirá la acción.')
+        finally:
+            with self.lock:self.responses.pop(identifier,None)
+
+    def cancel(self):
+        with self.write_lock:
+            if self.process and self.process.poll() is None and self.socket:
+                try:self.socket.sendall((json.dumps({'id':str(uuid4()),'method':'cancel','_token':self.token})+'\n').encode())
+                except (OSError,ValueError):pass
+
+    def close(self):
+        self.cancel()
+        if self.socket:
+            try:self.socket.close()
+            except OSError:pass
+            self.socket=None
+        if self.process and self.process.poll() is None:
+            try:self.process.stdin.close();self.process.wait(timeout=4)
+            except (OSError,subprocess.TimeoutExpired):self.process.kill()

@@ -1,0 +1,15 @@
+{
+  "suite": "computer-files",
+  "started_at": "2026-11-01T20:17:06.817598+00:00",
+  "finished_at": "2026-11-01T20:17:07.520539+00:00",
+  "duration_seconds": 0.702941,
+  "command": [
+    "node",
+    "--test",
+    "tests/file-approval.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ preparation does not delete; one-use commit uses trash with no unlink fallback (29.9949ms)\n✔ expired, changed or redirected files are never committed (58.6857ms)\n✔ replace needs an existing destination and preserves its old bytes (70.7859ms)\n✔ move uses a new destination; changed targets and extra fields are rejected (40.5147ms)\n✔ trash failure keeps original; cancellation before commit consumes ticket (24.9715ms)\n✔ system, hard-linked, hidden, executable and outside-scope files are excluded (22.1908ms)\nℹ tests 6\nℹ suites 0\nℹ pass 6\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 483.4535\n"
+}

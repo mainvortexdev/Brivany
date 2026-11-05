@@ -1,0 +1,23 @@
+{
+  "suite": "http",
+  "started_at": "2026-10-30T13:46:17.592074+00:00",
+  "finished_at": "2026-10-30T13:46:19.709972+00:00",
+  "duration_seconds": 2.117898,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_h1_server.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".......................\r\n----------------------------------------------------------------------\r\nRan 23 tests in 1.048s\r\n\r\nOK\r\n"
+}

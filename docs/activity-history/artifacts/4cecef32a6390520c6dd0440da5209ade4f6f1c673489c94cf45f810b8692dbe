@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "real_paint": true,
+  "real_meta": true,
+  "billing_usd": null,
+  "state": "succeeded",
+  "phase": "El texto está en un lienzo nuevo, abierto en Paint.",
+  "canvas_dimensions": [
+    920,
+    360
+  ],
+  "paint_window_verified": true,
+  "window_capture_verified": true,
+  "native_input": false,
+  "provider_requests": 3,
+  "elapsed_seconds": 22.86
+}

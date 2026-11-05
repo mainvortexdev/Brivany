@@ -1,0 +1,41 @@
+{
+  "scope": "real native execution on new synthetic files only",
+  "external_calls": 0,
+  "checks": [
+    "new note bytes verified"
+  ],
+  "user_documents_modified": false,
+  "fixture_root": "<local-path>\\tmp\\computer-files-real\\fixture-64aa6744",
+  "control_probe": {
+    "handle": "1509506",
+    "items": [
+      {
+        "runtime": "42.1705946",
+        "enabled": true,
+        "offscreen": false,
+        "password": false,
+        "role": "ControlType.Pane"
+      },
+      {
+        "runtime": "42.1050606",
+        "enabled": true,
+        "offscreen": false,
+        "password": false,
+        "role": "ControlType.Pane"
+      }
+    ],
+    "rootName": "Melodi-fixture-cdb5e1.txt: Bloc de notas",
+    "rootClass": "Notepad"
+  },
+  "observed_foreground": {
+    "processName": "notepad",
+    "width": 960,
+    "y": 113,
+    "height": 518,
+    "x": 262,
+    "title": "Melodi-fixture-cdb5e1.txt: Bloc de notas",
+    "windowHandle": "1509506"
+  },
+  "status": "failed",
+  "failure": "La nota no presenta un único campo editable; no se escribirá en otro control."
+}

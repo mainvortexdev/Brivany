@@ -1,0 +1,5 @@
+'use strict';
+const {chromium}=require('../motion-studio/node_modules/playwright-core'),fs=require('node:fs');
+(async()=>{const cfg=JSON.parse(process.env.BRIVANY_OWN_SYNC_TEST),browser=await chromium.launch({channel:'msedge',headless:true,args:['--disable-background-timer-throttling','--disable-backgrounding-occluded-windows','--disable-renderer-backgrounding']});let report;
+try{const page=await browser.newPage();await page.route('**/*',r=>new URL(r.request().url()).hostname==='127.0.0.1'?r.continue():r.abort());await page.goto(cfg.url);await page.evaluate(config=>window.testConfig=config,cfg);await page.locator('#start').click();await page.waitForFunction(()=>window.report?.finished,null,{timeout:55000});report=await page.evaluate(()=>window.report);}catch(e){report={passed:false,error:e.message};}finally{await browser.close();}
+const path='tmp/extension-sync-buffer/real-'+Date.now()+'.json';fs.mkdirSync('tmp/extension-sync-buffer',{recursive:true});fs.writeFileSync(path,JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));console.log(path);process.exitCode=report.passed?0:1;})().catch(e=>{console.error(e.message);process.exitCode=1;});

@@ -1,0 +1,15 @@
+{
+  "suite": "terminal-ide",
+  "started_at": "2026-11-01T19:06:40.323745+00:00",
+  "finished_at": "2026-11-01T19:06:41.223045+00:00",
+  "duration_seconds": 0.8993,
+  "command": [
+    "node",
+    "--test",
+    "tests/ide-project.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ sealed local project configuration is accepted without executing it (72.1073ms)\n✔ changed configuration and invalid seals are rejected (26.3329ms)\n✔ another working copy, interpreter or adapter cannot replace the observed inputs (78.1561ms)\n✔ preview must use a nonprivileged explicit port (64.2305ms)\nℹ tests 4\nℹ suites 0\nℹ pass 4\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 617.4172\n"
+}

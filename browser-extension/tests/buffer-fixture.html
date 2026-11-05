@@ -1,0 +1,89 @@
+<!doctype html><meta charset="utf-8"><title>Owned Brivany A/V fixture</title><button id="run">Run owned fixture</button><canvas id="source" width="640" height="360"></canvas><video id="replay" width="640" height="360"></video>
+<script type="module">
+import {BufferedTranslationPlayer} from '../buffered-player.js';
+const canvas=document.querySelector('canvas'),context=canvas.getContext('2d'),video=document.querySelector('video');
+const settings=new URL(location.href).searchParams,mode=settings.get('mode')||'synchronized',cueAt=Number(settings.get('cue_at')||3),duration=Number(settings.get('duration')||9.5);
+const slowStart=settings.get('slow_voice_start')==='1';
+const denseVoice=settings.get('dense_voice')==='1',slot=denseVoice ? 0.8 : 1;
+window.report={type:'actual_MediaRecorder_MediaSource_AudioWorklet_with_synthetic_source_and_substituted_relay',mode,provider_cue_ready_at_source_seconds:cueAt,external_calls:0,microphone:false,user_audio_persisted:false,errors:[],states:[],cue_started:[],snapshots:[],passed:false};
+document.querySelector('#run').onclick=async()=>{
+  const report=window.report;let sourceAudio,engine,timer;
+  try{
+    const initial=performance.now(),draw=()=>{const time=(performance.now()-initial)/1000;context.fillStyle=Math.floor(time)%2?'#394558':'#657d97';context.fillRect(0,0,640,360);context.fillStyle='white';context.font='60px sans-serif';context.fillText(time.toFixed(2),120,190);};
+    draw();timer=setInterval(draw,40);sourceAudio=new AudioContext();await sourceAudio.resume();const destination=sourceAudio.createMediaStreamDestination(),oscillator=sourceAudio.createOscillator(),gain=sourceAudio.createGain();gain.gain.value=.03;oscillator.frequency.value=220;oscillator.connect(gain);gain.connect(destination);oscillator.start();
+    const stream=new MediaStream([...canvas.captureStream(24).getVideoTracks(),...destination.stream.getAudioTracks()]);
+    const samples=24000,bytes=new Uint8Array(samples*2),view=new DataView(bytes.buffer);
+    for(let i=0;i<samples;i++)view.setInt16(i*2,Math.round(Math.sin(i*2*Math.PI*440/24000)*3000),true);
+    let text='';for(const byte of bytes)text+=String.fromCharCode(byte);
+    const pcm=btoa(text),turns=[{id:'own-one',start:1,readyAt:cueAt}];
+    if(slowStart||denseVoice)turns.push({id:'own-two',start:3.3,readyAt:4.4});
+    class Relay extends EventTarget{
+      readyState=1;bufferedAmount=0;seconds=0;
+      emit(value){this.dispatchEvent(new MessageEvent('message',{data:JSON.stringify(value)}));}
+      send(value){
+        if(typeof value==='string'){if(JSON.parse(value).type==='start')queueMicrotask(()=>this.emit({type:'ready'}));return;}
+        this.seconds+=value.byteLength/48000;this.emit({type:'source-progress',epoch:1,processed_ms:this.seconds*1000});
+        for(const turn of turns){
+          const interval={epoch:1,cue_id:turn.id,source_start_ms:turn.start*1000,source_end_ms:(turn.start+slot)*1000};
+          if(this.seconds>=turn.start-.2&&!turn.announced){turn.announced=true;this.emit({type:'source-turn',...interval});}
+          if(this.seconds>=turn.readyAt&&!turn.translated){turn.translated=true;this.emit({type:'dub-cue',...interval,sample_rate:24000,pcm_base64:pcm,final:true,speaker_label:'synthetic'});}
+        }
+      }
+      close(){this.readyState=3;}
+    }
+    const audio=new AudioContext({sampleRate:24000});await audio.resume();
+    engine=new BufferedTranslationPlayer({video,mode,naturalRate:slowStart||denseVoice,status:state=>{if(report.states.at(-1)!==state)report.states.push(state);},failure:error=>report.errors.push(error),buffer:state=>{if(!report.snapshots.length||state.capture-report.snapshots.at(-1).capture>=.95)report.snapshots.push({...state,ready_state:video.readyState,paused:video.paused,buffered:[...Array(video.buffered.length)].map((_,i)=>[video.buffered.start(i),video.buffered.end(i)]),frames:video.getVideoPlaybackQuality().totalVideoFrames});},prepared:()=>{report.preproduction_ready_at={capture:engine.captureTime,video:video.currentTime,paused:video.paused};setTimeout(()=>engine.beginPrepared(),300);}});
+    const startVoice=engine.startVoice.bind(engine);
+    engine.startVoice=async id=>{
+      const voice=engine.cues.get(id)?.voice;
+      const started={id,media:video.currentTime,capture:engine.captureTime,wall:performance.now()-initial};
+      report.cue_started.push(started);
+      if(denseVoice){
+        const analyser=audio.createAnalyser();analyser.fftSize=8192;
+        const silent=audio.createGain();silent.gain.value=0;
+        engine.cues.get(id).node.connect(analyser);analyser.connect(silent);silent.connect(audio.destination);
+        started.pitch_hz=[];
+        const levels=new Float32Array(analyser.frequencyBinCount);
+        const meter=setInterval(()=>{
+          if(voice.paused)return;
+          analyser.getFloatFrequencyData(levels);
+          let peak=0;for(let i=1;i<levels.length;i++)if(levels[i]>levels[peak])peak=i;
+          if(levels[peak]>-50)started.pitch_hz.push(peak*audio.sampleRate/analyser.fftSize);
+        },30);
+        voice.addEventListener('ended',()=>{clearInterval(meter);analyser.disconnect();silent.disconnect();},{once:true});
+        started.preserves_pitch=voice.preservesPitch;
+      }
+      if(slowStart){
+        const play=voice.play.bind(voice);started.play_calls=0;
+        voice.play=async()=>{
+          started.play_calls++;
+          if(id==='own-one'){
+            const at=performance.now(),picture=video.currentTime;
+            await new Promise(resolve=>setTimeout(resolve,450));
+            report.slow_voice_start={wait_ms:performance.now()-at,picture_advance_seconds:video.currentTime-picture,
+              picture_held:video.paused,voice_still_paused:voice.paused};
+          }
+          return play();
+        };
+        started.preserves_pitch=voice.preservesPitch;
+      }
+      return startVoice(id);
+    };
+    await engine.start({stream,audio,socket:new Relay()});window.fixtureEngine=engine;
+    await new Promise(resolve=>setTimeout(resolve,duration*1000));report.stats=engine.stats();report.video_frames=video.getVideoPlaybackQuality().totalVideoFrames;
+    if(slowStart){
+      const pending=report.slow_voice_start,voices=report.stats.completed_voices;
+      report.passed=!report.errors.length&&pending?.wait_ms>=400&&pending.picture_held&&pending.voice_still_paused&&
+        pending.picture_advance_seconds>=0&&pending.picture_advance_seconds<.14&&report.cue_started.length===2&&
+        turns.every((turn,index)=>report.cue_started[index].id===turn.id&&report.cue_started[index].play_calls===1&&report.cue_started[index].preserves_pitch)&&
+        report.stats.completed_voice_count===2&&report.stats.completed_voices_with_signal===2&&voices.every(cue=>cue.rate===1&&cue.audio_seconds===1)&&video.currentTime>5;
+    }else if(denseVoice){
+      const voices=report.stats.completed_voices;
+      report.passed=!report.errors.length&&report.cue_started.length===2&&report.stats.completed_voice_count===2&&
+        report.stats.completed_voices_with_signal===2&&voices.every(cue=>cue.rate===1.25&&cue.audio_seconds===1&&cue.wall_seconds<1.05)&&
+        report.cue_started.every(cue=>cue.preserves_pitch&&cue.pitch_hz.length>=10&&cue.pitch_hz.every(hz=>Math.abs(hz-440)<12))&&video.currentTime>5;
+    }else report.passed=!report.errors.length&&report.cue_started.length===1&&Math.abs(report.cue_started[0].media-1)<.2&&video.currentTime>duration-(cueAt>4?8:mode==='preproduction'?7:6)&&report.video_frames>30&&(mode!=='preproduction'||report.preproduction_ready_at?.paused&&report.preproduction_ready_at.video<.01);
+  }catch(error){report.errors.push(String(error.message));}
+  finally{engine?.close();clearInterval(timer);await sourceAudio?.close();report.finished=true;}
+};
+</script>

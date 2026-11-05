@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "runtime": "real Windows Core Audio metadata and WinMM synthetic playback",
+  "audio_captured": false,
+  "external_calls": 0,
+  "provider": "not used",
+  "spotify_volume": "substituted callback; SDK gain tested separately",
+  "process_paths_saved": false,
+  "tone_seconds": 3,
+  "tone_amplitude": 0.035,
+  "tone_activity_observed": true,
+  "owned_audio_excluded": true,
+  "duck_then_restore": true
+}

@@ -1,0 +1,18 @@
+{
+  "suite": "sous-pipeline",
+  "started_at": "2026-10-29T11:38:44.003879+00:00",
+  "finished_at": "2026-10-29T11:38:49.600195+00:00",
+  "duration_seconds": 5.596316,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_sous_pipeline"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Real browser + HTTP Handler + persistent Sous, with explicitly simulated vision providers.\",\r\n  \"checks\": [\r\n    \"opening the page makes no image/provider request\",\r\n    \"consent-gated image gives candidates; user supplies quantity and confirms before inventory changes\",\r\n    \"manual inventory, curated plan and explicit human step verification use the real service\",\r\n    \"two distinct substituted Meta readings advance one step and remain visibly simulated\",\r\n    \"mobile layout fits viewport and source labels stay readable\"\r\n  ],\r\n  \"image_uploads\": 3,\r\n  \"external_browser_requests\": 0,\r\n  \"camera_requests\": 0,\r\n  \"model_executed\": false,\r\n  \"real_meta_api_calls\": 0,\r\n  \"checked_at\": \"2026-10-29T11:38:49.302197+00:00\",\r\n  \"provider_stub_calls\": {\r\n    \"inventory\": 1,\r\n    \"cooking\": 2\r\n  },\r\n  \"distinct_cooking_frames\": 2,\r\n  \"gpu_seconds\": 0,\r\n  \"limitations\": [\r\n    \"Real browser, local HTTP Handler and SQLite; deterministic provider substitutes.\",\r\n    \"No model recognition quality, latency, food safety or real provider billing tested.\"\r\n  ]\r\n}\r\n"
+}

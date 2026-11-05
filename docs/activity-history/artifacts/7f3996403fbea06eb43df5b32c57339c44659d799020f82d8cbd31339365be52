@@ -1,0 +1,28 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/workspace-translation-ui/report.json",
+  "original_sha256": "1f70927bbecec4265318a0eca1d62b310731e37b679071372280ea163ddb5776",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "passed": true,
+    "one_click_starts_english_auto": true,
+    "no_app_navigation": true,
+    "repeated_click_does_not_duplicate": true,
+    "stop_and_voice_controls": true
+  },
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

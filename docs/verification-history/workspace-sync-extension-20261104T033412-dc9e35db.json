@@ -1,0 +1,17 @@
+{
+  "suite": "workspace-sync-extension",
+  "started_at": "2026-11-04T03:34:12.400851+00:00",
+  "finished_at": "2026-11-04T03:34:12.815741+00:00",
+  "duration_seconds": 0.41489,
+  "command": [
+    "node",
+    "--test",
+    "browser-extension/tests/sync-timeline.test.mjs",
+    "browser-extension/tests/background.test.mjs",
+    "browser-extension/tests/stream-setup.test.mjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ browser action captures its granted source into a separate consumer and navigation stops it (12.9155ms)\n✔ provider preparation waits for ready before the capture phase and creates one session (50.3474ms)\n✔ cancellation during provider preparation rejects instead of activating later capture (0.8724ms)\n✔ provider rejection is surfaced without a second start request (2.2177ms)\n✔ autoplay replays only a confirmed silent prefix while the first translated cue is pending (3.5989ms)\n✔ unknown silence, insufficient ASR progress or less than the minimum buffer never bypass preparation (0.7579ms)\n✔ preproduction and an explicit user pause retain their playback requirement for a confirmed prefix (0.6721ms)\n✔ a filtered song advances without waiting for translated lyrics or audio (4.9045ms)\n✔ pairing accepts only a loopback WebSocket with a six digit code and binds sync origin (3.551ms)\n✔ four seconds alone cannot start a picture before real ASR progress (0.3911ms)\n✔ a late provider holds the matching picture before the speech and resumes with its cue (1.2603ms)\n✔ late audio is rejected rather than played over an unrelated picture (1.2238ms)\n✔ old epochs never enter the new session and transcript-only markers cannot be cues (0.3377ms)\n✔ buffer has a hard thirty second horizon even while paused (0.3805ms)\n✔ preproduction requires five prepared seconds and explicit playback (0.5689ms)\n✔ cue IDs are unique and completed intervals can be released from memory (0.4912ms)\n✔ an eight second utterance with seven seconds provider work holds at its source onset instead of dropping content (0.7303ms)\n✔ preproduction can start with the first cue while a second utterance crossing five seconds is still being translated (0.6125ms)\n✔ six seconds without the first cue signals a missed budget without dropping audio or silently extending a promise (0.5725ms)\nℹ tests 19\nℹ suites 0\nℹ pass 19\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 243.9616\n"
+}

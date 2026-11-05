@@ -1,0 +1,19 @@
+{
+  "suite": "orchestration",
+  "started_at": "2026-11-04T01:43:44.946841+00:00",
+  "finished_at": "2026-11-04T01:43:51.509234+00:00",
+  "duration_seconds": 6.562393,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_orchestration"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "....................E....\r\n======================================================================\r\nERROR: test_single_search_keeps_original_relative_date_before_provider_execution (tests.test_orchestration.Teams.test_single_search_keeps_original_relative_date_before_provider_execution)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_orchestration.py\", line 176, in test_single_search_keeps_original_relative_date_before_provider_execution\r\n    prepared=self.service.orchestrator.prepare_plan(parent)\r\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"<local-path>\\services\\orchestration\\team.py\", line 241, in prepare_plan\r\n    try:plan=validate_team(self.tools.plan(request,catalog,parent['cancelled'],lambda:self.charge(parent)))\r\n                                                           ~~~~~~^^^^^^^^^^^^^\r\nKeyError: 'cancelled'\r\n\r\n----------------------------------------------------------------------\r\nRan 25 tests in 5.533s\r\n\r\nFAILED (errors=1)\r\n"
+}

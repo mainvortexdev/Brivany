@@ -1,0 +1,19 @@
+{
+  "checked_at": "2026-10-28T00:10:05.469422+00:00",
+  "operation": "read-only model catalog",
+  "method": "GET",
+  "documentation": "https://developers.cloudflare.com/api/resources/ai/subresources/models/methods/list/",
+  "http_status": 200,
+  "success": true,
+  "catalog_matches": 1,
+  "models_exact": [
+    {
+      "name": "@cf/meta/m2m100-1.2b",
+      "ready": null
+    }
+  ],
+  "provider_error_codes": [],
+  "inference_calls": 0,
+  "external_calls": 1,
+  "automatic_retries": 0
+}

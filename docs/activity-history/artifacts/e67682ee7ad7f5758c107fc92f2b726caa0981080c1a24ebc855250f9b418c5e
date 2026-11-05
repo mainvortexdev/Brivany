@@ -1,0 +1,14 @@
+{
+  "suite": "spotify-relay",
+  "started_at": "2026-10-31T22:04:47.974513+00:00",
+  "finished_at": "2026-10-31T22:04:49.497446+00:00",
+  "duration_seconds": 1.522933,
+  "command": [
+    "node",
+    "tools/check_spotify_relay.cjs"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n200 !== 410\n\n    at <local-path>\\tools\\check_spotify_relay.cjs:38:131\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+}

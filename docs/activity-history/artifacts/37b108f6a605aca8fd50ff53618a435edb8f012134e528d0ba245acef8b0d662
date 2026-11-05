@@ -1,0 +1,30 @@
+{
+  "observed": true,
+  "source": "https://learn.microsoft.com/windows/win32/api/wuapi/nf-wuapi-iupdatesearcher-search",
+  "receipt_id": "bbf2a2a7-981f-455d-8e6a-4fd12b54278e",
+  "printer_drivers": [
+    "Send to Microsoft OneNote 16 Driver",
+    "Microsoft XPS Document Writer v4",
+    "Microsoft Print To PDF",
+    "EPSON L3250 Series",
+    "Microsoft Shared Fax Driver"
+  ],
+  "devices_with_errors": [],
+  "search_result": 2,
+  "updates": [
+    {
+      "id": "d2090f44-1445-423f-b574-5fb25bee43e6",
+      "revision": 1,
+      "title": "Apple, Inc. USBDevice Driver Update (552.0.0.0)",
+      "manufacturer": "Apple, Inc.",
+      "model": "Apple Mobile Device USB Composite Device",
+      "hardware_id": "usb\\vid_05ac&pid_12a8&mi_01",
+      "class": "OtherHardware",
+      "driver_date": "2025-04-25T00:00:00.0000000",
+      "eula_accepted": true,
+      "downloaded": false,
+      "requires_interaction": true,
+      "installable": false
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+[
+  {
+    "Name": "Office.ClickToRun.Scenario.InstallTaskUninstallcentennial",
+    "Success": true,
+    "Duration": 52822057
+  },
+  {
+    "Name": "Office.ClickToRun.Scenario.InstallTaskMigrate",
+    "Success": true,
+    "Duration": 10240
+  },
+  {
+    "Name": "Office.ClickToRun.Scenario.InstallTaskFonts",
+    "Success": true,
+    "Duration": 918692
+  },
+  {
+    "Name": "Office.ClickToRun.Scenario.InstallTaskLastrun",
+    "Success": true,
+    "Duration": 35496051
+  },
+  {
+    "Name": "Office.ClickToRun.Scenario.InstallTaskCreateworkingconfiguration2",
+    "Success": true,
+    "Duration": 1736165
+  },
+  {
+    "Name": "Office.ClickToRun.Scenario.InstallTaskStream2",
+    "Success": true,
+    "Duration": 223397715
+  },
+  {
+    "Name": "Office.ClickToRun.Scenario.TaskStageRegistry",
+    "Success": true,
+    "Duration": 3877363
+  },
+  {
+    "Name": "Office.ClickToRun.Scenario.InstallTaskApplyconfiguration2",
+    "Success": true,
+    "Duration": 23799402
+  },
+  {
+    "Name": "Office.ClickToRun.Scenario.InstallTaskInitupdates",
+    "Success": true,
+    "Duration": 956773
+  },
+  {
+    "Name": "Office.ClickToRun.Scenario.InstallTaskIntegrateinstall",
+    "Success": true,
+    "Duration": 189610952
+  },
+  {
+    "Name": "Office.ClickToRun.Scenario.DoriTask",
+    "Duration": 60599863,
+    "Data.Result": 1
+  },
+  {
+    "Data.Result": 1
+  },
+  {
+    "Name": "Office.ClickToRun.Scenario.RichInteractionTaskOnlineInteraction",
+    "Success": true,
+    "Duration": 61056104
+  },
+  {
+    "Name": "Office.ClickToRun.Scenario.RichInteractionTaskOnlineInteraction",
+    "Success": true,
+    "Duration": 333466
+  }
+]

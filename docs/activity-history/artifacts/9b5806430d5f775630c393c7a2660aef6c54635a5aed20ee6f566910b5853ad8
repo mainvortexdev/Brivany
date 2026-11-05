@@ -1,0 +1,210 @@
+{
+  "type": "actual_MediaRecorder_MediaSource_AudioWorklet_with_synthetic_source_and_substituted_relay",
+  "mode": "synchronized",
+  "provider_cue_ready_at_source_seconds": 3,
+  "external_calls": 0,
+  "microphone": false,
+  "user_audio_persisted": false,
+  "errors": [],
+  "states": [
+    "Conectando la traducción…",
+    "En pausa",
+    "Traduciendo"
+  ],
+  "cue_started": [
+    {
+      "id": "own-one",
+      "media": 0.976,
+      "capture": 5.2,
+      "wall": 5460.5
+    }
+  ],
+  "snapshots": [
+    {
+      "lag": 0.64,
+      "reason": "paused",
+      "media": 0,
+      "capture": 0.64,
+      "processed": 0.64,
+      "ready_state": 1,
+      "paused": true,
+      "buffered": [
+        [
+          0,
+          0.606
+        ]
+      ],
+      "frames": 1
+    },
+    {
+      "lag": 1.6,
+      "reason": "paused",
+      "media": 0,
+      "capture": 1.6,
+      "processed": 1.5200000000000002,
+      "ready_state": 4,
+      "paused": true,
+      "buffered": [
+        [
+          0,
+          1.473
+        ]
+      ],
+      "frames": 4
+    },
+    {
+      "lag": 2.56,
+      "reason": "paused",
+      "media": 0,
+      "capture": 2.56,
+      "processed": 2.480000000000001,
+      "ready_state": 4,
+      "paused": true,
+      "buffered": [
+        [
+          0,
+          2.405
+        ]
+      ],
+      "frames": 4
+    },
+    {
+      "lag": 3.52,
+      "reason": "paused",
+      "media": 0,
+      "capture": 3.52,
+      "processed": 3.520000000000002,
+      "ready_state": 4,
+      "paused": true,
+      "buffered": [
+        [
+          0,
+          3.245
+        ]
+      ],
+      "frames": 4
+    },
+    {
+      "lag": 4.2530600000000005,
+      "reason": null,
+      "media": 0.22694,
+      "capture": 4.48,
+      "processed": 4.400000000000002,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          0,
+          4.205
+        ]
+      ],
+      "frames": 10
+    },
+    {
+      "lag": 4.250667,
+      "reason": null,
+      "media": 1.189333,
+      "capture": 5.44,
+      "processed": 5.440000000000003,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          0,
+          5.405
+        ]
+      ],
+      "frames": 32
+    },
+    {
+      "lag": 4.258402,
+      "reason": null,
+      "media": 2.141598,
+      "capture": 6.4,
+      "processed": 6.320000000000004,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          0,
+          6.244
+        ]
+      ],
+      "frames": 53
+    },
+    {
+      "lag": 4.251685,
+      "reason": null,
+      "media": 3.108315,
+      "capture": 7.36,
+      "processed": 7.280000000000005,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          0,
+          7.204
+        ]
+      ],
+      "frames": 76
+    },
+    {
+      "lag": 4.24,
+      "reason": null,
+      "media": 4.08,
+      "capture": 8.32,
+      "processed": 8.240000000000006,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          0,
+          8.084
+        ]
+      ],
+      "frames": 97
+    },
+    {
+      "lag": 4.258376999999999,
+      "reason": null,
+      "media": 5.021623,
+      "capture": 9.28,
+      "processed": 9.200000000000006,
+      "ready_state": 4,
+      "paused": false,
+      "buffered": [
+        [
+          0,
+          9.004
+        ]
+      ],
+      "frames": 117
+    }
+  ],
+  "passed": true,
+  "stats": {
+    "epoch": 1,
+    "delay_seconds": 4,
+    "max_buffer_seconds": 30,
+    "processed_seconds": 9.440000000000007,
+    "turns": 0,
+    "hold_transitions": 1,
+    "max_observed_delay_seconds": 4.258402,
+    "preparation_budget_ms": 6000,
+    "preparation_budget_exceeded": false,
+    "prepared_after_capture_ms": 4306.199999999255,
+    "first_audio_after_capture_ms": 5282.60000000149,
+    "capture_seconds": 9.44,
+    "sent_seconds": 9.44,
+    "queued_PCM_seconds": 0,
+    "queued_encoded_bytes": 0,
+    "active_cue": null,
+    "translated_cues_buffered": 0,
+    "voice_gaps_ms": [],
+    "video_time": 5.203855,
+    "closed": false
+  },
+  "video_frames": 121,
+  "finished": true,
+  "owned_test_background_throttling_disabled": true
+}

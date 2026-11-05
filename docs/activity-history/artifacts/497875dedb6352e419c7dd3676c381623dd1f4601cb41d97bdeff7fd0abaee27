@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-agents-ui",
+  "started_at": "2026-11-03T21:17:20.119957+00:00",
+  "finished_at": "2026-11-03T21:17:35.856977+00:00",
+  "duration_seconds": 15.73702,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-agents"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"passed\":true,\"scope\":\"isolated_owned_UI_with_simulated_jobs\",\"external_calls\":0,\"agents\":6,\"widths\":[1280,1024,800,640,375],\"checks\":[\"small_companions\",\"working_animation\",\"review_state\",\"delayed_hover\",\"cancel_and_open_result\",\"version_identity\",\"reduced_motion\",\"bounds\"],\"errors\":[]}\n"
+}

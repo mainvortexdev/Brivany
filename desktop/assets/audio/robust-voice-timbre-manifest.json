@@ -1,0 +1,26 @@
+{
+  "model": "prithivMLmods/Common-Voice-Gender-Detection-ONNX",
+  "revision": "8d7fc28d26889a8763098f9e49fed002b15d2d3f",
+  "source": "https://huggingface.co/prithivMLmods/Common-Voice-Gender-Detection-ONNX/resolve/8d7fc28d26889a8763098f9e49fed002b15d2d3f/onnx/model_quantized.onnx",
+  "sha256": "a0934c2f8934878f264dd5072d07b1bbd176f051d285b2a7910dfaa173747695",
+  "size_bytes": 95387498,
+  "license_declared": "Apache-2.0",
+  "author": "prithivMLmods",
+  "model_card_sha256": "74dafc65bd3c99d21cf69950ed0b56b9a59122601c674e729f1b101efa5ae49f",
+  "sample_rate": 16000,
+  "source_sample_rate": 24000,
+  "maximum_window_seconds": 3,
+  "window_selection": "central_single_window",
+  "confidence_threshold": 0.85,
+  "labels": {
+    "0": "feminine_catalog_style",
+    "1": "masculine_catalog_style"
+  },
+  "execution_provider": "CPUExecutionProvider",
+  "threads": 1,
+  "model_card_source": "https://huggingface.co/prithivMLmods/Common-Voice-Gender-Detection-ONNX/resolve/8d7fc28d26889a8763098f9e49fed002b15d2d3f/README.md",
+  "license_text_source": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+  "license_text_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+  "base_model": "prithivMLmods/Common-Voice-Gender-Detection",
+  "architecture_base": "facebook/wav2vec2-base-960h"
+}

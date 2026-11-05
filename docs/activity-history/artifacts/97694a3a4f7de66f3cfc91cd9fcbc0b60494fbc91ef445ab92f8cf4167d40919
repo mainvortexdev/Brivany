@@ -1,0 +1,50 @@
+{
+  "type": "real_inline_model_12_regression",
+  "report": "inline-sync-1793826644765.json",
+  "passed": false,
+  "completed": 15,
+  "completed_source_end_ms": 31700,
+  "first_signal_ms": 4971,
+  "lag": {
+    "initial_seconds": 4.2933330000000005,
+    "maximum_seconds": 7.745009000000003,
+    "final_seconds": 7.681008999999996,
+    "maximum_growth_seconds": 3.4516760000000026
+  },
+  "categories": {
+    "feminine": 8,
+    "masculine": 7
+  },
+  "provisional": 6,
+  "consumption": {
+    "pipeline_ready_events_observed": 1,
+    "muse_live_input_started": 1,
+    "muse_live_session_acks_observed": 1,
+    "prefix_mt_attempts_observed": 3,
+    "live_mt_attempts_observed": 14,
+    "prefix_tts_requests_observed": 3,
+    "live_tts_requests_observed": 14,
+    "live_prosody_stages_started": 5,
+    "billing_amount": null,
+    "relay_sessions_started": 1,
+    "prefix_preparations_started": 1,
+    "prefix_muse_batch_attempts": 1,
+    "prefix_meta_prosody_attempts": 2,
+    "live_meta_prosody_attempts": 5,
+    "meta_caption_prefetch_attempts": 1
+  },
+  "source_interrupted": false,
+  "quality": {
+    "maximum_nonsong_fallback_seconds": 1,
+    "maximum_allowed_lag_seconds": 8,
+    "maximum_observed_lag_seconds": 7.745009000000003,
+    "maximum_allowed_lag_growth_seconds": 3,
+    "maximum_observed_lag_growth_seconds": 3.4516760000000026,
+    "observed_nonsong_fallback_seconds": 0,
+    "verified_source_end_ms": 31700,
+    "unplayed_published_cues": 0,
+    "missing_intervals": [],
+    "passed": false
+  },
+  "model_selected_by_validated_pipeline": "muse-spark-1.2"
+}

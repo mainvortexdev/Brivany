@@ -1,0 +1,23 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "resource_id": {
+      "format": "uuid",
+      "title": "Resource Id",
+      "type": "string"
+    },
+    "status": {
+      "const": "accepted",
+      "default": "accepted",
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "resource_id"
+  ],
+  "title": "Accepted",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:Accepted:0.1.0"
+}

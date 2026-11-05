@@ -1,0 +1,16 @@
+{
+  "windows_commands": 4757,
+  "windows_shortcuts": 231,
+  "macos_commands_indexed": 46,
+  "registry_forbidden": 20,
+  "installed_detected_not_tested": 521,
+  "executed_approved": 0,
+  "sources": [
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands",
+    "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "https://github.com/MicrosoftDocs/windows-powershell-docs",
+    "https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html"
+  ],
+  "source_tree_sha": "b7645dd8c687139b28e845119da30ec670526507",
+  "note": "Documentation index and local discovery, never proof of execution. Server/role commands require their module and environment."
+}

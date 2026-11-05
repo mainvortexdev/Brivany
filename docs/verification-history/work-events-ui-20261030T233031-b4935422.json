@@ -1,0 +1,19 @@
+{
+  "suite": "work-events-ui",
+  "started_at": "2026-10-30T23:30:31.801552+00:00",
+  "finished_at": "2026-10-30T23:30:57.168730+00:00",
+  "duration_seconds": 25.367178,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--work-events"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"status\": \"passed\",\n  \"checks\": [\n    \"live transcript dispatches actual independent edit job through substituted MCP\",\n    \"skill opens alongside same live microphone node\",\n    \"scheduled delivery exact review, one activation, cancellation\",\n    \"capability catalog and Work settings reachable without replacing chat\",\n    \"Work starts without audio; detection has explicit consent; offer requires acceptance; finish starts translation\",\n    \"widget and region selector fit narrow viewports; normalized region and Escape work\"\n  ],\n  \"providers_and_native_windows\": \"substituted\",\n  \"real_ui_http\": true,\n  \"physical_audio_verified\": false,\n  \"real_outbound_delivery\": false,\n  \"external_calls\": 0,\n  \"errors\": []\n}\n"
+}

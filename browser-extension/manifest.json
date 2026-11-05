@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "Brivany · Videos con Melodi",
+  "version": "0.4.9",
+  "minimum_chrome_version": "116",
+  "description": "Transcribe y escucha la traducción del video seleccionado mientras se reproduce.",
+  "icons": {
+    "128": "icon.png"
+  },
+  "permissions": [
+    "tabCapture",
+    "activeTab",
+    "storage",
+    "scripting",
+    "alarms"
+  ],
+  "action": {
+    "default_title": "Seleccionar video para Melodi"
+  },
+  "optional_host_permissions": ["https://*/*", "http://*/*"],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+M"
+      }
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src ws://127.0.0.1:*; media-src 'self' blob:; img-src 'self' data:; style-src 'self'"
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4DVob6qCPjhmiIfX/9l+QEyplHGFMVNhgkDMtogDlCQmoHSuKRVErGSjV7HyHi/L3s3zZhs9mT/gXOeEiO44a5D9GXaZDXmjtsj///lLgU1L22N15+qQOmA/ypTDbqupNlSTHsQzYBB4HBfrqfoLHIgJhE9E9zHipuAtu9bQJtuAPQBdDccDB7PpfjS1Siu+qP90VCbDrb4xXhPlk0V5EWwD5AxeEvrtGVfi/dErCCmil287H7FguzGwuDSUhFpvBz9XEdoOfPKeSjZboviyyxMNsut1j5NBfQfP9SGetV8dnDVk0Ljlap6u6Oy4uePiBQsVO2SUV5ice2JkVLrrUwIDAQAB",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "video-selection.js",
+        "prefix-preparation.js",
+        "caption-probe.js",
+        "pcm-capture.js",
+        "pcm-sender.js",
+        "inline-translation.js",
+        "buffered-player.js",
+        "sync-timeline.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}

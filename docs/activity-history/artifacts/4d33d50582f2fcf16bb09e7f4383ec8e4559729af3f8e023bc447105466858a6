@@ -1,0 +1,103 @@
+{
+  "passed": true,
+  "scope": "local real YAMNet inference on controlled audio fixtures",
+  "rows": [
+    {
+      "case": "speech",
+      "expected_skip": false,
+      "matched": true,
+      "skip": false,
+      "kind": "speech",
+      "model": "yamnet",
+      "windows": 4,
+      "speech_score": 0.9961,
+      "singing_score": 0.0,
+      "music_score": 0.0,
+      "latency_ms": 14.33,
+      "acoustics": {
+        "voiced_ratio": 0.592,
+        "held_ratio": 0.299,
+        "pitch_span": 10.07
+      }
+    },
+    {
+      "case": "human_speech",
+      "expected_skip": false,
+      "matched": true,
+      "skip": false,
+      "kind": "speech",
+      "model": "yamnet",
+      "windows": 4,
+      "speech_score": 0.9883,
+      "singing_score": 0.0,
+      "music_score": 0.0039,
+      "latency_ms": 13.68,
+      "acoustics": {
+        "voiced_ratio": 0.231,
+        "held_ratio": 0.0,
+        "pitch_span": 5.0
+      }
+    },
+    {
+      "case": "singing",
+      "expected_skip": true,
+      "matched": true,
+      "skip": true,
+      "kind": "singing",
+      "model": "yamnet",
+      "windows": 4,
+      "speech_score": 0.8516,
+      "singing_score": 0.1992,
+      "music_score": 0.1094,
+      "latency_ms": 37.13,
+      "acoustics": {
+        "voiced_ratio": 0.912,
+        "held_ratio": 0.776,
+        "pitch_span": 4.03
+      }
+    },
+    {
+      "case": "singing_later",
+      "expected_skip": true,
+      "matched": true,
+      "skip": true,
+      "kind": "singing",
+      "model": "yamnet",
+      "windows": 4,
+      "speech_score": 0.957,
+      "singing_score": 0.0586,
+      "music_score": 0.0195,
+      "latency_ms": 36.25,
+      "acoustics": {
+        "voiced_ratio": 0.735,
+        "held_ratio": 0.565,
+        "pitch_span": 8.08
+      }
+    },
+    {
+      "case": "dialogue_over_song",
+      "expected_skip": false,
+      "matched": true,
+      "skip": false,
+      "kind": "speech",
+      "model": "yamnet",
+      "windows": 4,
+      "speech_score": 0.9805,
+      "singing_score": 0.0,
+      "music_score": 0.1484,
+      "latency_ms": 12.74,
+      "acoustics": {
+        "voiced_ratio": 0.687,
+        "held_ratio": 0.455,
+        "pitch_span": 10.07
+      }
+    }
+  ],
+  "music_sample_source": "https://commons.wikimedia.org/wiki/File:Twinkle_Twinkle_Little_Star_-_sung_with_full_lyrics.ogg",
+  "music_sample_author": "Derrick Coetzee (Dcoetzee)",
+  "music_sample_license": "CC0",
+  "voice_cloning_used": false,
+  "original_audio_attached": false,
+  "paid_inference_requests": 0,
+  "billing_amount": null
+}

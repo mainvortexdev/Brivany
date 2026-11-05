@@ -1,0 +1,18 @@
+{
+  "suite": "personal-ui",
+  "started_at": "2026-10-29T16:45:01.325452+00:00",
+  "finished_at": "2026-10-29T16:45:05.878698+00:00",
+  "duration_seconds": 4.553246,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_personal_ui"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Loopback HTTP, persistent SQLite, actual Connections reminder/note browser controls and Sous snapshot; authored synthetic fixtures.\",\r\n  \"checks\": [\r\n    \"opening reads private state without scheduling a worker, requesting notifications or making account operations\",\r\n    \"an overdue local reminder becomes a persistent due item and reappears after reload without a provider send\",\r\n    \"snoozing persists a new date/generation while stale revisions are rejected\",\r\n    \"explicit complete/cancel controls persist terminal states and remove finished items from the active list\",\r\n    \"authored notes persist through reload and render markup as inert text\",\r\n    \"Sous shopping is snapshotted at its actual revision with only pending ingredients and no order\",\r\n    \"preparing the Sous note for WhatsApp only fills the reviewed action form; it creates no proposal, approval or send\",\r\n    \"archiving persists without deletion; missing Sous sessions and unrelated origins cannot create notes\",\r\n    \"reminder and note controls fit narrow viewports without page errors or external traffic\"\r\n  ],\r\n  \"screenshots\": [\r\n    \"tmp/personal-ui/personal-1440.png\",\r\n    \"tmp/personal-ui/personal-390.png\"\r\n  ],\r\n  \"api_posts\": [\r\n    \"/api/personal/reminders\",\r\n    \"/api/personal/check-due\",\r\n    \"/api/personal/reminders/c7c915b6-dafc-43f5-8c08-ba33814ff4bf/snooze\",\r\n    \"/api/personal/reminders\",\r\n    \"/api/personal/reminders/a72e9a39-e80c-4fdd-995f-695d0bfbe10b/complete\",\r\n    \"/api/personal/reminders\",\r\n    \"/api/personal/reminders/0a2b44b2-971f-4fdf-ab14-8ff9c780de5d/cancel\",\r\n    \"/api/personal/notes\",\r\n    \"/api/personal/notes/from-sous\",\r\n    \"/api/personal/notes/0542e5c5-216f-4d1e-9341-470ba0520479/archive\"\r\n  ],\r\n  \"checked_at\": \"2026-10-29T16:45:05.477124+00:00\",\r\n  \"external_calls\": 0,\r\n  \"real_messages_sent\": 0,\r\n  \"os_background_alarm_verified\": false,\r\n  \"notification_permission_requested\": false,\r\n  \"persistence_reopened_in_new_service\": true,\r\n  \"delivery_attempts\": 0,\r\n  \"limitations\": [\r\n    \"Loopback HTTP, browser controls, SQLite and Sous shopping snapshots are real; all data are authored synthetic fixtures.\",\r\n    \"No scheduler, operating-system background alarm, account grant, notification or WhatsApp delivery tested.\"\r\n  ]\r\n}\r\n"
+}

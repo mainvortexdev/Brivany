@@ -1,0 +1,144 @@
+{
+  "schema_version": "0.1.0",
+  "skill_id": "717c5588-2bf8-569e-9662-df2f7db42843",
+  "version": "1.0.0",
+  "title": "Preparar una corrección primaria revisada",
+  "domain": "color_grading",
+  "objective": "Guiar una corrección primaria dentro de un contexto de color confirmado por un experto.",
+  "prerequisites": [
+    "Uso básico de la página Color"
+  ],
+  "compatibility": {
+    "application": "davinci-resolve",
+    "connector_profile": "resolve.discovery-pending",
+    "tested_versions": [
+      "version-to-be-tested"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "required_capabilities": [
+      "resolve.project.read"
+    ]
+  },
+  "parameters": {},
+  "sources": [
+    {
+      "source_id": "expert-demo",
+      "kind": "expert_note",
+      "artifact_id": "7a1f5420-f421-5ec8-bf78-4528bccfd43c",
+      "sha256": "951a7090b528d914ca36a6032e1d735e0c699835517fa69083740c7c23901162",
+      "license": "Ejemplo sintético del contrato; no incluye un medio real"
+    }
+  ],
+  "steps": [
+    {
+      "step_id": "confirm-context",
+      "title": "Confirmar el contexto de color",
+      "intent": "Identificar material, configuración y objetivo antes de ajustar",
+      "instruction": "Borrador: el experto debe completar el procedimiento y la rúbrica con material autorizado.",
+      "requires": [],
+      "sources": [
+        {
+          "source_id": "expert-demo",
+          "start_ms": null,
+          "end_ms": null
+        }
+      ],
+      "checks": [
+        {
+          "check_id": "confirm-context-review",
+          "evaluator_kind": "expert",
+          "rubric": "Pendiente de definir por el colorista antes de publicar",
+          "capability": null,
+          "signal_key": null,
+          "comparison": null,
+          "expected": null,
+          "parameter_ref": null,
+          "unit": null,
+          "tolerance": null,
+          "on_missing": "UNKNOWN"
+        }
+      ],
+      "max_attempts": 3,
+      "recovery_guidance": "Solicitar contexto o revisión; no suponer parámetros inaccesibles."
+    },
+    {
+      "step_id": "primary-adjustment",
+      "title": "Realizar la corrección primaria",
+      "intent": "Aplicar el criterio explicado por el colorista al material de práctica",
+      "instruction": "Borrador: el experto debe completar el procedimiento y la rúbrica con material autorizado.",
+      "requires": [
+        "confirm-context"
+      ],
+      "sources": [
+        {
+          "source_id": "expert-demo",
+          "start_ms": null,
+          "end_ms": null
+        }
+      ],
+      "checks": [
+        {
+          "check_id": "primary-adjustment-review",
+          "evaluator_kind": "expert",
+          "rubric": "Pendiente de definir por el colorista antes de publicar",
+          "capability": null,
+          "signal_key": null,
+          "comparison": null,
+          "expected": null,
+          "parameter_ref": null,
+          "unit": null,
+          "tolerance": null,
+          "on_missing": "UNKNOWN"
+        }
+      ],
+      "max_attempts": 3,
+      "recovery_guidance": "Solicitar contexto o revisión; no suponer parámetros inaccesibles."
+    },
+    {
+      "step_id": "review-result",
+      "title": "Revisar el resultado",
+      "intent": "Separar cumplimiento técnico e intención estética",
+      "instruction": "Borrador: el experto debe completar el procedimiento y la rúbrica con material autorizado.",
+      "requires": [
+        "primary-adjustment"
+      ],
+      "sources": [
+        {
+          "source_id": "expert-demo",
+          "start_ms": null,
+          "end_ms": null
+        }
+      ],
+      "checks": [
+        {
+          "check_id": "review-result-review",
+          "evaluator_kind": "expert",
+          "rubric": "Pendiente de definir por el colorista antes de publicar",
+          "capability": null,
+          "signal_key": null,
+          "comparison": null,
+          "expected": null,
+          "parameter_ref": null,
+          "unit": null,
+          "tolerance": null,
+          "on_missing": "UNKNOWN"
+        }
+      ],
+      "max_attempts": 3,
+      "recovery_guidance": "Solicitar contexto o revisión; no suponer parámetros inaccesibles."
+    }
+  ],
+  "transfer_exercise": {
+    "goal": "Resolver un segundo clip",
+    "difference_from_example": "Material con exposición o iluminación diferente dentro del alcance revisado",
+    "target_help_level": "hinted",
+    "expert_review_required": true
+  },
+  "visibility": "private",
+  "lifecycle": "draft",
+  "review": null,
+  "content_sha256": "8f5cb5bac654dd0b1711cdc1e0ff34f6fdd741b98be760e4606c109d2eb7d494",
+  "is_example": true
+}

@@ -1,0 +1,103 @@
+{
+  "connected": true,
+  "library_access": true,
+  "granted_scopes": "playlist-read-collaborative playlist-read-private user-library-read user-modify-playback-state user-read-currently-playing user-read-playback-state",
+  "player": {
+    "has_item": false,
+    "device_count": 0,
+    "active_device_count": 0,
+    "item_count": 0,
+    "private_session": false,
+    "playing": null
+  },
+  "currently_playing": {
+    "has_item": false,
+    "device_count": 0,
+    "active_device_count": 0,
+    "item_count": 0,
+    "private_session": false,
+    "playing": null
+  },
+  "devices": {
+    "has_item": false,
+    "device_count": 1,
+    "active_device_count": 0,
+    "item_count": 0,
+    "private_session": false,
+    "playing": null
+  },
+  "playlists": {
+    "has_item": false,
+    "device_count": 0,
+    "active_device_count": 0,
+    "item_count": 5,
+    "private_session": false,
+    "playing": null
+  },
+  "albums": {
+    "has_item": false,
+    "device_count": 0,
+    "active_device_count": 0,
+    "item_count": 0,
+    "private_session": false,
+    "playing": null
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/v1/me/player",
+      "http_code": 204,
+      "keys": [],
+      "has_item": false
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/currently-playing",
+      "http_code": 204,
+      "keys": [],
+      "has_item": false
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/player/devices",
+      "http_code": 200,
+      "keys": [
+        "devices"
+      ],
+      "has_item": false
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/playlists",
+      "http_code": 200,
+      "keys": [
+        "href",
+        "limit",
+        "next",
+        "offset",
+        "previous",
+        "total",
+        "items"
+      ],
+      "has_item": false
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me/albums",
+      "http_code": 200,
+      "keys": [
+        "href",
+        "items",
+        "limit",
+        "next",
+        "offset",
+        "previous",
+        "total"
+      ],
+      "has_item": false
+    }
+  ],
+  "image_hosts": {
+    "mosaic.scdn.co": 15
+  }
+}

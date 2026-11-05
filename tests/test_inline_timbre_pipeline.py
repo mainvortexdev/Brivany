@@ -1,0 +1,388 @@
+"""Local-only timbre/MT scheduling through the real synchronized relay."""
+import base64
+import json
+import threading
+import time
+import unittest
+from unittest.mock import patch
+
+from websockets.exceptions import ConnectionClosed
+from websockets.sync.server import serve
+
+from packages.providers import river_translation as river
+from packages.providers.prefix_translation import PreparedPrefix, PrefixTurn, PrefixProsody, PREFIX_BYTES
+from services.work.video_prefix import VideoPrefixCache, Entry
+from tests import test_sync_relay as sync_fixture
+
+
+class InlineTimbrePipelineTests(unittest.TestCase):
+    def setUp(self):
+        # Reuse the loopback ASR/TTS builder, without inheriting its test methods.
+        self.harness = sync_fixture.SynchronizedPipelineTests(
+            'test_partials_never_trigger_mt_final_cue_has_real_boundaries_and_no_native_output')
+        self.harness.setUp()
+        self.patchers = []
+        self.model_entered = threading.Event()
+        self.release_model = threading.Event()
+        self.model_returned = threading.Event()
+        self.mt_entered = threading.Event()
+        self.mt_closed = threading.Event()
+        self.model_result = {'available':True, 'voice_timbre':'masculine', 'timbre_confidence':.99, 'latency_ms':0.}
+        self.addCleanup(self.cleanup_harness)
+        owner = self
+
+        class LocalAcousticCluster:
+            def associate(self, sample):
+                return {'cluster':1, 'similarity':1., 'reason':'matched', 'windows':1, 'latency_ms':0.}
+
+        class LocalTranslator:
+            def stream(self, *_):
+                owner.mt_entered.set()
+                yield 'Voici une traduction locale claire et complète.'
+            def close(self):
+                owner.mt_closed.set()
+
+        class LocalSpeechGate:
+            def classify(self, sample):
+                return {'skip':False, 'kind':'speech', 'latency_ms':0.}
+
+        def blocked_model(sample):
+            owner.model_entered.set()
+            if not owner.release_model.wait(5):
+                raise AssertionError('The bounded timbre test did not release its model')
+            owner.model_returned.set()
+            return dict(owner.model_result)
+
+        self.harness.expressive = False
+        self.harness.translator_factory = LocalTranslator
+        self.harness.release.set()
+        for patcher in (
+            patch.object(river, 'analyze_timbre', side_effect=blocked_model),
+            patch.object(river, 'SessionSpeakers', LocalAcousticCluster),
+            patch.object(river, 'warm_speaker_embedding', return_value=False),
+            patch.object(river, 'pitch_style', return_value='high'),
+            patch('packages.providers.audio_content.SingingFilter', LocalSpeechGate),
+        ):
+            patcher.start()
+            self.patchers.append(patcher)
+
+    def cleanup_harness(self):
+        self.release_model.set()
+        try:
+            self.harness.tearDown()
+        finally:
+            for patcher in reversed(self.patchers):
+                patcher.stop()
+
+    def collect_until(self, socket, predicate, *, timeout=3):
+        deadline = time.monotonic() + timeout
+        events = []
+        while time.monotonic() < deadline:
+            event = json.loads(socket.recv(timeout=max(.001, deadline-time.monotonic())))
+            events.append(event)
+            self.assertNotEqual(event['type'], 'error', event)
+            if predicate(event):
+                return events
+        self.fail('Local pipeline did not reach the expected stage')
+
+    def begin_blocked(self, socket):
+        socket.send(self.harness.fixture.pcm * 2)
+        self.assertTrue(self.model_entered.wait(2), 'Timbre analysis must be started')
+        self.assertTrue(self.mt_entered.wait(1), 'MT must start while timbre analysis is blocked')
+        return self.collect_until(socket, lambda event:event.get('stage') == 'mt_first')
+
+    def test_mt_starts_during_model_work_and_first_tts_waits_for_timbre(self):
+        with self.harness.socket(inline=True) as socket:
+            events = self.begin_blocked(socket)
+            # This interval is below the real 2.5 s fallback boundary.
+            self.assertFalse(self.model_returned.wait(.15))
+            self.assertEqual(self.harness.fixture.counts['tts_messages'], 0)
+            self.release_model.set()
+            socket.send(json.dumps({'type':'finish'}))
+            events += self.collect_until(socket, lambda event:event['type'] == 'done')
+        self.assertTrue(self.model_returned.is_set())
+        request = next(event for event in events if event.get('stage') == 'tts_request')
+        self.assertEqual((request['voice_timbre'], request['timbre_source']),
+                         ('masculine', 'local_robust_voice_timbre'))
+        cue = next(event for event in events if event['type'] == 'dub-cue')
+        self.assertEqual(cue['voice_category'], 'masculine')
+        self.assertLess(next(i for i,event in enumerate(events) if event.get('stage') == 'mt_first'),
+                        next(i for i,event in enumerate(events) if event.get('stage') == 'local_timbre'))
+        self.assertGreaterEqual(self.harness.fixture.counts['tts_messages'], 1)
+        self.assertFalse(self.harness.native_opened)
+
+    def test_weak_cluster_match_reanalyzes_live_piece_and_marks_contrary_catalog_provisional(self):
+        class WeakAssociation:
+            def __init__(self):self.calls=0
+            def associate(self,_):
+                self.calls+=1
+                return {'cluster':1,'similarity':None if self.calls==1 else .6603,
+                        'reason':'new_cluster' if self.calls==1 else 'matched','windows':1,'latency_ms':0.}
+        class SeededTracker(river.SpeakerTracker):
+            def enable_acoustic(self,session=None):
+                super().enable_acoustic(WeakAssociation())
+                self.associate('owned-prefix',b'owned prefix fixture')
+                advice={'voice_timbre':'feminine','timbre_confidence':.99,'timbre_inference_source':'test_prefix_model'}
+                self.remember_timbre('owned-prefix',advice)
+                self.voice('owned-prefix',b'','auto',stopped=threading.Event(),advisory=advice,require_timbre=True)
+        with patch.object(river,'SpeakerTracker',SeededTracker),self.harness.socket(inline=True) as socket:
+            events=self.begin_blocked(socket)
+            self.release_model.set();socket.send(json.dumps({'type':'finish'}))
+            events+=self.collect_until(socket,lambda event:event['type']=='done')
+        self.assertTrue(self.model_entered.is_set(),'The weak match must not reuse the feminine cache')
+        cue=next(event for event in events if event['type']=='dub-cue')
+        request=next(event for event in events if event.get('stage')=='tts_request')
+        self.assertEqual((cue['speaker_index'],cue['voice_category']),(1,'masculine'))
+        self.assertTrue(cue['voice_category_provisional'])
+        self.assertEqual((request['voice_timbre'],request['timbre_source']),('masculine','local_timbre_conflict'))
+        self.assertTrue(request['voice_category_provisional'])
+        self.assertEqual(self.harness.fixture.voices,[river.VOICES['low']])
+
+    def test_stop_during_model_work_prevents_late_tts_or_audio(self):
+        with self.harness.socket(inline=True) as socket:
+            events = self.begin_blocked(socket)
+            socket.send(json.dumps({'type':'stop'}))
+            self.assertTrue(self.mt_closed.wait(1), 'Stop must reach cancellation before the model returns')
+            self.release_model.set()
+            self.assertTrue(self.model_returned.wait(1))
+            deadline = time.monotonic() + 1
+            try:
+                while time.monotonic() < deadline:
+                    events.append(json.loads(socket.recv(timeout=max(.001, deadline-time.monotonic()))))
+            except (ConnectionClosed, TimeoutError):
+                pass
+        self.assertEqual(self.harness.fixture.counts['tts_messages'], 0)
+        self.assertFalse(any(event['type'] == 'dub-cue' or event.get('stage') in {'tts_request','tts_first','local_timbre'}
+                             for event in events))
+        self.assertFalse(self.harness.native_opened)
+
+    def test_model_timeout_uses_provisional_catalog_without_falling_back_to_pitch_gender(self):
+        with self.harness.socket(inline=True) as socket:
+            events=self.begin_blocked(socket)
+            socket.send(json.dumps({'type':'finish'}))
+            events+=self.collect_until(socket,lambda event:event['type']=='done',timeout=4)
+            self.assertFalse(self.model_returned.is_set(),'The test must reach its bounded fallback before inference completes')
+            self.release_model.set()
+        request=next(event for event in events if event.get('stage')=='tts_request')
+        cue=next(event for event in events if event['type']=='dub-cue')
+        self.assertEqual(request['voice_timbre'],'uncertain')
+        self.assertEqual(request['timbre_source'],'provisional_catalog')
+        self.assertTrue(request['voice_category_provisional'])
+        self.assertTrue(cue['voice_category_provisional'])
+        self.assertEqual(self.harness.fixture.voices,[river.VOICES['neutral']])
+
+    def provisional_result(self, *, available, confidence):
+        self.model_result={'available':available,'voice_timbre':'uncertain','timbre_confidence':confidence,'latency_ms':0.}
+        with self.harness.socket(inline=True) as socket:
+            events=self.begin_blocked(socket)
+            self.release_model.set();socket.send(json.dumps({'type':'finish'}))
+            events+=self.collect_until(socket,lambda event:event['type']=='done')
+        request=next(event for event in events if event.get('stage')=='tts_request')
+        cue=next(event for event in events if event['type']=='dub-cue')
+        self.assertEqual((request['voice_timbre'],request['timbre_confidence']),('uncertain',confidence))
+        self.assertEqual(request['timbre_source'],'provisional_catalog')
+        self.assertTrue(request['voice_category_provisional'])
+        self.assertTrue(cue['voice_category_provisional'])
+        self.assertEqual(cue['prosody']['timbre_inference_source'],'local_robust_voice_timbre')
+        self.assertEqual((cue['prosody']['voice_timbre'],cue['prosody']['timbre_confidence']),('uncertain',confidence))
+        self.assertEqual(self.harness.fixture.voices,[river.VOICES['neutral']])
+
+    def test_unknown_model_result_is_preserved_instead_of_becoming_a_high_pitch_female_voice(self):
+        self.provisional_result(available=True,confidence=.806631)
+
+    def test_disagreeing_local_models_cannot_flip_an_established_catalog_voice(self):
+        from packages.providers import robust_voice_timbre,voice_timbre
+        class SeededTracker(river.SpeakerTracker):
+            def enable_acoustic(self,session=None):
+                super().enable_acoustic(session)
+                self.associate('owned-reference',b'owned reference')
+                self.remember_timbre('owned-reference',{'voice_timbre':'masculine','timbre_confidence':.99,
+                    'timbre_inference_source':'local_timbre_consensus'})
+                for index in range(7):
+                    turn='owned-old-'+str(index)
+                    self.associate(turn,b'owned prior speech');self.cached_timbre(turn)
+        primary={'available':True,'voice_timbre':'feminine','timbre_confidence':.99}
+        secondary={'available':True,'voice_timbre':'masculine','timbre_confidence':.98}
+        with patch.object(river,'SpeakerTracker',SeededTracker),patch.object(river,'analyze_timbre',side_effect=robust_voice_timbre.analyze_timbre),patch.object(robust_voice_timbre,'analyze_robust_timbre',return_value=primary),patch.object(voice_timbre,'analyze_timbre',return_value=secondary) as corroborate,self.harness.socket(inline=True) as socket:
+            # The eight prior pieces consumed the reuse budget. Exercise fresh
+            # inference despite a strong, already masculine acoustic group.
+            socket.send(self.harness.fixture.pcm*2);socket.send(json.dumps({'type':'finish'}))
+            events=self.collect_until(socket,lambda event:event['type']=='done')
+        request=next(event for event in events if event.get('stage')=='tts_request')
+        cue=next(event for event in events if event['type']=='dub-cue')
+        self.assertEqual(request['voice_timbre'],'uncertain')
+        self.assertEqual(request['timbre_source'],'local_timbre_uncertain')
+        self.assertEqual(cue['voice_category'],'masculine');self.assertTrue(cue['voice_category_provisional'])
+        corroborate.assert_called_once()
+
+    def test_unavailable_model_uses_provisional_catalog_without_guessing_a_gender_from_pitch(self):
+        self.provisional_result(available=False,confidence=0.)
+
+    def test_prepared_unknown_timbre_is_preserved_when_expressive_delivery_is_disabled(self):
+        self.prepared_timbre_case(PrefixProsody('excited',.9,'high',.95,'uncertain',.806631,'local_robust_voice_timbre'))
+
+    def test_prepared_missing_timbre_is_provisional_without_pitch_gender(self):
+        self.prepared_timbre_case(None)
+
+    def prepared_timbre_case(self,advice):
+        self.harness.target='en'
+        pairing=self.harness.relay.issue_pairing()
+        token=self.harness.relay.pair(pairing['code'],sync_fixture.ORIGIN)['token']
+        source='youtube:sr_iLGKNsxU';identifier='p'*32
+        prepared=PreparedPrefix(7000,7000,(PrefixTurn('one',0,2400,None,'Prepared owned speech.','speech',advice),),bytes(PREFIX_BYTES))
+        self.harness.relay.video_prefix=VideoPrefixCache(lambda *_args,**_kwargs:prepared)
+        self.harness.relay.video_prefix.entries['test']=Entry(identifier,token,source,0,time.monotonic()+600,prepared)
+        requests=[]
+        def tts(socket):
+            try:
+                for raw in socket:
+                    event=json.loads(raw)
+                    if event.get('cancel'):continue
+                    requests.append(event)
+                    socket.send(json.dumps({'type':'chunk','context_id':event['context_id'],
+                        'data':base64.b64encode(self.harness.fixture.pcm).decode()}))
+                    if event['continue'] is False:socket.send(json.dumps({'type':'done','context_id':event['context_id']}))
+            except ConnectionClosed:pass
+        server=serve(tts,'127.0.0.1',0,compression=None)
+        threading.Thread(target=server.serve_forever,daemon=True).start()
+        try:
+            with patch.object(river,'CARTESIA_URL',f'ws://127.0.0.1:{server.socket.getsockname()[1]}'),self.harness.socket(
+                inline=True,token=token,prefix_options={'prefix_id':identifier,'prefix_source':source,'prefix_position_ms':0}) as socket:
+                socket.send(json.dumps({'type':'finish'}))
+                events=self.collect_until(socket,lambda event:event['type']=='done')
+        finally:server.shutdown()
+        cue=next(event for event in events if event['type']=='dub-cue')
+        self.assertTrue(cue['voice_category_provisional'])
+        self.assertEqual(cue['prosody'].get('voice_timbre','uncertain'),'uncertain')
+        self.assertEqual(cue['prosody'].get('timbre_confidence',0.),advice.timbre_confidence if advice else 0.)
+        self.assertFalse(cue['prosody']['applied'])
+        self.assertFalse(self.model_entered.is_set(),'Prepared acoustic evidence must not be analyzed again')
+        self.assertTrue(requests)
+        self.assertTrue(all(row['voice']==river.VOICES['neutral'] and row['language']=='en' for row in requests))
+        self.assertTrue(all('emotion' not in row.get('generation_config',{}) for row in requests))
+
+
+class InlineShortUnknownVoiceTests(unittest.TestCase):
+    def test_short_unknown_live_speech_cannot_become_a_confident_female_pitch_match(self):
+        for duration_ms in (400,880):
+            with self.subTest(duration_ms=duration_ms):
+                harness=sync_fixture.SynchronizedPipelineTests(
+                    'test_partials_never_trigger_mt_final_cue_has_real_boundaries_and_no_native_output')
+                harness.setUp()
+                class Translator:
+                    def stream(self,*_):yield 'Traduction locale.'
+                    def close(self):pass
+                class UnknownGate:
+                    def classify(self,_):return {'kind':'unknown','skip':False,'latency_ms':0.}
+                class NoAcousticLabelWait(river.SpeakerTracker):
+                    def enable_acoustic(self,session=None):
+                        super().enable_acoustic(session)
+                        self.condition.wait=lambda *_args,**_kwargs:self.fail_wait()
+                    @staticmethod
+                    def fail_wait():
+                        raise AssertionError('ASR labels cannot assign an acoustic key after an unassigned piece')
+                def asr(socket):
+                    socket.recv();socket.send(json.dumps({'sessionId':'synthetic-short-unknown'}))
+                    try:
+                        sent=False
+                        for raw in socket:
+                            if isinstance(raw,bytes) and not sent:
+                                sent=True
+                                for event in [
+                                    {'type':'speechStart','turnId':1,'audioProcessedMs':0},
+                                    {'type':'transcript','transcript':'Owned short phrase.'},
+                                    {'type':'speechEnd','turnId':1,'audioProcessedMs':duration_ms},
+                                    {'type':'speechComplete','turnId':1,'audioProcessedMs':duration_ms,'transcript':'Owned short phrase.'}]:
+                                    socket.send(json.dumps(event))
+                            elif isinstance(raw,str) and json.loads(raw)=={'type':'endStream'}:return
+                    except ConnectionClosed:pass
+                server=serve(asr,'127.0.0.1',0,compression=None)
+                threading.Thread(target=server.serve_forever,daemon=True).start()
+                harness.translator_factory=Translator;harness.content_filter_factory=UnknownGate;harness.expressive=False
+                try:
+                    with patch.object(river,'MUSE_URL',f'ws://127.0.0.1:{server.socket.getsockname()[1]}'),\
+                         patch.object(river,'SpeakerTracker',NoAcousticLabelWait),\
+                         patch.object(river,'pitch_style',return_value='high'),\
+                         patch.object(river,'analyze_timbre',side_effect=AssertionError('Unknown content must not train a voice model')),\
+                         patch.object(river,'SessionSpeakers',side_effect=lambda:type('NoTraining',(),{'associate':lambda *_:self.fail('Unknown content must not train speaker groups')})()),\
+                         harness.socket(inline=True) as socket:
+                        socket.send(harness.fixture.pcm*2);socket.send(json.dumps({'type':'finish'}));events=[]
+                        while True:
+                            event=json.loads(socket.recv(timeout=3));events.append(event)
+                            self.assertNotEqual(event['type'],'error',event)
+                            if event['type']=='done':break
+                    request=next(event for event in events if event.get('stage')=='tts_request')
+                    cue=next(event for event in events if event['type']=='dub-cue')
+                    self.assertEqual((cue['source_start_ms'],cue['source_end_ms']),(0,duration_ms))
+                    self.assertEqual((request['voice_timbre'],request['timbre_confidence']),('uncertain',0.))
+                    self.assertEqual(request['timbre_source'],'provisional_catalog')
+                    self.assertTrue(request['voice_category_provisional'])
+                    self.assertTrue(cue['voice_category_provisional'])
+                    self.assertEqual(harness.fixture.voices,[river.VOICES['neutral']])
+                finally:
+                    server.shutdown();harness.tearDown()
+
+
+class InlineTransportPreparationTests(unittest.TestCase):
+    def setUp(self):
+        self.harness=sync_fixture.SynchronizedPipelineTests(
+            'test_partials_never_trigger_mt_final_cue_has_real_boundaries_and_no_native_output')
+        self.harness.setUp()
+        self.addCleanup(self.harness.tearDown)
+        self.instances=[]
+        self.release=threading.Event()
+        self.addCleanup(self.release.set)
+        owner=self
+
+        class LocalTranslator:
+            def __init__(self):
+                self.warming=threading.Event();self.closed=threading.Event();self.streams=0
+                owner.instances.append(self)
+            def prepare_transport(self):
+                self.warming.set()
+                if not owner.release.wait(3):
+                    raise AssertionError('The test must release both local transport preparations')
+                return not self.closed.is_set()
+            def stream(self,*_):
+                self.streams+=1
+                yield 'Traduction locale.'
+            def close(self):
+                self.closed.set()
+                owner.release.set()
+
+        self.harness.translator_factory=LocalTranslator
+        self.harness.expressive=False
+
+    def test_both_inline_transports_warm_before_source_audio_without_inference(self):
+        with self.harness.socket(inline=True) as socket:
+            self.assertEqual(len(self.instances),2)
+            for translator in self.instances:
+                self.assertTrue(translator.warming.wait(1),'Each inline MT connection must be prepared during setup')
+            self.assertEqual([translator.streams for translator in self.instances],[0,0])
+            self.assertEqual(self.harness.fixture.counts['meta'],0)
+            self.assertEqual(self.harness.fixture.counts['tts_messages'],0)
+            self.release.set()
+            socket.send(json.dumps({'type':'stop'}))
+
+    def test_stop_cancels_both_transports_while_their_setup_is_pending(self):
+        with self.harness.socket(inline=True) as socket:
+            self.assertEqual(len(self.instances),2)
+            for translator in self.instances:
+                self.assertTrue(translator.warming.wait(1))
+            socket.send(json.dumps({'type':'stop'}))
+            for translator in self.instances:
+                self.assertTrue(translator.closed.wait(1),'Stop must close both independently warming connections')
+            self.assertEqual([translator.streams for translator in self.instances],[0,0])
+            self.assertEqual(self.harness.fixture.counts['tts_messages'],0)
+
+    def test_synchronized_native_path_keeps_one_transport(self):
+        with self.harness.socket(inline=False) as socket:
+            self.assertEqual(len(self.instances),1)
+            self.assertTrue(self.instances[0].warming.wait(1))
+            self.assertEqual(self.instances[0].streams,0)
+            self.release.set()
+            socket.send(json.dumps({'type':'stop'}))
+
+
+if __name__ == '__main__':
+    unittest.main()

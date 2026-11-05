@@ -1,0 +1,419 @@
+{
+  "scope": "real Chrome profile, YouTube search and observed player",
+  "checks": [
+    "direct playback URL opened and player advanced",
+    "pause verified in the same observed player",
+    "resume verified through observed player progress"
+  ],
+  "cost_amount": null,
+  "browser_network_consumption": "unknown",
+  "hardware_audibility_verified": false,
+  "initial_tab_count": 1,
+  "navigation": {
+    "navigated": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "verified": true,
+    "method": "observed-page-url",
+    "navigation_input_count": 1
+  },
+  "search_result": {
+    "playing": true,
+    "verified": true,
+    "method": "observed-content-progress",
+    "advances": 2,
+    "position": 6,
+    "clicked": false
+  },
+  "pause_result": {
+    "paused": true,
+    "verified": true,
+    "method": "observed-player-state",
+    "clicked": true
+  },
+  "resume_result": {
+    "playing": true,
+    "verified": true,
+    "method": "observed-content-progress",
+    "advances": 2,
+    "position": 21,
+    "clicked": true
+  },
+  "left_paused": true,
+  "tabs_preserved": true,
+  "status": "passed",
+  "planner_requests": 0,
+  "native_diagnostics": [
+    {
+      "event": "diagnostic",
+      "phase": "display-metrics-changed"
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 271,
+      "tab_count": 1,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 175,
+      "tab_count": 1,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 299,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 363,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 417,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 330,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 383,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 542,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 502,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 210,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 369,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 378,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 324,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1872,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 321,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 301,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1844,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 333,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 4,
+      "player_id_matches": 11,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 334,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 5,
+      "player_id_matches": 11,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 321,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 5,
+      "player_id_matches": 11,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 312,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 6,
+      "player_id_matches": 11,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1586,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1750,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 267,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1893,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1672,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 277,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1596,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 219,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1429,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1530,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 294,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 19,
+      "player_id_matches": 11,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 295,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 20,
+      "player_id_matches": 11,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 320,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 20,
+      "player_id_matches": 11,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 319,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "youtube-playback",
+      "state": "playing",
+      "position": 21,
+      "player_id_matches": 11,
+      "ad": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1723,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 291,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1478,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1998,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 252,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1710,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 1541,
+      "tab_count": 2,
+      "player_present": true
+    },
+    {
+      "event": "diagnostic",
+      "phase": "browser_observation",
+      "ms": 221,
+      "tab_count": 2,
+      "player_present": false
+    },
+    {
+      "event": "diagnostic",
+      "phase": "window-closed"
+    }
+  ]
+}

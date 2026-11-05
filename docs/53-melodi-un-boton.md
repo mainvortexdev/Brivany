@@ -1,0 +1,83 @@
+# 53. Melodi: Comenzar, hablar y recibir respuesta
+
+30 de octubre de 2026. Corrección del inicio sin respuesta comunicado por el
+usuario en `/app`. Esta entrega sustituye las casillas de activación descritas
+en documentos anteriores; sus resultados se conservan como histórico.
+
+## Cambio y causas identificadas
+
+Comenzar siempre solicita transcripción y prepara la voz disponible, sin exigir
+activar previamente transcripción o voz de Melodi ni abrir ajustes. Se retiran
+ambas casillas. Al abrir la página no se captura audio ni se hace inferencia.
+El aviso junto al botón explica el envío a Muse, Meta y Cartesia. El permiso
+normal del micrófono del navegador sigue siendo necesario; no puede omitirse.
+
+La salida Cartesia se prepara en el mismo clic, antes de esperar la captura y
+conexión ASR, para habilitar AudioContext durante una interacción del usuario.
+Si la captura/preparación falla se libera el micrófono y se muestra el error.
+
+Había una segunda condición de silencio: después de `speechComplete` de Muse,
+el RMS local debía bajar durante la pausa configurada. Con ruido continuo por
+encima del umbral nunca respondía, aun con transcripción final válida. Ahora el
+final de Muse basta para que la siguiente muestra de control inicie la
+respuesta. La espera acústica se conserva solo para el reconocimiento del
+navegador; su ajuste se etiqueta de acuerdo con ese alcance. No se infiere la
+causa exacta del episodio del usuario a partir de una captura de pantalla.
+
+Se mantiene el turno silencioso de reuniones y su permiso específico, la
+cancelación, el mute durante la salida para evitar eco, un solo flujo activo,
+timeouts y ausencia de reintentos. No se agregan cuotas diarias o de duración
+al traductor. Cache shell v40; la PWA consulta assets en red y usa caché si
+falla. Las claves y los IDs de Melodi permanecen en el backend.
+
+## Verificación local
+
+Las suites se ejecutaron mediante `tools.verify`, con registro automático:
+
+- `live-ui`: `docs/verification-history/live-ui-20261030T134048-8c93e93a.json`.
+  Comenzar sin ajustes, ausencia de casillas, final Muse con señal continua por
+  encima del umbral local, ASR y voz es/en, interrupción, flush y reunión
+  silenciosa. AudioWorklet real; micrófono y proveedores sustituidos.
+- `app-ui`: `docs/verification-history/app-ui-20261030T134048-25af6d3a.json`.
+  Once comprobaciones de interfaz, reconocimiento/voz locales sustituidos,
+  permiso/reunión, parada, responsive y caché offline. Sin inferencia externa.
+- `javascript`: `docs/verification-history/javascript-20261030T134135-5762c428.json`.
+  45 pruebas locales aprobadas de PCM, turnos, cancelación y controles.
+
+## Una comprobación real, acotada y sin reintentos
+
+Evidencia: `tmp/melodi-real-20261030134135152.json`. Herramienta:
+`tools/check_melodi_real.cjs --allow-paid`, fuera de `tools.verify`.
+
+Se reutilizó exclusivamente `english-room.wav`, una fixture sintética de
+2,344208 s con hash fijo aprobado por el ensayo anterior. No se usó micrófono
+físico ni una grabación original del usuario. La fixture inglesa se envió al
+modo Practicar, con respuesta española e ID español de Melodi. El test usó los
+archivos reales de `/app`, captura con MediaStream sustituto, AudioWorklet,
+relay Muse, conversación HTTP y PCMPlayer del producto.
+
+Límites de esta herramienta: una captura, una sesión ASR, una conversación,
+como máximo dos solicitudes TTS y cierre del navegador a los 30 s. Las
+solicitudes adicionales se bloquean solo en el ensayo. No hay bucle de tests
+reales ni reintento automático. No se guardan transcripción, respuesta ni audio
+nuevo; el informe contiene contadores, tiempos y estados.
+
+Resultado observado:
+
+- Una sesión Muse, cinco parciales y un final.
+- Una conversación Meta HTTP 200 y una síntesis Cartesia HTTP 200.
+- 387840 bytes enviados al ASR, unos 8,08 s incluyendo silencios de espera.
+- 30 bloques PCM programados en un AudioContext `running`, con energía de voz;
+  la salida llegó al final y volvió a ESCUCHANDO sin error visible.
+- Unos 15 ms entre final ASR y petición de respuesta; primer texto unos
+  1543 ms después de esa petición y primer bloque de audio unos 2486 ms después
+  del final ASR. Es una muestra, no una garantía de latencia.
+- La limpieza liberó el track y cerró la sesión. No se verificó audición física.
+
+Consumo: tres operaciones de inferencia externas (ASR, conversación, síntesis),
+sin retries. Tokens, cargos y GPU facturada no disponibles en este informe;
+importe desconocido, pendiente de factura. No se declara cero consumo.
+
+Pendiente: comprobación del micrófono, permiso y altavoces reales del usuario.
+La prueba sintética demuestra el flujo de software y la programación de audio;
+no demuestra que su dispositivo físico tenga nivel, salida o permiso correctos.

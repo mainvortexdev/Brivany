@@ -1,0 +1,85 @@
+{
+  "format": "brivany-palabra-contextual-evaluation-1",
+  "created_at": "2026-10-30",
+  "provenance": "Locally authored synthetic text only. No recording, private conversation, provider output or personal data.",
+  "source_language": "en",
+  "target_language": "es",
+  "purpose": "Review whether continuous speech translation preserves meaning, context and intelligibility; separately observe when corresponding translated audio becomes audible.",
+  "status": "not_executed",
+  "evaluation_method": "human_bilingual_listening_review_required",
+  "automatic_semantic_validation": false,
+  "reference_text_policy": "Reference translations illustrate one acceptable meaning. Do not require exact wording, punctuation or order; assess the meaning of the whole spoken unit and its discourse context.",
+  "execution_policy": {
+    "external_execution_requires_separate_explicit_authorization": true,
+    "audio_synthesis_not_performed": true,
+    "keep_one_continuous_session": true,
+    "no_inserted_silence_to_force_confirmation": true,
+    "no_automatic_retry": true,
+    "no_automatic_quality_pass_from_text_match_or_hash": true,
+    "no_latency_claim_from_transport_chunk_size_or_tts_generation_delta": true
+  },
+  "scoring": {
+    "per_case_meaning": {"0": "Meaning reversed, essential fact changed, or unit missing.", "1": "Partly preserved, with an omission or ambiguity affecting understanding.", "2": "All critical meanings preserved; natural paraphrases accepted."},
+    "per_case_intelligibility": {"0": "Cannot reliably understand the spoken unit.", "1": "Understandable with effort, audible duplication, truncation or disruptive correction.", "2": "Clearly understandable at the chosen playback tempo."},
+    "critical_errors": ["Negation reversed or omitted", "Number, currency, unit or total changed", "Past/future status changed", "Conditional statement asserted as a fact", "Referent assigned to the wrong person or object", "Missing final clause or hallucinated additional claim"],
+    "latency_record": "Align original and translated semantic units by listening; record the original acoustic time needed to establish that meaning and the onset of its corresponding translated speech. Report first output, per-unit lag, tail completeness, and whether translation overlaps ongoing source speech separately. Browser scheduling is not physical loudspeaker verification.",
+    "result_policy": "Keep not_reviewed until a bilingual person listens. Six cases are a small targeted corpus, not a general quality benchmark, professional certification, or guarantee of 500 ms audible delay."
+  },
+  "cases": [
+    {
+      "id": "negation",
+      "focus": ["negation", "scope", "request"],
+      "source_text": "I do not want to cancel the appointment; I only want to move it to Friday, and please do not notify the client yet.",
+      "reference_meaning_es": "No quiero cancelar la cita; solo quiero cambiarla al viernes y, por favor, todavía no avises al cliente.",
+      "critical_meaning": ["The appointment is not cancelled.", "The requested action is rescheduling to Friday.", "The client must not be notified yet."],
+      "human_review_questions_es": ["¿Se conservaron las dos negaciones con su alcance correcto?", "¿Quedó claro que se pide cambiar la fecha y no cancelar la cita?"],
+      "result": {"meaning_score": null, "intelligibility_score": null, "critical_error": null, "notes": null}
+    },
+    {
+      "id": "numbers",
+      "focus": ["number", "currency", "unit", "comparison"],
+      "source_text": "The room is twelve point five square meters, the rent is one thousand two hundred fifty dollars per month, and the deposit is two months of rent, not two hundred dollars.",
+      "reference_meaning_es": "La habitación tiene doce coma cinco metros cuadrados, el alquiler cuesta mil doscientos cincuenta dólares al mes y el depósito equivale a dos meses de alquiler, no a doscientos dólares.",
+      "critical_meaning": ["Area is 12.5 square meters, not 125 or linear meters.", "Monthly rent is USD 1250.", "Deposit is two months of rent; do not claim it is USD 200.", "An inferred arithmetic total must not replace or contradict the stated deposit basis."],
+      "human_review_questions_es": ["¿Se oyen correctamente superficie, moneda, periodicidad y depósito?", "¿La corrección final evita confundir dos meses con doscientos dólares?"],
+      "result": {"meaning_score": null, "intelligibility_score": null, "critical_error": null, "notes": null}
+    },
+    {
+      "id": "past_and_future",
+      "focus": ["past", "future", "completion_status"],
+      "source_text": "We inspected the roof yesterday and found a leak, but we have not repaired it yet; the contractor will return next Tuesday to fix it.",
+      "reference_meaning_es": "Ayer revisamos el techo y encontramos una filtración, pero todavía no la hemos reparado; el contratista volverá el próximo martes para arreglarla.",
+      "critical_meaning": ["The inspection happened yesterday.", "A leak was found and remains unrepaired.", "Repair is planned for next Tuesday, not already completed."],
+      "human_review_questions_es": ["¿Se distingue lo que ya ocurrió de la reparación futura?", "¿Se conserva que la filtración todavía no está reparada?"],
+      "result": {"meaning_score": null, "intelligibility_score": null, "critical_error": null, "notes": null}
+    },
+    {
+      "id": "conditional",
+      "focus": ["conditional", "uncertainty", "dependency"],
+      "source_text": "If the engineer confirms that this wall is not load-bearing, we could remove it; until that confirmation arrives, it must stay exactly where it is.",
+      "reference_meaning_es": "Si el ingeniero confirma que esta pared no es de carga, podríamos quitarla; hasta que llegue esa confirmación, debe permanecer exactamente donde está.",
+      "critical_meaning": ["Removal is conditional on an engineer confirming the wall is not load-bearing.", "No confirmation has been asserted.", "The wall must remain in place until confirmation."],
+      "human_review_questions_es": ["¿La posibilidad condicional se convirtió indebidamente en permiso o hecho?", "¿Se conserva la dependencia de la confirmación del ingeniero?"],
+      "result": {"meaning_score": null, "intelligibility_score": null, "critical_error": null, "notes": null}
+    },
+    {
+      "id": "real_estate_terms",
+      "focus": ["specialist_terminology", "scope", "inclusion_exclusion"],
+      "source_text": "The asking price includes the fitted kitchen and the parking space, but it excludes the furniture; the floor plan shows usable floor area, not the total built area.",
+      "reference_meaning_es": "El precio solicitado incluye la cocina equipada y la plaza de aparcamiento, pero excluye los muebles; el plano muestra la superficie útil, no la superficie construida total.",
+      "critical_meaning": ["The kitchen and parking space are included in the asking price.", "Furniture is excluded.", "The floor plan refers to usable area, distinguished from total built area."],
+      "optional_glossary_candidates": [{"source": "usable floor area", "target": "superficie útil"}, {"source": "total built area", "target": "superficie construida total"}, {"source": "load-bearing wall", "target": "pared de carga"}],
+      "human_review_questions_es": ["¿Se conserva qué está incluido y qué queda excluido?", "¿Se distingue superficie útil de superficie construida?"],
+      "result": {"meaning_score": null, "intelligibility_score": null, "critical_error": null, "notes": null}
+    },
+    {
+      "id": "contextual_pronoun",
+      "focus": ["cross_sentence_context", "pronoun", "referent"],
+      "source_text": "There is an island in the kitchen and a table beside it. The island is fixed to the floor; when I say move it closer to the window, I mean the table, not the island.",
+      "reference_meaning_es": "Hay una isla en la cocina y una mesa a su lado. La isla está fijada al suelo; cuando digo que la acerques a la ventana, me refiero a la mesa y no a la isla.",
+      "critical_meaning": ["Two distinct objects are introduced: kitchen island and table.", "The island is fixed to the floor.", "The object to move toward the window is explicitly the table, not the island.", "An early provisional interpretation must not be treated as a reliable instruction to move the island."],
+      "human_review_questions_es": ["¿La traducción final conserva el referente de cada pronombre?", "¿Un fragmento anticipado indujo a entender que debía moverse la isla?"],
+      "result": {"meaning_score": null, "intelligibility_score": null, "critical_error": null, "notes": null}
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+{
+  "schema_version": "0.1.0",
+  "skill_id": "5e796324-647b-532e-b3d4-9f40471d66da",
+  "version": "1.0.0",
+  "title": "Configurar dimensiones de un objeto de práctica",
+  "domain": "3d_modeling",
+  "objective": "Configurar tres dimensiones en metros y comprobarlas con el conector.",
+  "prerequisites": [
+    "Reconocer selección y transformaciones básicas en Blender"
+  ],
+  "compatibility": {
+    "application": "blender",
+    "connector_profile": "blender.example-only",
+    "tested_versions": [
+      "example-version-not-homologated"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "required_capabilities": [
+      "blender.object.read",
+      "blender.object.dimensions.read"
+    ]
+  },
+  "parameters": {
+    "width": {
+      "type": "number",
+      "description": "Dimensión width en metros",
+      "default": 2.0,
+      "unit": "m",
+      "minimum": 0.01,
+      "maximum": 100.0
+    },
+    "depth": {
+      "type": "number",
+      "description": "Dimensión depth en metros",
+      "default": 1.0,
+      "unit": "m",
+      "minimum": 0.01,
+      "maximum": 100.0
+    },
+    "height": {
+      "type": "number",
+      "description": "Dimensión height en metros",
+      "default": 0.75,
+      "unit": "m",
+      "minimum": 0.01,
+      "maximum": 100.0
+    }
+  },
+  "sources": [
+    {
+      "source_id": "expert-demo",
+      "kind": "expert_note",
+      "artifact_id": "7a1f5420-f421-5ec8-bf78-4528bccfd43c",
+      "sha256": "951a7090b528d914ca36a6032e1d735e0c699835517fa69083740c7c23901162",
+      "license": "Ejemplo sintético del contrato; no incluye un medio real"
+    }
+  ],
+  "steps": [
+    {
+      "step_id": "select-object",
+      "title": "Seleccionar el objeto",
+      "intent": "Fijar el objeto que se va a modificar",
+      "instruction": "Seleccionar el objeto de práctica y confirmar que pertenece al proyecto autorizado.",
+      "requires": [],
+      "sources": [
+        {
+          "source_id": "expert-demo",
+          "start_ms": null,
+          "end_ms": null
+        }
+      ],
+      "checks": [
+        {
+          "check_id": "object-present",
+          "evaluator_kind": "deterministic",
+          "rubric": "Existe un objeto seleccionado en el proyecto autorizado",
+          "capability": "blender.object.read",
+          "signal_key": "object.selected",
+          "comparison": "eq",
+          "expected": true,
+          "parameter_ref": null,
+          "unit": null,
+          "tolerance": null,
+          "on_missing": "UNKNOWN"
+        }
+      ],
+      "max_attempts": 3,
+      "recovery_guidance": "Solicitar otra observación y volver a seleccionar el objeto correcto."
+    },
+    {
+      "step_id": "dimensions",
+      "title": "Aplicar las dimensiones",
+      "intent": "Relacionar cada eje con la dimensión solicitada",
+      "instruction": "Ajustar ancho, profundidad y altura según los parámetros del ejercicio; explicar la unidad utilizada.",
+      "requires": [
+        "select-object"
+      ],
+      "sources": [
+        {
+          "source_id": "expert-demo",
+          "start_ms": null,
+          "end_ms": null
+        }
+      ],
+      "checks": [
+        {
+          "check_id": "dimension-x",
+          "evaluator_kind": "deterministic",
+          "rubric": "Dimensión normalizada dentro de tolerancia",
+          "capability": "blender.object.dimensions.read",
+          "signal_key": "object.dimensions.x",
+          "comparison": "within",
+          "expected": null,
+          "parameter_ref": "width",
+          "unit": "m",
+          "tolerance": 0.001,
+          "on_missing": "UNKNOWN"
+        },
+        {
+          "check_id": "dimension-y",
+          "evaluator_kind": "deterministic",
+          "rubric": "Dimensión normalizada dentro de tolerancia",
+          "capability": "blender.object.dimensions.read",
+          "signal_key": "object.dimensions.y",
+          "comparison": "within",
+          "expected": null,
+          "parameter_ref": "depth",
+          "unit": "m",
+          "tolerance": 0.001,
+          "on_missing": "UNKNOWN"
+        },
+        {
+          "check_id": "dimension-z",
+          "evaluator_kind": "deterministic",
+          "rubric": "Dimensión normalizada dentro de tolerancia",
+          "capability": "blender.object.dimensions.read",
+          "signal_key": "object.dimensions.z",
+          "comparison": "within",
+          "expected": null,
+          "parameter_ref": "height",
+          "unit": "m",
+          "tolerance": 0.001,
+          "on_missing": "UNKNOWN"
+        }
+      ],
+      "max_attempts": 3,
+      "recovery_guidance": "Comprobar objeto activo, escala de unidades y valor solicitado; no inferir dimensiones desde una imagen."
+    }
+  ],
+  "transfer_exercise": {
+    "goal": "Configurar otro objeto con dimensiones diferentes",
+    "difference_from_example": "Otro objeto, otras medidas y sin instrucciones completas",
+    "target_help_level": "independent",
+    "expert_review_required": true
+  },
+  "visibility": "private",
+  "lifecycle": "published",
+  "review": {
+    "reviewer_id": "73f58f60-7d12-5805-9637-19a8639f67ab",
+    "reviewed_at": "2026-10-27T10:00:00Z",
+    "decision": "approved",
+    "content_sha256": "27ac8a3e4da9480c6c27e69d7ea7f2e548ab06c4d9c1e151d76d732dc4316d4a",
+    "note": "REVISIÓN SINTÉTICA para validar el contrato; no es aprobación profesional ni homologación real."
+  },
+  "content_sha256": "27ac8a3e4da9480c6c27e69d7ea7f2e548ab06c4d9c1e151d76d732dc4316d4a",
+  "is_example": true
+}

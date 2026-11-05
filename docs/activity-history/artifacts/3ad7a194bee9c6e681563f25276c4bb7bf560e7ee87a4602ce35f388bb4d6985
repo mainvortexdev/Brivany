@@ -1,0 +1,18 @@
+{
+  "suite": "chat-requests-ui",
+  "started_at": "2026-10-29T22:32:59.858178+00:00",
+  "finished_at": "2026-10-29T22:33:22.020866+00:00",
+  "duration_seconds": 22.162688,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_chat_requests"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Signed synthetic own-chat fixtures through actual local gateway/parser/SQLite/HTTP/Conexiones review; provider boundaries substituted.\",\r\n  \"checks\": [\r\n    \"authenticated synthetic requests appear as pending; opening the page performs no POST, account action or personal write\",\r\n    \"note and reminder each require two distinct local review/confirmation clicks; cancelling the review does not write\",\r\n    \"discard never executes the request, and a stale revision cannot create a note after concurrent dismissal\",\r\n    \"completed private note/reminder and pending request states survive a full page reload\",\r\n    \"Drive request enters the common exact review; cancelling and unrelated/missing origins cannot execute an account action\",\r\n    \"PKCE callback accepts one simulated grant; explicit common approval executes one substituted Drive search and settles its chat request as simulated\",\r\n    \"simulated Drive result stays ephemeral while requests persist; controls fit desktop and 320/390/768 pixel layouts\"\r\n  ],\r\n  \"screenshots\": [\r\n    \"tmp/chat-requests/chat-requests-1440.png\",\r\n    \"tmp/chat-requests/chat-requests-390.png\"\r\n  ],\r\n  \"checked_at\": \"2026-10-29T22:33:21.265889+00:00\",\r\n  \"provider_stub_calls\": {\r\n    \"model\": 0,\r\n    \"oauth\": 1,\r\n    \"drive\": 1,\r\n    \"outbound_stub\": 5,\r\n    \"browser_stub\": 1\r\n  },\r\n  \"signed_fixture_count\": 5,\r\n  \"invalid_signature_rejected\": true,\r\n  \"duplicate_event_rejected\": true,\r\n  \"request_states\": {\r\n    \"note\": \"completed\",\r\n    \"reminder\": \"completed\",\r\n    \"drive\": \"completed_test_stub\",\r\n    \"dismiss\": \"dismissed\",\r\n    \"stale\": \"dismissed\"\r\n  },\r\n  \"external_calls\": 0,\r\n  \"real_messages_sent\": 0,\r\n  \"real_account_access\": false,\r\n  \"model_executed\": false,\r\n  \"limitations\": [\r\n    \"HMAC, deduplication, command parser, typed SQLite storage, local approvals, PKCE/DPAPI and browser are real; original messages are synthetic.\",\r\n    \"Gateway acknowledgements, OAuth exchange and Drive API use substitutes. No real WhatsApp delivery, Google account access or scheduled background alarm verified.\"\r\n  ]\r\n}\r\n"
+}

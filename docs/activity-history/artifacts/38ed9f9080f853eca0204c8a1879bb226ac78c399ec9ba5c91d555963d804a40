@@ -1,0 +1,48 @@
+✔ UIA focus works with an active desktop border and no mouse coordinates (5.1886ms)
+✔ reconoce las etiquetas reales de Brave con el atajo pronunciado (0.803ms)
+✔ verifica el progreso real de YouTube con la etiqueta genérica Control deslizante (2.9803ms)
+✔ observa, selecciona la pestaña audible por ID y verifica Pause -> Play con dos clics reales solicitados al motor (1.7136ms)
+✔ pausa con la etiqueta observada en Brave y verifica su transición localizada (0.8034ms)
+✔ confirma paused-mode aunque Brave deje la etiqueta Pausa sin actualizar (0.8851ms)
+✔ paused-mode evita reanudar por error un video ya pausado con etiqueta vieja (0.3277ms)
+✔ no confunde previews, anuncios ni estados contradictorios con pausa confirmada (0.1575ms)
+✔ la verificación lenta tiene un presupuesto total de tres segundos (0.8715ms)
+✔ timeout leyendo el resultado no repite un clic ya ejecutado (0.7446ms)
+✔ una pestaña silenciosa NO se considera pausada si el reproductor sigue mostrando Pausar (0.5186ms)
+✔ un reproductor ya pausado no recibe otro clic (0.4219ms)
+✔ reanuda con un clic en Reproducir y verifica Pausar (0.7494ms)
+✔ si ya está reproduciendo, reanudar no hace un clic que la pause (0.5431ms)
+✔ Pausar sin avance no demuestra reproducción y no provoca un clic a ciegas (5.5501ms)
+✔ una etiqueta de pestaña vieja se refresca al revelar el reproductor (0.7095ms)
+✔ si Reproducir aparece tarde se hace un primer clic, nunca un segundo toggle (0.6678ms)
+✔ un clic que cambia la etiqueta pero no inicia progreso queda sin verificar (3.8685ms)
+✔ no usa Pausar ni progreso de controles ajenos al reproductor principal (0.3556ms)
+✔ sin barra de progreso no se inventa una reproducción verificada (2.5187ms)
+✔ reanudar no elige automáticamente otro tutorial que está emitiendo audio (0.2656ms)
+✔ si el botón cambia entre observar y clicar, no alterna la reproducción (0.3346ms)
+✔ confirma el botón clicado aunque otro reproductor aún muestre Pausar (0.3004ms)
+✔ tolera la actualización demorada de la etiqueta del botón (0.6034ms)
+✔ un resultado no observable queda sin verificar, no como fracaso ni pausa confirmada (3.1991ms)
+✔ si la pestaña desaparece mientras la IA decide, no se usan coordenadas viejas (0.2687ms)
+✔ cambio de ventana o selección interrumpe la pausa antes de un clic (0.3177ms)
+✔ falta de botón Pausar detiene la tarea, no hace clic en el centro del video ni en la barra (0.2077ms)
+✔ la IA devuelve después de Detener: cero clics, aunque haya otra tarea activa (0.4725ms)
+✔ Detener mata el proceso de entrada y rechaza tanto el comando activo como los pendientes (1.1822ms)
+[Cognira] ✅ Motor de automatización listo
+✔ timeout del motor corta el proceso, no libera un comando siguiente sobre el anterior aún vivo (13.4115ms)
+✔ cancelar durante el planificador no ejecuta ningún paso tardío (1097.27ms)
+✔ las esperas terminan al detener la tarea (0.433ms)
+✔ routes creation without intercepting opening or questions (11.3496ms)
+✔ discards executable and filesystem keys; rejects malformed tables and oversized slides (1.0682ms)
+✔ planner validates returned type and propagates cancellation and credentials (6.5749ms)
+✔ buscar y abrir un resultado solo termina al verificar reproducción (5.9244ms)
+✔ no declara éxito si el video no avanza ni repite el clic del resultado (2.8177ms)
+✔ un resultado sustituido durante el razonamiento no recibe un clic (0.429ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1309.4342

@@ -1,0 +1,14 @@
+{
+  "suite": "spotify-relay",
+  "started_at": "2026-10-31T22:05:24.442102+00:00",
+  "finished_at": "2026-10-31T22:05:26.560437+00:00",
+  "duration_seconds": 2.118335,
+  "command": [
+    "node",
+    "tools/check_spotify_relay.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"status\": \"passed\",\n  \"checks\": 23,\n  \"runtime\": \"local workerd/Miniflare with SQLite Durable Objects and rate limit bindings\",\n  \"local_compatibility_date\": \"2026-09-04\",\n  \"production_compatibility_date\": \"2026-10-31\",\n  \"spotify_requests\": 0,\n  \"real_accounts\": false,\n  \"notes\": [\n    \"HTTPS callback and fixed PKCE redirect\",\n    \"signed expiring state and single-use browser launch\",\n    \"separate read credential and browser cookie bound to flow\",\n    \"cross-flow, replay, expired, tampered and cross-origin rejection\",\n    \"retry-safe poll; acknowledgement clears authorization code\",\n    \"no-store/no-referrer, URL cleanup and bounded input\"\n  ]\n}\n"
+}

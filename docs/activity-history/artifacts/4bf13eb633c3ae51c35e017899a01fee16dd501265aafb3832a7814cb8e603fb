@@ -1,0 +1,28 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/portable-floorplan/report.json",
+  "original_sha256": "98fce2b009f391dd5321515923d1b9ef8841402b1ab8d7869030d65bdf20e36d",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "portable_reopen_verified": true,
+    "zip_includes_versioned_plan": true,
+    "native_window_started": false,
+    "model_executed": false,
+    "metric_scale_verified": false
+  },
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

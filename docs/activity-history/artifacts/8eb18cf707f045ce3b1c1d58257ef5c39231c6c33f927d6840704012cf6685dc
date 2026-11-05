@@ -1,0 +1,121 @@
+/* One fixed synthetic video through the actual UI. Real providers require --allow-paid.
+ * Device timestamps are browser estimates, not microphone or hardware loopback.
+ */
+'use strict';
+const {chromium}=require(process.env.BRIVANY_PLAYWRIGHT_PATH || 'playwright');
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const {execFileSync}=require('node:child_process');
+const root=path.resolve(__dirname,'..'),simulated=process.argv.includes('--simulated');
+if(!simulated && !process.argv.includes('--allow-paid')) throw Error('A real provider trial requires --allow-paid.');
+const base=process.env.BRIVANY_TEST_URL || 'http://127.0.0.1:8765';
+if(!/^http:\/\/127\.0\.0\.1:\d+$/.test(base)) throw Error('Only local HTTP is allowed.');
+const source=path.join(root,'tmp/modular-dubbing/english-room.wav'),fixture=path.join(root,'tmp/dubbing-test/english-room-timing.mp4');
+const digest=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+if(digest(source)!=='5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30') throw Error('The fixed synthetic source changed.');
+fs.mkdirSync(path.dirname(fixture),{recursive:true});
+// Regenerate exclusively this tool-owned synthetic fixture: an existing video
+// hash alone would not establish that its track came from the approved WAV.
+execFileSync('ffmpeg',['-hide_banner','-loglevel','error','-f','lavfi','-i','color=c=0xdadce0:s=640x360:r=25',
+  '-i',source,'-t','2.3442083333','-c:v','libx264','-pix_fmt','yuv420p','-c:a','aac','-ar','24000','-ac','1','-movflags','+faststart','-y',fixture],{timeout:15000,windowsHide:true,stdio:'pipe'});
+(async()=>{
+  const report={checked_at:new Date().toISOString(),status:'failed',provider:'Palabra',upstream:simulated?'simulated':'real',
+    api:'real_local',synthetic:true,source_sha256:digest(source),video_sha256:digest(fixture),
+    fixture_regenerated_from_verified_source:true,target_audible_delay_ms:500,
+    physical_playback_measured:false,audible_delay_verified:false,external_calls:0,
+    maximum_sessions:1,automatic_retries:0,actual_billed_usd:null,
+    output_timing_method:'same_audio_context_energy_windows_with_browser_device_timestamp_estimate',
+    energy_window_ms:20,energy_rms_threshold:.005,
+    limitations:['Single synthetic phrase; no percentile, maximum guarantee, physical loopback or verified per-word semantic alignment.',
+      'The original reference is captured before its volume gain. Device output timestamps are estimates, and energy is not proof of intelligible translated speech.']};
+  const browser=await chromium.launch({headless:true,channel:process.env.BRIVANY_BROWSER_CHANNEL || 'msedge'});
+  try {
+    const context=await browser.newContext({serviceWorkers:'block'}),page=await context.newPage();
+    const errors=[],blocked=[];
+    await context.addInitScript({path:path.join(root,'web/dub-timing.js')});
+    await context.addInitScript(()=>{
+      const NativeAudio=window.AudioContext,NativeWorklet=window.AudioWorkletNode;
+      const state={scheduledBuffers:0,microphoneRequests:0};let audio,sourceClock,translatedClock;
+      const clocks=()=>{
+        sourceClock ||= new window.BrivanyDubTiming.PcmEnergyClock();
+        translatedClock ||= new window.BrivanyDubTiming.PcmEnergyClock();
+      };
+      window.AudioContext=class extends NativeAudio {
+        constructor(options){super(options);audio=this;}
+        createBufferSource(){
+          const node=super.createBufferSource(),start=node.start.bind(node);
+          node.start=(when,...args)=>{
+            const contextStart=Math.max(when || 0,this.currentTime);
+            const result=start(when,...args);
+            state.scheduledBuffers++;
+            if(node.buffer){clocks();translatedClock.observe(node.buffer.getChannelData(0),node.buffer.sampleRate,contextStart);}
+            return result;
+          };return node;
+        }
+      };
+      window.AudioWorkletNode=class extends NativeWorklet {
+        constructor(...args){super(...args);this.port.addEventListener('message',event=>{
+          const data=event.data;
+          if(data.type==='pcm' && data.buffer instanceof ArrayBuffer && Number.isFinite(data.source_context_end)) {
+            const view=new DataView(data.buffer),samples=new Float32Array(view.byteLength/2);
+            for(let i=0;i<samples.length;i++)samples[i]=view.getInt16(i*2,true)/32768;
+            clocks();sourceClock.observe(samples,24000,data.source_context_end-samples.length/24000);
+          }
+        });this.port.start();}
+      };
+      if(navigator.mediaDevices)Object.defineProperty(navigator.mediaDevices,'getUserMedia',{value:async()=>{state.microphoneRequests++;throw Error('No microphone in this fixed synthetic check.');}});
+      window.__readDubbingTiming=()=>{
+        clocks();sourceClock.finish();translatedClock.finish();
+        const source=sourceClock.snapshot(),translation=translatedClock.snapshot();
+        let stamp=null;try{stamp=audio?.getOutputTimestamp?.();}catch{}
+        const usable=stamp && Number.isFinite(stamp.contextTime) && Number.isFinite(stamp.performanceTime) && stamp.performanceTime>0 && stamp.contextTime>0;
+        const outputTime=value=>usable && value!==null?stamp.performanceTime+(value-stamp.contextTime)*1000:null;
+        return {...state,source,translation,...window.BrivanyDubTiming.summarize(source,translation),
+          audio_context_state:audio?.state || null,device_timestamp_valid:Boolean(usable),
+          base_latency_seconds:Number.isFinite(audio?.baseLatency)?audio.baseLatency:null,
+          output_latency_seconds:Number.isFinite(audio?.outputLatency)?audio.outputLatency:null,
+          source_last_energy_device_estimate_ms:outputTime(source.last_energy_context),
+          translated_energy_device_estimate_ms:outputTime(translation.first_energy_context),
+          device_clock_has_passed_first_energy:Boolean(usable && translation.first_energy_context!==null && stamp.contextTime>=translation.first_energy_context)};
+      };
+    });
+    await context.route('**/*',route=>{
+      const request=route.request();
+      if(new URL(request.url()).origin!==base || request.method()!=='GET'){blocked.push(request.url());return route.abort();}
+      return route.continue();
+    });
+    page.on('pageerror',error=>errors.push(error.message));
+    const status=await context.request.get(base+'/api/dubbing/status?provider=palabra');const data=await status.json();
+    if(simulated && data.simulation_only!==true)throw Error('Simulated mode requires the dedicated loopback harness.');
+    if(data.available!==true || data.configured!==true)throw Error('The selected route is not configured.');
+    await page.goto(base+'/dubbing?provider=palabra');
+    await page.waitForFunction(()=>document.querySelector('#provider-state').textContent.includes('guardada'));
+    await page.locator('#video-file').setInputFiles(fixture);
+    await page.waitForFunction(()=>document.querySelector('#dub-video').readyState>=1);
+    await page.locator('#dub-consent').check();report.external_calls=simulated?0:1;
+    await page.locator('#start-dubbing').click();
+    await page.waitForFunction(()=>document.querySelector('#dub-notice').textContent.includes('terminada'),{},{timeout:25000});
+    const timing=await page.evaluate(()=>window.__readDubbingTiming());
+    assert.equal(timing.microphoneRequests,0);assert.ok(timing.scheduledBuffers>0);
+    assert.ok(Number.isFinite(timing.onset_to_onset_ms));
+    assert.equal(timing.audio_context_state,'running');assert.equal(timing.device_timestamp_valid,true);
+    assert.equal(timing.device_clock_has_passed_first_energy,true);
+    assert.equal(await page.locator('#dub-error').isVisible(),false);assert.deepEqual(errors,[]);assert.deepEqual(blocked,[]);
+    Object.assign(report,{status:'passed',timing,
+      estimated_onset_delay_within_target:!simulated && timing.onset_to_onset_ms<=500,
+      original_volume_percent:Number(await page.locator('#original-volume').inputValue()),
+      translation_volume_percent:Number(await page.locator('#dub-volume').inputValue()),
+      final_caption:await page.locator('#translation-caption').textContent()});
+    await context.close();
+  }catch(error){
+    report.failure_type=error.name || 'Error';
+    // Keep endpoint responses, credentials and arbitrary browser errors out of reports.
+    report.failure='The bounded browser trial did not meet its local completion checks.';
+    process.exitCode=1;
+  }finally{
+    await browser.close();
+    const directory=path.join(root,'tmp/browser-dubbing-measurements');fs.mkdirSync(directory,{recursive:true});
+    const name=(simulated?'simulated-':'real-')+Date.now()+'.json',file=path.join(directory,name);
+    fs.writeFileSync(file,JSON.stringify(report,null,2));
+    console.log(JSON.stringify({...report,report:path.relative(root,file).replaceAll('\\','/')},null,2));
+  }
+})().catch(error=>{console.error(error.message);process.exitCode=1;});

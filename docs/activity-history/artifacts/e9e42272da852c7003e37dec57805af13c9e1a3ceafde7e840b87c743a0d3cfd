@@ -1,0 +1,69 @@
+{
+  "started_at": "2026-10-28T00:15:43.349442+00:00",
+  "status": "passed",
+  "source": {
+    "filename": "english-room.wav",
+    "sha256": "5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30",
+    "size_bytes": 112600,
+    "duration_seconds": 2.3442083333333334,
+    "sample_rate": 24000,
+    "channels": 1,
+    "format": "pcm16"
+  },
+  "target_language": "es",
+  "source_language": "en",
+  "provider": "Meta modular",
+  "model": "muse-m2m100-melodi",
+  "maximum_sessions": 1,
+  "automatic_retries": 0,
+  "input_chunk_ms": 40,
+  "configured_trial_limit_seconds": 5,
+  "input_bytes_sent": 112522,
+  "output_audio_chunks": 155,
+  "output_audio_bytes": 170880,
+  "output_formats": [
+    {
+      "sample_rate": 24000,
+      "channels": 1,
+      "format": "pcm16",
+      "bytes": 170880,
+      "duration_seconds": 3.56
+    }
+  ],
+  "translated_text_characters": 35,
+  "original_text_characters": 86,
+  "max_audio_queue_estimate_ms": 435.0,
+  "connect_ms": 672.0,
+  "first_input_audio_to_first_output_audio_ms": 5937.0,
+  "relay_first_output_audio_ms": 5937.0,
+  "first_tts_chunk_generation_ms": null,
+  "inference_ms": null,
+  "mt_request_ms": [
+    2907.0
+  ],
+  "tts_first_audio_ms": [
+    562.0
+  ],
+  "mt_requests_started": 1,
+  "tts_requests_started": 1,
+  "target_inference_ms": 500,
+  "target_status": "unverified",
+  "estimated_base_service_usd": null,
+  "estimate_rate_usd_per_minute": null,
+  "estimate_basis": "unknown_modular_chain_cost",
+  "actual_billed_usd": null,
+  "external_calls": 1,
+  "provider_ready": true,
+  "provider_settings": null,
+  "gpu_seconds": null,
+  "audio_persisted": false,
+  "transcripts_persisted": false,
+  "limitations": [
+    "Coste de la cadena modular desconocido: no se inventa una tarifa por minuto ni un coste cero.",
+    "La primera salida medida incluye red y contexto; no es inferencia interna ni calidad oída.",
+    "El timing TTS opcional es generación hasta el primer chunk; no incluye ASR, traducción o red.",
+    "No se mide reproducción física ni sincronía semántica con el video.",
+    "external_calls cuenta una sesión solicitada al relay; no es telemetría de facturación del proveedor."
+  ],
+  "finished_at": "2026-10-28T00:15:53.236364+00:00"
+}

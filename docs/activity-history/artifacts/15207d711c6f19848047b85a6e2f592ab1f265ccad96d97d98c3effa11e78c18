@@ -1,0 +1,18 @@
+{
+  "suite": "portable-presentation",
+  "started_at": "2026-10-29T22:45:25.250325+00:00",
+  "finished_at": "2026-10-29T22:45:42.526642+00:00",
+  "duration_seconds": 17.276317,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_portable_presentation"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Actual portable project, browser, camera, HTTP bridge, GLB and versioned files with pywebview substituted.\",\r\n  \"checks\": [\r\n    \"actual portable tour UI saves a camera point through the allowlisted desktop bridge without modifying scene geometry\",\r\n    \"a full page reload restores the camera route and presentation prevents editing and physics\",\r\n    \"stale writers are rejected and a geometry edit preserves the tour while requiring explicit review against the new scene\",\r\n    \"an older native bridge missing the optional tour API keeps the 3D viewer usable and shows an explicit restart message\"\r\n  ],\r\n  \"screenshots\": [\r\n    \"tmp/portable-presentation/portable-tour-1440.png\",\r\n    \"tmp/portable-presentation/portable-tour-390.png\"\r\n  ],\r\n  \"portable_reopen_verified\": true,\r\n  \"zip_includes_versioned_presentation\": true,\r\n  \"native_window_started\": false,\r\n  \"external_calls\": 0,\r\n  \"model_executed\": false,\r\n  \"limitations\": [\r\n    \"Real project folders, GLB, camera and immutable versions; native window/chooser transport substituted.\",\r\n    \"No public sharing, reconstructed room, metric accuracy or physical device tested.\"\r\n  ]\r\n}\r\n"
+}

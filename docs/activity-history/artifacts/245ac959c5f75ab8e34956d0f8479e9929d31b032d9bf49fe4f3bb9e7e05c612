@@ -1,0 +1,22 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/spotify-https-relay/native-before-tls-fix.json",
+  "original_sha256": "6c82b19be2ba42ac26202bb783c050bb8faf2157aa0067de27f6e4e9d592f4ad",
+  "new_test_execution": false,
+  "reported_result": "pending",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {},
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

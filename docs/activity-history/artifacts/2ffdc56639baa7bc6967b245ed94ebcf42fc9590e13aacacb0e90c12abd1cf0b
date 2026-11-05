@@ -1,0 +1,173 @@
+{
+  "started_at": "2026-10-30T11:06:45.504769+00:00",
+  "provider_sessions": 1,
+  "audio_input_bytes": 0,
+  "actual_billed_usd": null,
+  "purpose": "Inspect applied settings to explain long segmentation and unverified profile.",
+  "fields": {
+    "data.pipeline.turn_detection.enabled": false,
+    "data.pipeline.transcription.source_language": "auto",
+    "data.pipeline.transcription.segment_confirmation_silence_threshold": 0.3,
+    "data.pipeline.transcription.only_confirm_by_silence": false,
+    "data.pipeline.transcription.sentence_splitter.enabled": true,
+    "data.pipeline.translations[0].target_language": "es",
+    "data.pipeline.translations[0].translate_partial_transcriptions": false,
+    "data.pipeline.translations[0].speech_generation.voice_cloning": false,
+    "data.pipeline.translations[0].speech_generation.voice_id": "default_low",
+    "data.pipeline.translations[0].speech_generation.voice_timbre_detection.enabled": false,
+    "data.pipeline.translation_queue_configs.global.desired_queue_level_ms": 2000,
+    "data.pipeline.translation_queue_configs.global.max_queue_level_ms": 4000,
+    "data.pipeline.translation_queue_configs.global.min_tempo": 1.0,
+    "data.pipeline.translation_queue_configs.global.max_tempo": 1.0,
+    "data.pipeline.translation_queue_configs.global.auto_tempo": false
+  },
+  "shape": {
+    "data": [
+      "input_stream",
+      "output_stream",
+      "pipeline",
+      "task_status",
+      "output_modes"
+    ],
+    "data.input_stream": [
+      "content_type",
+      "source"
+    ],
+    "data.input_stream.source": [
+      "type",
+      "format",
+      "sample_rate",
+      "channels"
+    ],
+    "data.output_stream": [
+      "content_type",
+      "target"
+    ],
+    "data.output_stream.target": [
+      "type",
+      "format",
+      "sample_rate",
+      "channels"
+    ],
+    "data.pipeline": [
+      "turn_detection",
+      "preprocessing",
+      "transcription",
+      "translations",
+      "translation_queue_configs",
+      "allowed_message_types"
+    ],
+    "data.pipeline.turn_detection": [
+      "enabled",
+      "auto_interrupt",
+      "score_threshold",
+      "min_speech_duration",
+      "min_text_chars",
+      "cooldown"
+    ],
+    "data.pipeline.preprocessing": [
+      "enable_vad",
+      "vad_threshold",
+      "vad_left_padding",
+      "vad_right_padding",
+      "pre_vad_denoise",
+      "pre_vad_dsp",
+      "record_tracks",
+      "record_api_messages"
+    ],
+    "data.pipeline.transcription": [
+      "source_language",
+      "detectable_languages",
+      "detectable_languages_strict",
+      "language_detection_settings",
+      "asr_model",
+      "denoise",
+      "allow_hotwords_glossaries",
+      "allowed_hotwords_glossary_ids",
+      "suppress_numeral_tokens",
+      "diarize_speakers",
+      "speakers_total",
+      "priority",
+      "min_alignment_score",
+      "max_alignment_cer",
+      "segment_confirmation_silence_threshold",
+      "only_confirm_by_silence",
+      "batched_inference",
+      "force_detect_language",
+      "calculate_voice_loudness",
+      "sentence_splitter",
+      "verification",
+      "advanced"
+    ],
+    "data.pipeline.transcription.language_detection_settings": [
+      "multimodel_detection",
+      "target_asr_model",
+      "denoise",
+      "min_detected_segments",
+      "min_detection_confidence"
+    ],
+    "data.pipeline.transcription.sentence_splitter": [
+      "enabled",
+      "mode",
+      "splitter_model",
+      "advanced"
+    ],
+    "data.pipeline.transcription.sentence_splitter.advanced": [],
+    "data.pipeline.transcription.verification": [
+      "verification_model",
+      "allow_verification_glossaries",
+      "allowed_verification_glossary_ids",
+      "auto_transcription_correction",
+      "transcription_correction_style"
+    ],
+    "data.pipeline.transcription.advanced": [],
+    "data.pipeline.translations[0]": [
+      "target_language",
+      "allowed_source_languages",
+      "skip_unknown_source_languages",
+      "style",
+      "translation_model",
+      "allow_translation_glossaries",
+      "allowed_translation_glossary_ids",
+      "translate_partial_transcriptions",
+      "speech_generation",
+      "advanced"
+    ],
+    "data.pipeline.translations[0].speech_generation": [
+      "tts_model",
+      "voice_cloning",
+      "voice_cloning_mode",
+      "denoise_voice_samples",
+      "voice_id",
+      "voice_timbre_detection",
+      "speech_tempo_auto",
+      "speech_tempo_timings_factor",
+      "speech_tempo_adjustment_factor",
+      "advanced"
+    ],
+    "data.pipeline.translations[0].speech_generation.voice_timbre_detection": [
+      "enabled",
+      "high_timbre_voices",
+      "low_timbre_voices"
+    ],
+    "data.pipeline.translations[0].speech_generation.advanced": [],
+    "data.pipeline.translations[0].advanced": [],
+    "data.pipeline.translation_queue_configs": [
+      "global"
+    ],
+    "data.pipeline.translation_queue_configs.global": [
+      "desired_queue_level_ms",
+      "max_queue_level_ms",
+      "min_tempo",
+      "max_tempo",
+      "tempo_decay",
+      "tempo_smoothing",
+      "auto_tempo",
+      "auto_tempo_max_delay_ms"
+    ],
+    "data.output_modes": [
+      "es"
+    ]
+  },
+  "finished_at": "2026-10-30T11:06:48.534112+00:00"
+}

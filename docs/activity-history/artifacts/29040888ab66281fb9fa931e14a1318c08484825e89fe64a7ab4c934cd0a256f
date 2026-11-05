@@ -1,0 +1,9 @@
+{
+  "passed": false,
+  "type": "real_meta_review_reuses_own_trial_artifacts",
+  "regenerated_images": 0,
+  "originals_modified": false,
+  "source_report": "real-team-20261103T212628.json",
+  "error_code": "ValueError",
+  "known_meta_requests": 3
+}

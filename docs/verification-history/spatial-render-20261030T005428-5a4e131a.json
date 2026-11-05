@@ -1,0 +1,18 @@
+{
+  "suite": "spatial-render",
+  "started_at": "2026-10-30T00:54:28.812534+00:00",
+  "finished_at": "2026-10-30T00:55:08.847537+00:00",
+  "duration_seconds": 40.035003,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_spatial_render"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "locator.selectOption: Timeout 30000ms exceeded.\r\nCall log:\r\n\u001b[2m  - waiting for locator('#camera-preset')\u001b[22m\r\n\u001b[2m    - locator resolved to <select title=\"\" id=\"camera-preset\">…</select>\u001b[22m\r\n\u001b[2m  - attempting select option action\u001b[22m\r\n\u001b[2m    2 × waiting for element to be visible and enabled\u001b[22m\r\n\u001b[2m      - element is not visible\u001b[22m\r\n\u001b[2m    - retrying select option action\u001b[22m\r\n\u001b[2m    - waiting 20ms\u001b[22m\r\n\u001b[2m    2 × waiting for element to be visible and enabled\u001b[22m\r\n\u001b[2m      - element is not visible\u001b[22m\r\n\u001b[2m    - retrying select option action\u001b[22m\r\n\u001b[2m      - waiting 100ms\u001b[22m\r\n\u001b[2m    59 × waiting for element to be visible and enabled\u001b[22m\r\n\u001b[2m       - element is not visible\u001b[22m\r\n\u001b[2m     - retrying select option action\u001b[22m\r\n\u001b[2m       - waiting 500ms\u001b[22m\r\n\r\n    at <local-path>\\tools\\check_spatial_render.cjs:18:42 {\r\n  log: [\r\n    \"  - waiting for locator('#camera-preset')\",\r\n    '    - locator resolved to <select title=\"\" id=\"camera-preset\">…</select>',\r\n    '  - attempting select option action',\r\n    '    2 × waiting for element to be visible and enabled',\r\n    '      - element is not visible',\r\n    '    - retrying select option action',\r\n    '    - waiting 20ms',\r\n    '    2 × waiting for element to be visible and enabled',\r\n    '      - element is not visible',\r\n    '    - retrying select option action',\r\n    '      - waiting 100ms',\r\n    '    59 × waiting for element to be visible and enabled',\r\n    '       - element is not visible',\r\n    '     - retrying select option action',\r\n    '       - waiting 500ms'\r\n  ],\r\n  name: 'TimeoutError'\r\n}\r\n\r\n"
+}

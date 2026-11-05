@@ -1,0 +1,17 @@
+{
+  "name": "motion-studio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes hyperframes@0.8.229 preview",
+    "check": "npx --yes hyperframes@0.8.229 check",
+    "render": "npx --yes hyperframes@0.8.229 render",
+    "publish": "npx --yes hyperframes@0.8.229 publish"
+  },
+  "dependencies": {
+    "esbuild": "0.28.2",
+    "gsap": "3.15.0",
+    "playwright-core": "1.64.1",
+    "three": "0.187.0"
+  }
+}

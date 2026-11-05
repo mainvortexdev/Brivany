@@ -1,0 +1,19 @@
+{
+  "suite": "computer-images-agents-ui",
+  "started_at": "2026-10-30T21:12:14.159908+00:00",
+  "finished_at": "2026-10-30T21:12:27.213868+00:00",
+  "duration_seconds": 13.05396,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--images-agents"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "locator.waitFor: Error: strict mode violation: locator('.agent-monitor li').filter({ hasText: 'Agente de redacción' }).getByText('Listo para revisar') resolved to 2 elements:\n    1) <strong>Agente de redacción · Listo para revisar</strong> aka getByText('Agente de redacción · Listo para revisar', { exact: true })\n    2) <p>Documento listo para revisar</p> aka getByText('Documento listo para revisar')\n\nCall log:\n\u001b[2m  - waiting for locator('.agent-monitor li').filter({ hasText: 'Agente de redacción' }).getByText('Listo para revisar')\u001b[22m\n\n    at <local-path>\\tools\\check_computer_images_agents_ui.cjs:32:161\n"
+}

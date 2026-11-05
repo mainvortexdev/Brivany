@@ -1,0 +1,23 @@
+{
+  "suite": "google-oauth",
+  "started_at": "2026-10-29T11:42:40.361184+00:00",
+  "finished_at": "2026-10-29T11:42:41.903641+00:00",
+  "duration_seconds": 1.542457,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_google_oauth.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "....................\r\n----------------------------------------------------------------------\r\nRan 20 tests in 1.205s\r\n\r\nOK\r\n"
+}

@@ -1,0 +1,18 @@
+{
+  "suite": "workspace-chat-native",
+  "started_at": "2026-11-04T00:04:50.440993+00:00",
+  "finished_at": "2026-11-04T00:05:01.942294+00:00",
+  "duration_seconds": 11.501301,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_workspace_native"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"type\": \"actual_owned_WebView2_windows_with_synthetic_conversation\", \"passed\": true, \"external_calls\": 0, \"microphone_used\": false, \"OS_input_sent\": false, \"appbar_reserved_by_test\": false, \"phase\": \"glisse_result_without_big_app\", \"auditory_native_one_click_and_stop_without_navigation\": true, \"translation_stress_cycles\": 12, \"bounded_native_script_responses\": true, \"native_surfaces_rgba\": {\"form\": [255, 0, 0, 0], \"webview\": [255, 0, 0, 0]}, \"selector_fade_cycles\": 3, \"selector_full_region_before_show\": true, \"reduced_motion_entry_immediate\": true, \"music_initial_geometry\": [720, 232], \"music_library_initial_geometry\": [720, 404], \"music_connection_rendered_before_show\": true, \"chat_compact_then_grows_with_messages\": true, \"glisse_result_native\": {\"glisse\": true, \"height\": 340, \"width\": 520, \"vertical\": true, \"horizontal\": false, \"bar\": \"none\", \"backdrop\": \"blur(24px) saturate(1.25)\"}, \"native_backdrop_applied\": true, \"result_rgba\": {\"webview\": [0, 0, 0, 0]}, \"result_does_not_open_big_app\": true, \"result_region_final_before_show\": true, \"opaque_surface_restored_after_result\": true, \"real_native_bridge_roundtrip\": true, \"history_survives_close\": true, \"rounded_chooser_without_header\": true, \"voice_canvas_contains_pixels\": true, \"music_waves_visible\": true, \"voice_overlay_created_and_click_through\": true, \"live_sample_visualization\": \"synthetic, no capture\", \"four_owned_views\": true, \"UI_survives_cookie_deletion\": true}\r\n"
+}

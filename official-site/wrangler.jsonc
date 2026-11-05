@@ -1,0 +1,64 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
+  "name": "brivany-site",
+  "main": "worker.mjs",
+
+  "compatibility_date": "2026-10-31",
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "html_handling": "none"
+  },
+  "routes": [
+    {
+      "pattern": "brivany.example",
+      "custom_domain": true
+    }
+  ],
+  "observability": {
+    "enabled": false,
+    "traces": {
+      "enabled": false
+    }
+  },
+  "vars": {
+    "SPOTIFY_CLIENT_ID": ""
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "SPOTIFY_OAUTH_SESSIONS",
+        "class_name": "SpotifyOAuthSession"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "spotify-oauth-v1",
+      "new_sqlite_classes": [
+        "SpotifyOAuthSession"
+      ]
+    }
+  ],
+  "ratelimits": [
+    {
+      "name": "SPOTIFY_START_LIMIT",
+      "namespace_id": "481736294",
+      "simple": {
+        "limit": 8,
+        "period": 60
+      }
+    },
+    {
+      "name": "SPOTIFY_POLL_LIMIT",
+      "namespace_id": "481736295",
+      "simple": {
+        "limit": 180,
+        "period": 60
+      }
+    }
+  ]
+}

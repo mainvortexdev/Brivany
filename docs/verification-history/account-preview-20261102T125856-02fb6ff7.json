@@ -1,0 +1,14 @@
+{
+  "suite": "account-preview",
+  "started_at": "2026-11-02T12:58:56.252248+00:00",
+  "finished_at": "2026-11-02T12:59:31.683952+00:00",
+  "duration_seconds": 35.431704,
+  "command": [
+    "node",
+    "scripts/check-account-preview.cjs"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('Enviado al ordenador B', { exact: true }) to be visible\u001b[22m\n\n    at <local-path>\\scripts\\check-account-preview.cjs:33:229 {\n  log: [\n    \"  - waiting for getByText('Enviado al ordenador B', { exact: true }) to be visible\"\n  ],\n  name: 'TimeoutError'\n}\n"
+}

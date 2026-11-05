@@ -1,0 +1,18 @@
+{
+  "suite": "workspace-chat-native",
+  "started_at": "2026-11-02T02:32:50.624684+00:00",
+  "finished_at": "2026-11-02T02:33:02.603788+00:00",
+  "duration_seconds": 11.979104,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_workspace_native"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"type\": \"actual_owned_WebView2_windows_with_synthetic_conversation\", \"passed\": true, \"external_calls\": 0, \"microphone_used\": false, \"OS_input_sent\": false, \"appbar_reserved_by_test\": false, \"phase\": \"music_waves\", \"auditory_native_one_click_and_stop_without_navigation\": true, \"native_surfaces_rgba\": {\"form\": [255, 0, 0, 0], \"webview\": [255, 0, 0, 0]}, \"selector_fade_cycles\": 3, \"selector_full_region_before_show\": true, \"reduced_motion_entry_immediate\": true, \"music_initial_geometry\": [720, 232], \"music_library_initial_geometry\": [720, 404], \"music_connection_rendered_before_show\": true, \"real_native_bridge_roundtrip\": true, \"history_survives_close\": true, \"rounded_chooser_without_header\": true, \"voice_canvas_contains_pixels\": true, \"music_waves_visible\": true, \"voice_overlay_created_and_click_through\": true, \"live_sample_visualization\": \"synthetic, no capture\", \"four_owned_views\": true, \"UI_survives_cookie_deletion\": true}\r\n"
+}

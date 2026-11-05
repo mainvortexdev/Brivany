@@ -1,0 +1,94 @@
+.computer-panel{border:1px solid #d4e4e0;border-radius:12px;background:#f4faf8;padding:16px;margin:16px;color:#24433c;font:14px/1.5 'Segoe UI',sans-serif}.computer-panel h2{font-size:17px!important;margin:0 0 8px}.computer-panel p{margin:8px 0;font-size:13px!important}.computer-actions{display:flex;flex-wrap:wrap;gap:8px}.computer-panel button,.computer-panel a{font-size:13px!important;min-height:38px;border:1px solid #b9d4cd;background:white;border-radius:8px;padding:8px 12px;color:#1e6558;cursor:pointer}.computer-panel button:disabled{opacity:.55;cursor:default}.computer-panel .computer-stop{color:#a4272b;border-color:#dcb4b6}.computer-panel input,.computer-panel select{max-width:100%;min-width:0;padding:9px;border:1px solid #b9d4cd;border-radius:8px;background:white}.computer-task-form{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.computer-task-form input{flex:1 1 210px}.computer-jobs{list-style:none;padding:0;margin:10px 0 0}.computer-jobs li{padding:10px 0;border-top:1px solid #d4e4e0;overflow-wrap:anywhere}.computer-jobs li p{margin:4px 0}.computer-jobs a{display:inline-block}.computer-roots{font-size:12px;overflow-wrap:anywhere}.computer-state{font-weight:600}.computer-jobs:empty{display:none}.computer-panel button:focus-visible,.computer-panel input:focus-visible{outline:3px solid #78ada1;outline-offset:2px}
+.computer-preview:empty{display:none}.computer-preview iframe{width:100%;height:440px;max-height:65vh;border:1px solid #b9d4cd;border-radius:8px;margin-top:8px;display:block}.computer-jobs button{margin:4px}
+
+.computer-bar,.computer-current,.computer-preview-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.computer-heading{flex:1;min-width:150px}.computer-heading h2{font-size:15px!important;margin:0}.computer-heading .computer-state{font-size:12px!important;font-weight:400;margin:3px 0 0;color:#526b66;line-height:1.4}
+.computer-privacy{color:#526b66}.computer-current{margin-top:8px;border-top:1px solid #dce9e6;padding-top:8px;font-size:12px}.computer-current>span{flex:1}.computer-current button{min-height:30px!important;padding:5px 10px}
+.computer-options summary{cursor:pointer;min-height:36px;padding:8px 10px;color:#1e6558;font-size:13px;white-space:nowrap;border:1px solid #c9dcd6;border-radius:8px;background:#fff}
+.computer-options-body{padding:12px 0}.computer-preview-heading strong{font-size:14px;flex:1}.computer-preview-heading button,.computer-context-toggle{font:inherit;font-size:12px;min-height:36px;padding:6px 10px;color:#326c61;border:1px solid #c9dcd6;background:#fff;border-radius:8px;cursor:pointer}
+.computer-preview-note{font-size:12px!important;color:#65736f;margin:7px 0 0!important}.computer-context-toggle{display:none}
+.computer-preview-heading button:focus-visible,.computer-context-toggle:focus-visible,.computer-options summary:focus-visible{outline:3px solid #78ada1;outline-offset:2px}
+
+/* Keep the live controls and the model in the same viewport. */
+main.app-layout.computer-live{display:grid;grid-template-columns:minmax(0,1fr) 260px;grid-template-areas:'tools tools' 'voice context';gap:16px;padding:16px!important;min-height:100dvh;max-width:none}
+.computer-live>.computer-panel{grid-area:tools;position:relative;z-index:4;margin:0;padding:12px 14px;align-self:start}
+.computer-live .computer-bar{flex-wrap:wrap;gap:10px}.computer-live .computer-actions{gap:6px}.computer-live .computer-options{flex:none}
+.computer-live .computer-options-body{position:absolute;right:0;top:calc(100% + 6px);width:min(600px,100%);max-height:calc(100dvh - 150px);overflow:auto;padding:16px;background:#fff;border:1px solid #d4e4e0;border-radius:12px;box-shadow:0 12px 30px #1e4a3d1a;overscroll-behavior:contain}
+.computer-live .computer-panel[data-enabled=true]>.computer-privacy{display:none}.computer-live>.conversation{grid-area:voice;min-height:0}.computer-live>.companion-panel{grid-area:context;min-height:0;margin:0;padding:8px 0 0 16px;border-left:1px solid #dce5e3;border-top:0;max-width:none}
+.computer-live .voice-stage{min-height:230px;flex:0;padding:18px 0}.computer-live .orb-wrap{width:135px;height:135px;margin:0 auto 20px}.computer-live .orb{width:100px;height:100px}
+.computer-live>.computer-preview{grid-area:model;min-height:0;min-width:0}
+main.app-layout.computer-live.computer-has-preview{height:100dvh;min-height:0;grid-template-areas:'tools tools' 'model voice';grid-template-columns:minmax(0,1fr) 238px;grid-template-rows:auto minmax(0,1fr);position:relative}
+.computer-has-preview>.computer-preview{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px}
+.computer-has-preview>.computer-preview iframe{height:100%;min-height:0;max-height:none;margin:0;box-sizing:border-box}
+.computer-has-preview>.conversation{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:4px 0 0 12px;border-left:1px solid #dce5e3;align-self:stretch}
+.computer-has-preview .voice-stage{min-height:0;padding:16px 0 8px}.computer-has-preview .orb-wrap{width:104px;height:104px;margin:0 auto 17px}.computer-has-preview .orb{width:78px;height:78px}
+.computer-has-preview .voice-stage h1{font-size:24px!important;letter-spacing:-.8px;margin-bottom:8px}.computer-has-preview .voice-stage .eyebrow{margin:6px 0}.computer-has-preview .stage-caption{font-size:12px!important;margin:0}.computer-has-preview .interim:empty{display:none}
+.computer-has-preview .mode-switch{max-width:100%;flex-wrap:wrap;justify-content:center}.computer-has-preview .mode-switch button{padding:7px 10px;min-height:34px;font-size:11px}
+.computer-has-preview .voice-controls{display:grid;grid-template-columns:34px minmax(0,1fr) 34px;width:100%;gap:7px;flex:none;margin:8px 0 0}
+.computer-has-preview .round-control{width:34px;height:38px;min-height:38px;padding:5px}.computer-has-preview .primary-control{min-height:42px;width:100%;padding:9px 6px;gap:7px;font-size:13px}.computer-has-preview .primary-control svg{width:17px;height:17px}
+.computer-has-preview .status-note{margin:9px 0;min-height:0;font-size:12px!important}.computer-has-preview .computer-context-toggle{display:block;margin-top:8px;flex:none}
+.computer-has-preview>.companion-panel{display:none;position:absolute;z-index:6;right:16px;top:110px;width:min(330px,calc(100% - 32px));max-height:calc(100dvh - 135px);overflow:auto;padding:18px;background:white;border:1px solid #d4e4e0;border-radius:12px;box-shadow:0 12px 30px #1e4a3d1a}
+.computer-has-preview.computer-context-open>.companion-panel{display:block}
+@media(max-width:680px){
+ main.app-layout.computer-live{display:block;padding:12px!important}.computer-live>.conversation{padding-top:14px}.computer-live>.companion-panel{margin-top:22px;border-left:0;border-top:1px solid #dce5e3;padding:18px 0}
+ main.app-layout.computer-live.computer-has-preview{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:'tools' 'model' 'voice';grid-template-rows:auto minmax(130px,1fr) auto;gap:10px;padding:10px!important}
+ .computer-has-preview>.conversation{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:5px 10px;overflow:visible;border:0;border-top:1px solid #dce5e3;padding:10px 0 0}
+ .computer-has-preview>.conversation>.mode-switch,.computer-has-preview>.conversation>.voice-stage,.computer-has-preview>.conversation>.voice-controls{grid-column:1/-1}
+ .computer-has-preview .voice-stage{display:block;text-align:left;padding:0}.computer-has-preview .orb-wrap,.computer-has-preview .voice-stage h1,.computer-has-preview .voice-stage .eyebrow,.computer-has-preview .voice-stage .interim:empty{display:none}
+ .computer-has-preview>.conversation>.status-note,.computer-has-preview>.conversation>.context-input,.computer-has-preview>.conversation>.bottom-links,.computer-has-preview>.conversation>.text-button{display:none}
+ .computer-has-preview .computer-context-toggle{margin:0;grid-column:2;grid-row:2}.computer-has-preview .voice-stage{grid-column:1!important;grid-row:2}.computer-has-preview .stage-caption{font-size:12px!important;line-height:1.35}
+ .computer-has-preview .voice-controls{margin:0}.computer-live .computer-panel{padding:10px}.computer-live .computer-actions button{padding:7px 9px;min-height:36px;font-size:12px!important}.computer-live .computer-bar{gap:7px}.computer-heading h2{font-size:14px!important}
+ .computer-live .computer-options-body{max-height:calc(100dvh - 185px)}.computer-preview-heading strong{font-size:13px}.computer-preview-heading button{font-size:11px}.computer-preview-note{font-size:11px!important}
+}
+
+/* Embedded desktop preview uses the existing scene and renderer directly. */
+html[data-melodi-embedded=true],html[data-melodi-embedded=true] body{height:100%;overflow:hidden;background:#f5f7f6}
+html[data-melodi-embedded=true] .library,html[data-melodi-embedded=true] .space-heading .heading-actions,html[data-melodi-embedded=true] #space-description{display:none}
+html[data-melodi-embedded=true] .spatial-shell{display:block;height:100dvh;min-height:0;padding:0!important}
+html[data-melodi-embedded=true] .main-space{height:100%;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:8px;padding:10px!important;box-sizing:border-box}
+html[data-melodi-embedded=true] .space-heading{margin:0;min-height:28px}.space-heading .title-line{min-width:0}
+html[data-melodi-embedded=true] #space-title{font-size:16px!important;margin:0;letter-spacing:-.4px}html[data-melodi-embedded=true] #space-origin{font-size:11px!important}
+html[data-melodi-embedded=true] .scene-layout{display:block;position:relative;min-height:0;height:100%}
+html[data-melodi-embedded=true] .viewport-shell{height:100%;min-height:0}html[data-melodi-embedded=true] #spatial-canvas{position:absolute;inset:0;height:100%;min-height:0!important}
+html[data-melodi-embedded=true] .inspector{display:block;position:absolute;z-index:4;left:10px;top:10px;max-width:calc(100% - 150px);width:190px;margin:0;padding:0;border:0;background:transparent}
+html[data-melodi-embedded=true] .inspector>:not(.computer-embedded-objects){display:none}
+html[data-melodi-embedded=true] .computer-embedded-objects{background:#ffffffed;border:1px solid #dce5e3;border-radius:8px;padding:0 9px}
+html[data-melodi-embedded=true] .computer-embedded-objects summary{font-size:12px;min-height:32px;padding:7px 0;cursor:pointer}
+html[data-melodi-embedded=true] .computer-embedded-objects .objects-section{max-height:calc(100dvh - 140px);overflow:auto;padding-bottom:8px}
+html[data-melodi-embedded=true] .computer-embedded-objects h3{font-size:12px!important;margin:5px 0}.computer-embedded-objects .object-button{font-size:12px!important;padding:6px!important}
+html[data-melodi-embedded=true] .scene-label{display:none}html[data-melodi-embedded=true] .viewport-top{top:10px;right:10px;left:auto}html[data-melodi-embedded=true] .viewport-hint{font-size:11px}
+
+.computer-has-preview>.conversation>*{flex-shrink:0}.computer-has-preview .voice-stage{flex:0 0 auto}
+.computer-has-preview .computer-current[data-state=succeeded]{display:none}
+.computer-preview-heading{flex-wrap:nowrap}.computer-preview-heading button{flex:0 0 34px;min-width:34px;padding:0;font-size:21px;line-height:1}
+html[data-melodi-embedded=true] .space-heading,html[data-melodi-embedded=true] #spatial-status{display:none}
+html[data-melodi-embedded=true] .main-space{display:block}
+html[data-melodi-embedded=true] #spatial-error:not([hidden]){position:absolute;z-index:8;left:12px;right:12px;top:12px;background:#fff;padding:10px}
+html[data-melodi-embedded=true] .inspector{max-width:calc(100% - 90px)}
+@media(max-width:680px){
+ .computer-live .computer-heading{min-width:100px;order:0}.computer-live .computer-options{order:1}
+ .computer-live .computer-actions{order:2;flex:1 1 100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ .computer-live .computer-actions button{width:100%}.computer-live .computer-bar{justify-content:space-between}
+ main.app-layout.computer-live.computer-has-preview{grid-template-rows:auto minmax(0,1fr) auto}
+}
+@media(max-width:400px){
+ html[data-melodi-embedded=true] #undo-edit,html[data-melodi-embedded=true] #redo-edit,html[data-melodi-embedded=true] .action-divider,html[data-melodi-embedded=true] #mode-move,html[data-melodi-embedded=true] #mode-rotate{display:none}
+ html[data-melodi-embedded=true] .viewport-hint{display:none}
+}
+@media(max-width:680px) and (max-height:520px){
+ .computer-has-preview>.conversation>.mode-switch,.computer-has-preview .voice-stage{display:none}
+ .computer-has-preview .computer-context-toggle{grid-row:auto;grid-column:1/-1;justify-self:end}
+ main.app-layout.computer-live.computer-has-preview{padding:6px!important;gap:6px}
+}
+.computer-context-close{display:none}.computer-has-preview .computer-context-close{display:block;font:inherit;font-size:12px;min-height:36px;border:1px solid #c9dcd6;background:#fff;color:#326c61;border-radius:8px;padding:7px 10px;margin:0 0 12px auto;cursor:pointer}
+@media(max-width:680px){
+ .computer-has-preview>.conversation>.voice-stage{display:none}
+ .computer-has-preview>.conversation>#voice-notice{display:block;grid-column:1;grid-row:2;margin:0;min-height:0;text-align:left;line-height:1.35}
+}
+@media(max-width:680px) and (max-height:520px){
+ .computer-has-preview>.conversation>#voice-notice{grid-row:1}
+ .computer-has-preview .computer-context-toggle{grid-column:2;grid-row:1}
+}
+.computer-drawing-preview{width:100%;height:100%;object-fit:contain;min-height:0;max-height:100%;border:1px solid #d4e4e0;border-radius:8px;background:#fff}
+
+.computer-edit-result video{display:block;width:100%;max-height:60vh;aspect-ratio:16/9;object-fit:contain;border-radius:14px;background:#0c1d2b;margin-bottom:14px}

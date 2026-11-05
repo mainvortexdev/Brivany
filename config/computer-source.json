@@ -1,0 +1,32 @@
+{
+  "source": "cognira-desktop (directorio del usuario; código reutilizado sin modificar)",
+  "backend": "Windows / Electron",
+  "files": {
+    "electron/automation/automationEngine.cjs": "5a6f8df4dc79aebcf46d7caf70524bd6abbc61968b0744872ff728bc69685df8",
+    "electron/automation/systemAgent.cjs": "8574151997ce22337fb3370a95cd866503312bb9b3886b591474538427c23589",
+    "electron/automation/desktopControlOverlay.cjs": "469313e8b7fdd521e26d422bd890b80d18eb9c2d8bf246891aea47ea8794e2cc",
+    "electron/automation/cursorGuard.cjs": "6678482a885e1f81c73a05113f751d60c181a3630a05666d24087db74961dd47",
+    "electron/automation/cursorGuard.ps1": "57a77aa86fa28255b3be4163fb9865440369039dbf2dbd88d7de80bdbd0614f9",
+    "electron/automation/desktop-control-overlay.html": "c2d530cf6c0c551fb24e71b8b8f46091288c3d8c55600a7f6e75556637e68b6f",
+    "electron/intelligence/taskRuntime.cjs": "568d54581bda29efd8aa5a9f801aae73308140d99c231e60fb46071d34f19815",
+    "electron/intelligence/applicationResolver.cjs": "582071dd902f8363dcfa4a7fcfb02855b983985e0297698080dcc144a7e2d316",
+    "electron/services/paintDrawingService.cjs": "08de2e82148fe201de79ac918d503994e3f1b1b494fd9d4f03684ca8a79f1bc4",
+    "electron/automation/paintNative.cjs": "5b29bda85a05e4c2af579b0d711308c1498851a8e42ba2ac22d463b80fc0959b",
+    "electron/services/spatialService.cjs": "7e5f95447a453fc67141c1f10490a52324a6d13f607e590ff109413311d88ea8",
+    "electron/services/spatialArchitecture.cjs": "18105976760d9e8e08d6193de2e570040dfa74c4fb87706d03d839d66f9a535d",
+    "electron/services/spatialExterior.cjs": "1b6ee015db9a804ba216d57b837ac5e1155179a80309c7b8253117e4ac7bb274",
+    "electron/services/paintExportService.cjs": "66f36c2be912328ccc8bc9c17721d0720dfc11f230e6d8cdbca5218efcf07863",
+    "electron/services/paintSession.cjs": "163cee031d11ca6e7f2b94e11504ec05150590515508c6e20702acf229203694",
+    "electron/automation/bezierPath.cjs": "6ef774f30d21bc5fb193270dbdd27956b295d599112cfc3d72499bac8852decd",
+    "electron/automation/hotkeyKeys.cjs": "0ec4b172165c3004788d9ab3705ae5af237448ca54bb3e00f553b5928f881e17",
+    "electron/automation/browserObservation.cjs": "981e5369b8a94ac5f5b6e6a2583679a7e90ae72ea4d1aa340f1d431fa40ffa0a",
+    "electron/intelligence/desktopPolicy.cjs": "58727064496a7822686c1a4ccceacd7a158ffca88db5af32a54b940bd4b20413",
+    "electron/services/officeService.cjs": "1436921eedf11a5e790824b08243de39dd46905b2d5196c9701ad11e3d5f5c4c",
+    "electron/services/officeWorker.ps1": "f4e5a097de8375505fe255e9295bf9c3841feee9cb03832e168cf1e7c661817c",
+    "electron/intelligence/browserSession.cjs": "8781e15ced9a2c196855c7092874506f7c6f0079b8a1898ce5e320068d6d5d16",
+    "electron/automation/webPageObservation.cjs": "7604be4915db6257ccf00c70554d03429543430aa4e7d305e742b7f6a93b49ca",
+    "electron/services/paintReferenceService.cjs": "c2c6fad8000c2ca1ccfada37612f90d1d1a4f787258edf421fef7d1b64c2fe22",
+    "electron/services/paintReferencePlan.cjs": "1f9503fa44d0515f74620000a2b54a08c5e07f328f680d1106c33e2cc868e5ed",
+    "electron/services/paintHighResolution.cjs": "83d77372af5ef56a6d0194886afdf29db9e7ef91255f71cc1be87cdbabc7f669"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "workspace_id": "f480ddd6-397a-53c4-9b25-4e34cee84bd6",
+  "session_id": "5ee63234-c9f7-5ec8-bdc8-cdb0532a6422",
+  "verification_id": "ef7ec603-53c2-57b4-b1c0-00fb756bddc4",
+  "step_id": "dimensions",
+  "attempt": 1,
+  "check_id": "dimension-x",
+  "evaluator_kind": "deterministic",
+  "evaluator_version": "numeric-within-0.1.0",
+  "verdict": "PASS",
+  "evidence_ids": [
+    "37ce4d9d-8b8e-51c1-8d1f-2211dee21a8e"
+  ],
+  "reason": "Ejemplo de comparación 2 m con parámetro 2 m, tolerancia 0.001 m",
+  "verified_at": "2026-10-27T10:01:02Z"
+}

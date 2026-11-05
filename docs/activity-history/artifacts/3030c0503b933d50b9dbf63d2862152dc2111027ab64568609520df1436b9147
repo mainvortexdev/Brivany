@@ -1,0 +1,24 @@
+{
+  "type": "real_account_and_desktop_read_only",
+  "source": "chat",
+  "physical_iphone": false,
+  "microphone_used": false,
+  "audio_persisted": false,
+  "transcripts_persisted": false,
+  "calls": {
+    "chat": 1,
+    "asr": 0,
+    "tts": 0
+  },
+  "passed": false,
+  "checked_at": "2026-11-02T12:42:40.297992+00:00",
+  "connected_computers": 1,
+  "event_types": [
+    "computer_choice",
+    "delta",
+    "done"
+  ],
+  "choice_id": "e8fc80e0-2089-4e6d-8078-1428171b8035",
+  "online_choices": 1,
+  "error_code": "no_computer_task"
+}

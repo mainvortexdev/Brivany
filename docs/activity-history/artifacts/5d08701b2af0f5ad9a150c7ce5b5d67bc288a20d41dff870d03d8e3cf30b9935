@@ -1,0 +1,28 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/spatial-room/report.json",
+  "original_sha256": "daff866f3a7f5d81a200be958c4db7a33664a5fa89d2fd6555505b2cffeac369",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "model_executed": false,
+    "gpu_inference": false,
+    "room_reconstruction_verified": false,
+    "geometry_fidelity_verified": false,
+    "metric_scale_verified": false
+  },
+  "reported_measurements": {
+    "external_calls": 0,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

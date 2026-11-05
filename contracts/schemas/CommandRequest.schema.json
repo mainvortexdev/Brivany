@@ -1,0 +1,60 @@
+{
+  "$defs": {
+    "JsonValue": {},
+    "ToolProposal": {
+      "additionalProperties": false,
+      "properties": {
+        "tool_name": {
+          "maxLength": 120,
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Tool Name",
+          "type": "string"
+        },
+        "arguments": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Arguments",
+          "type": "object"
+        },
+        "rationale": {
+          "minLength": 1,
+          "title": "Rationale",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool_name",
+        "arguments",
+        "rationale"
+      ],
+      "title": "ToolProposal",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "expected_revision": {
+      "minimum": 0,
+      "title": "Expected Revision",
+      "type": "integer"
+    },
+    "expected_observation_id": {
+      "format": "uuid",
+      "title": "Expected Observation Id",
+      "type": "string"
+    },
+    "tool": {
+      "$ref": "#/$defs/ToolProposal"
+    }
+  },
+  "required": [
+    "expected_revision",
+    "expected_observation_id",
+    "tool"
+  ],
+  "title": "CommandRequest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:CommandRequest:0.1.0"
+}

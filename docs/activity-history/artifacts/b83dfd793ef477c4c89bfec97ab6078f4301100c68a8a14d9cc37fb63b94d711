@@ -1,0 +1,25 @@
+{
+  "suite": "spatial-backup-focused",
+  "started_at": "2026-10-28T20:46:50.597655+00:00",
+  "finished_at": "2026-10-28T20:46:56.240646+00:00",
+  "duration_seconds": 5.642991,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_spatial_backup.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "source_data": "synthetic temporary service, scene, layout and capture review only",
+  "offline_probe": "mocked false for synthetic tests; production refusal separately tested with mocked listening state",
+  "output": "............\r\n----------------------------------------------------------------------\r\nRan 12 tests in 5.007s\r\n\r\nOK\r\n"
+}

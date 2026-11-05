@@ -1,0 +1,23 @@
+{
+  "suite": "spatial-room",
+  "started_at": "2026-10-30T00:57:42.768181+00:00",
+  "finished_at": "2026-10-30T00:57:44.149505+00:00",
+  "duration_seconds": 1.381324,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_spatial_room.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "................\r\n----------------------------------------------------------------------\r\nRan 16 tests in 0.549s\r\n\r\nOK\r\n"
+}

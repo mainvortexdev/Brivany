@@ -1,0 +1,101 @@
+# Mini Melodi · isla de escritorio
+
+30 de octubre de 2026, America/La_Paz. La prioridad pasó de la arquitectura de
+extensión/navegación y Office a diseñar y abrir esta superficie nativa. De la
+arquitectura anterior sólo se realizaron lecturas: queda pendiente, sin marcarla
+como implementada.
+
+## Referencias y dirección
+
+Se revisaron los dos videos aportados en `Examples`, partes 12 y 21 de TwoCode,
+mediante fotogramas de referencia locales, y la [web de TwoCode](https://twocode.nl/).
+La referencia combina una isla negra en el borde superior, un rostro luminoso,
+expansión a tarjetas, tamaños seleccionables y brillo asociado al estado.
+Mini Melodi adapta ese lenguaje a Brivany, con iconos propios y su acento verde;
+no incorpora la aplicación, el personaje ni integraciones de TwoCode.
+
+## Comportamiento implementado
+
+- Ventana nativa siempre visible sobre otras aplicaciones, centrada en el borde
+  superior del monitor principal. Sin barra de título, bordes o marco rectangular
+  grande alrededor de la isla. Minimizar Brivany muestra Mini Melodi.
+- Inicio compacto de 48 px de alto; tamaños Compacta, Normal y Amplia. El panel
+  desplegado tiene Inicio, Tareas, Voz y Ajustes. Las dimensiones se acotan a la
+  pantalla; el contenido interior puede desplazarse en pantallas pequeñas.
+- Acercar el cursor al área, con margen de 16 px, prepara la apertura tras 160 ms.
+  Alejarlo programa el acoplamiento con 1200 ms de tolerancia. Volver durante ese
+  intervalo cancela el cierre. Cambiar de sección no fija permanentemente la isla.
+  El cierre explícito/Escape espera a que el cursor salga antes de reabrir por
+  proximidad. La navegación con teclado conserva el panel mientras tiene foco.
+- Parpadeos y miradas ocasionales: sigue la dirección del cursor durante 2,6–4,4 s
+  y vuelve al centro. Entre miradas espera 18–42 s. La primera se ofrece tras
+  6,5–12 s. No sigue permanentemente cada movimiento. En Windows obtiene sólo
+  una dirección local acotada; la proximidad sólo devuelve dos booleanos, no
+  coordenadas. No captura pantalla, inyecta entrada ni registra el recorrido.
+- Respeta la preferencia del sistema de movimiento reducido y el ajuste propio
+  Animaciones. Los brillos y la señal de voz corresponden a actividad observada.
+  «Probar animaciones» muestra una vista previa identificada; no inicia agentes.
+- Transparencia nativa inicial del 18 %, regulable entre 0 y 40 % desde Ajustes.
+  Se aplica al alfa real de la ventana, incluido su contenido; no se simula con
+  un fondo gris. No incluye desenfoque de escritorio ni afirma ser material
+  nativo de Apple. El usuario puede ajustar el equilibrio entre ver debajo y leer
+  la isla. El valor no altera la opacidad de otras ventanas.
+- Tarjetas para Melodi, agentes y selección de pantalla. Los estados de agentes,
+  esperas, live y traducción proceden de los servicios existentes. No se llama
+  a modelos ni se activa audio por abrir, acercarse, cambiar tamaño o animar.
+  Los resultados se revisan en el chat; la escucha del sistema conserva su
+  consentimiento y la propuesta de traducción conserva su aceptación.
+
+## Ventana, entrada y plataformas
+
+En Windows se modifica únicamente la región de la ventana propia. Los píxeles
+laterales e inferiores ajenos a la isla quedan fuera de su región nativa y dejan
+pasar los clics al escritorio. La región interpola el despliegue durante 260 ms;
+una solicitud posterior cancela la interpolación anterior. Aparecer no activa la
+ventana; un clic deliberado puede darle foco para controles de teclado.
+
+La transparencia usa el alfa de esa misma ventana. Los adaptadores de otros
+backends intentan su setter de opacidad y redimensionan la ventana a los límites
+visibles cuando no disponen de la región Win32. La proximidad global y el alfa
+nativo se comprobaron en Windows; macOS/Linux siguen sin comprobación física.
+
+Los cambios están en `desktop/experience/island.py`, `island.js`, `island.css`,
+`work-widget.html` y el puente/lanzador de experiencia. El chat sólo expone un
+getter de estado live. Se conservan los motores originales y el código de Cognira.
+
+## Comprobaciones
+
+- Suite `work`: geometría acotada y con desplazamiento de monitor, margen de
+  proximidad, validación de transparencia y ciclo de vida, junto a las pruebas
+  anteriores de PCM, consentimiento, selección y limpieza. Ventanas/dispositivos
+  sustituidos; no acredita audio físico.
+- Suite `island-ui`: HTTP y DOM reales en Edge headless; puente, posición del
+  cursor y estados sustituidos. Revisa tamaños, secciones, ojos ocasionales,
+  apertura por proximidad, salida breve/reentrada, salida sostenida, transparencia,
+  navegación y desplazamiento en cinco tamaños, Escape y movimiento reducido.
+  Las capturas de `tmp/island-ui` contienen exclusivamente fixtures.
+- `tools.check_work_native --run`: ventana Windows/WebView2 real, sin capturas ni
+  audio. Comprueba el arranque desplegado mediante el puente real, región nativa
+  compacta/expandida y exclusión de laterales/fondo. Consulta el alfa aplicado por
+  Windows para comprobar la transparencia. El informe queda en
+  `tmp/island-native/report.json`. No solicita inferencia; consumo de red de fondo
+  del runtime desconocido.
+- Las pruebas anteriores de `work-events-ui` verifican que la nueva superficie
+  conserva consentimiento, oferta, aceptación y finalización de traducción, con
+  proveedores sustituidos. Los fallos intermedios y sus correcciones permanecen
+  en la bitácora.
+
+La inspección visual se realiza con las capturas de fixtures; Computer Use pudo
+leer los controles de la ventana real, pero sus capturas devolvieron timeout.
+Esto no se presenta como una captura visual nativa aprobada. El usuario dispone
+de la ventana real abierta para revisar el resultado sobre sus aplicaciones.
+
+Para abrir directamente esta superficie en modo de revisión:
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m desktop.experience.launcher --island
+```
+
+Sin ese argumento Brivany abre su chat habitual; el botón Work o minimizar la
+ventana muestra Mini Melodi. Los cambios y resultados se añaden a la bitácora
+local sin incorporar los videos originales, capturas privadas, audio o claves.

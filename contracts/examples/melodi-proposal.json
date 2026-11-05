@@ -1,0 +1,13 @@
+{
+  "proposal_id": "f812e655-0142-5723-9210-930ade501939",
+  "session_id": "5ee63234-c9f7-5ec8-bdc8-cdb0532a6422",
+  "expected_session_revision": 3,
+  "step_id": "dimensions",
+  "intervention": "explain",
+  "message": "Comprueba el eje de cada medida y la unidad de la escena. Después revisaremos los tres valores.",
+  "source_ids": [
+    "expert-demo"
+  ],
+  "missing_information": [],
+  "tool": null
+}

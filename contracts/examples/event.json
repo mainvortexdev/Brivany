@@ -1,0 +1,13 @@
+{
+  "workspace_id": "f480ddd6-397a-53c4-9b25-4e34cee84bd6",
+  "session_id": "5ee63234-c9f7-5ec8-bdc8-cdb0532a6422",
+  "event_id": "ce8b3c25-d6f2-5dc6-8c0f-f26674bbbd29",
+  "seq": 4,
+  "type": "verification.completed",
+  "occurred_at": "2026-10-27T10:01:02Z",
+  "correlation_id": "bc383f48-b46b-5dea-acba-33c1c6a0ab1a",
+  "payload": {
+    "verification_id": "ef7ec603-53c2-57b4-b1c0-00fb756bddc4",
+    "verdict": "PASS"
+  }
+}

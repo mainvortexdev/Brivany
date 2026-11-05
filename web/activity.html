@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff"><title>Bitácora · Brivany</title>
+  <link rel="icon" href="/icon.svg"><link rel="stylesheet" href="/activity.css"><link rel="stylesheet" href="/palette.css">
+  <script src="/activity.js" defer></script>
+<link rel="stylesheet" href="/typography.css"></head>
+<body>
+  <a class="skip" href="#main">Ir a la bitácora</a>
+  <header class="activity-header"><a href="/" class="wordmark" aria-label="Brivany, inicio">brivany<span>.</span></a><nav aria-label="Brivany"><a href="/spaces">Espacios</a><a href="/app">Melodi</a><a href="/dubbing">Doblaje</a><a href="/activity" aria-current="page">Bitácora</a></nav></header>
+  <main id="main">
+    <header class="page-heading"><div><p class="eyebrow">BRIVANY EN CONSTRUCCIÓN</p><h1>El camino queda aquí.</h1><p class="lede">Ideas, avances y pruebas. Con su evidencia.</p></div><span class="local-label"><span aria-hidden="true"></span>En este equipo</span></header>
+    <section class="ledger-bar" aria-label="Resumen del registro"><div class="ledger-count"><strong id="entry-count">—</strong><span>actividades registradas</span></div><div class="integrity"><span id="integrity-label">Consultando registro…</span><details><summary>Cómo se comprueba</summary><p>Los registros forman una cadena local de hashes. Cada evidencia conserva una copia y su SHA-256. Esto permite detectar cambios accidentales; no es una auditoría independiente ni demuestra que una afirmación sea correcta.</p></details></div></section>
+    <section aria-labelledby="timeline-title">
+      <div class="timeline-heading"><h2 id="timeline-title">Bitácora</h2><div class="toolbar"><button id="refresh-activity" type="button">Actualizar <span aria-hidden="true">↻</span></button><button id="export-activity" type="button" disabled>Exportar <span aria-hidden="true">↗</span></button></div></div>
+      <form id="activity-filters" class="filters" role="search"><label class="search-field"><span class="sr-only">Buscar en la bitácora</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="activity-search" type="search" placeholder="Buscar un avance…" maxlength="300" autocomplete="off"></label><label><span class="sr-only">Tipo de actividad</span><select id="activity-kind"><option value="">Todos los tipos</option><option value="idea">Ideas</option><option value="implementation">Implementaciones</option><option value="test">Pruebas</option><option value="decision">Decisiones</option></select></label><label><span class="sr-only">Estado</span><select id="activity-status"><option value="">Todos los estados</option><option value="pending">Pendiente</option><option value="implemented">Implementado</option><option value="passed">Prueba superada</option><option value="failed">Prueba fallida</option></select></label></form>
+      <p id="activity-notice" class="notice" role="status" aria-live="polite">Cargando actividades…</p>
+      <div id="activity-error" class="error" role="alert" hidden><p>No pudimos abrir la bitácora.</p><span id="activity-error-message">Comprueba que el servidor local siga abierto e inténtalo de nuevo.</span></div>
+      <div id="activity-empty" class="empty" hidden><span aria-hidden="true">—</span><h3 id="empty-title">El registro empieza aquí.</h3><p id="empty-description">Los próximos avances aparecerán en esta bitácora.</p></div>
+      <ol id="activity-list" class="activity-list" aria-label="Actividades, de la más reciente a la más antigua"></ol>
+      <div class="history-actions"><button id="load-older-activity" type="button" hidden>Cargar anteriores ↓</button></div>
+    </section>
+    <footer><span>Una idea no es una implementación. Una prueba conserva sus límites.</span><a href="/app">Volver a Melodi ↗</a></footer>
+  </main>
+</body>
+</html>

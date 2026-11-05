@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-10-31T03:48:23.514691+00:00",
+  "finished_at": "2026-10-31T03:48:39.238348+00:00",
+  "duration_seconds": 15.723657,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Failure view {\n  panel: 'Música',\n  spotify: { configured: true, connected: true, pending: false },\n  body: {\n    expanded: 'false',\n    sleeping: 'true',\n    surface: 'preview',\n    motion: 'false',\n    translationFocus: 'false'\n  }\n}\nFailure view {\n  panel: 'Música',\n  spotify: { configured: true, connected: true, pending: false },\n  body: {\n    expanded: 'true',\n    sleeping: 'false',\n    surface: 'panel',\n    motion: 'true',\n    translationFocus: 'true'\n  }\n}\nAssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(await popup.getByLabel('Dispositivo de reproducción').evaluate(el=>el.getBoundingClientRect().bottom<=innerHeight))\n\n    at <local-path>\\tools\\check_island_ui.cjs:50:3\n"
+}

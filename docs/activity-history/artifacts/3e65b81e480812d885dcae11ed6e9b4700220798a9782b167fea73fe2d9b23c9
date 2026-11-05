@@ -1,0 +1,75 @@
+# Confirmar el video sin esperar recursos ajenos al reproductor
+
+4 de noviembre de 2026. El intento real
+`tmp/selected-video/inline-sync-1793815513583.json` terminó antes de activar
+el doblaje con `abrir-video: TimeoutError`. La fase agrupaba navegación,
+reproductor, identidad y reproducción, por lo que el informe no identificaba
+qué comprobación falló. La preparación automática ya había enviado siete
+segundos y empezó una transcripción Muse; hubo cero sesiones de doblaje y cero
+solicitudes MT/TTS registradas. El importe de esa preparación es desconocido.
+
+## Apertura con un único plazo
+
+El banco ahora espera que se confirme la navegación (`commit`) y después
+comprueba directamente el video. Todas las fases comparten un único plazo
+monotónico de veinte segundos, incluido el inicio de reproducción; no reciben
+veinte segundos adicionales cada una. Una operación que siga pendiente también
+queda limitada por ese plazo.
+
+Se conservan las comprobaciones de fuente y se espera explícitamente:
+
+- Un video visible dentro del reproductor.
+- Coincidencia entre los cuatro identificadores del video: URL, reproductor,
+  respuesta actual y respuesta inicial.
+- Las cuatro duraciones finitas, positivas y con diferencia máxima de dos
+  segundos, sin clases de anuncio activo.
+- Video reproduciéndose, sin búsqueda pendiente, con datos suficientes,
+  velocidad 1 y avance de al menos 150 ms desde la posición solicitada.
+
+La comprobación independiente de identidad antes de activar y al terminar sigue
+vigente. La página puede mantener recursos de análisis, publicidad u otros
+pendientes después de que el video esté listo; esos recursos no sustituyen la
+comprobación del reproductor ni deben ser un requisito para aceptar su apertura.
+
+## Fallos identificables y diagnóstico parcial
+
+Se registran las fases `navegar-video`, `esperar-reproductor`,
+`verificar-identidad` y `verificar-reproduccion`. Sus códigos permitidos son
+`source_navigation_timeout`, `source_navigation_failed`, `source_player_timeout`,
+`source_identity_timeout`, `source_identity_mismatch` y
+`source_playback_timeout`. El banco conserva sólo esos códigos y fases
+reconocidos y muestra mensajes fijos; no publica errores originales o URLs
+incrustadas en excepciones.
+
+Si una apertura falla mientras la extensión prepara el prefijo, se consulta una
+sola instantánea de su trabajador, con un máximo de 500 ms y sin iniciar otra
+inferencia. Se conservan sólo duración, posición, bytes convertidos a tiempo,
+estado listo/error, fases numéricas y límites/tipo de hasta dieciséis turnos.
+El campo `diagnostic_partial` distingue esta instantánea de una verificación del
+recorrido completo. No contiene transcripción, PCM ni identificadores de acceso.
+
+## Comprobación local
+
+Una regresión usa un Brave nuevo y temporal, sin extensión ni perfil personal,
+un servidor HTTP de bucle local y tres segundos de video negro generado para la
+prueba. Un recurso JavaScript bloquea el analizador HTML: esperar
+`DOMContentLoaded` agota su plazo reducido de prueba aunque el video ya tenga
+datos y se reproduzca. La misma página pasa con la nueva comprobación directa,
+todavía en estado `loading`. Los casos con anuncio, identificador incorrecto o
+velocidad 2 son rechazados en su fase correspondiente.
+
+También se comprueba que los plazos restantes disminuyan entre fases y que las
+instantáneas y los informes omitan texto, audio, identificadores y campos
+malformados. Son pruebas locales con datos propios o sustitutos; no abren APIs
+de traducción y no certifican que YouTube vaya a cargar siempre dentro de veinte
+segundos. El intento real fallido permanece registrado y no se convierte en una
+prueba aprobada tras la corrección.
+
+Verificación registrada mediante `tools.verify`:
+
+- `tmp/verification/workspace-sync-extension-20261104T181144-58ec8fba.json`:
+  71 pruebas aprobadas, incluidas las tres regresiones de apertura y el navegador
+  local con recurso bloqueado.
+- `tmp/verification/sync-relay-20261104T181144-73400102.json`: 95 pruebas
+  aprobadas, incluida la conservación del error seguro y del diagnóstico parcial
+  en el informe del banco.

@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "scope": "real account, desktop and Meta search",
+  "checked_at": "2026-11-04T02:13:39.234462+00:00",
+  "cache_used": false,
+  "original_conversation_saved": false,
+  "billing_usd": null,
+  "trials": [
+    {
+      "case": "weather",
+      "ack_seconds": 0.469,
+      "completion_seconds": 5.985,
+      "state": "succeeded",
+      "account_polls": 12,
+      "host_external_requests": 1,
+      "actual_search_verified": true,
+      "source_domains": [
+        "www.weather2travel.com",
+        "yandex.com.am",
+        "meteum.ai",
+        "www.foreca.com"
+      ],
+      "answer_characters": 240,
+      "within_five_seconds": false
+    }
+  ]
+}

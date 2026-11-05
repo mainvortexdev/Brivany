@@ -1,0 +1,2081 @@
+[
+  {
+    "id": "windows.shortcut.0001",
+    "keys": "Copilot key The Microsoft Copilot icon. Copilot key The Microsoft Copilot icon. (when Copilot is not available or disabled)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0002",
+    "keys": "Backspace",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0003",
+    "keys": "Ctrl+A",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0004",
+    "keys": "Ctrl+B",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0005",
+    "keys": "Ctrl+Backspace",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0006",
+    "keys": "Ctrl+C Ctrl+Insert",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0007",
+    "keys": "Ctrl+Del",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0008",
+    "keys": "Ctrl+Down arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0009",
+    "keys": "Ctrl+End",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0010",
+    "keys": "Ctrl+F",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0011",
+    "keys": "Ctrl+H",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0012",
+    "keys": "Ctrl+Home",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0013",
+    "keys": "Ctrl+I",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0014",
+    "keys": "Ctrl+Left arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0015",
+    "keys": "Ctrl+Right arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0016",
+    "keys": "Ctrl+Shift+V",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0017",
+    "keys": "Ctrl+U",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0018",
+    "keys": "Ctrl+Up arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0019",
+    "keys": "Ctrl+V Shift+Insert",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0020",
+    "keys": "Ctrl+X",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0021",
+    "keys": "Ctrl+Y",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0022",
+    "keys": "Ctrl+Z",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0023",
+    "keys": "Del or Delete",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0024",
+    "keys": "Down arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0025",
+    "keys": "End",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0026",
+    "keys": "Home",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0027",
+    "keys": "Left arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0028",
+    "keys": "Page down or PgDn",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0029",
+    "keys": "Page up or PgUp",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0030",
+    "keys": "Right arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0031",
+    "keys": "Shift+Ctrl+Down arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0032",
+    "keys": "Shift+Ctrl+End",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0033",
+    "keys": "Shift+Ctrl+Home",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0034",
+    "keys": "Shift+Ctrl+Left",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0035",
+    "keys": "Shift+Ctrl+Right",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0036",
+    "keys": "Shift+Ctrl+Up",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0037",
+    "keys": "Shift+Down arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0038",
+    "keys": "Shift+End",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0039",
+    "keys": "Shift+Home",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0040",
+    "keys": "Shift+Left arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0041",
+    "keys": "Shift+Page Down",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0042",
+    "keys": "Shift+Page Up",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0043",
+    "keys": "Shift+Right arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0044",
+    "keys": "Shift+Up arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0045",
+    "keys": "Tab",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0046",
+    "keys": "Up arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0047",
+    "keys": "Alt+A",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0048",
+    "keys": "Alt+Esc",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0049",
+    "keys": "Alt+F4",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0050",
+    "keys": "Alt+F8",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0051",
+    "keys": "Alt+Left arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0052",
+    "keys": "Alt+Page Down",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0053",
+    "keys": "Alt+Page Up",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0054",
+    "keys": "Alt+PrtScn",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0055",
+    "keys": "Alt+Right arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0056",
+    "keys": "Alt+Shift+arrow keys",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0057",
+    "keys": "Alt+Ctrl+Insert",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0058",
+    "keys": "Alt+Spacebar",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0059",
+    "keys": "Alt+Tab",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0060",
+    "keys": "Alt+underlined letter",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0061",
+    "keys": "Ctrl+Alt+Del",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0062",
+    "keys": "Ctrl+Alt+Tab",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0063",
+    "keys": "Ctrl+Esc",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0064",
+    "keys": "Ctrl+F4",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0065",
+    "keys": "Ctrl+F5 Ctrl+R",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0066",
+    "keys": "Ctrl+Shift",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0067",
+    "keys": "Ctrl+Shift+arrow keys",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0068",
+    "keys": "Ctrl+Shift+Esc",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0069",
+    "keys": "Ctrl+Spacebar",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0070",
+    "keys": "Esc or Escape",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0071",
+    "keys": "F5",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0072",
+    "keys": "F6",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0073",
+    "keys": "F10",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0074",
+    "keys": "PrtScn or Print Screen",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0075",
+    "keys": "Win",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0076",
+    "keys": "Win+A",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0077",
+    "keys": "Win+Shift+A",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0078",
+    "keys": "Win+Alt+B",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0079",
+    "keys": "Win+C",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0080",
+    "keys": "Win+C (when Copilot is not available or disabled)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0081",
+    "keys": "Win+Alt+D",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0082",
+    "keys": "Win+Alt+Down arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0083",
+    "keys": "Win+Alt+H",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0084",
+    "keys": "Win+Alt+K",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0085",
+    "keys": "Win+Alt+Up arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0086",
+    "keys": "Win+comma (,)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0087",
+    "keys": "Win+Ctrl+C",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0088",
+    "keys": "Win+Ctrl+Enter",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0089",
+    "keys": "Win+Ctrl+F",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0090",
+    "keys": "Win+Ctrl+Q",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0091",
+    "keys": "Win+Ctrl+Shift+B",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0092",
+    "keys": "Win+Ctrl+Spacebar",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0093",
+    "keys": "Win+Ctrl+V",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0094",
+    "keys": "Win+D",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0095",
+    "keys": "Win+Down arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0096",
+    "keys": "Win+E",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0097",
+    "keys": "Win+Esc",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0098",
+    "keys": "Win+F",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0099",
+    "keys": "Win+forward slash (/)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0100",
+    "keys": "Win+G",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0101",
+    "keys": "Win+H",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0102",
+    "keys": "Win+Home",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0103",
+    "keys": "Win+I",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0104",
+    "keys": "Win+J",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0105",
+    "keys": "Win+K",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0106",
+    "keys": "Win+L",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0107",
+    "keys": "Win+Left arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0108",
+    "keys": "Win+M",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0109",
+    "keys": "Win+Minus (-)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0110",
+    "keys": "Win+N",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0111",
+    "keys": "Win+O",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0112",
+    "keys": "Win+P",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0113",
+    "keys": "Win+Pause",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0114",
+    "keys": "Win+Period (.) Win+Semicolon (;)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0115",
+    "keys": "Win+Plus (+)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0116",
+    "keys": "Win+PrtScn",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0117",
+    "keys": "Win+Q",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0118",
+    "keys": "Win+R",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0119",
+    "keys": "Win+Right arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0120",
+    "keys": "Win+S",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0121",
+    "keys": "Win+Shift+Down arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0122",
+    "keys": "Win+Shift+Enter",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0123",
+    "keys": "Win+Shift+Left arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0124",
+    "keys": "Win+Shift+M",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0125",
+    "keys": "Win+Shift+R",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0126",
+    "keys": "Win+Shift+Right arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0127",
+    "keys": "Win+Shift+S",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0128",
+    "keys": "Win+Shift+Spacebar",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0129",
+    "keys": "Win+Shift+Up arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0130",
+    "keys": "Win+Shift+V",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0131",
+    "keys": "Win+Spacebar",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0132",
+    "keys": "Win+Tab",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0133",
+    "keys": "Win+U",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0134",
+    "keys": "Win+Up arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0135",
+    "keys": "Win+V",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0136",
+    "keys": "Win+W",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0137",
+    "keys": "Win+X",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0138",
+    "keys": "Win+Y",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0139",
+    "keys": "Win+Z",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0140",
+    "keys": "Ctrl+M",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0141",
+    "keys": "Alt+selection key",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0142",
+    "keys": "Arrow keys",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0143",
+    "keys": "Page up",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0144",
+    "keys": "Page down",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0145",
+    "keys": "Ctrl+Home (Mark mode)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0146",
+    "keys": "Ctrl+End (Mark mode)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0147",
+    "keys": "Ctrl+Home (History navigation)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0148",
+    "keys": "Ctrl+End (History navigation)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0149",
+    "keys": "F4",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0150",
+    "keys": "Ctrl+Tab",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0151",
+    "keys": "Ctrl+Shift+Tab",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0152",
+    "keys": "Ctrl+1, 2, 3,...",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0153",
+    "keys": "Shift+Tab",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0154",
+    "keys": "Spacebar",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0155",
+    "keys": "Alt+D",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0156",
+    "keys": "Alt+Enter",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0157",
+    "keys": "Alt+Left arrow Backspace",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0158",
+    "keys": "Alt+mouse drag a file",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0159",
+    "keys": "Alt+P",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0160",
+    "keys": "Alt+Shift+P",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0161",
+    "keys": "Alt+Up arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0162",
+    "keys": "Ctrl+Arrow key (to move to an item)+Spacebar",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0163",
+    "keys": "Ctrl+D Delete",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0164",
+    "keys": "Ctrl+E Ctrl+F",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0165",
+    "keys": "Ctrl+L",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0166",
+    "keys": "Ctrl+mouse drag a file",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0167",
+    "keys": "Ctrl+mouse scroll wheel",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0168",
+    "keys": "Ctrl+N",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0169",
+    "keys": "Ctrl+Number (1-9)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0170",
+    "keys": "Ctrl+Plus (+)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0171",
+    "keys": "Ctrl+Shift+E",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0172",
+    "keys": "Ctrl+Shift+N",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0173",
+    "keys": "Ctrl+Shift+Number (1-9)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0174",
+    "keys": "Ctrl+T",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0175",
+    "keys": "Ctrl+W",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0176",
+    "keys": "F2",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0177",
+    "keys": "F3",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0178",
+    "keys": "F11",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0179",
+    "keys": "Shift+Arrow keys",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0180",
+    "keys": "Shift+Delete",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0181",
+    "keys": "Shift+F10",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0182",
+    "keys": "Shift+mouse drag a file",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0183",
+    "keys": "Shift+mouse right-click",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0184",
+    "keys": "Win+Ctrl+D",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0185",
+    "keys": "Win+Ctrl+Right arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0186",
+    "keys": "Win+Ctrl+Left arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0187",
+    "keys": "Win+Ctrl+F4",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0188",
+    "keys": "Alt+Shift+Arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0189",
+    "keys": "Ctrl+select a grouped app icon on the taskbar",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0190",
+    "keys": "Ctrl+Shift+select an app icon on the taskbar",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0191",
+    "keys": "Shift+right-click an app icon on the taskbar",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0192",
+    "keys": "Shift+right-click a grouped taskbar button",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0193",
+    "keys": "Shift+select an app icon on the taskbar",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0194",
+    "keys": "Win+Alt+Enter (on taskbar item focus)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0195",
+    "keys": "Win+Alt+number (0-9)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0196",
+    "keys": "Win+B",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0197",
+    "keys": "Win+Ctrl+number (0-9)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0198",
+    "keys": "Win+Ctrl+Shift+number (0-9)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0199",
+    "keys": "Win+number (0-9)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0200",
+    "keys": "Win+Shift+Number (0-9)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0201",
+    "keys": "Win+T",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0202",
+    "keys": "Win+Shift+T",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0203",
+    "keys": "Enter Spacebar",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0204",
+    "keys": "Ctrl+C (or Ctrl+Insert)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0205",
+    "keys": "Ctrl+V (or Shift+Insert)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0206",
+    "keys": "Ctrl+D (or Delete)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0207",
+    "keys": "Ctrl+R (or F5)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0208",
+    "keys": "Ctrl+arrow keys",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0209",
+    "keys": "Ctrl+arrow key (to move to an item)+Spacebar",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0210",
+    "keys": "Ctrl+Shift with an arrow key",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0211",
+    "keys": "Shift with any arrow key",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0212",
+    "keys": "Esc",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0213",
+    "keys": "PrtScn",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0214",
+    "keys": "Win+Shift+C",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0215",
+    "keys": "Win+period (.) or semicolon (;)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0216",
+    "keys": "Win+number",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0217",
+    "keys": "Win+Shift+number",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0218",
+    "keys": "Win+Ctrl+number",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0219",
+    "keys": "Win+Alt+number",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0220",
+    "keys": "Win+Ctrl+Shift+number",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0221",
+    "keys": "Win+Shift+Left arrow or Right arrow",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0222",
+    "keys": "Ctrl+number (number 1–9)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0223",
+    "keys": "Ctrl+E",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0224",
+    "keys": "Num Lock+asterisk (*)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0225",
+    "keys": "Num Lock+plus (+)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0226",
+    "keys": "Num Lock+minus (-)",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0227",
+    "keys": "Shift+click a taskbar button",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0228",
+    "keys": "Ctrl+Shift+click a taskbar button",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0229",
+    "keys": "Shift+right-click a taskbar button",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0230",
+    "keys": "Ctrl+click a grouped taskbar button",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  },
+  {
+    "id": "windows.shortcut.0231",
+    "keys": "Type on any page with search box",
+    "platform": "windows",
+    "kind": "shortcut",
+    "source": "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows",
+    "availability": "requires_owned_target",
+    "policy": "review_required"
+  }
+]

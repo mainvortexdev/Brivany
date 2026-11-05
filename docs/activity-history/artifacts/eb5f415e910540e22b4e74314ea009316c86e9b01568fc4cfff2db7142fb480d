@@ -1,0 +1,28 @@
+/* Melodi: a soft, code-native companion inspired by the supplied motion reference. */
+:root{--eye-x:36px}
+.eye-wander{top:3px;width:40px;height:32px}
+.face.melodi-character{position:relative;display:block;width:40px;height:32px;gap:0;transform:none;transition:none}
+.mascot-body{position:absolute;left:4px;top:2px;width:32px;height:25px;border-radius:43% 45% 41% 42% / 45% 45% 40% 42%;background:radial-gradient(ellipse at 30% 13%,#fff 0%,#f5f7f3 45%,#dbe5df 79%,#bacfc4 100%);box-shadow:inset 0 1px 1px #fff,inset -2px -2px 3px #55726022,0 1px 2px #0005;transform-origin:50% 80%;animation:melodi-breathe 4.8s ease-in-out infinite}
+.mascot-shadow{position:absolute;left:8px;bottom:1px;width:24px;height:4px;border-radius:50%;background:#7bafa32b;filter:blur(2px)}
+.mascot-look{position:absolute;left:9px;top:10px;display:flex;align-items:center;gap:7px;transform:translate(calc(var(--gaze-x)*.38),calc(var(--gaze-y)*.35));transition:transform .22s ease}
+.melodi-character .eye{display:block;width:3px;height:3.6px;border:0;border-radius:50%;background:#1c2822;box-shadow:inset 0 -.5px .5px #0003;animation:melodi-blink 7.8s infinite;transform-origin:center}
+.melodi-character .eye:nth-child(2){animation-delay:.03s}
+.mascot-cheek{position:absolute;top:14px;width:4.6px;height:2.5px;border-radius:50%;background:#e6b8b0;opacity:.5;filter:blur(.25px)}.mascot-cheek.left{left:4.5px}.mascot-cheek.right{right:4.5px}
+.mascot-hand{position:absolute;top:17px;width:5px;height:6px;border-radius:50%;background:linear-gradient(130deg,#fff,#d1dfd6);box-shadow:0 .5px 1px #0004;transform:rotate(-20deg);transform-origin:50% 85%}.mascot-hand.left{left:0}.mascot-hand.right{right:0;transform:rotate(20deg)}
+.mascot-sleep{position:absolute;right:-1px;top:-2px;font:600 7px/1 "Segoe UI",sans-serif;color:#b0cec0;opacity:0;pointer-events:none}
+body[data-expanded=true] .melodi-character .mascot-hand.right{animation:melodi-wave .8s ease-in-out 2}
+body[data-character-state=working] .mascot-body{animation:melodi-working 1.6s ease-in-out infinite}body[data-character-state=working] .mascot-hand.left{animation:melodi-wave 1.2s ease-in-out infinite}
+body[data-sleeping=true] .face.melodi-character{transform:none;gap:0}
+body[data-sleeping=true] .mascot-body{top:4px;animation:melodi-nap 4.5s ease-in-out infinite}
+body[data-sleeping=true] .melodi-character .eye{width:5px;height:3px;border:0;border-bottom:1.3px solid #334c40;background:transparent;border-radius:0 0 7px 7px;box-shadow:none;animation:none}
+body[data-sleeping=true] .mascot-look{left:7px;top:11px;gap:7px;transform:none}
+body[data-sleeping=true] .mascot-hand{top:20px;animation:none;transform:rotate(0)}
+body[data-sleeping=true] .mascot-sleep{animation:melodi-snooze 4.5s ease-in-out infinite}
+@keyframes melodi-breathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-.7px) scale(1.015,.985)}}
+@keyframes melodi-working{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-1.4px) rotate(2deg)}}
+@keyframes melodi-blink{0%,43%,47%,100%{transform:scaleY(1)}45%{transform:scaleY(.12)}}
+@keyframes melodi-wave{0%,100%{transform:translateY(0) rotate(15deg)}45%{transform:translateY(-5px) rotate(45deg)}70%{transform:translateY(-4px) rotate(18deg)}}
+@keyframes melodi-nap{0%,100%{transform:scale(1.03,.93) translateY(1px)}50%{transform:scale(1,.96)}}
+@keyframes melodi-snooze{0%,15%,100%{opacity:0;transform:translateY(2px)}45%,65%{opacity:.65}80%{opacity:0;transform:translateY(-2px)}}
+body[data-motion=false] .melodi-character *,body[data-motion=false] .mascot-look{animation:none!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){.melodi-character *{animation:none!important;transition:none!important}.eye-wander{transition:none!important}.mascot-sleep{opacity:0!important}}

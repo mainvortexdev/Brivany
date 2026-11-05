@@ -1,0 +1,33 @@
+/* Melodi's team: compact siblings, with motion tied to execution state. */
+#tools{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+:root{--eye-x:16px}
+.melodi-family{height:40px;width:var(--family-width,72px);display:flex;align-items:center;position:relative;pointer-events:auto}
+#tools .melodi-family>.eye-bay{flex:0 0 72px;width:72px;position:relative;inset:auto;z-index:2}
+.agent-siblings{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;align-items:center;height:40px;overscroll-behavior-x:contain;scroll-snap-type:x mandatory}
+.agent-siblings::-webkit-scrollbar{display:none}.agent-siblings:first-child{justify-content:safe flex-end}
+#tools .agent-child{width:26px;height:34px;min-height:34px;flex:0 0 26px;position:relative;padding:0;justify-content:center;border-radius:99px;background:transparent;isolation:isolate;scroll-snap-align:center;opacity:1;transform:none;transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+#tools .agent-child.leaving{opacity:0;transform:translateY(3px) scale(.92);pointer-events:none}
+#tools .agent-child:hover,#tools .agent-child:focus-visible{outline:0;background:#ffffff0d;box-shadow:inset 0 0 0 1px #ffffff12}
+.agent-mini{width:22px;height:25px;position:relative;display:block;transform-origin:50% 85%}
+.agent-mini-body{position:absolute;left:3px;top:5px;width:16px;height:14px;border-radius:46% 46% 42% 42%;background:radial-gradient(ellipse at 30% 15%,#fff,#e4eeea 62%,#96b9b2);box-shadow:0 1px 4px #0008,inset 0 1px 0 #fff;z-index:2}
+.agent-mini-eyes{position:absolute;top:6px;left:5px;display:flex;gap:4px}.agent-mini-eyes:before,.agent-mini-eyes:after{content:"";width:1.7px;height:2px;background:#273c36;border-radius:50%}
+.agent-mini-hand{position:absolute;top:14px;width:3px;height:4px;background:#d8e9e2;border-radius:50%;z-index:3}.agent-mini-hand.left{left:0}.agent-mini-hand.right{right:0}
+.agent-mini-desk{position:absolute;left:1px;bottom:1px;width:20px;height:1px;background:linear-gradient(90deg,transparent,#7b9e9670,transparent)}
+.agent-mini-status{position:absolute;right:1px;bottom:4px;height:3px;width:3px;border-radius:50%;background:#88908d;box-shadow:0 0 3px #000;z-index:4}
+.agent-child[data-state=running] .agent-mini,.agent-child[data-state=planning] .agent-mini{animation:agent-work 1.35s ease-in-out infinite;animation-delay:var(--agent-delay,0s)}
+.agent-child[data-state=running] .agent-mini-hand.left{animation:agent-type .48s ease-in-out infinite}.agent-child[data-state=running] .agent-mini-hand.right{animation:agent-type .48s .24s ease-in-out infinite}
+.agent-child[data-state=reviewing] .agent-mini-body{animation:agent-review 1.5s ease-in-out infinite}.agent-child[data-state=reviewing] .agent-mini-status{background:#c4c7ee}
+.agent-child[data-state=succeeded] .agent-mini-status{background:#1686ff;animation:agent-done-beat 1.8s ease-in-out infinite}.agent-child[data-state=awaiting_user] .agent-mini-status,.agent-child[data-state=awaiting_approval] .agent-mini-status{background:#e0bd88}
+.agent-child[data-state=failed] .agent-mini-status{background:#dc968d}.agent-child[data-state=queued] .agent-mini{opacity:.65}
+.agent-child.entering{animation:agent-arrive .24s cubic-bezier(.2,.7,.2,1)}
+#agent-detail h2{font:400 19px/1.3 Georgia,serif;margin:4px 0 12px;letter-spacing:-.5px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}#agent-detail p{font-size:12px;color:#a6b5af;margin:0;line-height:1.5;min-height:36px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+#agent-attempt{font-size:10px;color:#8c9993;margin:9px 0 12px;min-height:14px}#agent-attempt:empty{display:none}.agent-detail-actions{display:flex;gap:8px;position:absolute;bottom:16px;left:24px;right:24px}.agent-detail-actions button{font-size:11px;border-radius:99px;background:#ffffff0c;border:1px solid #ffffff12;min-height:32px}
+.agent-detail-actions button:hover{background:#ffffff17}.agent-detail-actions button:focus-visible{outline:0;box-shadow:0 0 0 2px #ffffff30}
+@keyframes agent-work{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-1.3px) rotate(3deg)}}
+@keyframes agent-type{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes agent-review{0%,100%{box-shadow:0 0 0 0 #b9c9e000}50%{box-shadow:0 0 0 3px #b9c9e01c}}
+@keyframes agent-arrive{from{opacity:0;transform:translateY(4px) scale(.8)}to{opacity:1;transform:none}}
+@keyframes agent-done-beat{0%,100%{transform:scale(.9);box-shadow:0 0 0 0 #1686ff00}30%{transform:scale(1.14);box-shadow:0 0 0 2px #1686ff24}55%{transform:scale(.96);box-shadow:0 0 0 3px #1686ff00}}
+@media(max-width:700px){.melodi-family{position:fixed;right:6px;top:0;z-index:8;background:#000}#tools{padding-right:calc(var(--family-width,72px) + 10px);scroll-padding-right:calc(var(--family-width,72px) + 10px)}#tools .melodi-family>.eye-bay{position:relative;right:auto;top:auto}}
+@media(prefers-reduced-motion:reduce){.melodi-family,.agent-child,.agent-mini,.agent-mini *{animation:none!important;transition:none!important}}
+body[data-motion=false] .agent-mini,body[data-motion=false] .agent-mini *{animation:none!important}

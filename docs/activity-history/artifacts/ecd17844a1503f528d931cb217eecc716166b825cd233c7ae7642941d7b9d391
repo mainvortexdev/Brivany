@@ -1,0 +1,52 @@
+{
+  "type": "personal_prefix_visibility_and_public_runtime_observation",
+  "runtime_observed_at": "2026-11-04T18:31:14.082129+00:00",
+  "runtime_observation_method": "GET_loopback_public_runtime_safe_fields_only",
+  "runtime": {
+    "available": true,
+    "port": 48217,
+    "paired_browsers": 1,
+    "active_sessions": 0,
+    "workspace_connected": true,
+    "inline_video_active": false,
+    "automatic_available": true,
+    "last_failure_absent": true,
+    "video_prefix": {
+      "active": false,
+      "cached": 0,
+      "completed": 0,
+      "reused": 0
+    }
+  },
+  "browser_observation_source": "root_agent_visible_controls_and_read_only_dom",
+  "browser_tab_id": 863156743,
+  "source_video_id": "sr_iLGKNsxU",
+  "source_opened_using_normal_video_url": true,
+  "original_resume_time_seconds": 286,
+  "user_interface_seek_to_zero_confirmed_by_accessibility": true,
+  "later_dom_observation": {
+    "source_time_seconds": 24.937585,
+    "duration_seconds": 1495.781,
+    "ready_state": 4,
+    "playback_rate": 1,
+    "playing": true,
+    "prefix_build": null,
+    "prefix_state": null,
+    "active_translation": false
+  },
+  "source_paused_after_observation_approx_seconds": 40,
+  "prefix_visible_after_restart_from_zero": false,
+  "reason_for_no_prefix_demonstrated": false,
+  "new_tool_activation": false,
+  "new_personal_dubbing_started": false,
+  "isolated_trial_063": false,
+  "billing_amount": null,
+  "provider_attempt_count_for_this_entire_browser_interval": null,
+  "api_keys_or_private_state_saved": false,
+  "limits": [
+    "dom_markers_absent_not_root_cause",
+    "current_runtime_snapshot_not_full_activity_history",
+    "pairing_not_module_load",
+    "no_audible_translation"
+  ]
+}

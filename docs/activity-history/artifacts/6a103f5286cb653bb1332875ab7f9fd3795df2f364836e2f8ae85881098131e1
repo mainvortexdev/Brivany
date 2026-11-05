@@ -1,0 +1,39 @@
+# 18. Traducción de videos en vivo
+
+27 de octubre de 2026. **Capacidad propuesta por el usuario, pendiente de implementación.** Registrada en la checklist espacial y la bitácora. No se anuncia aún traducción disponible ni una latencia garantizada.
+
+## Experiencia prevista
+
+La persona abre un video o una fuente en vivo autorizada, elige el idioma de destino y activa la traducción. Brivany conserva la continuidad del video mientras Melodi muestra subtítulos traducidos incrementales. La voz traducida será opcional, con control sobre volumen original, retraso y pausa. El primer flujo se limitará a contenido reproducido por Brivany para controlar el tiempo del medio; otras fuentes dependerán del navegador y de cómo ofrezcan el audio.
+
+Esta capacidad se añade al rumbo espacial. Puede ayudar a comprender una presentación inmobiliaria, un tutorial o una explicación de un objeto y alimentar una human-skill cuando se solicite. La traducción no demuestra que la información del video sea cierta; el original y sus tiempos seguirán siendo la referencia.
+
+## Trabajo necesario
+
+- [ ] Elegir un primer par de idiomas y una muestra breve con transcripción de referencia.
+- [ ] Capturar audio del reproductor con activación explícita, tiempos del medio y límites de sesión; comprobar qué fuentes y dispositivos lo permiten.
+- [ ] Reutilizar el adaptador ASR donde sea compatible y validar idiomas, finalización de segmentos y coste del modelo habilitado.
+- [ ] Mantener segmentos con ID, tiempo de inicio/fin, versión y estado provisional/final.
+- [ ] Traducir con un pequeño contexto anterior para preservar significado; corregir parciales sin duplicar ni reordenar subtítulos.
+- [ ] Mostrar original y traducción revisables, idioma, retraso y errores mediante detalle progresivo.
+- [ ] Añadir voz traducida, cola acotada y política de sincronización; permitir optar por subtítulos cuando la voz se retrase.
+- [ ] Cancelar trabajo obsoleto al pausar, buscar otro momento, cambiar idioma o cerrar la sesión.
+- [ ] Añadir deduplicación y presupuesto por minuto; medir consumo antes de ampliar las pruebas.
+- [ ] Probar reconexión, silencio, cambios de hablante y fallos del proveedor con datos simulados.
+- [ ] Hacer una única prueba real acotada cuando resuelva la selección de modelo o latencia, conservando evidencia, consumo y límites.
+
+## Flujo propuesto
+
+```mermaid
+flowchart LR
+    V[Video autorizado y reloj del medio] --> A[Audio por segmentos]
+    A --> R[ASR incremental]
+    R --> T[Traducción con contexto acotado]
+    T --> S[Subtítulos provisional y final]
+    T --> Q[Cola de voz opcional]
+    Q --> P[Reproducción sincronizada]
+```
+
+La medición debe distinguir retraso de ASR, traducción, primera actualización visible y primera voz reproducida respecto al audio original. Se registrarán mediana y peor caso de la muestra, correcciones, segmentos perdidos y apreciación humana de significado. “En tiempo real” es el objetivo de una experiencia continua con retraso medido; el presupuesto de latencia se fijará después del primer ensayo concreto.
+
+La captura de audio compartido, formatos y reproducción deben ensayarse en Windows, macOS, iPhone y Android por separado. Se elegirá la ruta técnica en su hito con documentación vigente y capacidades reales; no se presupone acceso universal a cualquier video de otra aplicación. Spaik Iris permanece como proyecto independiente pendiente.

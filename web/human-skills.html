@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff"><title>Human skills · Brivany</title>
+  <link rel="icon" href="/icon.svg"><link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/human-skills.css"><link rel="stylesheet" href="/palette.css">
+  <script src="/human-skills.js" defer></script>
+<link rel="stylesheet" href="/typography.css"></head>
+<body>
+  <a class="skip" href="#main">Ir a human skills</a>
+  <header class="hs-header"><a href="/" class="wordmark" aria-label="Brivany, inicio">brivany<span>.</span></a><nav aria-label="Brivany"><a href="/spaces">Espacios</a><a href="/app">Melodi</a><a href="/human-skills" aria-current="page">Human skills</a><a href="/sous">Sous</a><a href="/activity">Bitácora</a></nav></header>
+  <main id="main">
+    <div id="global-notice" class="global-notice" role="status" aria-live="polite"></div>
+    <section class="sous-entry" aria-labelledby="sous-entry-title"><p class="eyebrow">PRIMERA HUMAN-SKILL</p><h2 id="sous-entry-title">Sous. Una compañera en la cocina.</h2><p>Revisa tu inventario, prepara una receta y conserva la evidencia de cada paso.</p><a href="/sous" class="button">Abrir Sous ↗</a></section><section id="create-view" aria-labelledby="create-title">
+      <div class="intro"><p class="eyebrow">HUMAN SKILLS · CON MELODI</p><h1 id="create-title">De un video a tu<br>siguiente habilidad.</h1><p>Observa una técnica. Practícala. Hazla tuya.</p></div>
+      <form id="create-form" class="create-layout">
+        <div class="upload-panel">
+          <label class="dropzone" id="dropzone" for="video-file"><span class="upload-symbol" aria-hidden="true">↑</span><strong id="file-label">Elige un video</strong><span id="file-meta">MP4 · hasta 5 min · 25 MiB</span><input id="video-file" type="file" accept="video/mp4,.mp4" aria-describedby="file-meta"></label>
+          <video id="upload-preview" class="video-preview" controls playsinline preload="metadata" hidden aria-label="Vista previa del video seleccionado"></video>
+          <p id="file-error" class="error-text" role="alert"></p>
+        </div>
+        <div class="create-options"><label for="learning-goal">¿Qué quieres aprender? <span>Opcional</span></label><textarea id="learning-goal" maxlength="500" rows="3" placeholder="Por ejemplo, explicar una idea con claridad."></textarea><p class="help-text">Melodi extraerá pasos, momentos del video y ejercicios para ti.</p>
+          <label class="consent"><input id="send-consent" type="checkbox"><span>Enviar este video a Meta<small>El video se usa para el análisis. Brivany guarda la skill en este equipo y elimina la copia temporal del video.</small></span></label>
+          <button id="create-skill" class="primary" type="submit" disabled>Crear human-skill <span aria-hidden="true">↗</span></button>
+          <p class="cost-note">Un análisis al crear. Reutilizamos el resultado si el video y el objetivo no cambian.</p>
+          <p id="provider-notice" class="help-text"></p>
+        </div>
+      </form>
+      <section id="job-panel" class="job-panel" aria-labelledby="job-title" hidden><span class="working-dot" aria-hidden="true"></span><div><h2 id="job-title">Melodi está creando tu skill.</h2><p id="job-phase">Analizando el video…</p><small>Puedes volver a esta página para consultar el resultado.</small></div><button id="refresh-job" class="text-button" type="button" hidden>Actualizar estado</button></section>
+      <section class="library-section" aria-labelledby="library-title"><div class="section-heading"><h2 id="library-title">Tus human-skills.</h2><span id="library-count"></span></div><div id="skill-library" class="skill-library"><p class="empty">Tu primera skill empezará aquí.</p></div></section>
+    </section>
+    <section id="skill-view" aria-labelledby="skill-title" hidden>
+      <div class="detail-toolbar"><button id="back-to-library" class="text-button" type="button">← Tus skills</button><div><button id="export-skill" class="text-button" type="button">Exportar</button><button id="delete-skill" class="text-button muted" type="button">Eliminar</button></div></div>
+      <header class="skill-heading"><p class="eyebrow">HUMAN SKILL · BORRADOR</p><h1 id="skill-title"></h1><p id="skill-objective"></p><small>Guardada en este equipo. Pendiente de revisión; no certifica dominio.</small></header>
+      <div class="skill-layout">
+        <aside class="source-panel" aria-labelledby="source-heading"><h2 id="source-heading">El punto de partida.</h2><video id="source-video" class="video-preview" controls playsinline preload="metadata" hidden aria-label="Video original de la skill"></video><label id="reselect-source" class="source-picker" for="source-file"><span aria-hidden="true">↗</span><strong>Volver a abrir el video</strong><small>Selecciona el original para ver los momentos citados.</small><input id="source-file" type="file" accept="video/mp4,.mp4"></label><p id="source-filename" class="source-filename"></p><p id="source-notice" class="help-text" role="status"></p><details class="context-details"><summary>Sobre esta skill</summary><p id="skill-summary"></p><h3>Antes de empezar</h3><ul id="prerequisites"></ul><h3>Qué revisar</h3><ul id="limitations"></ul><p id="analysis-note" class="help-text"></p><p class="help-text">Los ejercicios son propuestas de Melodi. Las referencias al video son aproximadas y requieren revisión.</p></details></aside>
+        <div class="practice-panel"><section id="insufficient-panel" class="insufficient-panel" hidden><h2>Hace falta más contexto.</h2><p id="insufficient-reason"></p><p>Prueba con un fragmento que muestre o explique una técnica concreta.</p></section>
+          <section id="practice-content" aria-labelledby="step-title"><div class="practice-heading"><span id="step-counter" class="eyebrow"></span><label for="help-level" class="sr-only">Nivel de ayuda</label><select id="help-level"><option value="guided">Con guía</option><option value="hinted">Solo pistas</option><option value="independent">Por mi cuenta</option></select></div><h2 id="step-title"></h2><p id="step-instruction" class="step-instruction"></p><p id="step-why" class="step-why"></p><div class="evidence"><button id="show-evidence" class="text-button" type="button"></button><p id="evidence-observation"></p></div><div class="exercise"><p class="eyebrow">TU PRÓXIMO INTENTO</p><h3 id="exercise-title">Prueba esta técnica.</h3><p id="exercise-instruction"></p></div><div class="review"><h3>Comprueba tu intento.</h3><p id="success-check"></p><details><summary>Si te cuesta</summary><p id="common-mistake"></p></details><label class="check-row"><input id="step-completed" type="checkbox"><span>Lo practiqué y revisé este criterio.</span></label><p class="help-text">Tu registro personal, sin evaluación automática.</p></div><div class="step-navigation"><button id="previous-step" class="secondary" type="button">Anterior</button><span id="progress-label"></span><button id="next-step" class="primary" type="button">Siguiente →</button></div></section>
+          <section id="transfer-panel" class="transfer-panel" hidden><p class="eyebrow">LLEVA LA HABILIDAD MÁS ALLÁ</p><h2>Ahora, en otra situación.</h2><p id="transfer-instruction"></p><p id="transfer-check" class="help-text"></p><label class="check-row"><input id="transfer-completed" type="checkbox"><span>Hice el ejercicio y revisé el resultado.</span></label><p class="help-text">Completar un intento no demuestra dominio independiente.</p></section>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer><span>Tu aprendizaje. A tu ritmo.</span><a href="/app">Volver a Melodi ↗</a></footer>
+  <dialog id="delete-dialog"><h2>¿Eliminar esta skill?</h2><p>Se eliminarán el borrador y tu registro de práctica de este equipo. Volver a analizar el video consumirá otra consulta.</p><div class="dialog-actions"><button id="cancel-delete" class="secondary" type="button">Conservar</button><button id="confirm-delete" class="primary" type="button">Eliminar</button></div></dialog>
+</body>
+</html>

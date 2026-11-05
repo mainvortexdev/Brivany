@@ -1,0 +1,16 @@
+{
+  "suite": "terminal-ide",
+  "started_at": "2026-11-01T19:26:38.546609+00:00",
+  "finished_at": "2026-11-01T19:26:41.010751+00:00",
+  "duration_seconds": 2.464142,
+  "command": [
+    "node",
+    "--test",
+    "tests/ide-project.test.cjs",
+    "tests/ide-control.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ starts only the observed sealed configuration and checks its bound health (266.1913ms)\n✔ workspace cannot add environment injection, tasks or another runtime (120.3077ms)\n✔ permissions and a different selected configuration are never accepted (158.7737ms)\n✔ an unrelated HTTP response cannot certify execution or trigger another F5 (281.7867ms)\n✔ an observed running session is awaited without sending F5 again (173.7209ms)\n✔ sealed local project configuration is accepted without executing it (167.1796ms)\n✔ changed configuration and invalid seals are rejected (70.754ms)\n✔ another working copy, interpreter or adapter cannot replace the observed inputs (122.0625ms)\n✔ preview must use a nonprivileged explicit port (139.3757ms)\nℹ tests 9\nℹ suites 0\nℹ pass 9\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 1937.9179\n"
+}

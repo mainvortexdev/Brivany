@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-chat-ui",
+  "started_at": "2026-11-04T02:09:46.500897+00:00",
+  "finished_at": "2026-11-04T02:10:16.018098+00:00",
+  "duration_seconds": 29.517201,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-chat"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"fixture_errors\":[],\"fixture_messages\":[{\"role\":\"user\",\"text\":\"Hola, mensaje sintético de prueba\",\"references\":0},{\"role\":\"assistant\",\"text\":\"Podemos seguir hablando.\",\"references\":0},{\"role\":\"user\",\"text\":\"Cuántos procesos tengo corriendo en mi pc ahora mismo?\",\"references\":0},{\"role\":\"assistant\",\"text\":\"Voy a comprobarlo.\",\"references\":0},{\"role\":\"assistant\",\"text\":\"Ahora hay 247 procesos en ejecución en tu PC.\",\"references\":0},{\"role\":\"user\",\"text\":\"Busca el pronóstico de prueba\",\"references\":0},{\"role\":\"assistant\",\"text\":\"Voy a buscar.\",\"references\":0},{\"role\":\"assistant\",\"text\":\"La búsqueda encontró un pronóstico de prueba.\",\"references\":0,\"sources\":[{\"title\":\"Pronóstico de prueba\",\"url\":\"https://example.org/pronostico\"},{\"title\":\"Enlace inválido\",\"url\":\"javascript:alert(1)\"}],\"searchProvenance\":{\"provider\":\"Meta web search\"}},{\"role\":\"user\",\"text\":\"¿De dónde sacaste esa información?\",\"references\":0},{\"role\":\"assistant\",\"text\":\"Lo consulté mediante la búsqueda web de Meta. Estas son las páginas que devolvió la búsqueda.\",\"references\":0,\"sources\":[{\"title\":\"Pronóstico de prueba\",\"url\":\"https://example.org/pronostico\"},{\"title\":\"Enlace inválido\",\"url\":\"javascript:alert(1)\"}],\"showSources\":true}],\"fixture_view\":\"Melodi\\nHola, mensaje sintético de prueba\\nPodemos seguir hablando.\\nCuántos procesos tengo corriendo en mi pc ahora mismo?\\nVoy a comprobarlo.\\nAhora hay 247 procesos en ejecución en tu PC.\\nBusca el pronóstico de prueba\\nVoy a buscar.\\nLa búsqueda encontró un pronóstico de prueba.\\n¿De dónde sacaste esa información?\\nLo consulté mediante la búsqueda web de Meta. Estas son las páginas que devolvió la búsqueda.\\nPronóstico de prueba ↗\"}\nlocator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('Lo consulté mediante la búsqueda web de Meta. Estas son las páginas que devolvió la búsqueda.', { exact: true }) to be visible\u001b[22m\n\n    at <local-path>\\tools\\check_workspace_chat.cjs:62:135 {\n  log: [\n    \"  - waiting for getByText('Lo consulté mediante la búsqueda web de Meta. Estas son las páginas que devolvió la búsqueda.', { exact: true }) to be visible\"\n  ],\n  name: 'TimeoutError'\n}\n"
+}

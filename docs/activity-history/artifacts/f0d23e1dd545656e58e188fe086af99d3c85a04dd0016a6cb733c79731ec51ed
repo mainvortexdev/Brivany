@@ -1,0 +1,55 @@
+# Transcripción y traducción progresivas del video seleccionado
+
+4 de noviembre de 2026. El usuario solicita iniciar ambas tareas juntas y
+aporta el fallo «La conexión no sigue el audio». La extensión 0.4.0 selecciona
+como antes (YouTube único automático, pin para varias fuentes) y solicita el
+pipeline Live automáticamente, sin esperar a transcribir el video completo.
+
+Un coordinador en segundo plano conserva sólo la última selección pendiente.
+Detiene la anterior y fija la fuente del nuevo video. Su arranque no bloquea
+la lectura del WebSocket ni la UI. Un único ASR alimenta texto progresivo y
+traducción por cláusulas. Se conserva el preámbulo PCM durante la preparación,
+sin abrir el reconocedor silencioso independiente en modo simultáneo.
+
+Las frases originales parciales/finales viven temporalmente por turno. El
+indicador de la página muestra el texto; WorkSpace mantiene la traducción.
+Idioma y voz también se guardan cuando está inactivo. Se mantienen filtro de
+canciones, clones autorizados opcionales y anticipación exacta por subtítulos.
+El original baja al 12 %. Pausar detiene la voz; reanudar solicita una nueva
+sesión de esa fuente. Detener/cerrar retira captura y restaura el volumen.
+
+El error reportado tenía dos condiciones: el reloj de ACK comenzaba antes de
+conectar/importar subtítulos, y cuatro bloques en ráfaga cancelaban en vez de
+esperar. `PCMSender` regula a 80 ms, conserva cuatro en vuelo y hasta 75 en cola,
+con plazo de cuatro segundos desde cada envío real. No se omite voz para fingir
+continuidad; un exceso auténtico se informa. Un pin SVG oculto aún aparecía en
+una esquina: ahora `[hidden]` es explícito, comprobado como `display:none`.
+
+## Evidencia y límites
+
+`selected-video`: once pruebas locales, incluida integración con protocolos
+de proveedores sustituidos que entrega voz antes de terminar el productor y
+confirma un solo ASR. Verifica preámbulo conservado, texto parcial, final sin
+duplicados y cancelación de selección antigua. `workspace-sync-extension`: 31
+pruebas con arranque lento, ráfagas, pausa y límites reales. `workspace-translation`:
+14; `river-translation`: 34; UI: cinco anchuras. Un primer ensayo encontró fixtures
+de ritmo sin propiedad `route`; se corrigió su lectura opcional y se conserva el fallo.
+
+Brave aislado, medios propios y escritorio sustituido:
+`tmp/selected-video/probe-1793767243515.json`. Conexión retrasada 1.600 ms y
+bloqueo de renderer 450 ms; pasó sin el error, conservó la fuente, pidió traducción
+progresiva y ocultó el pin fuera de selección. No acredita el perfil personal.
+
+Prueba real acotada: `tmp/selected-video/progressive-real-1793767501433679200.json`.
+Dos frases españolas sintéticas reutilizadas, ASR/Meta/Cartesia reales y salida
+nativa Windows. Primer audio entregado a 5,688 s mientras el productor de 18 s
+seguía activo; 20 eventos de texto, dos turnos y tres segmentos traducidos.
+Tres llamadas/intentos Meta; sin ASR independiente ni regeneración de voz de
+origen. Se entregaron 241.920 bytes de voz y la posición de WinMM avanzó.
+El importe monetario es desconocido.
+
+La muestra incluye separación deliberada entre frases. Los huecos registrados
+no demuestran por sí solos cortes ni continuidad perfecta. Coincidir con palabras
+esperadas no certifica fidelidad semántica completa. No se verificó escucha
+física, clonación personal ni YouTube del usuario. No se adjuntan audio ni
+transcripciones originales a la bitácora de desarrollo.

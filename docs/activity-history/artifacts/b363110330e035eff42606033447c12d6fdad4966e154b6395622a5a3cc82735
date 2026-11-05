@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-31T22:10:09.486065+00:00",
+  "worker": "brivany-site",
+  "domain": "brivany.example",
+  "version_id": "8dcf64c3-5801-44d0-b8d5-70b2685cc4cf",
+  "dry_run": "passed",
+  "deployment": "passed",
+  "publisher_configured": true,
+  "new_scopes": [
+    "playlist-read-private",
+    "playlist-read-collaborative",
+    "user-library-read"
+  ],
+  "retained": "Existing PKCE, protected native tokens, Durable Object binding, signing secret, domain and limits.",
+  "source_sha256": {
+    "official-site/worker.mjs": "7a887417bd1fba7328e42bbb7ef5149bfb569e29871c5c0dbd0c012d4fc8f80c",
+    "official-site/spotify-oauth.mjs": "548e78670cf3166cd00712528cefa3a8f7022f1918d5cb4c33d77e20c2254c2d",
+    "official-site/wrangler.jsonc": "5d4b12c6c576b7db16891efb351193295eb5e160e94265bee0875621771175bd"
+  }
+}

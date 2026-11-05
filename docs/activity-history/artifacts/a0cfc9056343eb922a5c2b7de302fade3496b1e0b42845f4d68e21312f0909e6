@@ -1,0 +1,16 @@
+{
+  "scope": "real native execution on new synthetic files only",
+  "external_calls": 0,
+  "checks": [
+    "new note bytes verified",
+    "literal text read back from observed editor; no shell expansion",
+    "real copy and move preserve bytes; source moved only after verified copy",
+    "existing destination rejected without overwrite"
+  ],
+  "user_documents_modified": false,
+  "fixture_root": "<local-path>\\tmp\\computer-files-real\\fixture-582efe8f",
+  "text_value_verified": true,
+  "observed_editor_sha256": "04b70d611052eb1c4957d7fd33f8aa6e2af2c74e6305c3a233f423cd0dabb0bb",
+  "status": "passed",
+  "ui_text_saved_to_disk": false
+}

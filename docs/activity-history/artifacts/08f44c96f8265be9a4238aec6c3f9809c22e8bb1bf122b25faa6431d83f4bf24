@@ -1,0 +1,22 @@
+{
+  "started_at": "2026-10-30T13:46:36.426432+00:00",
+  "purpose": "Verify a single fixed synthetic phrase accepts native Cartesia speed 1.05 through the main HTTP endpoint.",
+  "source_synthetic": true,
+  "requested_speed": 1.05,
+  "maximum_syntheses": 1,
+  "automatic_retries": 0,
+  "maximum_audio_bytes": 480000,
+  "maximum_read_seconds": 15,
+  "new_audio_persisted": false,
+  "conversation_persisted": false,
+  "physical_playback_verified": false,
+  "actual_billed_usd": null,
+  "status": "passed_real_http_and_synthesis_not_subjective_voice_quality",
+  "http_status": 200,
+  "first_pcm_ms": 812,
+  "output_bytes": 126720,
+  "audio_seconds": 2.64,
+  "pcm_has_voice_energy": true,
+  "finished_at": "2026-10-30T13:46:37.682607+00:00",
+  "elapsed_ms": 1250
+}

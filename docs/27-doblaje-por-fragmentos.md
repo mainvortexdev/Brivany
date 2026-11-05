@@ -1,0 +1,133 @@
+# 27. Voz durante habla continua y correlación por fragmentos
+
+28 de octubre de 2026. Continúa el objetivo de **500 ms de retraso audible**.
+El primer audio de una sesión no basta para comprobar el desfase de todos sus
+fragmentos. Esta etapa incorpora la correlación necesaria y un ensayo de dos
+frases; no cambia el criterio para hacerlo coincidir con lo implementado.
+
+## Cambio de configuración y límites documentados
+
+Palabra ya usa umbral de silencio de 0,3 s, división de oraciones y voz sin
+clonación. Se solicita ahora `transcription.only_confirm_by_silence:false`:
+la documentación describe que `true` obliga a confirmar exclusivamente por
+silencio, pero no fija el valor por defecto ni promete adelantar el TTS al usar
+`false`. La respuesta observada de `get_task` se guarda como booleano o `null`;
+la petición no prueba su aplicación.
+[Referencia oficial](https://docs.palabra.ai/docs/streaming_api/translation_settings_breakdown).
+
+No se añadieron opciones de VAD o eagerness de otros modelos a Gemini Translate:
+su guía dedicada no documenta esos controles para esta API. El adaptador ya
+envía bloques de 100 ms según la recomendación de su flujo continuo.
+[Guía de Translate](https://aistudio.google.com/docs/live-api/live-translate).
+
+## Correlación implementada
+
+El adaptador Palabra conserva identificadores normalizados de transcripción y
+parte en audio/subtítulos, intervalos relativos `segments[].start/end` y la
+señal opcional `last_chunk`. El último indicador se emite solo en la última
+subtrama cuando el relay divide un paquete. Los timestamps epoch, palabras y
+texto adicionales no se incorporan a los metadatos.
+[Eventos oficiales](https://docs.palabra.ai/docs/streaming_api/management).
+
+`SegmentLatencyTracker` en `web/dub-timing.js` usa el origen del audio realmente
+enviado y la energía PCM programada para el mismo ID. No copia los tiempos de
+un turno entero a una parte que carece de marcas. Mantiene desconocidos los
+rangos ausentes, provisionales, vacíos, contradictorios, fuera de la entrada
+recibida o con un reloj discontinuo. Tampoco acepta un inicio traducido anterior
+al inicio fuente por más de una ventana RMS de 20 ms, ni mezcla turnos con
+identidades explícitamente discordantes. El PCM válido sigue reproduciéndose.
+
+El máximo mostrado corresponde únicamente a los fragmentos correlacionados.
+La interfaz avisa **cobertura parcial** si hay audio sin atribución, rangos sin
+correlación, segmentos silenciosos, subtítulos pendientes de PCM o límite de
+seguimiento. Las colas finales quedan desconocidas hasta recibir final de audio
+del segmento. Los informes no incluyen IDs del proveedor ni texto de usuario.
+Ninguna cifra activa una validación automática de los 500 ms.
+
+Estas marcas provienen del proveedor: no equivalen a una alineación semántica
+independiente ni a captura física de altavoz. Los motivos de falta de correlación
+se conservan en informes nuevos; no se inventan para informes anteriores.
+
+## Fuente sintética de dos frases
+
+`tools.prepare_dubbing_stream_fixture` reutiliza la primera muestra aprobada y
+genera offline la segunda con Microsoft Zira Desktop. Conserva 100 ms de
+margen de energía en cada frase y añade 60 ms de separación explícita. No lee
+credenciales ni invoca modelos remotos.
+
+| Frase | Energía en el WAV combinado |
+|---|---:|
+| This room has two windows. | 0,10–1,58 s |
+| The table is next to the door. | 1,84–3,36 s |
+
+Duración: 3,46 s; separación entre energías: **260 ms**, menor que el umbral de
+confirmación por silencio configurado. El manifiesto conserva recortes exactos,
+frames y hashes. Dos preparaciones locales produjeron los mismos bytes en este
+equipo; no se presupone reproducibilidad entre versiones de voz o sistemas.
+La primera preparación falló por política local de scripts; su manifiesto se
+conserva. La corrección usa política temporal solo del proceso generado, sin
+cambiar la política persistida de Windows.
+
+Manifiesto aprobado:
+`tmp/stream-dubbing/build-1134363a063d4d9b90035981703cdf7d/manifest.json`.
+Verificación offline:
+`tmp/stream-dubbing/verification-local-20261028T1208.json`.
+
+## Un único ensayo real de streaming
+
+Se regeneró el MP4 desde ese WAV de hash fijo y se ejecutó una sesión con
+Palabra, sin parciales ni reintentos. La finalidad era comprobar voz antes de
+que terminase toda la fuente y recoger marcas por fragmento, no repetir la
+misma muestra para buscar una cifra favorable.
+
+La interfaz terminó y recibió el texto completo de las dos frases. Programó
+122 bloques, con 3,477333 s de entrada capturada y 4,800417 s de salida. No pidió
+micrófono. **La energía traducida empezó después del final del habla original.**
+
+| Referencia | Estimación del navegador |
+|---|---:|
+| Inicio de energía original → inicio traducido | **3483 ms** |
+| Última energía original → primer audio traducido | 223 ms |
+| Fin del archivo capturado → primer audio traducido | 106 ms |
+| Fragmento correlacionado: inicio según proveedor → voz | **3583 ms** |
+| Ese fragmento: fin según proveedor → voz | **1023 ms** |
+
+Solo **1 de 2 fragmentos de audio** pudo correlacionarse. Su intervalo del
+proveedor fue 0–2,56 s; no coincide con el intervalo de energía de la primera
+frase del manifiesto y no se presenta como alineación semántica comprobada.
+El informe de esta sesión no conservó el motivo de la segunda correlación
+ausente; permanece desconocido. El diagnóstico añadido después no lo demuestra
+retroactivamente. `only_confirm_by_silence` volvió ausente, por lo que su valor
+efectivo queda `null`; no se afirma que se aplicó ni se atribuyen mejoras al
+cambio solicitado.
+
+Informe: `tmp/browser-dubbing-measurements/real-1793189631971.json`.
+Análisis sin nuevas llamadas:
+`tmp/browser-dubbing-measurements/analysis-1793189631971.json`.
+Estimación con la tarifa previamente consultada de $0.04/min de entrada:
+**$0.002318**; cargo real desconocido. No es factura ni máximo garantizado.
+
+La sesión funcional pasó; **el objetivo audible de 500 ms no pasó**. Los
+223/106 ms al final de toda la fuente ocultan el desfase de los fragmentos
+anteriores y no se usan para declarar éxito. No se midió sonido físico,
+inteligibilidad humana, percentiles ni máximo de una distribución.
+
+## Decisión y comprobaciones
+
+Palabra permanece disponible como integración funcional. Esta configuración no
+se califica para la experiencia audible de 500 ms. Otro ensayo pagado requiere
+un cambio técnico concreto de emisión de voz durante habla continua, o un motor
+con esa capacidad documentada y acceso disponible; los controles verificados
+de estas rutas no aportan actualmente evidencia suficiente.
+
+Las verificaciones locales pasaron: **24 pruebas Palabra**, **41 Node** y
+**35 escenarios UI**. `dubbing-stream-timing` comprueba el recorrido real de
+video/AudioWorklet/relay con proveedor simulado y la fixture de dos frases.
+No prueba latencia del modelo. Informes:
+
+- `docs/verification-history/palabra-20261028T121914-8001daaa.json`.
+- `docs/verification-history/javascript-20261028T122006-e65cdc51.json`.
+- `docs/verification-history/dubbing-ui-20261028T122006-d0caae1c.json`.
+- `docs/verification-history/dubbing-stream-timing-20261028T121251-032e5a37.json`.
+
+La bitácora adjunta manifiestos, código e informes; no los WAV ni videos.

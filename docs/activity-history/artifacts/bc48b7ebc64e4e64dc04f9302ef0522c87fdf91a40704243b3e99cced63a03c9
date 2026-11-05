@@ -1,0 +1,107 @@
+{
+  "scope": "retained failed development trials, followed by separate successful native checks",
+  "failures": [
+    {
+      "report": "tmp/computer-youtube-real/attempt-1.json",
+      "status": "failed",
+      "failure": "La pestaña seleccionada cambió. No se enviará el clic a otra pestaña.",
+      "planner_request_attempts": 0,
+      "steps_completed": null
+    },
+    {
+      "report": "tmp/computer-youtube-real/attempt-10.json",
+      "status": "failed",
+      "failure": "No se confirmó el avance del reproductor.",
+      "planner_request_attempts": 0,
+      "steps_completed": null
+    },
+    {
+      "report": "tmp/computer-youtube-real/attempt-2.json",
+      "status": "failed",
+      "failure": "WEB_DOCUMENT_UNAVAILABLE: La página no expone contenido accesible. Documentos=0; visibles=0",
+      "planner_request_attempts": 0,
+      "steps_completed": null
+    },
+    {
+      "report": "tmp/computer-youtube-real/attempt-3.json",
+      "status": "failed",
+      "failure": "El ejecutor agotó el tiempo; no se repetirá la acción.",
+      "planner_request_attempts": 1,
+      "steps_completed": null
+    },
+    {
+      "report": "tmp/computer-youtube-real/attempt-4.json",
+      "status": "failed",
+      "failure": "El video abrió, pero YouTube no confirmó que la música esté avanzando. Puede haber una carga o un anuncio pendiente.",
+      "planner_request_attempts": 1,
+      "steps_completed": null
+    },
+    {
+      "report": "tmp/computer-youtube-real/attempt-5.json",
+      "status": "failed",
+      "failure": "No se confirmó el avance del reproductor.",
+      "planner_request_attempts": 0,
+      "steps_completed": null
+    },
+    {
+      "report": "tmp/computer-youtube-real/attempt-6.json",
+      "status": "failed",
+      "failure": "No se confirmó el avance del reproductor.",
+      "planner_request_attempts": 0,
+      "steps_completed": null
+    },
+    {
+      "report": "tmp/computer-youtube-real/attempt-7.json",
+      "status": "failed",
+      "failure": "No se confirmó el avance del reproductor.",
+      "planner_request_attempts": 0,
+      "steps_completed": null
+    },
+    {
+      "report": "tmp/computer-youtube-real/attempt-8.json",
+      "status": "failed",
+      "failure": "No se confirmó el avance del reproductor.",
+      "planner_request_attempts": 0,
+      "steps_completed": null
+    },
+    {
+      "report": "tmp/computer-youtube-real/attempt-9.json",
+      "status": "failed",
+      "failure": "No se confirmó el avance del reproductor.",
+      "planner_request_attempts": 0,
+      "steps_completed": null
+    },
+    {
+      "report": "tmp/computer-agent-browser-real/attempt-1.json",
+      "status": "failed",
+      "failure": "La tarea no terminó con éxito; estado failed",
+      "planner_request_attempts": 2,
+      "steps_completed": 0
+    },
+    {
+      "report": "tmp/computer-agent-browser-real/attempt-2.json",
+      "status": "failed",
+      "failure": "La tarea no terminó con éxito; estado failed",
+      "planner_request_attempts": 2,
+      "steps_completed": 0
+    },
+    {
+      "report": "tmp/computer-agent-browser-real/attempt-3.json",
+      "status": "failed",
+      "failure": "La tarea no terminó con éxito; estado failed",
+      "planner_request_attempts": 4,
+      "steps_completed": 2
+    },
+    {
+      "report": "tmp/computer-browser-real/search-attempt-1.json",
+      "status": "failed",
+      "failure": "El destino observado no coincide con la dirección solicitada. No se repetirá la navegación.",
+      "planner_request_attempts": null,
+      "steps_completed": null
+    }
+  ],
+  "cost_amount": null,
+  "browser_background_network_consumption": "unknown",
+  "counter_is_attempts_before_transport": true,
+  "no_credentials_entered": true
+}

@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "type": "actual_owned_native_application_with_scripted_planner_research_and_review",
+  "provider_requests": 0,
+  "native_input_real": true,
+  "real_application_data_used": false,
+  "real_commercial_application_verified": false,
+  "invoices": 3,
+  "stock": 12,
+  "skills_saved": 1,
+  "reused_with_new_values": true,
+  "parallel_open_and_manual": true,
+  "steps": 4,
+  "shortcut_decision_calls": 1,
+  "baseline_step_decision_calls": 5,
+  "review": "scripted after inspecting owned fixture output",
+  "performance": {
+    "successful_runs": 3,
+    "consecutive_successes": 3,
+    "failed_reuses": 0,
+    "reused_runs": 1,
+    "saved_decisions": 3,
+    "execution_ms": 43671
+  },
+  "fixture_started_by_test_harness": true,
+  "application_focused_and_operated_by_executor": true
+}

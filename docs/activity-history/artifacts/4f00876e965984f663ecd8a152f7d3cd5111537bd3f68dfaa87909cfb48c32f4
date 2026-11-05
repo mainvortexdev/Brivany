@@ -1,0 +1,18 @@
+{
+  "suite": "spatial-physics",
+  "started_at": "2026-10-29T22:45:35.721702+00:00",
+  "finished_at": "2026-10-29T22:45:38.611968+00:00",
+  "duration_seconds": 2.890266,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_spatial_physics"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ vendored exact Apache release hashes match manifest and has embedded WASM (27.5351ms)\r\n✔ explicit assumption mode required, geometry bounds/types validated before engine (1.619ms)\r\n✔ actual WASM free fall reaches floor, rests without penetration and reports assumptions (420.6223ms)\r\n✔ paused worlds own no loop, fixed substep cap drops backlog and reset restores preview (73.8234ms)\r\n✔ split render deltas accumulate into the same fixed steps (12.2179ms)\r\n✔ impulse wakes sleeper, liftDrop clears velocity, invalid deltas cannot advance (24.0359ms)\r\n✔ two dynamic boxes transfer collision motion and solid wall stops escape (22.5986ms)\r\n✔ escape halts bounded sandbox and requires reset; disposal releases world (9.1601ms)\r\nℹ tests 8\r\nℹ suites 0\r\nℹ pass 8\r\nℹ fail 0\r\nℹ cancelled 0\r\nℹ skipped 0\r\nℹ todo 0\r\nℹ duration_ms 2182.5328\r\n\r\n{\"status\": \"passed\", \"engine\": \"@dimforge/rapier3d-compat\", \"version\": \"0.21.0\", \"scope\": \"Real CPU WASM simulation of synthetic cuboids; no measured interior physics.\", \"physical_realism_verified\": false, \"metric_scale_verified\": false, \"external_calls\": 0, \"gpu_seconds\": 0}\r\n"
+}

@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "type": "real_post_restart_auth_and_device_status",
+  "preview_signed_in": true,
+  "same_account": true,
+  "online_desktops": 1,
+  "desktop_name": "DESKTOP-VFQUPU9",
+  "public_privacy_updated": true,
+  "paid_inference_calls": 0,
+  "checks_do_not_execute_os_commands": true
+}

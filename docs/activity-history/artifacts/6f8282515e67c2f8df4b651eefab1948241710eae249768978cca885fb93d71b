@@ -1,0 +1,20 @@
+{
+  "suite": "terminal",
+  "started_at": "2026-11-01T05:37:33.567030+00:00",
+  "finished_at": "2026-11-01T05:37:35.485425+00:00",
+  "duration_seconds": 1.918395,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_terminal",
+    "tests.test_terminal_system_office"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "....F...........................\r\n======================================================================\r\nFAIL: test_editor_zip_rejects_escape_and_links (tests.test_terminal.TerminalTests.test_editor_zip_rejects_escape_and_links) (name='folder\\\\Code.exe')\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_terminal.py\", line 166, in test_editor_zip_rejects_escape_and_links\r\n    with self.subTest(name=name),self.assertRaises(TerminalError):archive_target(zipfile.ZipInfo(name),self.root)\r\n                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: TerminalError not raised\r\n\r\n----------------------------------------------------------------------\r\nRan 32 tests in 1.165s\r\n\r\nFAILED (failures=1)\r\n"
+}

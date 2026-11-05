@@ -1,0 +1,17 @@
+{
+  "status": "prepared_not_reconstructed",
+  "cloud_requests": 0,
+  "gpu_inference": false,
+  "sampling": "uniform_midpoints",
+  "quality_assessed": false,
+  "unique_frame_hashes": 4,
+  "exact_duplicate_frames": 2,
+  "requires_capture_review": true,
+  "warnings": [
+    "Muestreo uniforme; no demuestra cobertura, nitidez ni solapamiento suficientes.",
+    "La referencia de longitud es declarada y todavía no calibra la geometría.",
+    "No se han inferido objetos, materiales, masas ni colisiones.",
+    "Este paquete contiene imágenes del espacio. El envío a Modal es un paso independiente."
+  ],
+  "next_stage": "Modal worker and bounded single-object reconstruction"
+}

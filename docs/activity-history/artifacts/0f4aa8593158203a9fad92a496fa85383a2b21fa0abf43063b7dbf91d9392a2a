@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "type": "final real account and desktop web search with public page review",
+  "billing_usd": null,
+  "original_conversation_saved": false,
+  "state": "succeeded",
+  "local_date": "2026-11-03",
+  "source_domains": [
+    "www.weather2travel.com",
+    "www.meteoblue.com",
+    "weather-and-climate.com"
+  ],
+  "host_tracked_external_requests": 5,
+  "account_requests": 14,
+  "elapsed_seconds": 32.97
+}

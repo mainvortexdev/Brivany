@@ -1,0 +1,44 @@
+{
+  "providers_called": 0,
+  "scope": "owned synthetic sources only",
+  "warm": true,
+  "warm_ms": 790.95,
+  "observations": {
+    "masculine": {
+      "available": false,
+      "reason": "inconsistent_windows",
+      "windows": 2,
+      "latency_ms": 52.09
+    },
+    "feminine": {
+      "available": true,
+      "reason": "speech_embedding",
+      "windows": 1,
+      "latency_ms": 37.85
+    },
+    "masculine_gain": {
+      "available": false,
+      "reason": "inconsistent_windows",
+      "windows": 2,
+      "latency_ms": 49.53
+    },
+    "feminine_gain": {
+      "available": true,
+      "reason": "speech_embedding",
+      "windows": 1,
+      "latency_ms": 36.48
+    }
+  },
+  "cosine": {
+    "feminine": {
+      "feminine": 1.0,
+      "feminine_gain": 0.9971
+    },
+    "feminine_gain": {
+      "feminine": 0.9971,
+      "feminine_gain": 1.0
+    }
+  },
+  "idle_wall_seconds": 5.0002,
+  "idle_cpu_seconds": 0.0
+}

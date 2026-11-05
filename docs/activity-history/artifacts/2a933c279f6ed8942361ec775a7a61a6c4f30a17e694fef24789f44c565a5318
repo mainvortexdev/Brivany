@@ -1,0 +1,18 @@
+{
+  "suite": "portable-floorplan",
+  "started_at": "2026-10-29T14:54:34.791237+00:00",
+  "finished_at": "2026-10-29T14:54:49.162746+00:00",
+  "duration_seconds": 14.371509,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_portable_floorplan"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Real browser desktop-client module + loopback HTTP + DesktopBridge + verified portable GLB and immutable versions; pywebview transport substituted.\",\r\n  \"checks\": [\r\n    \"portable plan reads verified GLB and imported app calibration without writing or importing application storage\",\r\n    \"a temporary bridge preview changes fitted scale while persisted project remains unchanged\",\r\n    \"saving calibration creates an immutable portable revision without changing scene transforms or scene revision\",\r\n    \"a stale plan save is rejected and a later scene edit preserves the versioned calibration\",\r\n    \"the frontend bridge reopens saved calibration after a full page reload\",\r\n    \"actual plan UI picks a second measurement and the Save plan button persists it through the desktop bridge\",\r\n    \"reopening the portable page restores two declared references and their consistency residual in the actual plan UI\",\r\n    \"editing from the portable plan inspector saves the scene and recomputes the plan while retaining unverified calibration\"\r\n  ],\r\n  \"final_fitted_meters_per_unit\": 2.2520294796495475,\r\n  \"final_reference_count\": 2,\r\n  \"portable_reopen_verified\": true,\r\n  \"zip_includes_versioned_plan\": true,\r\n  \"native_window_started\": false,\r\n  \"external_calls\": 0,\r\n  \"model_executed\": false,\r\n  \"metric_scale_verified\": false,\r\n  \"limitations\": [\r\n    \"Read-only bridge transport and portable save use actual files; pywebview is substituted.\",\r\n    \"Synthetic geometry and measurement declarations do not certify architectural accuracy or a native picker.\"\r\n  ]\r\n}\r\n"
+}

@@ -1,0 +1,125 @@
+{
+  "type": "isolated_real_brave_extension_to_real_running_desktop_and_providers",
+  "passed": false,
+  "user_profile_used": false,
+  "source_owned_synthetic": true,
+  "microphone": false,
+  "original_media_attached": false,
+  "transcript_persisted": false,
+  "physical_listening_verified": false,
+  "billing_amount": null,
+  "provider_trial_max_seconds": 42,
+  "extension_id": "nodfjfneocgiebcbacckgocobcdlhpid",
+  "last_failure": null,
+  "native_audio": {
+    "available": true,
+    "translation_bytes": 103680,
+    "output_bytes": 103680,
+    "device_position_bytes": 103680,
+    "error_code": null,
+    "physical_listening_verified": false,
+    "input_waits": 0
+  },
+  "first_native_audio_seconds": 8.85,
+  "events": [
+    {
+      "type": "selected",
+      "textLength": 0,
+      "at": 1793771260874
+    },
+    {
+      "type": "preferences",
+      "textLength": 0,
+      "at": 1793771260876
+    },
+    {
+      "type": "translation-state",
+      "state": "starting",
+      "textLength": 0,
+      "at": 1793771260963
+    },
+    {
+      "type": "original-gain",
+      "textLength": 0,
+      "at": 1793771260966
+    },
+    {
+      "type": "translation-state",
+      "state": "listening",
+      "textLength": 0,
+      "at": 1793771261944
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 3,
+      "at": 1793771264696
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 15,
+      "at": 1793771265005
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 24,
+      "at": 1793771265608
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 31,
+      "at": 1793771266114
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 38,
+      "at": 1793771266418
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 45,
+      "at": 1793771266738
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 46,
+      "at": 1793771266941
+    },
+    {
+      "type": "transcript",
+      "source": "original",
+      "textLength": 46,
+      "at": 1793771266988
+    },
+    {
+      "type": "transcript",
+      "source": "translation",
+      "textLength": 38,
+      "at": 1793771268819
+    },
+    {
+      "type": "translation-state",
+      "state": "translating",
+      "textLength": 0,
+      "at": 1793771268819
+    },
+    {
+      "type": "error",
+      "code": "video_input",
+      "message": "El audio del video llegó demasiado rápido. Vuelve a seleccionar el video.",
+      "textLength": 0,
+      "at": 1793771278857
+    }
+  ],
+  "selected_acknowledged": true,
+  "original_transcript": true,
+  "translated_transcript": true,
+  "original_ducking": true,
+  "elapsed_seconds": 18.452
+}

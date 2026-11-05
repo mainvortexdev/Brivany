@@ -1,0 +1,18 @@
+{
+  "suite": "workspace-chat-native",
+  "started_at": "2026-11-02T00:38:38.092969+00:00",
+  "finished_at": "2026-11-02T00:40:02.335081+00:00",
+  "duration_seconds": 84.242112,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_workspace_native"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"type\": \"actual_owned_WebView2_windows_with_synthetic_conversation\", \"passed\": true, \"external_calls\": 0, \"microphone_used\": false, \"OS_input_sent\": false, \"appbar_reserved_by_test\": false, \"phase\": \"native_chat_roundtrip\", \"real_native_bridge_roundtrip\": true, \"history_survives_close\": true, \"rounded_chooser_without_header\": true, \"voice_canvas_contains_pixels\": true, \"music_waves_visible\": true, \"voice_overlay_created_and_click_through\": true, \"live_sample_visualization\": \"synthetic, no capture\", \"four_owned_views\": true, \"UI_survives_cookie_deletion\": true}\r\n[pywebview] Traceback (most recent call last):\r\n  File \"<local-path>\\.venv\\Lib\\site-packages\\webview\\util.py\", line 255, in _call\r\n    result = func(*func_params)\r\n             ^^^^^^^^^^^^^^^^^^\r\n  File \"<local-path>\\desktop\\experience\\music.py\", line 87, in spotify_lyrics\r\n    def spotify_lyrics(self):return self._music().current_lyrics()\r\n                                    ^^^^^^^^^^^^^\r\n  File \"<local-path>\\desktop\\experience\\music.py\", line 39, in _music\r\n    def _music(self):self._trusted();return self._spotify_factory()\r\n                                            ^^^^^^^^^^^^^^^^^^^^^\r\nAttributeError: 'ExperienceBridge' object has no attribute '_spotify_factory'. Did you mean: '_source_factory'?\r\n\r\n[pywebview] Traceback (most recent call last):\r\n  File \"<local-path>\\.venv\\Lib\\site-packages\\webview\\util.py\", line 255, in _call\r\n    result = func(*func_params)\r\n             ^^^^^^^^^^^^^^^^^^\r\n  File \"<local-path>\\desktop\\experience\\music.py\", line 87, in spotify_lyrics\r\n    def spotify_lyrics(self):return self._music().current_lyrics()\r\n                                    ^^^^^^^^^^^^^\r\n  File \"<local-path>\\desktop\\experience\\music.py\", line 39, in _music\r\n    def _music(self):self._trusted();return self._spotify_factory()\r\n                                            ^^^^^^^^^^^^^^^^^^^^^\r\nAttributeError: 'ExperienceBridge' object has no attribute '_spotify_factory'. Did you mean: '_source_factory'?\r\n\r\n[pywebview] Failed to delete user data folder: [WinError 5] Acceso denegado: '<local-path>\\\\AppData\\\\Local\\\\Temp\\\\tmpc6cm78f5\\\\EBWebView\\\\CrashpadMetrics-active.pma'\r\n"
+}

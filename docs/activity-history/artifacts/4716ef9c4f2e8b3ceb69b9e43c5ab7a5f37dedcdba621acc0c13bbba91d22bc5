@@ -1,0 +1,14 @@
+{
+  "suite": "live-ui",
+  "started_at": "2026-10-30T14:01:30.293319+00:00",
+  "finished_at": "2026-10-30T14:01:40.488772+00:00",
+  "duration_seconds": 10.195453,
+  "command": [
+    "node",
+    "tools/check_live_ui.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"passed\": [\n    \"missing key blocks capture\",\n    \"single Comenzar click starts transcription and voice without settings or activation checkboxes; page load never captures\",\n    \"real AudioWorklet PCM at 80 ms\",\n    \"cumulative partial replacement\",\n    \"Muse final to Melodi audio without waiting for level tick\",\n    \"Spanish and English Cartesia selection at speed 1.05\",\n    \"English live final triggers English model request and English speech\",\n    \"echo muted as silence\",\n    \"sustained synthetic input interrupts speech with confirmed AEC; background sound does not\",\n    \"user partials stay silent; next final preserves prior user and assistant context\",\n    \"joke question waits in silence without automatic punchline; guessed answer laughs without revealing again\",\n    \"interruption\",\n    \"endStream flush\",\n    \"speaker labels and silent meeting\",\n    \"prepared context before questions\",\n    \"provisional support before final\",\n    \"corrected question retracts support\",\n    \"final promotes provisional support\",\n    \"meeting mobile support above fold\",\n    \"cleanup\"\n  ],\n  \"microphone\": \"synthetic\",\n  \"providers\": \"mocked\",\n  \"frames\": 93,\n  \"zeroFrames\": 58,\n  \"speechLanguages\": [\n    \"es\",\n    \"en\",\n    \"en\",\n    \"en\",\n    \"es\",\n    \"es\"\n  ],\n  \"turnLanguages\": [\n    \"en\",\n    \"en\",\n    \"es\",\n    \"es\",\n    \"es\"\n  ]\n}\n"
+}

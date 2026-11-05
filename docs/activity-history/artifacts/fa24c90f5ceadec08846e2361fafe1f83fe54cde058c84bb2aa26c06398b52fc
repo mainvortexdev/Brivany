@@ -1,0 +1,23 @@
+{
+  "check": "native Windows AppBar with owned test window",
+  "before": [
+    0,
+    0,
+    1280,
+    994
+  ],
+  "during": [
+    0,
+    40,
+    1280,
+    994
+  ],
+  "after": [
+    0,
+    0,
+    1280,
+    994
+  ],
+  "passed": true,
+  "inference_calls": 0
+}

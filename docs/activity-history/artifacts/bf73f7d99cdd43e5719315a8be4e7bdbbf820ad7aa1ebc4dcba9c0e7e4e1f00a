@@ -1,0 +1,128 @@
+"""Local anonymous voice grouping; model fixtures never contact providers."""
+from concurrent.futures import ThreadPoolExecutor
+import importlib.util
+from pathlib import Path
+import threading
+import unittest
+from unittest.mock import patch
+import wave
+
+import numpy as np
+
+from packages.providers import acoustic_speakers as acoustic
+from packages.providers import river_translation as river
+
+
+def vector(index):
+    result=np.zeros(192,dtype=np.float32);result[index]=1
+    return result
+
+
+def observed(embedding):
+    return {'available':True,'embedding':embedding,'reason':'test_embedding','windows':1,'latency_ms':0.}
+
+
+class AcousticSpeakersTests(unittest.TestCase):
+    def test_short_quiet_and_invalid_samples_do_not_open_a_model(self):
+        with patch.object(acoustic,'_extractor',side_effect=AssertionError('Model must stay unopened')):
+            for pcm in (None,b'odd',bytes(acoustic.MIN_SAMPLES*2-2),bytes(acoustic.MAX_SAMPLES*2+2),bytes(96000)):
+                self.assertFalse(acoustic.extract_embedding(pcm)['available'])
+
+    def test_disagreeing_long_windows_do_not_create_a_speaker(self):
+        samples=(np.sin(np.arange(6*24000)*.1)*5000).astype('<i2').tobytes()
+        with patch.object(acoustic,'_extractor',return_value=object()),patch.object(acoustic,'_compute',side_effect=[vector(0),vector(1)]):
+            result=acoustic.extract_embedding(samples)
+        self.assertEqual((result['available'],result['reason'],result['windows']),(False,'inconsistent_windows',2))
+        session=acoustic.SessionSpeakers(extractor=lambda _:result)
+        self.assertIsNone(session.associate(samples)['cluster']);self.assertEqual(session.clusters,{})
+
+    def test_borderline_or_ambiguous_audio_neither_merges_nor_trains(self):
+        borderline=vector(0)*.55+vector(2)*np.sqrt(1-.55**2)
+        ambiguous=(vector(0)+vector(1))/np.sqrt(2)
+        observations=iter([vector(0),borderline,vector(1),ambiguous,vector(0)])
+        session=acoustic.SessionSpeakers(extractor=lambda _:observed(next(observations)))
+        results=[session.associate(b'fake speech') for _ in range(5)]
+        self.assertEqual([result['cluster'] for result in results],[1,None,2,None,1])
+        self.assertEqual([result['reason'] for result in results][1:4],['ambiguous_match','new_cluster','ambiguous_match'])
+        self.assertEqual([len(row['vectors']) for row in session.clusters.values()],[2,1])
+
+    def test_concurrent_equal_observations_have_one_atomic_cluster(self):
+        barrier=threading.Barrier(2)
+        def extract(_):barrier.wait(timeout=2);return observed(vector(0))
+        session=acoustic.SessionSpeakers(extractor=extract)
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            results=list(pool.map(session.associate,[b'first',b'second']))
+        self.assertEqual([result['cluster'] for result in results],[1,1])
+        self.assertEqual(len(session.clusters),1)
+
+    def test_two_voices_with_the_same_pitch_and_same_asr_letter_stay_distinct(self):
+        session=acoustic.SessionSpeakers(extractor=lambda pcm:observed(vector(0 if pcm==b'one' else 1)))
+        tracker=river.SpeakerTracker();tracker.enable_acoustic(session);stop=threading.Event()
+        voices=[]
+        with patch.object(river,'pitch_style',return_value='low'):
+            for turn,pcm,namespace,label in [('prefix-1',b'one','prefix','A'),('live-1',b'two','live','A'),('live-2',b'one','live','B')]:
+                tracker.observe(turn,label,namespace=namespace);tracker.associate(turn,pcm)
+                voices.append(tracker.voice(turn,pcm,'auto',stopped=stop,advisory={}))
+        self.assertEqual([voice['speaker_index'] for voice in voices],[1,2,1])
+        self.assertEqual(voices[0]['voice_id'],voices[2]['voice_id'])
+        self.assertNotEqual(voices[0]['voice_id'],voices[1]['voice_id'])
+        self.assertTrue(all(voice['speaker_source']=='local_acoustic_embedding' and voice['speaker_provisional'] for voice in voices))
+
+    def test_late_label_cannot_merge_different_pieces_of_a_long_asr_turn(self):
+        values=iter([vector(0),vector(1),vector(0)])
+        tracker=river.SpeakerTracker();tracker.enable_acoustic(acoustic.SessionSpeakers(extractor=lambda _:observed(next(values))))
+        voices=[]
+        for piece in ('turn','turn:1','turn:2'):
+            tracker.associate(piece,b'speech',source_turn='turn')
+            voices.append(tracker.voice(piece,b'','auto',stopped=threading.Event(),advisory={}))
+        tracker.observe('turn','A')
+        self.assertEqual([tracker.metadata(piece)['speaker_index'] for piece in ('turn','turn:1','turn:2')],[1,2,1])
+        self.assertEqual([row['speaker_index'] for row in voices],[1,2,1])
+        self.assertEqual(tracker.turns['turn:1']['label'],'A')
+
+    def test_unavailable_embedding_does_not_inherit_previous_voice(self):
+        values=iter([observed(vector(0)),{'available':False,'reason':'unknown_content','windows':0,'latency_ms':0.}])
+        tracker=river.SpeakerTracker();tracker.enable_acoustic(acoustic.SessionSpeakers(extractor=lambda _:next(values)))
+        tracker.associate('one',b'known');tracker.associate('unknown',b'unknown')
+        self.assertEqual(tracker.metadata('one')['speaker_index'],1)
+        self.assertIsNone(tracker.metadata('unknown')['speaker_index'])
+
+    def test_timbre_cache_is_per_cluster_and_expires_after_eight_distinct_pieces(self):
+        tracker=river.SpeakerTracker();tracker.enable_acoustic(acoustic.SessionSpeakers(extractor=lambda _:observed(vector(0))))
+        tracker.associate('0',b'voice')
+        advice={'voice_timbre':'masculine','timbre_confidence':.95,'timbre_inference_source':'test_local_model'}
+        self.assertTrue(tracker.remember_timbre('0',advice))
+        for index in range(1,8):
+            tracker.associate(str(index),b'voice')
+            self.assertEqual(tracker.cached_timbre(str(index)),advice)
+            self.assertEqual(tracker.cached_timbre('0'),advice)
+        tracker.associate('8',b'voice');self.assertIsNone(tracker.cached_timbre('8'))
+        self.assertFalse(tracker.remember_timbre('8',dict(advice,timbre_confidence=.7)))
+        self.assertTrue(tracker.remember_timbre('8',advice));self.assertEqual(tracker.cached_timbre('8'),advice)
+        separate=river.SpeakerTracker();separate.enable_acoustic(acoustic.SessionSpeakers(extractor=lambda _:observed(vector(0))))
+        separate.associate('0',b'voice');self.assertIsNone(separate.cached_timbre('0'))
+
+
+ROOT=Path(__file__).resolve().parents[1]
+OWNED=ROOT/'tmp/workspace-translation-real'
+
+
+@unittest.skipUnless(acoustic.MODEL_PATH.is_file() and importlib.util.find_spec('sherpa_onnx') and
+                     all((OWNED/(name+'.wav')).is_file() for name in ('masculine','feminine')),
+                     'Optional pinned model and existing owned synthetic fixtures are unavailable')
+class OwnedSpeakerEmbeddingTests(unittest.TestCase):
+    def test_existing_synthetic_voices_match_across_gain_and_differ_acoustically(self):
+        samples=[]
+        for name in ('masculine','feminine'):
+            with wave.open(str(OWNED/(name+'.wav'))) as source:
+                self.assertEqual((source.getnchannels(),source.getsampwidth(),source.getframerate()),(1,2,24000))
+                samples.append(source.readframes(source.getnframes()))
+        gain=(np.frombuffer(samples[0],dtype='<i2')*.4).astype('<i2').tobytes()
+        session=acoustic.SessionSpeakers()
+        results=[session.associate(raw) for raw in (*samples,gain)]
+        self.assertEqual([result['cluster'] for result in results],[1,2,1])
+        self.assertGreater(results[-1]['similarity'],.9)
+        self.assertLess(results[1]['similarity'],acoustic.NOVEL_THRESHOLD)
+
+
+if __name__=='__main__':unittest.main()

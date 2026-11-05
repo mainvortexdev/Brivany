@@ -1,0 +1,18 @@
+{
+  "suite": "room-ingest-ui",
+  "started_at": "2026-10-30T00:53:14.242738+00:00",
+  "finished_at": "2026-10-30T00:53:23.622413+00:00",
+  "duration_seconds": 9.379675,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_room_ingest_ui"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"status\": \"passed\",\r\n  \"scope\": \"Actual local browser, HTTP, SQLite, generated multiview GLB, WebGL and ZIP; Modal SDK and model output substituted.\",\r\n  \"checks\": [\r\n    \"room results are queried only by explicit action and identify the partial unverified surface scope\",\r\n    \"unavailable object pipeline does not hide or disable the room result\",\r\n    \"import renders captured vertex colors without extra lighting; estimated source cameras and free view work, with fixed geometry and no physics or object editing\",\r\n    \"signed mesh and source JPEG hashes match; both source frames load in the review gallery with estimated, unaligned camera labels and preserved uncertainty\",\r\n    \"reopening the same room receipt preserves one scene, its original revision and all camera provenance\",\r\n    \"the surface exports as a local ZIP and the desktop/mobile-width browser journey has no page errors or external requests\"\r\n  ],\r\n  \"external_calls\": 0,\r\n  \"gpu_inference\": false,\r\n  \"real_reconstruction_verified\": false,\r\n  \"geometry_fidelity_verified\": false,\r\n  \"metric_scale_verified\": false,\r\n  \"physical_realism_verified\": false,\r\n  \"physical_devices_tested\": false,\r\n  \"screenshots\": [\r\n    \"tmp/room-ingest-ui/result-1440.png\",\r\n    \"tmp/room-ingest-ui/surface-1440.png\",\r\n    \"tmp/room-ingest-ui/surface-390.png\"\r\n  ]\r\n}\r\n\r\n{\"modal_sdk_calls_added_by_ui\": 0, \"external_calls\": 0, \"gpu_inference\": false}\r\n"
+}

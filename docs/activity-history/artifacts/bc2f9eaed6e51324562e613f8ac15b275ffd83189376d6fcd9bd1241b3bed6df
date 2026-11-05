@@ -1,0 +1,12 @@
+{
+  "type": "extension_package_integrity",
+  "version": "0.4.9",
+  "files": 20,
+  "permissions_unchanged": true,
+  "stable_id_unchanged": true,
+  "installed_files_updated": true,
+  "running_worker_version_verified": "0.4.9",
+  "worker_build_verified": "0.4.9-prefix-nav-070",
+  "latest_player_module_in_personal_page_verified": false,
+  "archive_sha256": "118e7c98c0bcf0d7ff93bda29d67e651bc9ca2b8e7f0a36d4ca8b68b9b237029"
+}

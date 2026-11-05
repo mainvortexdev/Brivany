@@ -1,0 +1,110 @@
+{
+  "type": "actual_encoded_MP4_audio_and_video_checks",
+  "passed": true,
+  "tts_calls": 8,
+  "planning_calls": 0,
+  "billing_amount": null,
+  "microphone_recorded": false,
+  "audio_measured_not_human_listened": true,
+  "videos": [
+    {
+      "style": "workspace",
+      "delivery_path": "<local-path>\\Exports\\Brivany-motion-con-voz-final\\01-Tu-voz-en-movimiento.mp4",
+      "project_path": "<local-path>\\.local\\motion-premium\\20261101T230410Z\\bb1618aa-47e4-4def-a39f-56153dbfe641\\index.html",
+      "job_id": "bb1618aa-47e4-4def-a39f-56153dbfe641",
+      "render_seconds": 105.55,
+      "frames": 900,
+      "duration": 30,
+      "width": 1920,
+      "height": 1080,
+      "audio_codec": "aac",
+      "voice_id": "3597a26f-80ef-4bd5-8101-9699bc764917",
+      "voice_segments": [
+        {
+          "start": 0.51,
+          "duration": 2.48,
+          "characters": 33
+        },
+        {
+          "start": 7.2,
+          "duration": 3.52,
+          "characters": 50
+        },
+        {
+          "start": 14.55,
+          "duration": 3.68,
+          "characters": 67
+        },
+        {
+          "start": 22.2,
+          "duration": 2.88,
+          "characters": 38
+        }
+      ],
+      "loudness": {
+        "input_i": "-16.06",
+        "input_tp": "-0.98",
+        "input_lra": "8.00",
+        "input_thresh": "-26.76",
+        "output_i": "-16.22",
+        "output_tp": "-1.00",
+        "output_lra": "7.80",
+        "output_thresh": "-26.92",
+        "normalization_type": "dynamic",
+        "target_offset": "0.22"
+      },
+      "sha256": "f4d963bcd652b5bbb988c06b055ed3fda70a6e30dbe5a9a5572d8cdfbedace45",
+      "bytes": 7156849
+    },
+    {
+      "style": "spatial",
+      "delivery_path": "<local-path>\\Exports\\Brivany-motion-con-voz-final\\02-Del-trazo-al-espacio.mp4",
+      "project_path": "<local-path>\\.local\\motion-premium\\20261101T230410Z\\bc98b7a8-bfeb-4b40-9d15-9ab792d0dc82\\index.html",
+      "job_id": "bc98b7a8-bfeb-4b40-9d15-9ab792d0dc82",
+      "render_seconds": 130.076,
+      "frames": 900,
+      "duration": 30,
+      "width": 1920,
+      "height": 1080,
+      "audio_codec": "aac",
+      "voice_id": "3597a26f-80ef-4bd5-8101-9699bc764917",
+      "voice_segments": [
+        {
+          "start": 0.51,
+          "duration": 2.08,
+          "characters": 34
+        },
+        {
+          "start": 7.2,
+          "duration": 3.76,
+          "characters": 54
+        },
+        {
+          "start": 14.55,
+          "duration": 3.28,
+          "characters": 52
+        },
+        {
+          "start": 22.2,
+          "duration": 2.72,
+          "characters": 39
+        }
+      ],
+      "loudness": {
+        "input_i": "-15.93",
+        "input_tp": "-1.00",
+        "input_lra": "8.30",
+        "input_thresh": "-26.59",
+        "output_i": "-16.06",
+        "output_tp": "-1.00",
+        "output_lra": "8.30",
+        "output_thresh": "-26.64",
+        "normalization_type": "dynamic",
+        "target_offset": "0.06"
+      },
+      "sha256": "89a9b40c7eb21fdb148897996a3ccf5d40dfe43146bf909c5eeeccc2fafa562e",
+      "bytes": 9898777
+    }
+  ],
+  "revision": "separated-ribbon-geometry"
+}

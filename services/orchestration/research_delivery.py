@@ -1,0 +1,64 @@
+"""Bounded public research payload for chat and account transport."""
+import ipaddress
+import re
+from urllib.parse import urlsplit
+
+
+def answer_without_citations(text):
+    """Keep research prose; provenance travels separately from the answer."""
+    text = re.sub(r'\[([^\]\n]+)\]\(https?://[^\s)]+\)', r'\1', text)
+    text = re.sub(r'【[^】\n]*】|\[(?:\d+(?:\s*[,–-]\s*\d+)*)\]|https?://[^\s<>]+', '', text)
+    text = re.sub(r'[ \t]+([.,;:!?])', r'\1', text)
+    return re.sub(r'[ \t]{2,}', ' ', text).strip()
+
+
+def clean_sources(items, *, max_sources=4, max_url_length=450):
+    if not isinstance(items, list):
+        return []
+    sources = []
+    seen = set()
+    for item in items[:20]:
+        if not isinstance(item, dict):
+            continue
+        url = item.get('url')
+        if not isinstance(url, str) or len(url) > max_url_length or '\\' in url or any(char.isspace() or ord(char) < 32 for char in url):
+            continue
+        try:
+            parsed = urlsplit(url)
+            host = (parsed.hostname or '').rstrip('.').lower()
+            if parsed.scheme != 'https' or '.' not in host or host.endswith(('.local', '.localhost', '.internal', '.lan', '.home', '.arpa', '.test', '.invalid')) or parsed.username is not None or parsed.password is not None:
+                continue
+            if parsed.port not in (None, 443):
+                continue
+        except ValueError:
+            continue
+        try:
+            ipaddress.ip_address(host)
+        except ValueError:
+            # Chromium also accepts shorthand/octal numeric IPv4 hosts.
+            if not host.rsplit('.', 1)[1][:1].isalpha():
+                continue
+        else:
+            continue
+        if url in seen:
+            continue
+        seen.add(url)
+        title = item.get('title')
+        sources.append({'url': url, 'title': title.strip()[:100] if isinstance(title, str) and title.strip() else parsed.hostname[:100]})
+        if len(sources) == max_sources:
+            break
+    return sources
+
+
+def research_output(result):
+    if result.get('verified') is not True or result.get('web_search_verified') is not True:
+        return {}
+    message = result.get('message')
+    sources = clean_sources(result.get('sources'))
+    if not isinstance(message, str) or not message.strip():
+        return {}
+    value = {'verified': True, 'web_search_verified': True, 'message': answer_without_citations(message)[:2200], 'sources': sources}
+    for key in ('provider', 'observed_at', 'source_scope'):
+        if isinstance(result.get(key), str):
+            value[key] = result[key][:100]
+    return value

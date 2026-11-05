@@ -1,0 +1,26 @@
+{
+  "type": "isolated_actual_unpacked_extension_registration_and_loopback_pairing",
+  "external_calls": 0,
+  "paid_calls": 0,
+  "user_profile_used": false,
+  "tabcapture_invoked": false,
+  "capture_authorization_verified": false,
+  "microphone": false,
+  "source_media_persisted": false,
+  "passed": true,
+  "browser": "Brave",
+  "service_worker_registered": true,
+  "extension_origin": "chrome-extension://bbknpdmincnljefncdmnkelhjahgckeo",
+  "pair_ui_connected": true,
+  "preferred_mode_applied": true,
+  "session_cache_present": true,
+  "same_origin_authentication": true,
+  "reopen_reused_authorization": true,
+  "csp_page_errors": [],
+  "transport_counts": {
+    "pair": 1,
+    "authenticate": 1,
+    "origin_rejections": 0
+  },
+  "status": "passed_extension_loading_pairing_and_cache_without_capture"
+}

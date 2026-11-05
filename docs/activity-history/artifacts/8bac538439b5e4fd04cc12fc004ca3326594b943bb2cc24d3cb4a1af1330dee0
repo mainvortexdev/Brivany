@@ -1,0 +1,90 @@
+# Melodi: control del ordenador y modelos durante el live
+
+La experiencia nueva incorpora **Ordenador y modelos** y un panel dentro de Melodi.
+**Activar control** crea un permiso nativo de una hora; **Elegir carpeta** permite
+trabajar con archivos de esa carpeta. El espacio inicial es `.local/computer/workspace`.
+**Detener tareas** revoca el permiso y cancela ambas colas. Escape detiene la acción
+nativa y el borde visible; una orden de voz explícita para detener también revoca
+el permiso al ser reconocida. Las tareas no se retoman automáticamente.
+
+## Arquitectura
+
+- `services/computer`: router semántico, planificador Meta, permisos, HTTP privado,
+  dos colas independientes, cancelación y publicación de modelos.
+- `desktop/computer/native.cjs`: proceso Electron con transporte loopback autenticado;
+  reutiliza AutomationEngine, SystemAgent, ApplicationResolver, el borde/cursor y
+  Paint de Cognira. No expone comandos del sistema al modelo.
+- `desktop/computer/textInput.cjs`: escritura literal mediante UIA/Unicode; el texto
+  llega como base64, sin expansión de `$()` ni interpretación de SendKeys.
+- `desktop/computer/compile.cjs`: utiliza el compilador de habitaciones/mobiliario
+  de Cognira y Three.js para exportar GLB incrustado por objeto.
+- `desktop/experience/computer.*`: controles de permiso, tareas y vista 3D junto al
+  live. Sólo con un permiso activo se enrutan los turnos hacia `/api/computer/turn`.
+
+El backend usa por defecto el directorio Cognira hermano de Brivany. Se puede elegir
+otro mediante `BRIVANY_COGNIRA_SOURCE` en el entorno del proceso. Deben existir sus
+dependencias de desarrollo (Electron/Three). `config/computer-source.json` conserva
+los hashes de los módulos referenciados. Si cambian, el backend se declara no
+disponible hasta revisar la nueva versión; no se actualiza el lock automáticamente.
+
+El modelo de planificación es el Meta ya configurado en Brivany. Las claves se
+quedan en Python y no se pasan a Electron. El selector de aplicaciones y Paint
+consultan ese proveedor mediante un proxy local con secreto distinto del permiso
+de interfaz. Las observaciones de ventanas y capturas Paint son datos, nunca
+instrucciones. No se guardan automáticamente capturas, voz ni tareas en la bitácora
+de desarrollo; las evidencias de pruebas usan fixtures y resúmenes técnicos.
+
+## Modelos 3D
+
+Una orden explícita como «Crea una mesa redonda en 3D» inicia la cola de modelos y
+devuelve el control a la conversación. Al terminar se publica un espacio con GLB,
+transformaciones editables y limitaciones. **Ver junto a la voz** abre su visor sin
+descargar el live; **Ver modelo en Espacios** abre el módulo completo. Un cambio
+posterior puede utilizar el último plan conceptual de la sesión y crea otra versión.
+Se mantienen los límites actuales de cien objetos, escala relativa y física no
+verificada. No es reconstrucción multivista ni usa Modal automáticamente.
+
+## Comprobaciones y límites
+
+`tests/test_computer_control.py` comprueba permisos, revocación/expiración, parada,
+dos colas en paralelo, ruta de voz, proxy privado, límites de planificación,
+rechazo de planes inválidos, HTTP y publicación de un GLB real en SQLite temporal.
+`tests/computer-native.test.cjs` comprueba acciones, confinamiento de rutas/enlaces
+y escritura literal resistente a expansión de comandos.
+
+`tools.check_computer_ui` recorre el HTTP y visor reales, con puente, planificador
+y entrada nativa sustituidos. Comprueba una tarea desde la ruta live, conversación
+mientras se crea el modelo, vista junto a la voz, parada y márgenes a 320, 390, 768,
+1120 y 1440 px. No usa servicios externos.
+
+`tools.check_computer_paint_real --allow-paid` es una prueba real aparte: abre una
+ventana nueva de Paint, pide una casa/árbol/sol sintéticos y ejecuta las herramientas
+y trazos del programa. Puede consultar el modelo para elegir aplicación, ubicar
+herramientas y diseñar la composición. Conserva informe y captura del dibujo de
+prueba. Su resultado y gasto se registran después de cada ejecución; el importe
+permanece desconocido hasta contrastar facturación. Un número de trazos no prueba
+calidad artística y una captura no acredita todas las aplicaciones.
+
+La matriz de paridad completa y las validaciones todavía pendientes están en
+`OBJETIVO_CONTROL_MELODI.md`. El objetivo permanece activo: no se afirma paridad
+total con Office, navegador, programación y producción multimedia de Stacy.
+
+## Atribución
+
+Se reutiliza código de Cognira Desktop/Stacy (Vortex Developer), por indicación
+expresa del usuario sobre su directorio local. Sus módulos no se modifican. Brivany
+añade el adaptador, el transporte, la política de herramientas, las colas y la
+integración con Melodi. El borde HTML se adaptó conservando la atribución en el
+archivo. El empaquetado y cualquier redistribución deberán conservar los avisos
+de licencia que correspondan a Cognira y sus dependencias.
+
+## Resultado real de Paint del 30 de octubre
+
+La prueba abrió una ventana nueva, ejecutó 300 trazos con el pincel/paleta de Paint
+y guardó desde su diálogo nativo un PNG de 768×614. Se usaron cinco solicitudes de
+planificación; importe desconocido. La revisión de la captura confirma casa, árbol
+y sol, con contornos irregulares y franjas de relleno. No se certifica calidad de
+producción. El resultado generado de prueba está en `tmp/computer-paint-real/drawing.png`.
+Los fallos previos del borde se conservaron: notificaciones de métricas sin cambio
+geométrico real activaban una cancelación. El adaptador compara ahora topología,
+escala y rotación antes de cancelar. No ignora cambios efectivos de monitor.

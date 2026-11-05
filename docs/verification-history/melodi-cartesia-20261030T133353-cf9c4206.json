@@ -1,0 +1,21 @@
+{
+  "suite": "melodi-cartesia",
+  "started_at": "2026-10-30T13:33:53.820377+00:00",
+  "finished_at": "2026-10-30T13:33:56.622479+00:00",
+  "duration_seconds": 2.802102,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_cartesia_melodi",
+    "tests.test_live_voice",
+    "tests.test_conversation"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".................\r\n----------------------------------------------------------------------\r\nRan 17 tests in 1.836s\r\n\r\nOK\r\n"
+}

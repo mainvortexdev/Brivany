@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-10-31T03:47:17.921793+00:00",
+  "finished_at": "2026-10-31T03:47:54.592298+00:00",
+  "duration_seconds": 36.670505,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Failure view {\n  panel: 'Pantalla',\n  spotify: { configured: false, connected: false, pending: false },\n  body: {\n    expanded: 'true',\n    sleeping: 'false',\n    surface: 'preview',\n    motion: 'true',\n    translationFocus: 'false'\n  }\n}\nlocator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Seleccionar regiÃ³n' })\u001b[22m\n\n    at <local-path>\\tools\\check_island_ui.cjs:27:75\n"
+}

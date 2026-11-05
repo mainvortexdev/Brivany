@@ -1,0 +1,19 @@
+{
+  "suite": "dubbing-timing",
+  "started_at": "2026-10-28T01:55:24.387380+00:00",
+  "finished_at": "2026-10-28T01:55:30.923269+00:00",
+  "duration_seconds": 6.535889,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_dubbing_pipeline",
+    "--timing"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\r\n  \"checked_at\": \"2026-10-28T01:55:30.595590+00:00\",\r\n  \"status\": \"passed\",\r\n  \"provider\": \"Palabra\",\r\n  \"upstream\": \"simulated\",\r\n  \"api\": \"real_local\",\r\n  \"synthetic\": true,\r\n  \"source_sha256\": \"5a7a06a8a9073de2246f3faec54b7ac17cf296ed82f9652a5a7e4df87af20a30\",\r\n  \"video_sha256\": \"f39da3ab2f132491528a0c8e9b11dbb709d03d0b2d6769061e0dbd0a7378c67d\",\r\n  \"target_audible_delay_ms\": 500,\r\n  \"physical_playback_measured\": false,\r\n  \"audible_delay_verified\": false,\r\n  \"output_timing_method\": \"same_audio_context_frame_difference_with_browser_device_timestamp_estimate\",\r\n  \"energy_window_ms\": 20,\r\n  \"energy_rms_threshold\": 0.005,\r\n  \"timing\": {\r\n    \"sourceContextEnd\": 2.3626666666666667,\r\n    \"firstEnergyContext\": 0.12033333333333333,\r\n    \"scheduledBuffers\": 6,\r\n    \"microphoneRequests\": 0,\r\n    \"audio_context_state\": \"running\",\r\n    \"base_latency_seconds\": 0.010041666666666667,\r\n    \"output_latency_seconds\": 0.064,\r\n    \"source_end_device_estimate_ms\": 3018.9986666670393,\r\n    \"translated_energy_device_estimate_ms\": 776.6653333337058,\r\n    \"first_energy_after_source_end_estimate_ms\": -2242.3333333333335,\r\n    \"device_clock_has_passed_first_energy\": true\r\n  },\r\n  \"estimated_first_energy_within_target\": true,\r\n  \"final_caption\": \"Prueba simulada cierre \",\r\n  \"external_calls\": 0,\r\n  \"limitations\": [\r\n    \"Loopback upstream simulation only; no translation model, inference latency, bilingual quality, or physical device was evaluated.\"\r\n  ],\r\n  \"report\": \"tmp/browser-dubbing-measurements/simulated-1793152530002.json\",\r\n  \"provider_received\": {\r\n    \"pcm_packets\": 30,\r\n    \"pcm_bytes\": 113408,\r\n    \"nonzero_pcm\": true,\r\n    \"session_close_messages\": 1,\r\n    \"connections\": 1\r\n  }\r\n}\r\n"
+}

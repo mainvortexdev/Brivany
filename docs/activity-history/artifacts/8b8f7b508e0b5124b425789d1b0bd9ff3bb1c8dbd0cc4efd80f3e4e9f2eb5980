@@ -1,0 +1,25 @@
+/* Official SDK in an isolated native view; no chat/module DOM or persisted tokens. */
+(() => {
+ 'use strict';
+ let player=null,disposed=false,starting=false;
+ const api=()=>window.pywebview?.api;
+ async function event(kind,id=''){try{if(!disposed)await api()?.event(kind,id);}catch{}}
+ function dispose(){if(disposed)return;disposed=true;player?.disconnect();player=null;window.onSpotifyWebPlaybackSDKReady=()=>{};}
+ async function start(){
+  if(starting||disposed||!api())return;starting=true;
+  try{
+   await navigator.requestMediaKeySystemAccess('com.widevine.alpha',[{initDataTypes:['cenc'],audioCapabilities:[{contentType:'audio/mp4; codecs="mp4a.40.2"'}]}]);
+   window.onSpotifyWebPlaybackSDKReady=async()=>{
+    if(disposed)return;
+    player=new Spotify.Player({name:'Brivany',volume:.5,getOAuthToken:callback=>api().token().then(value=>{if(!disposed)callback(value.access_token);}).catch(()=>event('authentication_error'))});
+    player.addListener('ready',({device_id})=>event('ready',device_id));
+    player.addListener('not_ready',()=>event('not_ready'));
+    for(const kind of ['initialization_error','authentication_error','account_error','playback_error','autoplay_failed'])player.addListener(kind,()=>event(kind));
+    await player.activateElement();
+    if(!await player.connect())await event('connection_error');
+   };
+   const script=document.createElement('script');script.src='https://sdk.scdn.co/spotify-player.js';script.onerror=()=>event('connection_error');document.head.append(script);
+  }catch{await event('initialization_error');}
+ }
+ window.BrivanySpotifyPlayer={dispose};window.addEventListener('pywebviewready',start);window.addEventListener('pagehide',dispose);start();
+})();

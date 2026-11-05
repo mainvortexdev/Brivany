@@ -1,0 +1,19 @@
+{
+  "type": "read_only_ledger_reconciliation",
+  "checked_at": "2026-11-04T05:22:03.700321+00:00",
+  "entries": 1339,
+  "unique_evidence_snapshots": 1961,
+  "chain_errors": [],
+  "missing_snapshots": [],
+  "corrupt_snapshots": [],
+  "docs_total": 106,
+  "docs_exactly_snapshotted": 106,
+  "docs_not_attached": [],
+  "docs_with_new_content": [],
+  "unregistered_suite_reports": [],
+  "suite_reports_with_new_content": [],
+  "integrity_passed": true,
+  "documentation_coverage_complete": true,
+  "suite_report_coverage_complete": true,
+  "limits": "Chain, evidence and document coverage only; not feature correctness, semantic quality or a new test execution."
+}

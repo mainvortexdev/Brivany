@@ -1,0 +1,14 @@
+{
+  "kind": "local_fake_relay_and_loopback_http",
+  "command": ".\\.venv\\Scripts\\python.exe -X utf8 -B -m unittest tests.test_personal_translation_lab",
+  "exit_code": 0,
+  "tests_run": 11,
+  "observed_stdout": "...........\n----------------------------------------------------------------------\nRan 11 tests in 1.131s\n\nOK\n",
+  "external_provider_calls": 0,
+  "browser_automation_performed": false,
+  "earlier_attempts": [
+    "Global Python could not import pydantic; switched to project .venv.",
+    "First .venv execution ran 11 tests with one assertion failure: substring pcm matched input_pcm_bytes counter. Assertion corrected to reject the audio key and payload."
+  ],
+  "limits": "Fake relay and local HTTP only; no real extension playback or whole-video quality verified."
+}

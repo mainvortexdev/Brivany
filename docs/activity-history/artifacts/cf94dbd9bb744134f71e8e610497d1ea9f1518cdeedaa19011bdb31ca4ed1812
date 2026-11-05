@@ -1,0 +1,14 @@
+{
+  "suite": "live-ui",
+  "started_at": "2026-10-30T15:47:03.247260+00:00",
+  "finished_at": "2026-10-30T15:47:04.832016+00:00",
+  "duration_seconds": 1.584756,
+  "command": [
+    "node",
+    "tools/check_live_ui.cjs"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "[TypeError: fetch failed] {\n  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8765\n      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16) {\n    errno: -4078,\n    code: 'ECONNREFUSED',\n    syscall: 'connect',\n    address: '127.0.0.1',\n    port: 8765\n  }\n}\n"
+}

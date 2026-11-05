@@ -1,0 +1,24 @@
+{
+  "scope": "actual_public_lyric_endpoints_current_checkpoint_metadata_only",
+  "lyrics_content_recorded": false,
+  "spotify_mutations": 0,
+  "inference_requests": 0,
+  "passed": true,
+  "initial_return_ms": 0.0,
+  "status": "ready",
+  "provider": "LRCLIB",
+  "synced": true,
+  "line_count": 64,
+  "elapsed_seconds": 0.391,
+  "cached_return_ms": 0.0,
+  "public_requests": [
+    {
+      "provider": "LRCLIB",
+      "http_status": 200,
+      "elapsed_seconds": 0.344
+    },
+    {
+      "provider": "SyncLRC"
+    }
+  ]
+}

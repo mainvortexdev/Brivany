@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "time": "2026-11-04T00:44:39.184396+00:00",
+  "native_process_id": 14204,
+  "surfaces": [
+    {
+      "surface": "Melodi WorkSpace",
+      "visible": true,
+      "physical_size": [
+        1280,
+        40
+      ],
+      "tool_window": true,
+      "appwindow": false
+    },
+    {
+      "surface": "Melodi WorkSpace · Panel",
+      "visible": true,
+      "physical_size": [
+        780,
+        404
+      ],
+      "tool_window": true,
+      "appwindow": false
+    },
+    {
+      "surface": "Melodi WorkSpace · Voz",
+      "visible": true,
+      "physical_size": [
+        764,
+        365
+      ],
+      "tool_window": true,
+      "appwindow": false
+    }
+  ],
+  "reserved_top": 40,
+  "external_calls": 0,
+  "purpose": "final application restart and owned-window geometry only"
+}

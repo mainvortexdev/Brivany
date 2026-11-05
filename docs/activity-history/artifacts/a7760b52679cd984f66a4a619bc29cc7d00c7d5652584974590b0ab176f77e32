@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "scope": "final native Windows startup; local metadata only",
+  "windows": [
+    {
+      "Id": 18416,
+      "MainWindowTitle": "Brivany",
+      "Responding": true
+    }
+  ],
+  "base_url": "http://127.0.0.1:56122",
+  "configured_service_count": 4,
+  "native": true,
+  "runtime": {
+    "available": true,
+    "source_lock_matches": true,
+    "source_mode": "bundled",
+    "bundle_verified": true,
+    "backend": "cognira-windows",
+    "platforms_verified": [],
+    "native_input_verified": false
+  },
+  "control_enabled": false,
+  "external_calls": 0,
+  "physical_audio_verified": false
+}

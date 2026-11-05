@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-chat-ui",
+  "started_at": "2026-11-04T00:29:58.036725+00:00",
+  "finished_at": "2026-11-04T00:30:26.198065+00:00",
+  "duration_seconds": 28.16134,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-chat"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(box.width<=420&&box.height===80&&box.x>=0&&box.x+box.width<=width)\n\n    at <local-path>\\tools\\check_workspace_chat.cjs:45:326 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n"
+}

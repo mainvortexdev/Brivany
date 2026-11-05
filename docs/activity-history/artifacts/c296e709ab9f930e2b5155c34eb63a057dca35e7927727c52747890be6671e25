@@ -1,0 +1,126 @@
+"""Launch the Brivany experience shell in a native cross-platform window."""
+import argparse
+from pathlib import Path
+import sys
+from urllib.parse import urlsplit
+
+from desktop.bridge import DesktopBridge, DesktopError
+from desktop.launcher import LocalDesktopServer, dependency_status
+from services.h1.server import Handler
+from services.projects import SpatialProjectSource
+
+ROOT = Path(__file__).resolve().parents[2]
+EXPERIENCE = Path(__file__).resolve().parent
+ASSETS = {"shell.css": (EXPERIENCE / "shell.css", "text/css; charset=utf-8"),
+          "windowbar.css": (EXPERIENCE / "windowbar.css", "text/css; charset=utf-8"),
+          "shell.js": (EXPERIENCE / "shell.js", "text/javascript; charset=utf-8")}
+
+
+def experience_handler(base_handler):
+    class ExperienceHandler(base_handler):
+        def send_header(self, keyword, value):
+            # Existing modules deny every iframe by default. In this desktop
+            # shell, permit same-origin framing only for the known Brivany
+            # pages loaded into its module pane.
+            module_routes = {"/app", "/app/", "/spaces", "/spaces/", "/viewer",
+                             "/human-skills", "/human-skills/", "/practice",
+                             "/dubbing", "/dubbing/", "/connections", "/activity", "/activity/"}
+            route = urlsplit(self.path).path
+            if keyword.lower() == "content-security-policy" and route in module_routes:
+                value = value.replace("frame-ancestors 'none'", "frame-ancestors 'self'")
+            super().send_header(keyword, value)
+
+        def do_GET(self):
+            route = urlsplit(self.path).path
+            if route == "/brivany-shell":
+                self.send_bytes(200, (EXPERIENCE / "index.html").read_bytes(), "text/html; charset=utf-8")
+                return
+            if route.startswith("/desktop-shell/"):
+                asset = ASSETS.get(route.removeprefix("/desktop-shell/"))
+                if asset is None:
+                    self.error(404, "desktop_asset_missing", "Recurso no disponible.")
+                    return
+                path, content_type = asset
+                self.send_bytes(200, path.read_bytes(), content_type)
+                return
+            super().do_GET()
+    return ExperienceHandler
+
+
+class ExperienceBridge(DesktopBridge):
+    """Keep existing native project actions scoped to this local shell origin."""
+    def _trusted(self):
+        if self._window is None:
+            raise DesktopError("desktop_window", "La ventana todavía no está preparada.", 403)
+        value = self._window.get_current_url()
+        parsed = urlsplit(value or "")
+        base = urlsplit(self._base)
+        if ((parsed.scheme, parsed.hostname, parsed.port) != (base.scheme, base.hostname, base.port)
+                or parsed.path not in {"/brivany-shell", "/spaces", "/spaces/", "/viewer"}
+                or parsed.username or parsed.password):
+            raise DesktopError("desktop_origin", "El puente nativo sólo está disponible en la ventana local de Brivany.", 403)
+
+    def minimize_window(self):
+        self._trusted()
+        self._window.minimize()
+        return {"ok": True}
+
+    def set_window_maximized(self, maximized):
+        self._trusted()
+        if type(maximized) is not bool:
+            raise DesktopError("desktop_window_state", "Estado de ventana inválido.", 422)
+        if maximized:
+            self._window.maximize()
+        else:
+            self._window.restore()
+        return {"ok": True, "maximized": maximized}
+
+    def close_window(self):
+        self._trusted()
+        self._window.destroy()
+        return {"ok": True}
+
+
+def launch():
+    status = dependency_status()
+    if not status["pywebview_available"]:
+        raise RuntimeError("Instala requirements-desktop.txt para abrir la ventana nativa.")
+    if sys.platform == "win32" and not status.get("edgechromium_available"):
+        raise RuntimeError("Faltan .NET o Edge WebView2; no se usará MSHTML.")
+    import webview
+    webview.settings["ALLOW_FILE_URLS"] = False
+    webview.settings["ALLOW_DOWNLOADS"] = False
+    webview.settings["OPEN_DEVTOOLS_IN_DEBUG"] = False
+    with LocalDesktopServer(handler=experience_handler(Handler), live=True) as server:
+        session = server.session
+        spatial = getattr(server.http, "spatial", None)
+        source = lambda: SpatialProjectSource(spatial.root if spatial is not None else ROOT / ".local" / "spatial")
+        bridge = ExperienceBridge(server.base_url, session, source,
+                                  folder_dialog=webview.FileDialog.FOLDER,
+                                  save_dialog=webview.FileDialog.SAVE)
+        screens = getattr(webview, "screens", [])
+        screen = screens[0] if screens else None
+        width = min(1120, int(screen.width * 0.90)) if screen else 1120
+        height = min(760, int(screen.height * 0.86)) if screen else 760
+        minimum = (min(900, width), min(600, height))
+        window = webview.create_window("Brivany", server.base_url + "/brivany-shell",
+                                       js_api=bridge, width=width, height=height, screen=screen,
+                                       min_size=minimum, frameless=True, easy_drag=False, shadow=True,
+                                       background_color="#f3f5f5", confirm_close=False)
+        bridge._bind_window(window)
+        gui = {"win32": "edgechromium", "darwin": "cocoa", "linux": "gtk"}.get(sys.platform)
+        webview.start(gui=gui, debug=False, private_mode=True, http_server=False)
+
+
+def main(argv=None):
+    argparse.ArgumentParser(description="Abrir la experiencia de Brivany en una ventana nativa").parse_args(argv)
+    try:
+        launch()
+        return 0
+    except (OSError, RuntimeError, ImportError) as exc:
+        print(f"No se pudo iniciar la ventana nativa de Brivany: {exc}", file=sys.stderr)
+        return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

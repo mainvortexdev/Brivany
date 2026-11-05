@@ -1,0 +1,14 @@
+{
+  "suite": "human-skills-ui",
+  "started_at": "2026-10-29T22:36:51.467897+00:00",
+  "finished_at": "2026-10-29T22:37:02.073517+00:00",
+  "duration_seconds": 10.60562,
+  "command": [
+    "node",
+    "tools/check_human_skills_ui.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"checks\": 11,\n  \"passed\": [\n    \"video preview and explicit consent before sending\",\n    \"one creation and polled job opens saved draft\",\n    \"source SHA256 match permits timestamp playback\",\n    \"three help levels preserve exercise and review criterion\",\n    \"manual progress saved without competency claims\",\n    \"JSON export\",\n    \"skill layout fits 320/390/768/1440\",\n    \"reload preserves skill and requires original video for citations\",\n    \"wrong source never plays evidence\",\n    \"delete removes local draft\",\n    \"creation layout fits 320/390/768/1440\"\n  ],\n  \"meta_calls\": 0,\n  \"physical_devices\": false\n}\n"
+}

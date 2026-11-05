@@ -1,0 +1,19 @@
+{
+  "suite": "terminal-ui",
+  "started_at": "2026-11-01T05:50:26.106585+00:00",
+  "finished_at": "2026-11-01T05:50:31.994673+00:00",
+  "duration_seconds": 5.888088,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--terminal"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"status\": \"passed\",\n  \"checks\": [\n    \"terminal result announced and reviewed\",\n    \"capture/report/folder IDs passed to native bridge\",\n    \"three widths fit without horizontal overflow\",\n    \"microphone node preserved\"\n  ],\n  \"models_and_native\": \"substituted\",\n  \"external_calls\": 0\n}\n"
+}

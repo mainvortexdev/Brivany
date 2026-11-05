@@ -1,0 +1,14 @@
+{
+  "suite": "spotify-relay",
+  "started_at": "2026-11-01T01:44:10.007809+00:00",
+  "finished_at": "2026-11-01T01:44:13.762953+00:00",
+  "duration_seconds": 3.755144,
+  "command": [
+    "node",
+    "tools/check_spotify_relay.cjs"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert((await r.text()).includes('<h1>Brivany.</h1>'))\n\n    at <local-path>\\tools\\check_spotify_relay.cjs:31:55\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+}

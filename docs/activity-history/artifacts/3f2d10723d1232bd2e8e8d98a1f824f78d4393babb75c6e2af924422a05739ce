@@ -1,0 +1,17 @@
+{
+  "checked_at": "2026-10-28T12:36:42.452577+00:00",
+  "kind": "real_local_readiness_without_model_request",
+  "http_status": 200,
+  "provider": "OpenAI",
+  "model": "gpt-realtime-translate",
+  "configured": false,
+  "local_available": false,
+  "relay_prepared": true,
+  "access_verified": false,
+  "audible_delay_verified": false,
+  "physical_playback_measured": false,
+  "external_calls": 0,
+  "model_sessions_opened": 0,
+  "credential_values_persisted_in_report": false,
+  "next_requirement": "API credential with model access is needed before the bounded real trial."
+}

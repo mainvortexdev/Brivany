@@ -1,0 +1,19 @@
+{
+  "suite": "computer-images-agents-ui",
+  "started_at": "2026-10-30T21:14:00.460767+00:00",
+  "finished_at": "2026-10-30T21:14:19.704584+00:00",
+  "duration_seconds": 19.243817,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--images-agents"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'14px' !== '17px'\n\n    at <local-path>\\tools\\check_computer_images_agents_ui.cjs:38:145\n"
+}

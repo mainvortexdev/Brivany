@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-chat-ui",
+  "started_at": "2026-11-04T02:33:49.962006+00:00",
+  "finished_at": "2026-11-04T02:35:05.920873+00:00",
+  "duration_seconds": 75.958867,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-chat"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "locator.waitFor: Error: strict mode violation: getByText('Permite el acceso al micrófono para dictar.', { exact: true }) resolved to 2 elements:\n    1) <p class=\"fine\" role=\"status\" id=\"companion-error\">Permite el acceso al micrófono para dictar.</p> aka locator('#companion-error')\n    2) <p role=\"status\" id=\"workspace-chat-status\">Permite el acceso al micrófono para dictar.</p> aka locator('#workspace-chat-status')\n\nCall log:\n\u001b[2m  - waiting for getByText('Permite el acceso al micrófono para dictar.', { exact: true }) to be visible\u001b[22m\n\n    at <local-path>\\tools\\check_workspace_chat.cjs:98:223 {\n  log: [\n    \"  - waiting for getByText('Permite el acceso al micrófono para dictar.', { exact: true }) to be visible\"\n  ]\n}\n"
+}

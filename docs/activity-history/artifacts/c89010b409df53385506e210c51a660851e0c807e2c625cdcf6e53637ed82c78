@@ -1,0 +1,24 @@
+{
+  "type": "real_planner_and_compiler_known_source_fixture",
+  "success": true,
+  "model_cost": "unknown",
+  "result": {
+    "title": "Ejecutable creado",
+    "path": "<local-path>\\.local\\terminal\\projects\\Executable-Fixture-b3bc2d65\\builds\\99ccb99b55a94028a15bc83daf530924\\Hello.exe",
+    "evidence_folder": "<local-path>\\.local\\terminal\\projects\\Executable-Fixture-b3bc2d65\\builds\\99ccb99b55a94028a15bc83daf530924",
+    "sha256": "e229b2588d6772a10a2943839b6bc1b80388845ac4ebad551385d8901072d42c",
+    "bytes": 3584,
+    "compiler_receipts": [
+      "fd3dd8fa-dc3d-40d8-b73e-a5a6dce0fc40"
+    ],
+    "created": true,
+    "automatically_executed": false,
+    "signed": false,
+    "cross_platform_binary": false,
+    "message": "Ejecutable creado para este sistema y guardado junto a la copia de trabajo.",
+    "verified": true
+  },
+  "execution_receipt": "6451bd0d-edab-426b-b980-3457af9bae2c",
+  "source_preserved": true,
+  "model_calls": 1
+}

@@ -1,0 +1,133 @@
+{
+  "$defs": {
+    "JsonValue": {},
+    "Signal": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "maxLength": 120,
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Key",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "provenance": {
+          "enum": [
+            "native",
+            "derived",
+            "visual",
+            "human"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "value",
+        "provenance"
+      ],
+      "title": "Signal",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "observation_id": {
+      "format": "uuid",
+      "title": "Observation Id",
+      "type": "string"
+    },
+    "workspace_id": {
+      "format": "uuid",
+      "title": "Workspace Id",
+      "type": "string"
+    },
+    "session_id": {
+      "format": "uuid",
+      "title": "Session Id",
+      "type": "string"
+    },
+    "device_id": {
+      "format": "uuid",
+      "title": "Device Id",
+      "type": "string"
+    },
+    "connector_id": {
+      "maxLength": 120,
+      "pattern": "^[a-z][a-z0-9_.-]*$",
+      "title": "Connector Id",
+      "type": "string"
+    },
+    "connector_version": {
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "title": "Connector Version",
+      "type": "string"
+    },
+    "application_version": {
+      "title": "Application Version",
+      "type": "string"
+    },
+    "project_ref": {
+      "minLength": 1,
+      "title": "Project Ref",
+      "type": "string"
+    },
+    "project_revision": {
+      "minLength": 1,
+      "title": "Project Revision",
+      "type": "string"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "signals": {
+      "items": {
+        "$ref": "#/$defs/Signal"
+      },
+      "title": "Signals",
+      "type": "array"
+    },
+    "artifact_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Artifact Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "observation_id",
+    "workspace_id",
+    "session_id",
+    "device_id",
+    "connector_id",
+    "connector_version",
+    "application_version",
+    "project_ref",
+    "project_revision",
+    "observed_at",
+    "signals"
+  ],
+  "title": "Observation",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:brivany:schema:Observation:0.1.0"
+}

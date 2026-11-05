@@ -1,0 +1,18 @@
+{
+  "suite": "connections",
+  "started_at": "2026-10-29T11:46:38.027796+00:00",
+  "finished_at": "2026-10-29T11:46:40.471354+00:00",
+  "duration_seconds": 2.443558,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_connections"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Traceback (most recent call last):\r\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\r\n  File \"<frozen runpy>\", line 88, in _run_code\r\n  File \"<local-path>\\tools\\check_connections.py\", line 60, in <module>\r\n    if __name__=='__main__':main()\r\n                            ^^^^^^\r\n  File \"<local-path>\\tools\\check_connections.py\", line 50, in main\r\n    if completed.returncode:raise RuntimeError((completed.stdout+completed.stderr).decode('utf-8',errors='replace'))\r\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nRuntimeError: AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\r\n\r\n502 !== 200\r\n\r\n    at <local-path>\\tools\\check_connections.cjs:11:196\r\n\r\n"
+}

@@ -1,0 +1,30 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/island-native/report.json",
+  "original_sha256": "a73887b82e1156e7b7ccf201d396d0e02e66513bbc8709c7eb90aa789abbab6b",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "screen_capture": false,
+    "audio_capture": false,
+    "background_network_consumption_known": false,
+    "taskbar_hidden_verified": true,
+    "main_taskbar_setting_preserved": true,
+    "native_transparency_verified": true,
+    "preview_expanded_verified": true
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": null,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": null,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

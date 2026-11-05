@@ -1,0 +1,19 @@
+{
+  "suite": "selected-video",
+  "started_at": "2026-11-04T05:31:39.695643+00:00",
+  "finished_at": "2026-11-04T05:32:18.574976+00:00",
+  "duration_seconds": 38.879333,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_selected_video"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "...............\r\n----------------------------------------------------------------------\r\nRan 15 tests in 37.919s\r\n\r\nOK\r\n"
+}

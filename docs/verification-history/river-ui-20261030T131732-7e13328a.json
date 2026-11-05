@@ -1,0 +1,18 @@
+{
+  "suite": "river-ui",
+  "started_at": "2026-10-30T13:17:32.865035+00:00",
+  "finished_at": "2026-10-30T13:17:58.681300+00:00",
+  "duration_seconds": 25.816265,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_river_ui"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Error: page.waitForFunction: Timeout 15000ms exceeded. {\"status\":\"Detén la traducción activa antes de iniciar otra.\",\"segments\":\"0\",\"paused\":true,\"time\":0.138667}\r\n    at <local-path>\\tools\\check_river_ui.cjs:55:13\r\n    at async <local-path>\\tools\\check_river_ui.cjs:53:5\r\n\r\n{\"substituted_provider_counts\": {\"muse\": 2, \"cartesia\": 2, \"meta\": 6, \"tts_messages\": 18, \"cancel\": 2}}\r\nTraceback (most recent call last):\r\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\r\n  File \"<frozen runpy>\", line 88, in _run_code\r\n  File \"<local-path>\\tools\\check_river_ui.py\", line 42, in <module>\r\n    if __name__=='__main__':main()\r\n                            ^^^^^^\r\n  File \"<local-path>\\tools\\check_river_ui.py\", line 32, in main\r\n    raise RuntimeError('UI verification failed; see output above.')\r\nRuntimeError: UI verification failed; see output above.\r\n"
+}

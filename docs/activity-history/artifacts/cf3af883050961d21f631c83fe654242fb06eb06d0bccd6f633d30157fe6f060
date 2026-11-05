@@ -1,0 +1,52 @@
+# Observación mediante el enlace normal de Work
+
+Se añade `tools/personal_translation_lab.py` para observar una sesión de la
+extensión ya instalada usando `SyncRelay.request_video()`. No navega, instala,
+recarga ni consulta páginas internas del navegador. Debe poseer exclusivamente
+`127.0.0.1:48217`: si está ocupado, termina sin detener procesos ni cambiar de
+puerto. La operación de escritorio que estaba usando ese puerto se gestiona
+aparte y se restaura al terminar el ensayo.
+
+El argumento `--allow-paid` es obligatorio. Los proveedores solo se habilitan
+tras un `POST /api/run` local, durante una observación de entre 10 y 120 segundos.
+El banco permite una sesión y una preparación inicial como máximo; no produce
+reintentos de ensayo automáticos. Al iniciar solicita el video activo mediante
+el canal normal de Work. Este recorrido no demuestra que el prefijo estuviera
+preparado antes de la activación.
+
+`POST /api/observe` acepta solo el esquema enumerado de métricas numéricas del
+reproductor: relojes, contadores y hasta 32 voces completas. Rechaza campos extra,
+versiones distintas, tiempos incoherentes y voces que no coincidan con los
+intervalos, categoría, hablante y provisionalidad enviados por el backend.
+El control HTTP exige Host y Origin locales exactos. No se guardan PCM,
+transcripciones ni tokens; los contadores de bytes son cantidades, no audio.
+
+Las métricas aportadas por una observación no acreditan por sí solas la identidad
+real del video, su correspondencia humana de hablantes, escucha física ni
+continuidad completa. El informe conserva estos límites y no emite una aprobación
+global de calidad. El importe del proveedor queda desconocido hasta disponer de
+su facturación.
+
+## Comprobación local
+
+`tests/test_personal_translation_lab.py`: 11 pruebas aprobadas con FakeRelay y
+HTTP de bucle local. Verifican el opt-in, los plazos, la única solicitud normal,
+el rechazo de puerto ocupado, saneamiento, correlación de voces, Origin/Host y
+ausencia de consumo antes de activar. No se inició una sesión con proveedores ni
+se automatizó un navegador en esta comprobación.
+
+La primera invocación con el Python global no pudo importar pydantic. Se usó el
+entorno `.venv` del proyecto. Una aserción inicial buscaba la palabra `pcm` en
+todo el informe y confundía el contador `input_pcm_bytes` con contenido; se
+corrigió para comprobar la ausencia de la clave de audio y de su valor.
+La ejecución posterior aprobó las 11 pruebas. Estas comprobaciones locales no
+certifican el recorrido real con el perfil personal.
+
+Ejemplo para el operador del ensayo, con el puerto de Work previamente libre:
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.personal_translation_lab --allow-paid --port 49199 --seconds 60 --connect-timeout 20 --target en
+```
+
+La página local presenta el botón de inicio. El ensayo real y sus resultados se
+registran por separado de estas pruebas sustituidas.

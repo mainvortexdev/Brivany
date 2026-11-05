@@ -1,0 +1,19 @@
+{
+  "suite": "edits-mcp",
+  "started_at": "2026-10-30T22:55:07.081507+00:00",
+  "finished_at": "2026-10-30T22:55:08.335309+00:00",
+  "duration_seconds": 1.253802,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_edits_mcp"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "..........\r\n----------------------------------------------------------------------\r\nRan 10 tests in 0.630s\r\n\r\nOK\r\n"
+}

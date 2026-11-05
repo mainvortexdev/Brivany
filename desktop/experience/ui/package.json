@@ -1,0 +1,8 @@
+{
+  "name": "brivany-workspace-ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {"build": "node build.mjs"},
+  "dependencies": {"glisse": "0.5.0", "react": "19.3.1", "react-dom": "19.3.1"}
+}

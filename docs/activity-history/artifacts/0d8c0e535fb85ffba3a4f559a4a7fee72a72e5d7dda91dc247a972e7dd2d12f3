@@ -1,0 +1,308 @@
+"""Spotify Connect controller. PKCE and tokens stay in the native process.
+
+No private Spotify endpoints, embedded login, audio streaming or lyric scraping.
+The user chooses an existing Spotify playback device. All HTTP is bounded and
+mutations are sent once (never automatically retried).
+"""
+import base64
+import hashlib
+import hmac
+import json
+import os
+from pathlib import Path
+import re
+import secrets
+import threading
+import time
+from urllib.parse import urlencode, urlsplit, parse_qs
+from urllib.request import Request, build_opener, HTTPRedirectHandler,HTTPSHandler
+from urllib.error import HTTPError, URLError
+from services.spotify_relay import SpotifyRelay,SpotifyRelayError,BASE as RELAY_BASE,REDIRECT
+from services.spotify_tls import verified_context
+from services.lyrics import LyricsService
+from services.spotify_artwork import ArtworkService,artwork_url
+
+PLAYBACK_SCOPES='user-read-playback-state user-read-currently-playing user-modify-playback-state'
+LIBRARY_SCOPES='playlist-read-private playlist-read-collaborative user-library-read'
+HISTORY_SCOPE='user-read-recently-played'
+STREAMING_SCOPES='streaming user-read-private user-read-email'
+SCOPES=PLAYBACK_SCOPES+' '+LIBRARY_SCOPES+' '+HISTORY_SCOPE+' '+STREAMING_SCOPES
+REGISTER_REDIRECT=REDIRECT
+
+
+class SpotifyError(ValueError):pass
+
+
+class NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self,*args,**kwargs):return None
+
+
+def transport(method,url,headers,body):
+    parsed=urlsplit(url)
+    if parsed.scheme!='https' or parsed.hostname not in {'accounts.spotify.com','api.spotify.com'} or parsed.port or parsed.username or parsed.password:
+        raise SpotifyError('Destino Spotify inválido.')
+    try:
+        response=build_opener(NoRedirect(),HTTPSHandler(context=verified_context())).open(Request(url,data=body,headers=headers,method=method),timeout=12)
+    except HTTPError as error:response=error
+    except (URLError,OSError):raise SpotifyError('No se pudo conectar con Spotify. Comprueba tu conexión.') from None
+    with response:
+        raw=response.read(1048577)
+        if len(raw)>1048576:raise SpotifyError('Respuesta Spotify demasiado grande.')
+        try:data=json.loads(raw) if raw else {}
+        except (ValueError,UnicodeError):data={}
+        return response.code,dict(response.headers),data
+
+
+
+
+class SpotifyService:
+    def __init__(self,root,*,http=transport,protector=None,clock=time.time,relay=None,start_polling=True,lyrics_provider=None,artwork_provider=None):
+        self.root=Path(root);self.root.mkdir(parents=True,exist_ok=True)
+        if protector is None:
+            from services.google_oauth import WindowsDPAPIProtector
+            protector=WindowsDPAPIProtector()
+        self.protector=protector;self.http=http;self.clock=clock;self.lock=threading.RLock()
+        self.tokens={};self.flow=None;self.generation=0;self.cache=None;self.cached_at=0;self.devices=[];self.devices_at=0;self.cooldown=0;self.selected_device=None;self.message='';self.library_cache={};self.library_items={};self.lyrics_provider=lyrics_provider or LyricsService(clock=clock)
+        self.local_player={'state':'idle','id':None,'message':''}
+        self.artwork_provider=artwork_provider or ArtworkService(clock=clock);self.current_fallback_at=-999
+        self.relay=relay or SpotifyRelay();self.start_polling=start_polling;self.poll_stop=threading.Event()
+        self.client_id=os.environ.get('BRIVANY_SPOTIFY_CLIENT_ID','').strip()
+        config=self.root/'client.json'
+        if not self.client_id and config.exists():
+            try:self.client_id=json.loads(config.read_text())['client_id']
+            except (OSError,ValueError,KeyError):pass
+        if not re.fullmatch(r'[a-fA-F0-9]{32}',self.client_id):self.client_id=''
+        token_file=self.root/'authorization.bin'
+        if self.client_id and protector.available and token_file.exists():
+            try:
+                saved=json.loads(protector.unprotect(token_file.read_bytes()))
+                if saved.get('client_id')==self.client_id:self.tokens=saved['tokens']
+            except Exception:self.message='Vuelve a vincular Spotify; no se pudo leer la autorización protegida.'
+    def status(self):
+        with self.lock:
+            return {'configured':bool(self.client_id),'client_id':self.client_id,'connected':bool(self.tokens.get('refresh_token') or self.tokens.get('access_token')),
+                'pending':bool(self.flow and self.flow['until']>self.clock()),'message':self.message,'redirect_uri':REGISTER_REDIRECT,
+                'persistent':bool(self.protector.available),'lyrics_source':'LRCLIB / Lyrics.ovh','local_player':dict(self.local_player),'streaming_access':set(STREAMING_SCOPES.split())<=set(self.tokens.get('scope','').split()),'history_access':HISTORY_SCOPE in self.tokens.get('scope','').split(),'library_access':set(LIBRARY_SCOPES.split())<=set(self.tokens.get('scope',PLAYBACK_SCOPES).split())}
+    def configure(self,client_id):
+        if not isinstance(client_id,str) or not re.fullmatch(r'[a-fA-F0-9]{32}',client_id.strip()):raise SpotifyError('Pega el Client ID de 32 caracteres de tu aplicación de Spotify.')
+        with self.lock:
+            if self.client_id!=client_id.strip():self.disconnect()
+            self.client_id=client_id.strip();(self.root/'client.json').write_text(json.dumps({'client_id':self.client_id}),encoding='utf-8')
+            return self.status()
+    def _save(self):
+        if not self.protector.available:return
+        try:
+            raw=json.dumps({'client_id':self.client_id,'tokens':self.tokens}).encode()
+            encrypted=self.protector.protect(raw)
+            path=self.root/'authorization.bin';temp=path.with_suffix('.tmp');temp.write_bytes(encrypted);temp.replace(path)
+        except Exception:raise SpotifyError('No se pudo guardar la autorización en el almacén seguro del sistema.') from None
+    def _request(self,method,path,*,form=None,data=None,authorized=True):
+        if self.clock()<self.cooldown:raise SpotifyError('Spotify pidió esperar. Inténtalo de nuevo más tarde.')
+        headers={'Accept':'application/json','User-Agent':'BrivanyDesktop/0.1 (+https://brivany.example)'};body=None
+        if authorized:
+            if not self.tokens:raise SpotifyError('Vincula tu cuenta de Spotify primero.')
+            if self.tokens.get('expires_at',0)<self.clock()+45:self._refresh()
+            headers['Authorization']='Bearer '+self.tokens['access_token']
+        if form is not None:body=urlencode(form).encode();headers['Content-Type']='application/x-www-form-urlencoded'
+        elif data is not None:body=json.dumps(data).encode();headers['Content-Type']='application/json'
+        code,meta,result=self.http(method,('https://api.spotify.com/v1' if authorized else 'https://accounts.spotify.com')+path,headers,body)
+        if code==429:
+            try:delay=max(5,min(3600,int(next((v for k,v in meta.items() if k.lower()=='retry-after'),'30'))))
+            except (ValueError,TypeError):delay=30
+            self.cooldown=self.clock()+delay
+        if not 200<=code<300:
+            messages={401:'La autorización ha caducado. Vuelve a vincular Spotify.',403:'Spotify no permite esta acción. Comprueba Premium y el acceso de tu cuenta a la app.',404:'Abre Spotify y comienza una canción en el dispositivo elegido.',429:'Spotify pidió esperar. Inténtalo de nuevo más tarde.'}
+            raise SpotifyError(messages.get(code,'Spotify no pudo completar la solicitud.'))
+        return result
+    def _set_tokens(self,value,*,refreshing=False):
+        if not isinstance(value,dict) or not isinstance(value.get('access_token'),str) or value.get('token_type','').lower()!='bearer':raise SpotifyError('La autorización recibida no es válida.')
+        granted=set(value.get('scope',self.tokens.get('scope',PLAYBACK_SCOPES) if refreshing else SCOPES).split())
+        if not set(PLAYBACK_SCOPES.split())<=granted:raise SpotifyError('Faltan permisos de reproducción. Vuelve a vincular Spotify.')
+        refresh=value.get('refresh_token') or self.tokens.get('refresh_token')
+        self.tokens={'access_token':value['access_token'],'refresh_token':refresh,'expires_at':self.clock()+max(60,min(86400,int(value.get('expires_in',3600)))),'scope':' '.join(sorted(granted))}
+        if not refreshing:
+            self.cache=None;self.devices=[];self.devices_at=0;self.selected_device=None
+            self.library_cache.clear();self.library_items.clear();self.lyrics_provider.clear();self.artwork_provider.clear();self.local_player={'state':'idle','id':None,'message':''}
+        self._save()
+    def _refresh(self):
+        refresh=self.tokens.get('refresh_token')
+        if not refresh:raise SpotifyError('Vuelve a vincular Spotify para renovar la autorización.')
+        self._set_tokens(self._request('POST','/api/token',form={'grant_type':'refresh_token','refresh_token':refresh,'client_id':self.client_id},authorized=False),refreshing=True)
+    def begin(self):
+        with self.lock:
+            self.cancel_link()
+            try:published=self.relay.config()
+            except SpotifyRelayError as error:raise SpotifyError(str(error)) from None
+            if self.client_id!=published['client_id']:self.configure(published['client_id'])
+            verifier=secrets.token_urlsafe(64);nonce=secrets.token_urlsafe(32);reader=secrets.token_urlsafe(32);launch=secrets.token_urlsafe(32)
+            challenge=base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b'=').decode()
+            try:created=self.relay.start(nonce=nonce,client_id=self.client_id,challenge=challenge,read_hash=hashlib.sha256(reader.encode()).hexdigest(),launch_hash=hashlib.sha256(launch.encode()).hexdigest())
+            except SpotifyRelayError as error:raise SpotifyError(str(error)) from None
+            self.generation+=1;self.poll_stop=threading.Event()
+            flow={'verifier':verifier,'state':created['state'],'redirect':REGISTER_REDIRECT,'reader':reader,'until':self.clock()+created['expires_in'],'generation':self.generation}
+            self.flow=flow;self.message=''
+            if self.start_polling:threading.Thread(target=self._poll_link,args=(flow,self.poll_stop),daemon=True,name='spotify-https-handoff').start()
+            return RELAY_BASE+'/spotify/connect?'+urlencode({'state':flow['state'],'launch':launch})
+    def _poll_link(self,flow,stopped):
+        while not stopped.wait(2):
+            with self.lock:
+                if self.flow is not flow:return
+                if self.clock()>=flow['until']:
+                    self.flow=None;self.message='La vinculación caducó. Vuelve a comenzar.';return
+            try:result=self.relay.poll(flow['state'],flow['reader'])
+            except SpotifyRelayError as error:
+                with self.lock:
+                    if self.flow is not flow:return
+                    self.message=str(error)
+                    if error.expired:self.flow=None;return
+                if stopped.wait(5):return
+                continue
+            if stopped.is_set():return
+            if result.get('status')=='pending':continue
+            with self.lock:
+                if self.flow is not flow:return
+                try:
+                    if result.get('status')!='ready':raise SpotifyError('Respuesta de vinculación inválida.')
+                    self.complete(flow['state'],result.get('code') or '',result.get('error') or '')
+                except SpotifyError as error:self.flow=None;self.message=str(error)
+            self._acknowledge(flow);return
+    def _acknowledge(self,flow):
+        try:self.relay.acknowledge(flow['state'],flow['reader'])
+        except SpotifyRelayError:pass # The relay's deadline still denies later retrieval.
+    def cancel_link(self):
+        self.poll_stop.set();flow=self.flow;self.flow=None
+        if flow:threading.Thread(target=self._acknowledge,args=(flow,),daemon=True,name='spotify-handoff-cleanup').start()
+    def complete(self,state,code,error=''):
+        with self.lock:
+            flow=self.flow
+            if not flow or self.clock()>flow['until'] or not isinstance(state,str) or not hmac.compare_digest(state,flow['state']):raise SpotifyError('La autorización no coincide o ha caducado.')
+            self.flow=None
+            if error:
+                self.message='Vinculación cancelada en Spotify.';raise SpotifyError(self.message)
+            if not isinstance(code,str) or not 1<=len(code)<=4096:raise SpotifyError('Código inválido.')
+            try:self._set_tokens(self._request('POST','/api/token',form={'grant_type':'authorization_code','code':code,'redirect_uri':flow['redirect'],'client_id':self.client_id,'code_verifier':flow['verifier']},authorized=False))
+            except SpotifyError as exc:self.message=str(exc);raise
+            self.message=''
+            return self.status()
+    def disconnect(self):
+        with self.lock:
+            self.cancel_link();self.generation+=1;self.tokens={};self.cache=None;self.devices=[];self.selected_device=None;self.message='';self.cooldown=0;self.library_cache.clear();self.library_items.clear();self.lyrics_provider.clear();self.artwork_provider.clear();self.local_player={'state':'idle','id':None,'message':''}
+            (self.root/'authorization.bin').unlink(missing_ok=True)
+            return self.status()
+    def playback(self):
+        with self.lock:
+            if not self.status()['connected']:return {**self.status(),'playback':None,'devices':[]}
+            if self.cache is not None and self.clock()-self.cached_at<3:return self.cache
+            raw=self._request('GET','/me/player') or {};device=raw.get('device') or {};warning=''
+            if not raw.get('item') and not device.get('is_private_session') and self.clock()-self.current_fallback_at>=10:
+                self.current_fallback_at=self.clock()
+                try:
+                    current=self._request('GET','/me/player/currently-playing') or {}
+                    if current.get('item'):raw={**raw,**current};device=raw.get('device') or device
+                except SpotifyError as error:warning=str(error)
+            item=raw.get('item') or {}
+            if self.clock()-self.devices_at>=10 or not self.devices:
+                self.devices=self._request('GET','/me/player/devices').get('devices',[]);self.devices_at=self.clock()
+            if not device:device=next((d for d in self.devices if d.get('is_active')),{} )
+            if device.get('id'):
+                self.devices=[d for d in self.devices if d.get('id')!=device['id']]+[device]
+            if self.selected_device and (device.get('id')==self.selected_device or not any(d.get('id')==self.selected_device for d in self.devices)):self.selected_device=None
+            track_id=item.get('id','');track_id=track_id if re.fullmatch(r'[A-Za-z0-9]{22}',track_id) else ''
+            artwork=artwork_url((item.get('album') or {}).get('images',[]))
+            playback={'id':track_id,'type':item.get('type'),'title':str(item.get('name',''))[:240],'artist':', '.join(str(a.get('name','')) for a in item.get('artists',[]))[:400],
+                'album':str((item.get('album') or {}).get('name',''))[:240],'artwork':artwork,'url':'https://open.spotify.com/track/'+track_id if track_id and item.get('type')=='track' else '',
+                'duration_ms':item.get('duration_ms',0),'progress_ms':raw.get('progress_ms',0) or 0,'playing':raw.get('is_playing') is True,'device':device.get('id'),
+                'shuffle':raw.get('shuffle_state') is True,'repeat':raw.get('repeat_state','off'),'disallows':(raw.get('actions') or {}).get('disallows',{}),'volume':device.get('volume_percent',0),'supports_volume':device.get('supports_volume') is True}
+            last_listened=None
+            if not item and self.status()['history_access']:
+                try:last_listened=next(iter(self.library('recent')['items']),None)
+                except SpotifyError as error:warning=str(error)
+            active=any(d.get('is_active') for d in self.devices)
+            reason='private_session' if device.get('is_private_session') else 'no_current_track' if active else 'no_active_device'
+            self.cached_at=self.clock();self.cache={**self.status(),'playback':playback if item else None,'last_listened':last_listened,'empty_reason':reason if not item else None,'playback_warning':warning,'devices':[{k:d.get(k) for k in ('id','name','type','is_active','is_restricted','supports_volume')} for d in self.devices if d.get('id')]}
+            return self.cache
+    def command(self,action,value=None):
+        with self.lock:
+            state=self.playback();p=state.get('playback') or {};disallows=p.get('disallows',{})
+            if action=='transfer':
+                if not isinstance(value,str) or not any(d['id']==value and not d.get('is_restricted') for d in self.devices):raise SpotifyError('Selecciona un dispositivo disponible y sin restricciones.')
+                result=self._request('PUT','/me/player',data={'device_ids':[value],'play':p.get('playing',False)});self.selected_device=value;self.devices_at=0
+            else:
+                if not p.get('device') or not any(d['id']==p['device'] and not d.get('is_restricted') for d in self.devices):raise SpotifyError('Activa un dispositivo de Spotify antes de usar los controles.')
+                blocked={'play':'resuming','pause':'pausing','next':'skipping_next','previous':'skipping_prev','seek':'seeking','shuffle':'toggling_shuffle','repeat':'toggling_repeat_context'}
+                if action not in blocked and action!='volume':raise SpotifyError('Control de Spotify inválido.')
+                if action=='repeat' and value=='track' and disallows.get('toggling_repeat_track'):raise SpotifyError('Spotify restringe la repetición de esta canción.')
+                if disallows.get(blocked.get(action)):raise SpotifyError('Spotify restringe este control en la reproducción actual.')
+                method='POST' if action in {'next','previous'} else 'PUT';path='/me/player/'+action;query={}
+                if action in {'seek','volume'}:
+                    limit=p.get('duration_ms',0) if action=='seek' else 100
+                    if type(value) is not int or not 0<=value<=limit:raise SpotifyError('Valor de reproducción inválido.')
+                    if action=='volume' and not p.get('supports_volume'):raise SpotifyError('Este dispositivo no admite volumen remoto.')
+                    query['position_ms' if action=='seek' else 'volume_percent']=value
+                if action=='shuffle':
+                    if type(value) is not bool:raise SpotifyError('Estado inválido.')
+                    query['state']=str(value).lower()
+                if action=='repeat':
+                    if value not in ('off','context','track'):raise SpotifyError('Repetición inválida.')
+                    query['state']=value
+                result=self._request(method,path+('?' +urlencode(query) if query else ''))
+            self.cache=None
+            return {'accepted':True} # An accepted command is not proof of playback.
+    def library(self,kind='playlists',page=0):
+        paths={'playlists':'/me/playlists','albums':'/me/albums','tracks':'/me/tracks','recent':'/me/player/recently-played'}
+        if kind not in paths or type(page) is not int or not 0<=page<=5000:raise SpotifyError('Página de biblioteca inválida.')
+        with self.lock:
+            if not self.status()['connected']:raise SpotifyError('Vincula Spotify desde Conexiones e integraciones.')
+            if not (self.status()['history_access'] if kind=='recent' else self.status()['library_access']):return {'access_required':True,'items':[],'kind':kind,'page':page,'has_next':False}
+            key=(kind,page);saved=self.library_cache.get(key)
+            if saved and self.clock()-saved[0]<30:return saved[1]
+            if kind=='recent' and page!=0:raise SpotifyError('Las escuchas recientes muestran los últimos 20 temas.')
+            raw=self._request('GET',paths[kind]+'?'+urlencode({'limit':20} if kind=='recent' else {'limit':20,'offset':page*20}))
+            items=[]
+            for row in (raw.get('items') or [])[:20]:
+                if not isinstance(row,dict):continue
+                item=row if kind=='playlists' else row.get('album' if kind=='albums' else 'track') or {}
+                identifier=item.get('id','');category={'playlists':'playlist','albums':'album','tracks':'track','recent':'track'}[kind]
+                if not isinstance(identifier,str) or not re.fullmatch(r'[A-Za-z0-9]{22}',identifier) or item.get('is_local'):continue
+                uri='spotify:'+category+':'+identifier
+                images=(item.get('album') or {}).get('images',[]) if category=='track' else item.get('images',[])
+                art=artwork_url(images)
+                subtitle=', '.join(str(a.get('name','')) for a in item.get('artists',[]))[:300] if category!='playlist' else 'Playlist'
+                items.append({'uri':uri,'title':str(item.get('name',''))[:240],'subtitle':subtitle,'artwork':art,'type':category,'id':identifier,'artist':subtitle,'album':str((item.get('album') or {}).get('name',''))[:240],'duration_ms':item.get('duration_ms',0),'url':'https://open.spotify.com/track/'+identifier if category=='track' else ''})
+                self.library_items[uri]=self.clock()
+            result={'kind':kind,'page':page,'items':items,'has_next':kind!='recent' and bool(raw.get('next')) and page<5000,'access_required':False}
+            self.library_cache[key]=(self.clock(),result)
+            while len(self.library_cache)>24:self.library_cache.pop(next(iter(self.library_cache)))
+            self.library_items=dict(list((uri,seen) for uri,seen in self.library_items.items() if self.clock()-seen<1800)[-1000:])
+            return result
+    def play_item(self,uri,device_id=None):
+        with self.lock:
+            if not isinstance(uri,str) or not re.fullmatch(r'spotify:(?:track|album|playlist):[A-Za-z0-9]{22}',uri) or self.clock()-self.library_items.get(uri,-999999)>1800:raise SpotifyError('Elige un elemento de tu biblioteca cargada.')
+            state=self.playback();p=state.get('playback') or {}
+            available=[d.get('id') for d in self.devices if not d.get('is_restricted')]
+            target=device_id or self.selected_device or p.get('device') or next((d.get('id') for d in self.devices if d.get('is_active') and not d.get('is_restricted')),None) or (available[0] if len(available)==1 else None)
+            if not target or not any(d.get('id')==target and not d.get('is_restricted') for d in self.devices):raise SpotifyError('Abre Spotify y selecciona un dispositivo disponible antes de reproducir.')
+            data={'uris':[uri]} if uri.startswith('spotify:track:') else {'context_uri':uri}
+            self._request('PUT','/me/player/play?'+urlencode({'device_id':target}),data=data);self.cache=None
+            return {'accepted':True}
+    def sdk_token(self):
+        with self.lock:
+            if not self.status()['streaming_access']:raise SpotifyError('Actualiza el acceso en Conexiones para reproducir desde Brivany.')
+            if self.tokens.get('expires_at',0)<self.clock()+45:self._refresh()
+            return {'access_token':self.tokens['access_token']}
+    def sdk_event(self,kind,device_id=''):
+        messages={'idle':'','starting':'Preparando el dispositivo Brivany…','ready':'','not_ready':'El reproductor Brivany perdió la conexión.','initialization_error':'El motor no admite la reproducción protegida de Spotify.','authentication_error':'Actualiza el acceso de Spotify en Conexiones.','account_error':'La reproducción dentro de Brivany requiere Spotify Premium.','playback_error':'Spotify no pudo reproducir la canción.','autoplay_failed':'Spotify bloqueó el audio. Vuelve a pulsar Escuchar aquí.','connection_error':'No se pudo conectar el reproductor Brivany con Spotify.'}
+        if kind not in messages:raise SpotifyError('Estado de reproductor inválido.')
+        if kind=='ready' and (not isinstance(device_id,str) or not re.fullmatch(r'[A-Za-z0-9]{16,128}',device_id)):raise SpotifyError('Dispositivo de reproductor inválido.')
+        with self.lock:
+            self.local_player={'state':kind,'id':device_id if kind=='ready' else None,'message':messages[kind]};self.cache=None;self.devices_at=0
+            return dict(self.local_player)
+    def current_palette(self):
+        track=self.playback().get('playback') or {}
+        return {'track_id':track.get('id',''),**self.artwork_provider.palette(track.get('artwork',''))}
+    def current_lyrics(self):
+        # Release Spotify's lock before the independent public provider request.
+        track=self.playback().get('playback') or {}
+        return self.lyrics_provider.lookup(track)
+    def close(self):
+        with self.lock:self.cancel_link()

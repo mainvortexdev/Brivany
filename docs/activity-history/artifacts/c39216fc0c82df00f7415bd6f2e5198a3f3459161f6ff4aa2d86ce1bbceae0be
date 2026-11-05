@@ -1,0 +1,81 @@
+{
+  "type": "retrospective_source_baseline_comparison",
+  "executed_real_browser_checks": 3,
+  "new_model_api_calls": 0,
+  "translation_provider_sessions_started": 0,
+  "browser_network_usage_not_measured": true,
+  "media_duration_seconds": 1495.781,
+  "all_source_continuity_failed": true,
+  "cause_proved": false,
+  "conclusion": "Source is emptied around 43-44.5 seconds in fresh isolated Brave headless, Brave headed and Edge headed without extension or translation providers. The failure is not specific to extension, relay, Brave or headless. Exact external/browser cause remains unknown.",
+  "trials": [
+    {
+      "browser_mode": "brave_headless",
+      "report": "source-baseline-70s-1793806521550.json",
+      "requested_video_id": "sr_iLGKNsxU",
+      "initial_duration_seconds": 1495.781,
+      "same_video_ids_all_snapshots": true,
+      "ad_observed": false,
+      "maximum_source_time_sampled": 38.281859,
+      "seconds_playing_until_emptied": 43.1881,
+      "last_state": {
+        "source_seconds": 0,
+        "ready_state": 0,
+        "duration_seconds": null,
+        "player_state": -1,
+        "media_error_code": null,
+        "playability_status": null,
+        "generic_youtube_error_visible": false
+      },
+      "extension_loaded": false,
+      "provider_sessions_started": 0,
+      "source_continuity_passed": false
+    },
+    {
+      "browser_mode": "brave_headed",
+      "report": "source-baseline-headed-70s-1793806685280.json",
+      "requested_video_id": "sr_iLGKNsxU",
+      "initial_duration_seconds": 1495.781,
+      "same_video_ids_all_snapshots": true,
+      "ad_observed": false,
+      "maximum_source_time_sampled": 42.513177,
+      "seconds_playing_until_emptied": 44.4487,
+      "last_state": {
+        "source_seconds": 0,
+        "ready_state": 0,
+        "duration_seconds": null,
+        "player_state": -1,
+        "media_error_code": null,
+        "playability_status": "OK",
+        "generic_youtube_error_visible": true
+      },
+      "extension_loaded": false,
+      "provider_sessions_started": 0,
+      "source_continuity_passed": false
+    },
+    {
+      "browser_mode": "edge_headed",
+      "report": "source-baseline-edge-70s-1793806866760.json",
+      "requested_video_id": "sr_iLGKNsxU",
+      "initial_duration_seconds": 1495.781,
+      "same_video_ids_all_snapshots": true,
+      "ad_observed": false,
+      "maximum_source_time_sampled": 42.426852,
+      "seconds_playing_until_emptied": 43.6703,
+      "last_state": {
+        "source_seconds": 0,
+        "ready_state": 0,
+        "duration_seconds": null,
+        "player_state": -1,
+        "media_error_code": null,
+        "playability_status": "OK",
+        "generic_youtube_error_visible": true
+      },
+      "extension_loaded": false,
+      "provider_sessions_started": 0,
+      "source_continuity_passed": false
+    }
+  ],
+  "temporary_source_images_excluded": true,
+  "harness_source_reset_guard": "sourceReset is local && --source-reset; false for YouTube. The trial cleanup pause runs after the observation loop."
+}

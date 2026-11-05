@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-11-01T03:04:31.455037+00:00",
+  "finished_at": "2026-11-01T03:05:05.558452+00:00",
+  "duration_seconds": 34.103415,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "Failure view {\n  panel: 'Música',\n  spotify: { configured: true, connected: true, pending: false },\n  body: {\n    expanded: 'true',\n    sleeping: 'false',\n    surface: 'preview',\n    motion: 'true',\n    characterState: 'attentive',\n    translationBusy: 'false',\n    translationFocus: 'false',\n    musicAmbience: 'true',\n    musicPlaying: 'false',\n    musicView: 'library',\n    musicMood: 'groove',\n    danceVariant: 'sway',\n    moodSource: 'neutral-fallback'\n  }\n}\nlocator.focus: Error: strict mode violation: locator('[data-music-view=library]') resolved to 2 elements:\n    1) <body data-motion=\"true\" data-expanded=\"true\" aria-expanded=\"true\" data-sleeping=\"false\" data-surface=\"preview\" data-music-mood=\"groove\" data-music-view=\"library\" data-dance-variant=\"sway\" data-music-ambience=\"true\" data-music-playing=\"false\" data-translation-busy=\"false\" data-translation-focus=\"false\" data-character-state=\"attentive\" data-mood-source=\"neutral-fallback\">…</body> aka locator('body')\n    2) <button class=\"music-tool\" aria-expanded=\"true\" data-music-view=\"library\" data-pointer-focus=\"true\" aria-label=\"Abrir biblioteca\">…</button> aka getByRole('button', { name: 'Abrir biblioteca' })\n\nCall log:\n\u001b[2m  - waiting for locator('[data-music-view=library]')\u001b[22m\n\n    at <local-path>\\tools\\check_island_ui.cjs:59:127\n"
+}

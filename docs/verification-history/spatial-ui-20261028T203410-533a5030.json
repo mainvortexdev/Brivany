@@ -1,0 +1,18 @@
+{
+  "suite": "spatial-ui",
+  "started_at": "2026-10-28T20:34:10.024304+00:00",
+  "finished_at": "2026-10-28T20:34:18.855741+00:00",
+  "duration_seconds": 8.831437,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_spatial_ui"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "locator.evaluate: Error: strict mode violation: locator('.scene-details') resolved to 2 elements:\r\n    1) <details class=\"scene-details\">…</details> aka getByText('Acerca del espacioOrigenGenerado localmenteEscalaSin verificarFísicaSin')\r\n    2) <details class=\"scene-details\">…</details> aka getByText('Referencia de longitud · opcionalTramo medidoMetrosValor declarado. Todavía no')\r\n\r\nCall log:\r\n\u001b[2m  - waiting for locator('.scene-details')\u001b[22m\r\n\r\n    at <local-path>\\tools\\check_spatial_ui.cjs:46:42 {\r\n  log: [ \"  - waiting for locator('.scene-details')\" ]\r\n}\r\n\r\n"
+}

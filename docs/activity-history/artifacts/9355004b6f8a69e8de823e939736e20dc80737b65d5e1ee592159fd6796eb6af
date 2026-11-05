@@ -1,0 +1,7 @@
+{
+  "configured": true,
+  "connected": false,
+  "pending": false,
+  "redirect_uri": "https://brivany.example/spotify/callback",
+  "persistent": true
+}

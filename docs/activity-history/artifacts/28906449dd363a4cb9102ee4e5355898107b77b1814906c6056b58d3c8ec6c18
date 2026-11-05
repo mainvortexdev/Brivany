@@ -1,0 +1,90 @@
+/* Melodi's native companion. UI animations never dispatch synthetic agent work. */
+(() => {
+ const $=selector=>document.querySelector(selector),body=document.body,island=$('#island'),content=$('#island-content');
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)'),active=job=>['queued','planning','running'].includes(job.state);
+ const labels={queued:'En cola',planning:'Preparando',running:'En curso',succeeded:'Listo',failed:'Revisar',cancelled:'Cancelado',interrupted:'Interrumpido',awaiting_user:'Tu turno'};
+ let prefs={size:'normal',motion:true,transparency:18},restored=false;try{const saved=JSON.parse(localStorage.getItem('brivany.island')||'{}');if(['compact','normal','large'].includes(saved.size)){prefs.size=saved.size;restored=true;}if(typeof saved.motion==='boolean')prefs.motion=saved.motion;if(Number.isInteger(saved.transparency)&&saved.transparency>=0&&saved.transparency<=40)prefs.transparency=saved.transparency;}catch{}
+ let expanded=false,tab='home',initialized=false,snapshot=null,offer=null,seenOffer=null,media='',layoutVersion=0,polling=false,closed=false,hoverTimer,leaveTimer,seenTimer,seenUntil=0,demoTimers=[],demoStage=null,acknowledged=new Set(),seenJobs=new Map(),error='';
+ let pointerNear=false,pointerPolling=false,hoverSuppressed=false,keyboardMode=false;
+ let gazeActive=false,gazePending=false,gazeGeneration=0,gazeTimer,nextGazeTimer,gazeInterval;
+ const motion=()=>prefs.motion&&!reduced.matches;
+ function save(){try{localStorage.setItem('brivany.island',JSON.stringify(prefs));}catch{}applyPreferences();}
+ function applyPreferences(){body.dataset.motion=String(motion());$('#island-motion').checked=motion();$('#island-opacity').value=prefs.transparency;$('#island-opacity-value').textContent=prefs.transparency+' %';document.querySelectorAll('[data-size]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.size===prefs.size)));}
+ async function ready(){if(window.pywebview?.api)return;await new Promise(resolve=>window.addEventListener('pywebviewready',resolve,{once:true}));}
+ async function call(method,...args){try{await ready();if(closed)return null;const api=window.pywebview.api;if(typeof api[method]!=='function')return null;return await api[method](...args);}catch{error='No se pudo completar la acción. Vuelve al chat para revisarla.';$('#work-status').textContent=error;return null;}}
+ function look(x=0,y=0){$('.face').style.setProperty('--look-x',Math.max(-3,Math.min(3,x))+'px');$('.face').style.setProperty('--look-y',Math.max(-1,Math.min(2,y))+'px');}
+ function planGlance(first=false){clearTimeout(nextGazeTimer);if(closed||!motion())return;nextGazeTimer=setTimeout(startGlance,first?6500+Math.random()*5500:18000+Math.random()*24000);}
+ function stopGlance({reschedule=true}={}){gazeGeneration++;gazeActive=false;clearTimeout(gazeTimer);clearInterval(gazeInterval);look();if(reschedule)planGlance();else clearTimeout(nextGazeTimer);}
+ async function trackGaze(){if(!gazeActive||gazePending||closed)return;gazePending=true;const generation=gazeGeneration;try{const value=await call('work_island_gaze');if(gazeActive&&generation===gazeGeneration&&value&&Number.isFinite(value.x)&&Number.isFinite(value.y))look(value.x*3,value.y*2);}finally{gazePending=false;}}
+ function startGlance(){if(!motion()||document.hidden||closed){planGlance();return;}if(gazeActive)stopGlance({reschedule:false});clearTimeout(nextGazeTimer);gazeGeneration++;gazeActive=true;trackGaze();gazeInterval=setInterval(trackGaze,140);gazeTimer=setTimeout(stopGlance,2600+Math.random()*1800);}
+ function paintLayout(value){
+  const width=value?.width||Math.min(innerWidth,expanded?{compact:548,normal:620,large:680}[prefs.size]:{compact:276,normal:336,large:408}[prefs.size]);
+  const height=value?.height||Math.min(innerHeight,expanded?{home:304,tasks:348,voice:388,settings:382}[tab]:48);
+  document.documentElement.style.setProperty('--island-width',width+'px');document.documentElement.style.setProperty('--island-height',height+'px');
+  body.dataset.expanded=String(expanded);content.inert=!expanded;$('#island-toggle').setAttribute('aria-expanded',String(expanded));$('#island-toggle').setAttribute('aria-label',expanded?'Contraer Mini Melodi':'Desplegar Mini Melodi');
+ }
+ async function layout(){const version=++layoutVersion;paintLayout();const value=await call('work_island_layout',expanded,prefs.size,tab,motion());if(version===layoutVersion&&value)paintLayout(value);}
+ function setExpanded(value,{manual=false}={}){clearTimeout(hoverTimer);clearTimeout(leaveTimer);hoverTimer=null;leaveTimer=null;expanded=value;if(!value&&manual)hoverSuppressed=true;if(!value)island.querySelector('.face')?.style.setProperty('--look-x','0px');layout();}
+ function approach(){pointerNear=true;clearTimeout(leaveTimer);leaveTimer=null;if(!expanded&&!hoverTimer&&!hoverSuppressed)hoverTimer=setTimeout(()=>{hoverTimer=null;setExpanded(true);},160);}
+ function depart(){pointerNear=false;hoverSuppressed=false;clearTimeout(hoverTimer);hoverTimer=null;if(expanded&&!leaveTimer&&!(keyboardMode&&document.hasFocus()&&content.contains(document.activeElement)))leaveTimer=setTimeout(()=>{leaveTimer=null;if(!pointerNear)setExpanded(false);},1200);}
+ async function pollPointer(){if(pointerPolling||closed||document.hidden)return;pointerPolling=true;try{const value=await call('work_island_pointer');if(value){if(value.near||value.inside)approach();else depart();}}finally{pointerPolling=false;}}
+ function setTab(value){if(!['home','tasks','voice','settings'].includes(value))return;tab=value;document.querySelectorAll('[data-tab]').forEach(button=>{button.setAttribute('aria-selected',String(button.dataset.tab===value));button.tabIndex=button.dataset.tab===value?0:-1;});document.querySelectorAll('.island-panel').forEach(panel=>panel.hidden=panel.id!=='island-'+value);if(!expanded)expanded=true;
+  if(value==='tasks'&&snapshot){for(const job of snapshot.jobs||[])if(job.state==='succeeded')acknowledged.add(job.id);seenUntil=Date.now()+2800;body.dataset.mood='seen';clearTimeout(seenTimer);seenTimer=setTimeout(()=>render(snapshot),2800);}
+  layout();
+ }
+ function renderJobs(jobs,schedules){
+  const list=$('#island-jobs');list.replaceChildren();
+  if(!jobs.length&&!schedules.length){const row=document.createElement('li');row.innerHTML='<div class="empty-jobs"><strong>Sin pendientes, por ahora.</strong><p>Cuando delegues una tarea, aparecerá aquí.</p></div>';list.append(row);}
+  for(const job of jobs.slice(-6).reverse()){
+   const row=document.createElement('li'),dot=document.createElement('i'),description=document.createElement('div'),name=document.createElement('strong'),phase=document.createElement('p'),state=document.createElement('span');
+   dot.className='job-dot';dot.dataset.state=job.state;name.textContent=job.agent||'Agente de Melodi';phase.textContent=(job.phase||'').slice(0,300);state.className='job-state';state.textContent=labels[job.state]||'Revisar';description.append(name,phase);row.append(dot,description,state);list.append(row);
+  }
+  for(const rule of schedules.filter(value=>['waiting','running','draft','uncertain','awaiting_user','missed'].includes(value.state)).slice(0,4)){
+   const row=document.createElement('li'),dot=document.createElement('i'),description=document.createElement('div'),name=document.createElement('strong'),phase=document.createElement('p');dot.className='job-dot';name.textContent=rule.when?.type==='at'?'Espera programada':'Esperando un evento';phase.textContent=rule.phase||rule.state;description.append(name,phase);row.append(dot,description);list.append(row);
+  }
+  $('#tasks-total').textContent=jobs.filter(active).length+' en curso';
+ }
+ function render(value){
+  if(!value||closed)return;snapshot=value;offer=value.offer;const jobs=value.jobs||[],schedules=value.schedules||[],live=value.live||{},working=jobs.filter(active),waiting=schedules.filter(rule=>['waiting','running'].includes(rule.state));
+  const needs=jobs.some(job=>job.state==='awaiting_user'&&!job.reviewed),done=jobs.filter(job=>job.state==='succeeded'&&!job.reviewed&&!acknowledged.has(job.id));
+  for(const job of jobs){if(initialized&&seenJobs.has(job.id)&&seenJobs.get(job.id)!==job.state&&job.state==='failed')error='Un agente necesita revisión. Abre Tareas para ver el estado.';seenJobs.set(job.id,job.state);}
+  let mood=value.error?'error':offer||needs?'attention':live.speaking?'speaking':live.listening?'listening':working.length?'working':Date.now()<seenUntil?'seen':done.length?'done':'idle';
+  if(demoStage)mood=demoStage.mood;body.dataset.mood=mood;body.dataset.demo=String(!!demoStage);
+  $('#island-mini-state').textContent=demoStage?'Vista de animación':({idle:'Estoy aquí',working:'Trabajando',attention:'Tu turno',done:'Listo para revisar',seen:'Todo listo',listening:'Te escucho',speaking:'Hablando',error:'Revisar'}[mood]||'Estoy aquí');
+  $('#island-context').textContent=demoStage?'Vista de animación · sin ejecutar tareas':value.error?'Hay algo que revisar':working.length?(working.at(-1).phase||'Trabajando en segundo plano'):offer?'Hay una propuesta de traducción':'Tu espacio, en segundo plano';
+  $('#voice-tile-title').textContent=live.speaking?'Hablando.':live.pending?'Pensando.':live.listening?'Te escucho.':'Estoy aquí.';
+  $('#voice-tile-detail').textContent=live.listening?'Live activo · conversación abierta':'Voz live apagada';$('#live-label').textContent=live.speaking?'Melodi está hablando':live.listening?'Live activo':'Live apagado';
+  $('#tasks-tile-title').textContent=demoStage?demoStage.title:working.length?working.length+' en marcha':done.length?'Listo.':needs?'Tu turno.':waiting.length?waiting.length+' en espera':'Todo en calma';
+  $('#tasks-tile-detail').textContent=demoStage?'Sólo una vista previa':working.length?'Puedes seguir con lo tuyo':done.length?'Un resultado te espera':needs?'Abre para ver qué falta':waiting.length?'Melodi espera el momento':'Sin tareas en curso';
+  $('#tasks-badge').hidden=!done.length&&!needs;$('#home-status').textContent=demoStage?'Vista de diseño · no inicia agentes':working.length?'Melodi se encarga. Tú sigue.':'Puedes continuar con lo tuyo.';
+  renderJobs(jobs,schedules);
+  $('#work-offer').hidden=!offer;if(offer)$('#work-offer p').textContent=offer.question;
+  $('#work-finish').hidden=value.translation_state!=='recording';$('#work-listen').checked=!!value.capturing;$('#work-listen').disabled=['recording','translating'].includes(value.translation_state);
+  const audio=value.audio;$('#work-coverage').textContent=audio?(audio.recording?'Conservando '+audio.recorded_seconds+' s':audio.buffer_seconds+' s en memoria')+(audio.coverage==='gaps_detected'?' · Se detectó un corte o un inicio parcial.':' · No se detectaron cortes; dispositivo sin certificar.') :'';
+  $('#work-status').textContent=value.error||error||({recording:'La voz se generará después de finalizar para no mezclarse con la captura.',translating:'Procesando toda la grabación conservada…',ready:'Traducción lista para escuchar.',incomplete:'Traducción incompleta; revisa la cobertura.'}[value.translation_state])||'';
+  const player=$('#work-audio-result');player.hidden=value.translation_state!=='ready';if(value.translation_url&&value.translation_url!==media){media=value.translation_url;player.src=media;}
+  if(offer&&offer.id!==seenOffer){seenOffer=offer.id;setTab('voice');}
+  initialized=true;
+ }
+ async function poll(){if(polling||closed)return;polling=true;try{const value=await call('work_status');if(!initialized&&value?.island){if(!restored)prefs.size=value.island.size||prefs.size;expanded=value.island.expanded===true;applyPreferences();paintLayout(value.island);if(restored)layout();call('work_island_opacity',prefs.transparency);}render(value);}finally{polling=false;}}
+ function stopDemo(){demoTimers.forEach(clearTimeout);demoTimers=[];demoStage=null;if(snapshot)render(snapshot);}
+ function demo(){stopDemo();setTab('home');const stages=[{mood:'working',title:'En marcha.'},{mood:'attention',title:'Tu turno.'},{mood:'done',title:'Listo.'},{mood:'seen',title:'Revisado.'}];stages.forEach((stage,index)=>demoTimers.push(setTimeout(()=>{demoStage=stage;if(snapshot)render(snapshot);},index*2300)));demoTimers.push(setTimeout(stopDemo,10000));}
+ $('#island-toggle').onclick=()=>setExpanded(!expanded,{manual:expanded});$('#island-brand').onclick=()=>setTab('home');$('#island-collapse').onclick=()=>setExpanded(false,{manual:true});$('#voice-tile').onclick=()=>setTab('voice');$('#tasks-tile').onclick=()=>setTab('tasks');
+ document.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>setTab(button.dataset.tab));
+ document.querySelector('.island-nav').onkeydown=event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const buttons=[...document.querySelectorAll('[data-tab]')],index=buttons.findIndex(button=>button.dataset.tab===tab),next=event.key==='Home'?0:event.key==='End'?buttons.length-1:(index+(event.key==='ArrowRight'?1:-1)+buttons.length)%buttons.length;setTab(buttons[next].dataset.tab);buttons[next].focus();};
+ for(const id of ['work-return','voice-open-chat','tasks-open-chat'])$('#'+id).onclick=()=>call('return_to_chat');$('#work-close').onclick=()=>call('stop_work');$('#work-region').onclick=()=>call('begin_work_region');
+ $('#work-listen').onchange=async event=>render(await call('work_audio',event.target.checked,event.target.checked,'es'));
+ $('#work-accept').onclick=async()=>{if(offer)render(await call('work_translation_decision',offer.id,true));};$('#work-decline').onclick=async()=>{if(offer)render(await call('work_translation_decision',offer.id,false));};$('#work-finish').onclick=async()=>render(await call('work_finish_translation'));
+ document.querySelectorAll('[data-size]').forEach(button=>button.onclick=()=>{prefs.size=button.dataset.size;save();layout();});$('#island-motion').onchange=event=>{prefs.motion=event.target.checked;save();if(motion())planGlance();else stopGlance({reschedule:false});layout();};$('#island-demo').onclick=demo;reduced.addEventListener('change',()=>{applyPreferences();if(motion())planGlance();else stopGlance({reschedule:false});layout();});
+ $('#island-opacity').oninput=async event=>{prefs.transparency=Number(event.target.value);save();const value=await call('work_island_opacity',prefs.transparency);if(value&&value.applied===false)$('#work-status').textContent='Este sistema no pudo aplicar la transparencia.';};
+ island.addEventListener('pointerenter',approach);
+ island.addEventListener('pointerleave',()=>{if(!gazeActive)look();depart();});
+ island.addEventListener('pointermove',event=>{keyboardMode=false;if(!motion()||!gazeActive)return;const rect=island.getBoundingClientRect();look((event.clientX-rect.left-rect.width/2)/50,(event.clientY-24)/50);});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)stopGlance({reschedule:false});else planGlance();});
+ document.addEventListener('keydown',event=>{keyboardMode=true;if(event.key==='Escape'){stopDemo();setExpanded(false,{manual:true});$('#island-toggle').focus();}});
+ window.addEventListener('blur',()=>{keyboardMode=false;if(!pointerNear)depart();});
+ const clock=()=>$('#island-time').textContent=new Date().toLocaleTimeString('es',{timeZone:'America/La_Paz',hour:'2-digit',minute:'2-digit'});
+ const timer=setInterval(poll,1000),clockTimer=setInterval(clock,15000),pointerTimer=setInterval(pollPointer,200);clock();applyPreferences();poll();planGlance(true);
+ window.BrivanyIsland={reopen:()=>{setExpanded(false);poll();},expand:()=>setExpanded(true),tab:setTab,glance:startGlance};
+ window.addEventListener('pagehide',()=>{closed=true;stopGlance({reschedule:false});clearInterval(timer);clearInterval(clockTimer);clearInterval(pointerTimer);clearTimeout(hoverTimer);clearTimeout(leaveTimer);clearTimeout(seenTimer);demoTimers.forEach(clearTimeout);},{once:true});
+})();

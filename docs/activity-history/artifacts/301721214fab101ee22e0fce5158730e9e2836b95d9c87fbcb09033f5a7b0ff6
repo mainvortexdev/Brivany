@@ -1,0 +1,78 @@
+{
+  "type": "real_provider_selected_source_progressive_translation_and_native_output",
+  "passed": true,
+  "source_owned_synthetic": true,
+  "source_tts_regenerated": false,
+  "original_audio_attached": false,
+  "transcript_persisted": false,
+  "physical_listening_verified": false,
+  "personal_youtube_verified": false,
+  "billing_amount": null,
+  "maximum_meta_calls": 4,
+  "started_at": "2026-11-04T04:44:46.055668+00:00",
+  "source_hashes": [
+    "abb183cc3996c43bb40846c0c923909ae9ba709884a37dc3159036c966caf1e0",
+    "d83e94e90ae46d07235968e71c9e7b507e4c97346ceb71852e75de76023f5e7d"
+  ],
+  "first_native_audio_seconds": 5.688,
+  "contains_door": true,
+  "contains_train": true,
+  "first_audio_before_video_end": true,
+  "progressive_events": {
+    "translation-state": 7,
+    "original-gain": 2,
+    "transcript": 20
+  },
+  "transcribed_turns": 2,
+  "shared_asr_only": true,
+  "meta_calls": 3,
+  "meta_attempts": 3,
+  "native_audio": {
+    "sample_rate": 24000,
+    "queued_ms": {
+      "original": 0.0,
+      "translation": 0.0
+    },
+    "maximum_queued_ms": {
+      "original": 0.0,
+      "translation": 240.0
+    },
+    "accepted_bytes": {
+      "original": 0,
+      "translation": 241920
+    },
+    "rejected_pushes": {
+      "original": 0,
+      "translation": 0
+    },
+    "output_bytes": 241920,
+    "output_frames": 252,
+    "worker_alive": true,
+    "error_code": null,
+    "physical_output_verified": false,
+    "translation_delivery": {
+      "timeline": "estimated_from_device_submissions",
+      "gap_threshold_ms": 20,
+      "first_after_open_ms": 5610.0,
+      "last_after_open_ms": 15080.0,
+      "delivered_pcm_ms": 5040.0,
+      "gap_count": 2,
+      "gap_total_ms": 4426.0,
+      "gap_max_ms": 3595.0,
+      "observer_errors": 0
+    },
+    "device": {
+      "submitted_bytes": 241920,
+      "submitted_frames": 252,
+      "position_bytes": 239832,
+      "position_counter_bits": 32,
+      "position_sample_rate": 24000,
+      "position_reported_by": "winmm_TIME_BYTES",
+      "physical_output_verified": false
+    }
+  },
+  "elapsed_seconds": 15.12,
+  "segments": 3,
+  "stopped": true,
+  "finished_at": "2026-11-04T04:45:01.433679+00:00"
+}

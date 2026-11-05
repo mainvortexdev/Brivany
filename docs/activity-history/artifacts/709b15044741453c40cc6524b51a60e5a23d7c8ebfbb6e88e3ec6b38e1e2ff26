@@ -1,0 +1,19 @@
+{
+  "suite": "computer-access",
+  "started_at": "2026-11-01T20:17:06.816601+00:00",
+  "finished_at": "2026-11-01T20:17:10.521195+00:00",
+  "duration_seconds": 3.704594,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_computer_access"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".......\r\n----------------------------------------------------------------------\r\nRan 7 tests in 0.739s\r\n\r\nOK\r\n"
+}

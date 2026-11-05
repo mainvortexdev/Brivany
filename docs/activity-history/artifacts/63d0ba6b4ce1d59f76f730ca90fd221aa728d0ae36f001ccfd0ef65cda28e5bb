@@ -1,0 +1,54 @@
+"""Owned native Work windows only. No desktop image, audio or provider requests."""
+import argparse
+import json
+from pathlib import Path
+import sys
+import tempfile
+import time
+from desktop.experience.launcher import experience_handler
+from desktop.experience.work import WorkBridge
+from desktop.launcher import LocalDesktopServer
+from services.h1.server import Handler
+from services.work.session import WorkSession
+
+
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--run',action='store_true',required=True);parser.parse_args()
+    import webview
+    output=Path('tmp/work-native/report.json');output.parent.mkdir(parents=True,exist_ok=True)
+    report={'status':'failed','native_windows':'real','screen_capture':False,'audio_capture':False,'inference_calls':0,'background_network_consumption_known':False}
+    with tempfile.TemporaryDirectory(prefix='brivany-work-native-') as folder,LocalDesktopServer(handler=experience_handler(Handler)) as server:
+        work=WorkSession(folder);bridge=WorkBridge();bridge._base=server.base_url;bridge._work_factory=lambda:work;bridge._trusted=lambda:None
+        window=webview.create_window('Brivany · comprobación Work',html='<html><body style="font:16px Segoe UI;padding:30px">Comprobación de ventanas Work. Sin captura ni audio.</body></html>',width=500,height=300)
+        bridge._window=window
+        def run():
+            try:
+                deadline=time.monotonic()+15
+                while time.monotonic()<deadline:
+                    try:
+                        if window.evaluate_js('document.readyState')=='complete':break
+                    except Exception:pass
+                    time.sleep(.1)
+                bridge.start_work();companion=bridge._work_window;deadline=time.monotonic()+20;loaded=False
+                while time.monotonic()<deadline:
+                    try:loaded=companion.evaluate_js('!!document.querySelector("#work-region")')
+                    except Exception:loaded=False
+                    if loaded:break
+                    time.sleep(.1)
+                if not loaded:raise RuntimeError('No se confirmó el DOM de la ventana flotante.')
+                if work.tape is not None or work.capture_thread is not None:raise RuntimeError('El arranque activó audio.')
+                if bridge._keep_work_background() is not False:raise RuntimeError('No se conservó la ventana principal.')
+                bridge.return_to_chat();bridge.stop_work()
+                if work.active or bridge._work_window is not None:raise RuntimeError('Work no terminó correctamente.')
+                report.update(status='passed',checks=['native floating WebView2 window and local widget DOM','Work starts without audio or capture','native close interceptor preserves main window','return to main and stop companion'])
+            except Exception as error:report['error']=type(error).__name__+': '+str(error)[:250]
+            finally:
+                work.close()
+                for item in list(webview.windows):
+                    try:item.destroy()
+                    except Exception:pass
+        webview.start(run,gui={'win32':'edgechromium','darwin':'cocoa','linux':'gtk'}.get(sys.platform),debug=False,private_mode=True,http_server=False)
+    output.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8');print(json.dumps(report,ensure_ascii=False,indent=2));return 0 if report['status']=='passed' else 1
+
+
+if __name__=='__main__':raise SystemExit(main())

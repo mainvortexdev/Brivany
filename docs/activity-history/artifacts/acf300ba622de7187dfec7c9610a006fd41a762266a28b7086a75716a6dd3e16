@@ -1,0 +1,14 @@
+{
+  "suite": "spatial-local",
+  "started_at": "2026-10-28T20:49:33.141101+00:00",
+  "finished_at": "2026-10-28T20:49:37.254126+00:00",
+  "duration_seconds": 4.113025,
+  "command": [
+    "node",
+    "tools/check_spatial_local.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"checked_at\": \"2026-10-28T20:49:36.860Z\",\n  \"status\": \"passed\",\n  \"api\": \"installed_real_local\",\n  \"renderer\": \"WebGL with software permitted\",\n  \"mutations\": 0,\n  \"external_calls\": 0,\n  \"model_inference\": false,\n  \"microphone_requests\": 0,\n  \"scene_origin\": \"generated_demo\",\n  \"objects\": 4,\n  \"javascript_errors\": [],\n  \"screenshots\": [\n    \"tmp/ui/spatial-local-1440.png\",\n    \"tmp/ui/spatial-local-390.png\"\n  ],\n  \"limitations\": [\n    \"Only local installation rendering/selection and layout tested. Demo geometry is procedural. No GPU model, scale, physics or physical mobile device was validated.\"\n  ]\n}\n"
+}

@@ -1,0 +1,18 @@
+{
+  "suite": "computer-ui",
+  "started_at": "2026-10-30T19:02:35.426791+00:00",
+  "finished_at": "2026-10-30T19:02:49.189131+00:00",
+  "duration_seconds": 13.76234,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"status\": \"passed\",\n  \"checks\": [\n    \"native grant bridge substituted; token required\",\n    \"live turn enqueues conceptual model\",\n    \"conversation continues while job runs\",\n    \"real Cognira compilation and local GLB publication\",\n    \"model preview within live without leaving the microphone view\",\n    \"320/390/768/1120/1440 margins\",\n    \"stop disarms session\"\n  ],\n  \"providers\": \"substituted\",\n  \"native_input\": \"substituted\",\n  \"model_geometry\": \"real local compiler\",\n  \"physical_audio_verified\": false,\n  \"external_calls\": 0,\n  \"errors\": []\n}\n"
+}

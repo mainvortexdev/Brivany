@@ -1,0 +1,23 @@
+{
+  "suite": "room-ingest",
+  "started_at": "2026-10-30T00:36:57.527886+00:00",
+  "finished_at": "2026-10-30T00:37:13.587765+00:00",
+  "duration_seconds": 16.059879,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_spatial_room_ingest",
+    "tests.test_spatial_room_evidence",
+    "tests.test_spatial_room_backup",
+    "tests.test_spatial_room_http",
+    "tests.test_spatial_room_portable"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "....................................\r\n----------------------------------------------------------------------\r\nRan 36 tests in 14.952s\r\n\r\nOK\r\n"
+}

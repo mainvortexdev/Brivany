@@ -1,0 +1,19 @@
+{
+  "suite": "account-host",
+  "started_at": "2026-11-04T01:30:22.650360+00:00",
+  "finished_at": "2026-11-04T01:30:24.120428+00:00",
+  "duration_seconds": 1.470068,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_brivany_account"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "...........\r\n----------------------------------------------------------------------\r\nRan 11 tests in 0.913s\r\n\r\nOK\r\n"
+}

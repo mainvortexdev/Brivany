@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-results-ui",
+  "started_at": "2026-11-03T21:58:22.633383+00:00",
+  "finished_at": "2026-11-03T21:59:08.796645+00:00",
+  "duration_seconds": 46.163262,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-results"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /blur\\(24px\\)/. Input:\n\n'none'\n\n    at <local-path>\\tools\\check_workspace_results_ui.cjs:25:10 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 'none',\n  expected: /blur\\(24px\\)/,\n  operator: 'match',\n  diff: 'simple'\n}\n"
+}

@@ -1,0 +1,19 @@
+{
+  "suite": "work",
+  "started_at": "2026-10-30T23:11:26.590561+00:00",
+  "finished_at": "2026-10-30T23:11:27.474419+00:00",
+  "duration_seconds": 0.883858,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_work_mode"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".E.......\r\n======================================================================\r\nERROR: test_accepted_recording_processes_full_input_and_cleans_original (tests.test_work_mode.SessionTests.test_accepted_recording_processes_full_input_and_cleans_original)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_work_mode.py\", line 66, in test_accepted_recording_processes_full_input_and_cleans_original\r\n    self.work.offer={'id':'synthetic','language':'en','start_frame':0,'question':'¿Traducir?'};self.work.accept_translation('synthetic');self.work.finish_translation();self.work.translation_thread.join(3)\r\n                                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"<local-path>\\services\\work\\session.py\", line 64, in accept_translation\r\n    self.tape.accept(self.offer['start_frame']);self.offer=None;self.monitoring=False;self.detector_stop.set();self.monitor.close();self.translation_state='recording'\r\n                                                                                                               ^^^^^^^^^^^^^^^^^^\r\nAttributeError: 'NoneType' object has no attribute 'close'\r\n\r\n----------------------------------------------------------------------\r\nRan 9 tests in 0.281s\r\n\r\nFAILED (errors=1)\r\n"
+}

@@ -1,0 +1,77 @@
+{
+  "type": "real_model_route_plan_and_read_only_system_query",
+  "route_model_calls": 1,
+  "specialist_model_calls": 1,
+  "model_cost": "unknown",
+  "result": {
+    "title": "Estado del equipo",
+    "topic": "all",
+    "message": "Windows informa 9 h 50 min 14 s desde el último arranque del kernel. Inicio rápido o suspensión pueden conservar ese tiempo.\nLa virtualización está habilitada en el firmware. Hipervisor activo: no.\nDell Inc. OptiPlex 7040. Microsoft Windows 10 Home (64 bits). Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz: 4 núcleos y 8 hilos. RAM instalada: 12 GiB. Gráficos: Intel(R) HD Graphics 530. Almacenamiento: Apacer AS350 512GB (512 GB).",
+    "facts": {
+      "observed_at": "2026-11-01T05:36:43.4346658Z",
+      "last_boot_utc": "2026-10-31T19:46:28.5001080Z",
+      "uptime_seconds": 35414,
+      "os": {
+        "architecture": "64 bits",
+        "name": "Microsoft Windows 10 Home",
+        "version": "10.0.19045"
+      },
+      "computer": {
+        "hypervisor_present": false,
+        "manufacturer": "Dell Inc.",
+        "logical_processors": 8,
+        "model": "OptiPlex 7040",
+        "usable_memory_bytes": 12763156480
+      },
+      "cpu": [
+        {
+          "Name": "Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz",
+          "NumberOfCores": 4,
+          "NumberOfLogicalProcessors": 8,
+          "VirtualizationFirmwareEnabled": true,
+          "VMMonitorModeExtensions": true,
+          "SecondLevelAddressTranslationExtensions": true
+        }
+      ],
+      "memory_modules": [
+        {
+          "Capacity": 4294967296,
+          "Speed": 2400
+        },
+        {
+          "Capacity": 8589934592,
+          "Speed": 2133
+        }
+      ],
+      "gpu": [
+        {
+          "Name": "Intel(R) HD Graphics 530",
+          "DriverVersion": "26.20.100.8142",
+          "CurrentHorizontalResolution": 1280,
+          "CurrentVerticalResolution": 1024
+        }
+      ],
+      "disks": [
+        {
+          "Model": "Apacer AS350 512GB",
+          "Size": 512105932800,
+          "MediaType": "Fixed hard disk media"
+        }
+      ],
+      "volumes": [
+        {
+          "DeviceID": "C:",
+          "Size": 511987150848,
+          "FreeSpace": 17874776064
+        }
+      ],
+      "receipt_id": "269a8e51-014f-4004-b470-ea31071f463e",
+      "verified": true,
+      "read_only": true,
+      "registry_access": false,
+      "uptime_basis": "Tiempo desde el último arranque del kernel comunicado por Windows; inicio rápido y suspensión pueden conservarlo."
+    },
+    "verified": true,
+    "observed_at": "2026-11-01T05:36:43.4346658Z"
+  }
+}

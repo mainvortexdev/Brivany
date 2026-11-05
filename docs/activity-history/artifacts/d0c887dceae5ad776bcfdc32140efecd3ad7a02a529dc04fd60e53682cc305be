@@ -1,0 +1,68 @@
+# Brivany para iPhone: diseño en curso
+
+2 de noviembre de 2026, La Paz. El usuario pide tomar ProjectFixture App como referencia
+y revisar el diseño antes del IPA. No se ha iniciado una compilación ni creado
+un IPA. El workflow limita su generación a una ejecución manual con
+`generate_ipa: true`; los eventos push/PR no lo producen.
+
+## Vista de diseño
+
+`ios/preview/dist/`, servida localmente en `http://127.0.0.1:8788/`, es un
+prototipo interactivo. No activa micrófono ni proveedores. No representa un
+simulador Xcode ni acredita ejecución en un teléfono.
+
+- Compositor basado en las medidas de ProjectFixtureAIChatView: padding 8, separación
+  8, radio 30, botón + de 34×38, voz de 32 y envío de 38. Campo sin scroll
+  al estar vacío; voz azul en reposo y micrófono durante edición. Menú Cámara,
+  Fotos, Archivos y Complementos, con adjunto local visible.
+- Menú lateral de chats: nuevos, búsqueda y recuperación, sólo con contenido
+  que el usuario escriba. Historial en localStorage del prototipo, sin ejemplos
+  de conversaciones inventadas ni inferencia. No se copia a la bitácora.
+- Módulos de diseño: Meta Glasses, Traducción en vivo, Human-skills, Espacios y
+  Video. Traducción muestra los modos Directa/Preproducción/Navegador y voces
+  Auto/Masculina/Femenina; los controles del prototipo son visuales. Captura
+  global de audio Windows y extensión Chromium no se trasladan directamente
+  a iOS. Vinculación física de gafas e integración de traducción iOS pendientes.
+- Live toma de ProjectFixtureLiveRoom la esfera 220 px azul con franja clara difuminada,
+  cabecera, minimizar/transcripción, campo de texto, micrófono y finalización.
+  No interpreta el movimiento visual simulado como señal de audio real.
+- Iconos Lucide oficiales locales con licencia conservada; SwiftUI usa
+  SF Symbols. Georgia en títulos, tipografía de sistema en controles.
+- Ajustes con selector de apariencia propio en hoja inferior, filas legibles y
+  documentos legales internos con botón Volver, sin pestañas externas. Los
+  documentos se reutilizan de `official-site/pages.mjs`, sin inventar términos.
+
+`scripts/check-ios-preview.cjs` usa Edge aislado, sólo contra el servidor de
+desarrollo y bloqueando conexiones externas. Verifica input, menús, cinco
+módulos, modos, historial después de reload, Live, hojas y legal sin abrir
+ventanas, a 393/375/430 px. No controla el navegador del usuario ni certifica
+el audio. Se conserva el primer fallo del selector de pruebas, que coincidía
+con la descripción de otro módulo; se ajustó a título exacto. La comprobación
+posterior pasó. Evidencia: `tmp/ios-preview/check.json` y capturas propias.
+
+## Base nativa y servicios todavía sin compilar
+
+`ios/` contiene el proyecto XcodeGen SwiftUI iOS 17+, identidad
+`es.ProjectFixture.brivany`, chat y Live con AVAudioEngine/AVAudioConverter, ASR WSS,
+NDJSON y PCM 24 kHz. El diseño nativo y el prototipo deben seguir
+reconciliándose al terminar esta revisión; no se declara paridad completa.
+Hay nueve XCTest escritos para voz/conversión/cancelación, todavía no ejecutados
+en Xcode. No se certifican micrófono, Bluetooth ni escucha física del iPhone.
+
+`workers/mobile-gateway/` es un gateway candidato independiente, no desplegado:
+token de dispositivo y claves de proveedores permanecen en secretos del servidor,
+nunca en el IPA. Quince pruebas Node con transportes sustituidos pasaron;
+no hubo inferencias reales en esas pruebas. Su alcance es chat/voz, no otorga
+acceso móvil a los tokens Google guardados con DPAPI en Windows.
+
+Se consultó por lectura GitHub mediante la credencial existente en memoria;
+no se creó repositorio ni se enviaron archivos. ProjectFixture App sólo se leyó y sigue
+intacta. El siguiente paso depende de terminar el diseño, reconciliar las
+superficies nativas, probar el motor iOS en macOS y después generar el IPA
+cuando corresponda. Un IPA sin firma necesitará firma posterior para instalarse.
+
+Consumo: cero inferencias Meta/Cartesia en esta fase iPhone. Las pruebas locales
+no hicieron llamadas externas; sí hubo lecturas reales de documentación,
+descarga de iconos/licencia y tres consultas GET a GitHub para comprobar cuenta
+y existencia de repositorios. No se usa el cero de las pruebas para afirmar
+ausencia de toda actividad de red. Importe monetario no calculado.

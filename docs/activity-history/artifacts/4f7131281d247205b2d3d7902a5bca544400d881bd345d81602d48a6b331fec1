@@ -1,0 +1,416 @@
+"""Bounded concurrent Muse ASR -> Meta Spark SSE -> Cartesia WS translation.
+
+No retry, no transcript/audio persistence. Native output deliberately stays out
+of the captured browser tab, preventing translated speech from re-entering ASR.
+"""
+from __future__ import annotations
+
+from array import array
+import base64
+from collections import deque
+from contextlib import closing
+from datetime import datetime, timedelta, timezone
+import json
+import hashlib
+import math
+import os
+from pathlib import Path
+import queue
+import sqlite3
+import threading
+import time
+from uuid import uuid4
+
+from websockets.sync.client import connect
+from websockets.exceptions import ConnectionClosed, ConnectionClosedOK
+from packages.providers.dubbing import TranslationBridge
+from packages.providers.live_voice import (MUSE_URL, MUSE_MODEL, MuseEvents,
+    VoiceError, muse_handshake, muse_key)
+from packages.providers.meta_translation import MetaTranslationSession, meta_translation_status
+from packages.providers.modular_dubbing import StableClauses, Segment
+from packages.providers.native_audio import open_native_audio, status as audio_status
+
+CARTESIA_URL = 'wss://api.cartesia.ai/tts/websocket?cartesia_version=2026-08-14'
+SONIC_MODEL = 'sonic-3.6-2026-08-27'
+MAX_SECONDS, DAILY_SESSIONS, MAX_SEGMENTS, MAX_CHARS = 30, 3, 12, 2400
+MAX_TOKENS, DRAIN_SECONDS = 192, 8
+RATE_BYTES = 48000
+LANGUAGES = {'es': 'Spanish', 'en': 'English', 'fr': 'French'}
+VOICES = {'low': '47c38ca4-5f35-497b-b1a3-415245fb35e1',
+          'high': 'db6b0ed5-d5d3-463d-ae85-518a07d3c2b4',
+          'neutral': '9626c31c-bec5-4cca-baa8-f8ba9e84c8bc'}
+ACCESS_PATH = Path(__file__).resolve().parents[2] / '.local/translation/access.json'
+
+
+def access_checks():
+    """Only surface checks for the currently installed credential, never its hash."""
+    try: saved=json.loads(ACCESS_PATH.read_text(encoding='utf-8'))
+    except (OSError,ValueError): return {}
+    result={}
+    for provider,variable in [('meta','BRIVANY_META_API_KEY'),('cartesia','BRIVANY_CARTESIA_API_KEY')]:
+        check=saved.get(provider,{})
+        if check.get('credential_hash')==hashlib.sha256(os.getenv(variable,'').encode()).hexdigest():
+            result[provider]={key:check.get(key) for key in ('http_status','access','checked_at','checked_model','model_available')}
+    return result
+
+
+class UsageGuard:
+    """Reserve whole sessions atomically; failures never silently refund them.
+
+    A second process cannot evade the daily cap. This bounds usage, not dollars;
+    provider billing and remote cancellation remain provider responsibilities.
+    """
+    def __init__(self, path=None):
+        self.path = Path(path) if path else Path(__file__).resolve().parents[2] / '.local/translation/usage.sqlite3'
+
+    @staticmethod
+    def day():
+        return datetime.now(timezone(timedelta(hours=-4))).date().isoformat()
+
+    def reserve(self):
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        with closing(sqlite3.connect(self.path, timeout=2)) as db, db:
+            db.execute('CREATE TABLE IF NOT EXISTS reservations (id TEXT PRIMARY KEY, day TEXT NOT NULL)')
+            db.execute('BEGIN IMMEDIATE')
+            count = db.execute('SELECT COUNT(*) FROM reservations WHERE day=?', (self.day(),)).fetchone()[0]
+            if count >= DAILY_SESSIONS:
+                raise VoiceError('daily_limit', 'Se alcanzaron las tres sesiones de hoy. No se abrieron proveedores.')
+            identifier = uuid4().hex
+            db.execute('INSERT INTO reservations VALUES (?, ?)', (identifier, self.day()))
+            return identifier
+
+    def remaining(self):
+        if not self.path.exists(): return DAILY_SESSIONS
+        with closing(sqlite3.connect(self.path, timeout=2)) as db:
+            exists = db.execute("SELECT name FROM sqlite_master WHERE name='reservations'").fetchone()
+            count = db.execute('SELECT COUNT(*) FROM reservations WHERE day=?', (self.day(),)).fetchone()[0] if exists else 0
+        return max(0, DAILY_SESSIONS-count)
+
+
+def river_status(guard=None):
+    stages = {'asr': bool(muse_key()), 'translation': meta_translation_status()['configured'],
+              'tts': bool(os.getenv('BRIVANY_CARTESIA_API_KEY'))}
+    checks=access_checks()
+    model_blocked=checks.get('meta',{}).get('checked_model')==meta_translation_status()['model'] and checks.get('meta',{}).get('model_available') is False
+    return {'provider': 'Muse · Meta Spark · Cartesia', 'configured': all(stages.values()), 'stages': stages,
+        'access_checks':checks, 'access_blocked':model_blocked or any(check.get('access') is False for check in checks.values()),
+        'model_blocked':model_blocked,
+        'model': meta_translation_status()['model'], 'tts_model': SONIC_MODEL, 'max_seconds': MAX_SECONDS,
+        'daily_sessions': DAILY_SESSIONS, 'sessions_remaining': (guard or UsageGuard()).remaining(),
+        'max_segments': MAX_SEGMENTS, 'max_characters': MAX_CHARS, 'max_tokens_per_segment': MAX_TOKENS,
+        'input_frame_ms': 80, 'sample_rate': 24000, 'languages': list(LANGUAGES),
+        'retries': 0, 'billing_amount': None, 'access_verified': False,
+        'translation_provider':'Meta', 'asr_model':MUSE_MODEL,
+        'playback_queue_lead_ms':240,
+        'audible_latency_verified': False, 'native_output': audio_status()}
+
+
+def pitch_style(raw):
+    """Cheap local autocorrelation of voiced windows; never infer identity/gender."""
+    if len(raw) < 1920: return 'neutral'
+    values = array('h'); values.frombytes(raw[-24000:])
+    # 8 kHz analysis, several 40 ms windows. Reject silence and low periodicity.
+    samples = list(values)[::3]; pitches = []
+    for start in range(0, len(samples)-640, 640):
+        window = samples[start:start+640]
+        mean = sum(window)/len(window); window = [x-mean for x in window]
+        energy = sum(x*x for x in window)/len(window)
+        if energy < 90000: continue
+        scores = []
+        for lag in range(23, 101):
+            first, second = window[100:], window[100-lag:640-lag]
+            denominator = math.sqrt(sum(x*x for x in first)*sum(x*x for x in second))
+            scores.append((sum(a*b for a,b in zip(first, second))/denominator if denominator else 0, lag))
+        best = max(x[0] for x in scores)
+        if best < .65: continue
+        # First near-maximum periodic peak avoids octave errors on clean tones.
+        lag = next(lag for score, lag in scores if score >= max(.65, best-.025))
+        pitches.append(8000/lag)
+    if not pitches: return 'neutral'
+    pitch = sorted(pitches)[len(pitches)//2]
+    return 'low' if pitch < 180 else 'high'
+
+
+class MetaStream:
+    """Reuse the fixed Meta SSE transport; never connect to Groq or fall back."""
+    def __init__(self):
+        self.session=MetaTranslationSession(max_completion_tokens=MAX_TOKENS)
+        self.usage={}
+
+    def close(self):self.session.close()
+
+    def stream(self,text,target,history):
+        context=[{'source_text':source,'translated_text':translation} for source,translation in history]
+        total=0
+        for event in self.session.stream(text,'auto',target,context=context):
+            if event['type']=='delta':
+                total+=len(event['text'])
+                if total>600:raise VoiceError('mt_output_limit','Un fragmento traducido excedió su límite.')
+                yield event['text']
+            elif event['type']=='done':self.usage=event.get('usage',{})
+
+
+class LiveClauses(StableClauses):
+    """Also commit eight stable words, holding two back without punctuation.
+
+    Two cumulative observations are a heuristic. Later semantic revisions stop
+    the session rather than incur duplicate translation/speech charges.
+    """
+    def accept(self,event,now=None):
+        turn=str(event['id']);previous=self.turns.get(turn,{}).get('last','')
+        segments=super().accept(event,now)
+        if segments or event.get('final') is True:return segments
+        state=self.turns[turn];text=state['last'];committed=state['committed']
+        if not text.startswith(committed):return []
+        common=0
+        for first,second in zip(previous,text):
+            if first!=second:break
+            common+=1
+        words=list(self.words(text[len(committed):common]))
+        if len(words)<10:return []
+        endpoint=len(committed)+words[7].end()
+        chosen=text[len(committed):endpoint].strip()
+        if not chosen or len(chosen)>400:return []
+        segment=Segment(turn,state['index'],state['revision'],chosen,True,False,False,
+            time.monotonic() if now is None else now)
+        state['index']+=1;state['committed']=text[:endpoint]
+        return [segment]
+
+
+class RiverBridge(TranslationBridge):
+    def __init__(self, http_port, port=0, *, guard=None, mixer_factory=None, translator_factory=None):
+        super().__init__(http_port, port)
+        self.guard=guard or UsageGuard(); self.mixer_factory=mixer_factory or open_native_audio
+        self.translator_factory=translator_factory or MetaStream
+
+    def handle(self, browser):
+        if not self.lock.acquire(blocking=False):
+            self.send(browser, {'type':'error','code':'busy','message':'Detén la traducción activa antes de iniciar otra.'}); return
+        stopped=threading.Event(); completed=threading.Event(); asr_done=threading.Event(); tts_done=threading.Event()
+        send_lock=threading.Lock(); resources_lock=threading.Lock(); resources=[]; threads=[]
+        pending=queue.Queue(maxsize=3); ingress=queue.Queue(maxsize=4); active={'context':None,'bytes':0,'segments':0,'characters':0,
+            'output_bytes':0,'first_input':None,'first_output':None,'tts_started':None,'first_tts':None}
+        audio_window=deque(maxlen=25); clauses=LiveClauses(); mixer=None; translator=None; muse=None; cartesia=None
+        closing_at=None; start=time.monotonic()
+
+        def emit(event):
+            with send_lock:
+                if not stopped.is_set(): self.send(browser,event)
+
+        def track(resource):
+            with resources_lock:
+                resources.append(resource)
+                if stopped.is_set(): resource.close()
+            return resource
+
+        def cancel():
+            stopped.set()
+            # Local output is silenced before remote connection close handshakes.
+            if mixer:
+                try: mixer.close()
+                except Exception: pass
+            if cartesia and active['context']:
+                try: cartesia.send(json.dumps({'context_id':active['context'],'cancel':True}))
+                except Exception: pass
+            with resources_lock: snapshot=list(resources)
+            for resource in snapshot:
+                try: resource.close()
+                except Exception: pass
+            if translator:
+                try: translator.close()
+                except Exception: pass
+
+        def fail(exc):
+            if stopped.is_set(): return
+            code=getattr(exc,'code','translation_interrupted')
+            message=str(exc) if isinstance(exc,VoiceError) or code.startswith('native_audio') else 'La conexión se interrumpió. Se detuvo todo sin reintentar.'
+            try: emit({'type':'error','code':code,'message':message})
+            finally: cancel()
+
+        def run(function):
+            def wrapped():
+                try: function()
+                except Exception as exc: fail(exc)
+            thread=threading.Thread(target=wrapped,daemon=True);threads.append(thread);thread.start()
+
+        try:
+            raw=browser.recv(timeout=8)
+            options=json.loads(raw) if isinstance(raw,str) else None
+            if not isinstance(options,dict) or set(options)-{'type','consent','target_language','original_gain'} or options.get('type')!='start' or options.get('consent') is not True:
+                raise VoiceError('options','Inicia desde el botón para autorizar esta sesión limitada.')
+            target=options.get('target_language')
+            if not isinstance(target,str) or target not in LANGUAGES: raise VoiceError('language','Elige español, inglés o francés.')
+            gain=options.get('original_gain',0)
+            if type(gain) not in {int,float} or not math.isfinite(gain) or not 0<=gain<=1: raise VoiceError('volume','Volumen original no válido.')
+            configuration=river_status(self.guard)
+            if not configuration['configured']: raise VoiceError('configuration','Falta configurar una de las tres APIs en el servidor local.')
+            if configuration['access_blocked']: raise VoiceError('access_blocked','Una API rechazó el acceso. Corrige la conexión y comprueba los metadatos antes de consumir audio.')
+            # Open the local output first. Missing device cannot start a paid ASR.
+            mixer=self.mixer_factory(); mixer.set_levels(original=gain,translation=.85)
+            self.guard.reserve()
+            def receive_browser():
+                try:
+                    while not stopped.is_set():
+                        try: packet=browser.recv(timeout=.1)
+                        except TimeoutError: continue
+                        if isinstance(packet,str) and json.loads(packet)=={'type':'stop'}:
+                            cancel();return
+                        try: ingress.put_nowait(packet)
+                        except queue.Full: raise VoiceError('ingress_backlog','Se acumuló demasiado audio de entrada. Sesión detenida.')
+                except ConnectionClosed: cancel()
+            run(receive_browser)
+            def watchdog():
+                while not stopped.wait(.1):
+                    if time.monotonic()-start > MAX_SECONDS+DRAIN_SECONDS+16:
+                        fail(VoiceError('deadline','Se alcanzó el tiempo total de la sesión. Todo se detuvo.')); return
+            run(watchdog)
+            translator=self.translator_factory()
+            with self.connections_lock: self.connections.add(browser)
+            # A browser disconnect during upstream setup cancels as soon as recv resumes.
+            cartesia=track(connect(CARTESIA_URL,additional_headers={'X-API-Key':os.environ['BRIVANY_CARTESIA_API_KEY']},
+                open_timeout=5,close_timeout=1,max_size=262144,max_queue=4,compression=None,proxy=None))
+            if stopped.is_set(): return
+            muse=track(connect(MUSE_URL,open_timeout=5,close_timeout=1,max_size=65536,max_queue=4,compression=None,proxy=None))
+            if stopped.is_set(): return
+            handshake=muse_handshake({'type':'start','consent':True,'mode':'meeting','meetingConsent':True,'language':'es-ES'})
+            handshake['languageBias']=['Spanish','English','French']
+            muse.send(json.dumps(handshake)); ack=json.loads(muse.recv(timeout=5))
+            if not isinstance(ack,dict) or not isinstance(ack.get('sessionId'),str): raise VoiceError('muse_rejected','Muse rechazó el acceso. No se reintentó.')
+            emit({'type':'ready','max_seconds':MAX_SECONDS,'sample_rate':24000,'sessions_remaining':self.guard.remaining()})
+            started=time.monotonic(); pacing_at=started; balance=.3
+
+            def receive_tts():
+                while not stopped.is_set():
+                    try: raw=cartesia.recv(timeout=.2)
+                    except TimeoutError: continue
+                    if not isinstance(raw,str): raise VoiceError('cartesia_protocol','Cartesia envió un evento no válido.')
+                    event=json.loads(raw)
+                    if not isinstance(event,dict): raise VoiceError('cartesia_protocol','Evento de voz no válido.')
+                    if event.get('type')=='error': raise VoiceError('cartesia_rejected','Cartesia rechazó la voz. Revisa clave, modelo y saldo. No se reintentó.')
+                    if event.get('context_id')!=active['context']: continue
+                    if event.get('type')=='done': tts_done.set()
+                    if event.get('type')!='chunk': continue
+                    data=base64.b64decode(event.get('data',''),validate=True)
+                    if not data or len(data)%2 or len(data)>RATE_BYTES*3: raise VoiceError('audio_limit','Bloque de voz fuera del límite.')
+                    active['output_bytes']+=len(data)
+                    if active['output_bytes']>RATE_BYTES*45: raise VoiceError('audio_limit','Se alcanzó el límite de audio generado.')
+                    now=time.monotonic()
+                    if active['first_output'] is None:
+                        active['first_output']=now
+                        emit({'type':'metrics','first_audio_ms':round((now-(active['first_input'] or started))*1000),
+                            'tts_first_audio_ms':round((now-active['tts_started'])*1000), 'billing_amount':None})
+                    if not mixer.push_translation_paced(data,stopped=stopped):return
+
+            def receive_asr():
+                events=MuseEvents()
+                try:
+                    while not stopped.is_set():
+                        try: raw=muse.recv(timeout=.2)
+                        except TimeoutError: continue
+                        if not isinstance(raw,str): raise VoiceError('muse_protocol','Muse envió un evento no válido.')
+                        event=json.loads(raw)
+                        if not isinstance(event,dict): raise VoiceError('muse_protocol','Muse envió un evento no válido.')
+                        normalized=events.accept(event)
+                        if not normalized or normalized['type']!='transcript': continue
+                        emit({'type':'transcript','source':'original','text':normalized['text'],'final':normalized['final']})
+                        for segment in clauses.accept(normalized):
+                            # Never synthesize a late replacement of already heard speech.
+                            if segment.correction: raise VoiceError('asr_revision','Muse corrigió una cláusula ya emitida. Se detuvo para evitar repetir una traducción incierta.')
+                            with resources_lock: sample=b''.join(audio_window)
+                            try: pending.put_nowait((segment,sample,normalized.get('speaker')))
+                            except queue.Full: raise VoiceError('backlog','Se acumularon tres fragmentos. Se detuvo para evitar gastos y retraso.')
+                except ConnectionClosedOK:
+                    if closing_at is None: raise VoiceError('muse_incomplete','Muse cerró antes de terminar la entrada.')
+                finally: asr_done.set()
+
+            def translate():
+                history=[]; speaker_voices={}
+                while not stopped.is_set():
+                    try: segment,sample,speaker=pending.get(timeout=.1)
+                    except queue.Empty:
+                        if asr_done.is_set():
+                            if not mixer.finish(timeout=3): raise VoiceError('audio_backlog','El audio pendiente no terminó dentro del límite.')
+                            emit({'type':'done','segments':active['segments'],'characters':active['characters'],
+                                'input_bytes':active['bytes'],'output_bytes':active['output_bytes'],
+                                'native_audio':mixer.stats() if hasattr(mixer,'stats') else None,
+                                'billing_amount':None});completed.set();return
+                        continue
+                    if time.monotonic()-segment.created_at>4: raise VoiceError('backlog','Una cláusula esperó más de cuatro segundos. Se detuvo la sesión.')
+                    if active['segments']>=MAX_SEGMENTS: raise VoiceError('request_limit','Se alcanzó el límite de doce traducciones de esta sesión.')
+                    active['segments']+=1
+                    # Reserve both source and generated text before sending to providers.
+                    active['characters']+=len(segment.text)
+                    if active['characters']>MAX_CHARS: raise VoiceError('text_limit','Se alcanzó el límite de texto de esta sesión.')
+                    style=pitch_style(sample)
+                    if speaker: style=speaker_voices.setdefault(speaker,style)
+                    emit({'type':'voice-style','style':style,'method':'local_pitch_heuristic','cloned':False})
+                    identifier=uuid4().hex; active['context']=identifier; tts_done.clear()
+                    translated=''; chunk=''; last_flush=time.monotonic(); sent=False
+
+                    def send_text(text,continuing):
+                        nonlocal sent
+                        if stopped.is_set(): return
+                        if text and not sent: active['tts_started']=time.monotonic()
+                        cartesia.send(json.dumps({'model_id':SONIC_MODEL,'transcript':text,'voice':VOICES[style],
+                            'language':target,'context_id':identifier,'continue':continuing,
+                            'output_format':{'container':'raw','encoding':'pcm_s16le','sample_rate':24000}}))
+                        sent=True
+
+                    request_started=time.monotonic()
+                    for delta in translator.stream(segment.text,target,history):
+                        if stopped.is_set(): return
+                        active['characters']+=len(delta)
+                        if active['characters']>MAX_CHARS: raise VoiceError('text_limit','Se alcanzó el límite de texto; se detuvo también la voz.')
+                        translated+=delta;chunk+=delta
+                        emit({'type':'transcript','source':'translation','text':translated,'segment_id':segment.id,'final':False})
+                        if chunk[-1:].isspace() or chunk[-1:] in '.!?;:,':
+                            if len(chunk)>=32 or time.monotonic()-last_flush>=.12 or chunk.rstrip()[-1:] in '.!?;:':
+                                send_text(chunk,True);chunk='';last_flush=time.monotonic()
+                    if stopped.is_set(): return
+                    send_text(chunk,False)
+                    emit({'type':'transcript','source':'translation','text':translated,'segment_id':segment.id,'final':True})
+                    history=(history+[(segment.text,translated)])[-2:]
+                    deadline=time.monotonic()+6
+                    while not stopped.is_set() and not tts_done.wait(.1):
+                        if time.monotonic()>deadline: raise VoiceError('tts_timeout','Cartesia no terminó el fragmento en seis segundos; no se reintentó.')
+                    emit({'type':'usage','segments':active['segments'],'characters':active['characters'],
+                        'translation_ms':round((time.monotonic()-request_started)*1000),
+                        'usage':getattr(translator,'usage',{}),'billing_amount':None})
+
+            run(receive_tts);run(receive_asr);run(translate)
+            while not stopped.is_set() and not completed.is_set():
+                now=time.monotonic()
+                if closing_at is not None and now-closing_at>DRAIN_SECONDS: raise VoiceError('drain_timeout','Se agotó el tiempo de cierre. Audio y conexiones detenidos.')
+                if closing_at is None and (now-started>=MAX_SECONDS or active['bytes']>=MAX_SECONDS*RATE_BYTES):
+                    muse.send(json.dumps({'type':'endStream'}));closing_at=now;emit({'type':'input-ended'})
+                try: raw=ingress.get(timeout=.1)
+                except queue.Empty: continue
+                if isinstance(raw,str):
+                    control=json.loads(raw)
+                    if control=={'type':'stop'}: break
+                    if control=={'type':'finish'}:
+                        if closing_at is None: muse.send(json.dumps({'type':'endStream'}));closing_at=now
+                        continue
+                    raise VoiceError('control','Control no admitido. Cambiar idioma requiere detener la sesión.')
+                if closing_at is not None: continue
+                if not isinstance(raw,bytes) or len(raw)!=3840: raise VoiceError('pcm','Envía bloques PCM16 mono de exactamente 80 ms a 24 kHz.')
+                balance=min(.3,balance+now-pacing_at);pacing_at=now
+                if len(raw)/RATE_BYTES>balance+.015: raise VoiceError('pacing','El audio llegó más rápido que el tiempo real. Sesión detenida.')
+                balance-=len(raw)/RATE_BYTES
+                if active['first_input'] is None: active['first_input']=now
+                active['bytes']+=len(raw)
+                with resources_lock: audio_window.append(raw)
+                mixer.push_original(raw);muse.send(raw)
+        except ConnectionClosed: pass
+        except Exception as exc: fail(exc)
+        finally:
+            cancel()
+            for thread in threads: thread.join(timeout=.5)
+            # Keep the bridge locked while any paid worker is still unwinding.
+            if any(thread.is_alive() for thread in threads):
+                def release_after_workers():
+                    for thread in threads: thread.join()
+                    self.lock.release()
+                threading.Thread(target=release_after_workers,daemon=True).start()
+            else: self.lock.release()
+            with self.connections_lock: self.connections.discard(browser)

@@ -1,0 +1,24 @@
+{
+  "type": "retrospective_existing_report_metadata",
+  "original_report": "tmp/meta-weather-local-date-real.json",
+  "original_sha256": "76d35bf7a737ef7dfdb35c35b99c5483b9dc5fe87738c88b697490d6674294ae",
+  "new_test_execution": false,
+  "reported_result": "passed",
+  "semantic_quality_verified_by_reconciliation": false,
+  "reported_flags": {
+    "passed": true
+  },
+  "reported_measurements": {
+    "external_calls": null,
+    "provider_calls": 1,
+    "provider_requests": null,
+    "model_calls": null,
+    "paid_asr_sessions": null,
+    "paid_translation_requests": null,
+    "meta_calls": null,
+    "elapsed_seconds": 23.8,
+    "billing_amount": null,
+    "billing_usd": null,
+    "actual_billed_usd": null
+  }
+}

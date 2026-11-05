@@ -1,0 +1,28 @@
+{
+  "started_at": "2026-10-28T00:10:26.213936+00:00",
+  "provider": "Cloudflare",
+  "model_origin": "Meta",
+  "model": "@cf/meta/m2m100-1.2b",
+  "source_language": "en",
+  "target_language": "es",
+  "input": "The meeting starts at three. Please bring the room measurements.",
+  "synthetic": true,
+  "status": "passed",
+  "maximum_requests": 1,
+  "automatic_retries": 0,
+  "inference_ms": null,
+  "target_inference_ms": 500,
+  "target_status": "unverified",
+  "actual_billed_usd": null,
+  "request_ms": 1344.0,
+  "attempt_elapsed_ms": 1344.0,
+  "http_status": 200,
+  "provider_error_codes": [],
+  "limitations": [
+    "Una petición corta no constituye un percentil ni un máximo garantizado.",
+    "Tiempo de petición incluye red y servicio; no inferencia interna.",
+    "No incluye ASR, contexto de segmentación, síntesis o reproducción; calidad pendiente de revisión."
+  ],
+  "translated_text": "La reunión comienza a las tres. Por favor, traiga las medidas de la habitación.",
+  "finished_at": "2026-10-28T00:10:27.559157+00:00"
+}

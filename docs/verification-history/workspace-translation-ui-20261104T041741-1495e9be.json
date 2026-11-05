@@ -1,0 +1,19 @@
+{
+  "suite": "workspace-translation-ui",
+  "started_at": "2026-11-04T04:17:41.170348+00:00",
+  "finished_at": "2026-11-04T04:17:50.471569+00:00",
+  "duration_seconds": 9.301221,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--workspace-translation"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(calls.some(c=>c[0]==='navigate'&&c[1]==='connections'))\n\n    at <local-path>\\tools\\check_workspace_translation_ui.cjs:45:355 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n"
+}

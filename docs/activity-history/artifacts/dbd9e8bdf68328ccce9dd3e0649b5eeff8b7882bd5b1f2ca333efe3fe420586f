@@ -1,0 +1,29 @@
+{
+  "purpose": "Find a timed public lyric source for current observed track; no lyric text saved.",
+  "requests": [
+    {
+      "kind": "exact",
+      "http_code": 502,
+      "ms": 188,
+      "records": 1,
+      "with_sync": 0
+    },
+    {
+      "kind": "search",
+      "http_code": 502,
+      "ms": 187,
+      "records": 1,
+      "with_sync": 0
+    },
+    {
+      "kind": "documented_record",
+      "http_code": 502,
+      "ms": 360,
+      "records": 1,
+      "with_sync": 0
+    }
+  ],
+  "external_calls": 3,
+  "spotify_read_calls": 1,
+  "cost": "No paid inference; cost not measured."
+}

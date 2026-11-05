@@ -1,0 +1,19 @@
+{
+  "suite": "system-diagnostics",
+  "started_at": "2026-11-04T00:16:52.296638+00:00",
+  "finished_at": "2026-11-04T00:16:52.814254+00:00",
+  "duration_seconds": 0.517616,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_system_diagnostics"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "...\r\n----------------------------------------------------------------------\r\nRan 3 tests in 0.114s\r\n\r\nOK\r\n"
+}

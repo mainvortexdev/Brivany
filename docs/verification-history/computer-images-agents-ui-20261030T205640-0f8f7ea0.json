@@ -1,0 +1,19 @@
+{
+  "suite": "computer-images-agents-ui",
+  "started_at": "2026-10-30T20:56:40.271571+00:00",
+  "finished_at": "2026-10-30T20:56:53.483887+00:00",
+  "duration_seconds": 13.212316,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--images-agents"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"status\": \"passed\",\n  \"checks\": [\n    \"paste PNG via clipboard event with local decoded upload\",\n    \"same reference available in home and live\",\n    \"vision pixels sent to substituted planner without computer grant\",\n    \"image command authorizes once then enqueues plan\",\n    \"plan preview and live microphone within seven viewports\",\n    \"remove clears shared references\",\n    \"document specialist announced then reviewed beside existing live microphone\",\n    \"new session clears images\"\n  ],\n  \"models_and_native\": \"substituted\",\n  \"compiler\": \"real local GLB\",\n  \"physical_audio_verified\": false,\n  \"os_clipboard_verified\": false,\n  \"external_calls\": 0,\n  \"errors\": []\n}\n"
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "../../official-site/node_modules/wrangler/config-schema.json",
+  "name": "brivany-mobile-gateway",
+  "main": "src/entry.mjs",
+
+  "compatibility_date": "2026-11-02",
+  "compatibility_flags": ["nodejs_compat"],
+  "limits": {"cpu_ms": 30000},
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "mobile.brivany.example", "custom_domain": true }],
+  "vars": { "META_MODEL": "muse-spark-1.3" },
+  "durable_objects": {"bindings": [{"name":"ACCOUNTS","class_name":"AccountHub"}]},
+  "migrations": [{"tag":"accounts-v1","new_sqlite_classes":["AccountHub"]}],
+  "observability": {
+    "enabled": true,
+    "redact_query_string": true,
+    "logs": { "enabled": true, "head_sampling_rate": 0.1, "invocation_logs": false },
+    "traces": { "enabled": true, "head_sampling_rate": 0.01 }
+  },
+  "ratelimits": [{
+    "name": "MOBILE_LIMIT",
+    "namespace_id": "481736295",
+    "simple": { "limit": 120, "period": 60 }
+  },{"name":"ACCOUNT_AUTH_LIMIT","namespace_id":"481736301","simple":{"limit":12,"period":60}}]
+  // Set MOBILE_DEVICE_TOKEN, META_API_KEY, CARTESIA_API_KEY and
+  // CARTESIA_VOICE_ID using Wrangler secrets. No provider keys enter the IPA.
+}

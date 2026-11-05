@@ -1,0 +1,36 @@
+{
+  "worker": "brivany-site",
+  "domain": "brivany.example",
+  "callback": "https://brivany.example/spotify/callback",
+  "version": "507d19bc-655a-4956-b80e-f63270fad623",
+  "compatibility_date": "2026-10-31",
+  "publisher_client_id_configured": true,
+  "signing_secret": "stored in Cloudflare; value not read or recorded",
+  "durable_object_classes": {
+    "bindings": [
+      {
+        "name": "SPOTIFY_OAUTH_SESSIONS",
+        "class_name": "SpotifyOAuthSession"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "spotify-oauth-v1",
+      "new_sqlite_classes": [
+        "SpotifyOAuthSession"
+      ]
+    }
+  ],
+  "request_observability": {
+    "enabled": false,
+    "traces": {
+      "enabled": false
+    }
+  },
+  "sources": {
+    "worker.mjs": "7a887417bd1fba7328e42bbb7ef5149bfb569e29871c5c0dbd0c012d4fc8f80c",
+    "spotify-oauth.mjs": "eb7b27252de5da1a9b9e2f6b20f6edfc6cacf9cd06af2d902bf87ad7bb8c9a02"
+  },
+  "semantic_evidence": "See runtime and HTTPS handoff reports; hashes prove source integrity only."
+}

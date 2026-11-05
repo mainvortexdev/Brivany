@@ -1,0 +1,21 @@
+{
+  "suite": "palabra-live",
+  "started_at": "2026-10-30T10:59:57.853139+00:00",
+  "finished_at": "2026-10-30T11:00:09.430578+00:00",
+  "duration_seconds": 11.577439,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_palabra",
+    "tests.test_palabra_live",
+    "tests.test_palabra_native"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "..............F......................\r\n======================================================================\r\nFAIL: test_origin_path_missing_credentials_and_audio_limits (tests.test_palabra.PalabraTests.test_origin_path_missing_credentials_and_audio_limits)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_palabra.py\", line 514, in test_origin_path_missing_credentials_and_audio_limits\r\n    self.with_relay(upstream, body)\r\n  File \"<local-path>\\tests\\test_palabra.py\", line 243, in with_relay\r\n    with patch.dict(os.environ, {\"BRIVANY_PALABRA_API_KEY\": \"test-secret\"}, clear=True), patch(\"packages.providers.palabra.URL\", endpoint): body(bridge)\r\n                                                                                                                                            ^^^^^^^^^^^^\r\n  File \"<local-path>\\tests\\test_palabra.py\", line 511, in body\r\n    self.assertEqual(json.loads(browser.recv(timeout=2))[\"type\"], \"ready\")\r\nAssertionError: 'error' != 'ready'\r\n- error\r\n+ ready\r\n\r\n\r\n----------------------------------------------------------------------\r\nRan 37 tests in 10.732s\r\n\r\nFAILED (failures=1)\r\n"
+}

@@ -1,0 +1,7 @@
+-r requirements-h1.txt
+# BSD-3-Clause wrapper; Windows uses the separately installed Edge WebView2 runtime.
+pywebview==6.2.1
+# Opt-in system-output capture. Capture is never started during import/readiness.
+SoundCard==0.4.6
+# Verified HTTPS roots for Spotify and its production callback handoff.
+certifi==2026.10.19

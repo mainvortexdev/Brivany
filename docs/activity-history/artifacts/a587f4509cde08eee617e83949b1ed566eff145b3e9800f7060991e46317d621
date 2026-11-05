@@ -1,0 +1,102 @@
+"""Abstention must not be turned into speaker gender by a pitch heuristic."""
+import math
+import struct
+import threading
+import unittest
+from unittest.mock import patch
+
+from packages.providers import river_translation as river
+
+
+UNKNOWN={'voice_timbre':'uncertain','timbre_confidence':.806631,
+         'timbre_inference_source':'local_robust_voice_timbre'}
+
+
+class ProvisionalVoiceStyleTests(unittest.TestCase):
+    def setUp(self):
+        self.stop=threading.Event()
+        self.high=b''.join(struct.pack('<h',round(9000*math.sin(i*math.tau*210/24000))) for i in range(24000))
+
+    def test_actual_high_register_with_unknown_timbre_uses_explicit_provisional_catalog(self):
+        self.assertEqual(river.pitch_style(self.high),'high')
+        tracker=river.SpeakerTracker()
+        voice=tracker.voice('one',self.high,'auto',stopped=self.stop,advisory=dict(UNKNOWN))
+        self.assertEqual(voice['style'],'high')
+        self.assertEqual((voice['voice_name'],voice['voice_id']),('Daniel',river.VOICES['neutral']))
+        self.assertEqual((voice['method'],voice['timbre_source']),('provisional_catalog','provisional_catalog'))
+        self.assertTrue(voice['voice_category_provisional'])
+        self.assertFalse(voice['voice_category_is_identity'])
+        self.assertNotIn('voice_timbre',tracker.turns['one'])
+        self.assertIsNone(tracker.cached_timbre('one'))
+        self.assertEqual(tracker.variants,{'low':0,'high':0})
+
+    def test_uncertainty_preserves_an_established_confident_catalog_style(self):
+        for category in ('masculine','feminine'):
+            with self.subTest(category=category):
+                tracker=river.SpeakerTracker();tracker.observe('one','A')
+                known=dict(UNKNOWN,voice_timbre=category,timbre_confidence=.99)
+                first=tracker.voice('one',self.high,'auto',stopped=self.stop,advisory=known)
+                tracker.observe('two','A')
+                second=tracker.voice('two',self.high,'auto',stopped=self.stop,advisory=dict(UNKNOWN))
+                self.assertEqual(second['voice_id'],first['voice_id'])
+                self.assertEqual(second['voice_category'],category)
+                self.assertFalse(second['voice_category_provisional'])
+
+    def test_confident_female_and_male_matches_choose_actual_catalog_id_without_a_speaker_label(self):
+        for category,register,key in [('feminine','low','high'),('masculine','high','low')]:
+            with self.subTest(category=category),patch.object(river,'pitch_style',return_value=register):
+                tracker=river.SpeakerTracker()
+                known=dict(UNKNOWN,voice_timbre=category,timbre_confidence=.99)
+                voice=tracker.voice('one',b'speech','auto',stopped=self.stop,advisory=known)
+                self.assertEqual(voice['voice_id'],river.VOICES[key])
+                self.assertEqual(voice['voice_category'],category)
+                self.assertFalse(voice['voice_category_provisional'])
+
+    def test_explicit_voice_choice_keeps_priority_over_unknown_model_advice(self):
+        voice=river.SpeakerTracker().voice('one',self.high,'feminine',stopped=self.stop,advisory=dict(UNKNOWN))
+        self.assertEqual(voice['voice_id'],river.VOICES['high'])
+        self.assertEqual(voice['method'],'manual')
+        self.assertFalse(voice['voice_category_provisional'])
+
+    def test_every_missing_or_untrusted_inline_timbre_stays_provisional_despite_high_register(self):
+        for advisory in (None,{}, {'voice_register':'high','register_confidence':.99},
+                         {'voice_timbre':'uncertain','timbre_confidence':0.},
+                         {'voice_timbre':'feminine','timbre_confidence':.79},
+                         {'error_code':'prosody_timeout'},
+                         {'available':False,'error_code':'local_timbre_unavailable'}):
+            with self.subTest(advisory=advisory):
+                tracker=river.SpeakerTracker()
+                voice=tracker.voice('short',self.high,'auto',stopped=self.stop,advisory=advisory,require_timbre=True)
+                self.assertEqual(voice['voice_id'],river.VOICES['neutral'])
+                self.assertEqual(voice['style'],'high')
+                self.assertTrue(voice['voice_category_provisional'])
+                self.assertEqual(voice['timbre_source'],'provisional_catalog')
+                self.assertNotIn('voice_timbre',tracker.turns['short'])
+
+    def test_missing_inline_timbre_preserves_a_trusted_cluster_and_manual_choice(self):
+        tracker=river.SpeakerTracker();tracker.observe('one','A')
+        known=tracker.voice('one',self.high,'auto',stopped=self.stop,
+            advisory=dict(UNKNOWN,voice_timbre='feminine',timbre_confidence=.99),require_timbre=True)
+        tracker.observe('two','A')
+        absent=tracker.voice('two',self.high,'auto',stopped=self.stop,require_timbre=True)
+        self.assertEqual((absent['voice_id'],absent['voice_category']),(known['voice_id'],'feminine'))
+        self.assertFalse(absent['voice_category_provisional'])
+        manual=tracker.voice('two',self.high,'masculine',stopped=self.stop,require_timbre=True)
+        self.assertEqual(manual['voice_id'],river.VOICES['low'])
+        self.assertEqual(manual['method'],'manual')
+        self.assertFalse(manual['voice_category_provisional'])
+
+    def test_separate_acoustic_groups_keep_distinct_stable_provisional_catalog_voices(self):
+        class AcousticGroups:
+            def associate(self,sample):
+                return {'cluster':1 if sample==b'first' else 2,'similarity':1.,'reason':'matched','windows':1,'latency_ms':0.}
+        tracker=river.SpeakerTracker();tracker.enable_acoustic(AcousticGroups())
+        voices=[]
+        for turn,sample in [('one',b'first'),('two',b'second'),('three',b'first')]:
+            tracker.associate(turn,sample)
+            voices.append(tracker.voice(turn,self.high,'auto',stopped=self.stop,require_timbre=True))
+        self.assertEqual([voice['speaker_index'] for voice in voices],[1,2,1])
+        self.assertEqual(voices[0]['voice_id'],voices[2]['voice_id'])
+        self.assertNotEqual(voices[0]['voice_id'],voices[1]['voice_id'])
+        self.assertTrue(all(voice['voice_category_provisional'] for voice in voices))
+        self.assertTrue(all(voice['timbre_source']=='provisional_catalog' for voice in voices))

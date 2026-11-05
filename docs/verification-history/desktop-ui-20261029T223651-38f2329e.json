@@ -1,0 +1,18 @@
+{
+  "suite": "desktop-ui",
+  "started_at": "2026-10-29T22:36:51.355199+00:00",
+  "finished_at": "2026-10-29T22:37:20.909890+00:00",
+  "duration_seconds": 29.554691,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_desktop_ui"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "page.waitForFunction: Timeout 25000ms exceeded.\r\n    at <local-path>\\tools\\check_desktop_ui.cjs:19:16 {\r\n  log: [],\r\n  name: 'TimeoutError'\r\n}\r\n\r\n"
+}

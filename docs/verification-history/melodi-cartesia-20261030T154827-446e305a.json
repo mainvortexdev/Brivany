@@ -1,0 +1,22 @@
+{
+  "suite": "melodi-cartesia",
+  "started_at": "2026-10-30T15:48:27.673829+00:00",
+  "finished_at": "2026-10-30T15:48:31.317131+00:00",
+  "duration_seconds": 3.643302,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_cartesia_melodi",
+    "tests.test_live_voice",
+    "tests.test_conversation",
+    "tests.test_melodi_dialogue"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "......................F.......\r\n======================================================================\r\nFAIL: test_stream_emits_sentences_and_maintains_melodi_identity (tests.test_conversation.ConversationTests.test_stream_emits_sentences_and_maintains_melodi_identity)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_conversation.py\", line 77, in test_stream_emits_sentences_and_maintains_melodi_identity\r\n    self.assertEqual([event[\"text\"] for event in result if event[\"type\"] == \"sentence\"], [\"Soy Melodi.\", \"Te escucho.\"])\r\nAssertionError: Lists differ: ['Soy Melodi. Te escucho.'] != ['Soy Melodi.', 'Te escucho.']\r\n\r\nFirst differing element 0:\r\n'Soy Melodi. Te escucho.'\r\n'Soy Melodi.'\r\n\r\nSecond list contains 1 additional elements.\r\nFirst extra element 1:\r\n'Te escucho.'\r\n\r\n- ['Soy Melodi. Te escucho.']\r\n?              ^\r\n\r\n+ ['Soy Melodi.', 'Te escucho.']\r\n?              ^^^^\r\n\r\n\r\n----------------------------------------------------------------------\r\nRan 30 tests in 2.405s\r\n\r\nFAILED (failures=1)\r\n"
+}

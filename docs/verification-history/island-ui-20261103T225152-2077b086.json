@@ -1,0 +1,19 @@
+{
+  "suite": "island-ui",
+  "started_at": "2026-11-03T22:51:52.631280+00:00",
+  "finished_at": "2026-11-03T22:52:37.043186+00:00",
+  "duration_seconds": 44.411906,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_computer_ui",
+    "--island"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\n  \"status\": \"passed\",\n  \"checks\": [\n    \"full wordmark at left; clustered direct audio/video and area tools; ducking managed in app settings only; no detector or explanation\",\n    \"cursor-edge anchoring; brief accidental hover ignored; slower initial open, direct tools without a translation modal, delayed exit; no title tooltips\",\n    \"text tools align with a dedicated mascot bay at eight widths; keyboard reveals narrow-strip actions\",\n    \"idle sleep, occasional gaze and reduced motion\",\n    \"one-button Spotify link handoff, controls and transfer with substituted configured app\",\n    \"timeline advances to timed lyric line; seek forward/back and pause reflect SDK progress; no Recientes tab; inline three-line teleprompter with blurred neighbors; timed lyrics as text; plain text never shown as a frozen verse; infinite library scrolling and observed item playback; no workspace disconnect or import\",\n    \"five panel resolutions plus secondary music views at four resolutions: bounded surfaces, reachable controls, no page scroll\",\n    \"Spotify account upgrade and disconnect live only in desktop Connections\",\n    \"mosaic thumbnails, cover-colored waves and gradients; paused waves retained for five minutes then fade over 2.4s; reduced motion; direct playback pushes without pending-button shading\",\n    \"headphones and gentle/groove/lively estimated dance; pause and reduced motion; palette interpolates and retargets without jumps; keyed lyric rows animate with cleanup\",\n    \"translation-only region selector; auditiva starts native translation without app navigation; SDK ducking preserves user volume and restores it smoothly\"\n  ],\n  \"native_bridge\": \"substituted\",\n  \"spotify\": \"substituted\",\n  \"external_calls\": 0,\n  \"errors\": []\n}\n"
+}

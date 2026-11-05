@@ -1,0 +1,127 @@
+# 50. Traducción continua y selección explícita de voz
+
+30 de octubre de 2026. A solicitud expresa del usuario se eliminan las cuotas
+de prueba de `/translate`. Los registros de los hitos
+[48](48-muse-llama-cartesia.md) y [49](49-meta-cartesia-y-ritmo-de-audio.md)
+permanecen como histórico; sus límites ya no describen el funcionamiento actual.
+
+## Cambios implementados
+
+- Sin reserva ni cuota diaria: se retiró `UsageGuard` del recorrido. La antigua
+  SQLite de reservas no se borra, reescribe ni se consulta para permitir iniciar.
+- Sin cierre a los 30 s, doce fragmentos, 2.400 caracteres ni 45 s de salida.
+  Se retiraron esos cortes en servidor y navegador y el watchdog de duración
+  total. La interfaz muestra tiempo transcurrido y fragmentos, sin denominadores
+  ni mensaje «Vuelve mañana».
+- El reconocedor de cláusulas conserva una ventana rotatoria de hasta 64 turnos
+  completados en lugar de detenerse por el número acumulado o el presupuesto
+  total de texto. Siguen las validaciones de tamaño por evento/petición.
+- Si se acumulan dos fragmentos pendientes, el servidor pide pausar el video.
+  El frontend trata esta pausa como ajuste de ritmo y mantiene captura y sockets.
+  Mientras la fuente está pausada, la captura sigue entregando silencio a Muse
+  para conservar el protocolo de tiempo real; ese audio puede ser facturable.
+  Al vaciar la cola, el video continúa dentro de la misma sesión. No repite
+  solicitudes, no descarta deliberadamente contenido ni abre otra sesión.
+- El video se pausa durante la preparación de los proveedores, después de
+  comprobar que puede reproducirse, y continúa al recibir `ready`; así se evita
+  que avance durante la conexión sin captar su voz.
+- Detener, cerrar la pestaña, dejar de compartir y pausar manualmente el video
+  siguen cerrando el audio y las conexiones. El final del video solicita terminar
+  los fragmentos pendientes. Los errores se conservan en pantalla: refrescar el
+  estado ya no los sustituye por el antiguo mensaje de cuota agotada.
+
+No se eliminaron la validación de PCM/origen, las colas finitas, el timeout de
+una solicitud que no responde ni la exclusión de sesiones simultáneas. Son
+controles del funcionamiento, no cuotas diarias o de duración. Una fuente que
+ignora la pausa y desborda la cola de 16 fragmentos todavía produce un error.
+El cierre permite hasta 30 s para terminar; durante reproducción no hay un
+temporizador total. Si deja de llegar audio durante 30 s, o Cartesia no entrega
+voz durante 15 s mientras se espera una respuesta, se cierra sin reconectar.
+También siguen los límites del proveedor: no se intenta eludirlos.
+
+## Voz masculina y femenina
+
+Se verificaron por dos GET de metadatos de Cartesia, sin síntesis:
+
+| Nombre | ID de catálogo | Categoría declarada por Cartesia | Resultado |
+|---|---|---|---|
+| Daniel | `47c38ca4-5f35-497b-b1a3-415245fb35e1` | `masculine` | HTTP 200, active |
+| Skylar | `db6b0ed5-d5d3-463d-ae85-518a07d3c2b4` | `feminine` | HTTP 200, active |
+
+La página queda con **Masculina · Daniel seleccionada** para el narrador que el
+usuario identificó como hombre. Se puede elegir Femenina o Automática por tono.
+El cambio durante reproducción afecta al siguiente fragmento y no crea otra
+sesión ni cambia la voz de un contexto TTS ya iniciado. La UI muestra el nombre,
+categoría y método de la voz realmente enviada a Cartesia, no solo el tono
+estimado de entrada.
+
+En automático se conserva la estimación local de tono: grave → Daniel,
+agudo → Skylar. El respaldo anterior para una muestra insuficiente era una voz
+femenina; ahora usa Daniel. La decisión desconocida no se fija para siempre por
+hablante y puede actualizarse al obtener una señal útil. Se corrigió además el
+recorrido de una ventana de exactamente 640 muestras de análisis.
+
+El tono **no identifica de forma fiable si una persona es hombre o mujer**;
+hay voces, música, ruido, solapamientos y cambios de hablante que pueden afectar
+la heurística. La selección explícita garantiza el ID de catálogo empleado,
+no fidelidad al timbre original ni clonación. La comprobación de metadatos
+confirma nombres/categorías declaradas, sin comprobar escucha física ni el
+resultado multilingüe de esas voces.
+
+## Continuidad del transporte Meta
+
+Se encontró otra condición que podía cortar después del primer fragmento:
+`MetaTranslationSession` cerraba toda la sesión cuando una respuesta HTTP
+correcta pedía `Connection: close`. La página continua ahora habilita
+`allow_transport_reopen=True`: consume y valida esa respuesta, cierra solo su
+conexión y usa una nueva conexión para **el siguiente fragmento distinto**.
+No reenvía la petición anterior. Los consumidores previos conservan su
+comportamiento por defecto; Stop, cancelación y error siguen cerrando la sesión.
+
+El presupuesto de respuesta por petición pasa de 192 a 768 tokens, ya admitido
+por el adaptador, para reducir truncamientos. No se añaden herramientas,
+fallbacks de proveedor ni reintentos. Meta Spark sigue traduciendo por SSE y
+Cartesia genera la voz. La entrega PCM mantiene la cola de aplicación de 240 ms;
+un mensaje válido mayor que tres segundos se fracciona antes de entregarlo al
+mezclador, conservando el límite de tamaño del WebSocket.
+
+## Verificación y consumo
+
+| Comprobación | Resultado y alcance |
+|---|---|
+| `tools.verify river-translation` | 13 pruebas locales correctas; 15 fragmentos y más de 2.400 caracteres, más de 30 s con reloj del servidor acelerado, 100 turnos / más de 20.000 caracteres en ventana rotatoria, voz masculina/femenina por contexto, cierre HTTP normal, error sin retry y cancelación |
+| `tools.verify meta-translation` | 24 pruebas correctas; incluye nuevo fragmento tras cierre normal en transporte HTTP y sustituto, sin repetir la petición anterior, y conserva el comportamiento de los consumidores previos |
+| `tools.verify river-ui` | flujo local correcto con captura/YouTube/Meta/Cartesia/dispositivo sustituidos; pausa y continuación por cola en la misma sesión, tres botones, selector Daniel, reloj del cliente adelantado más de 35 s sin corte, parada/liberación y diseño a 390 px |
+| `tools.verify http` | 23 pruebas locales correctas de la API compartida |
+| HTTP de la instancia 8767 | configuración disponible aun con reservas antiguas agotadas; cuotas devueltas como `null` y HTML continuo con selector de voz |
+| Metadatos reales de voces | exactamente dos GET, HTTP 200 para Daniel y Skylar; sin generar voz, coste monetario desconocido |
+
+La prueba de reloj acelerado **no es una reproducción real larga**. Las pruebas
+de modelos son simuladas y no verifican calidad de traducción, audio físico,
+captura real de YouTube ni correspondencia de voces humanas. No se ejecutó
+ninguna inferencia pagada durante este cambio. La prueba real manual anterior
+del usuario no se registra como ensayo automático ni acredita estas correcciones.
+
+Los fallos de pruebas permanecen registrados: una aserción esperaba el segundo
+exacto 35 aunque la fixture añadía tiempo real, otra contaba paquetes TTS como
+si fueran contextos, y las pruebas previas de transporte exigían cierre de sesión
+en consumidores que ahora requieren comportamiento diferente. Se corrigieron
+las aserciones y se hizo optativa la reapertura para esta página; los resultados
+posteriores están separados en la bitácora.
+
+Los límites monetarios del proveedor y el gasto real no se conocen ni se
+modificaron. Tras quitar las cuotas de aplicación, la sesión consume APIs hasta
+que se detenga, termine el video o ocurra un error; no se promete gasto máximo.
+La herramienta de ensayo real continúa requiriendo `--allow-paid` y una fixture
+fija, con un adaptador exclusivo que impide iniciar una segunda traducción en
+esa prueba. Esa restricción de laboratorio no vuelve a limitar la página.
+
+Evidencias sanitizadas: `tmp/river-continuous-local.json`,
+`tmp/river-voices-20261030T130356.json`, `tmp/river-ui/browser.json` y los informes
+de `tmp/verification/`. No se adjuntan claves, audio ni la captura del usuario.
+El servidor 8767 se reinició con el código actualizado. La página ya abierta
+necesita una recarga para sustituir el JS anterior.
+
+Contrato consultado: [Cartesia Get Voice](https://docs.cartesia.ai/api-reference/voices/get),
+[Sonic 3.6](https://docs.cartesia.ai/build-with-cartesia/tts-models/latest) y
+[Meta Speech to text](https://dev.meta.ai/docs/speech-to-text).

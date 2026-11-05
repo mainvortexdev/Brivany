@@ -1,0 +1,106 @@
+{
+  "status": "passed",
+  "native_bridge": "substituted",
+  "renderer": "real WebGL; software permitted",
+  "physical_gpu_verified": false,
+  "microphone_activated": false,
+  "model_scene_matches": true,
+  "object_count": 5,
+  "mic_in_desktop_viewport": true,
+  "mic_bounds": {
+    "x": 907,
+    "y": 531.328125,
+    "width": 143,
+    "height": 42
+  },
+  "live_dimensions": {
+    "width": 875,
+    "height": 645
+  },
+  "viewports": [
+    {
+      "width": 768,
+      "height": 844,
+      "mic": {
+        "x": 273,
+        "y": 780,
+        "width": 431,
+        "height": 42
+      },
+      "canvas": {
+        "x": 243,
+        "y": 281.796875,
+        "width": 491,
+        "height": 346
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "mic": {
+        "x": 109,
+        "y": 788,
+        "width": 225,
+        "height": 42
+      },
+      "canvas": {
+        "x": 79,
+        "y": 281.796875,
+        "width": 285,
+        "height": 354
+      }
+    },
+    {
+      "width": 320,
+      "height": 844,
+      "mic": {
+        "x": 109,
+        "y": 788,
+        "width": 155,
+        "height": 42
+      },
+      "canvas": {
+        "x": 79,
+        "y": 297.796875,
+        "width": 215,
+        "height": 321
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "mic": {
+        "x": 105,
+        "y": 516,
+        "width": 233,
+        "height": 42
+      },
+      "canvas": {
+        "x": 75,
+        "y": 254.796875,
+        "width": 293,
+        "height": 160
+      }
+    },
+    {
+      "width": 640,
+      "height": 480,
+      "mic": {
+        "x": 107,
+        "y": 426,
+        "width": 479,
+        "height": 42
+      },
+      "canvas": {
+        "x": 77,
+        "y": 254.796875,
+        "width": 539,
+        "height": 70
+      }
+    }
+  ],
+  "object_selection_verified": true,
+  "options_and_context_close_verified": true,
+  "errors": [],
+  "external_requests": []
+}

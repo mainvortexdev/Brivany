@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "scope": "real_Meta_planning_only_own_fixture_corrected",
+  "actions_executed": false,
+  "provider_requests": 1,
+  "team": [
+    {
+      "key": "t1",
+      "kind": "desktop",
+      "after": []
+    },
+    {
+      "key": "t2",
+      "kind": "research",
+      "after": []
+    },
+    {
+      "key": "t3",
+      "kind": "desktop",
+      "after": [
+        "t1",
+        "t2"
+      ]
+    }
+  ]
+}

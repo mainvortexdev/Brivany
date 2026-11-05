@@ -1,0 +1,68 @@
+/* PCM energy landmarks are timing estimates, not speech recognition or physical loopback. */
+(function(root) {
+  'use strict';
+  class PcmEnergyClock {
+    constructor({windowMs=20,rmsThreshold=.005}={}) {
+      if(!Number.isFinite(windowMs) || windowMs<=0 || windowMs>1000) throw new TypeError('Invalid RMS window.');
+      if(!Number.isFinite(rmsThreshold) || rmsThreshold<0 || rmsThreshold>1) throw new TypeError('Invalid RMS threshold.');
+      this.windowMs=windowMs; this.rmsThreshold=rmsThreshold;
+      this.firstEnergyContext=null; this.lastEnergyContext=null;
+      this.recordStartContext=null; this.recordEndContext=null; this.frames=0;
+      this._rate=null; this._next=null; this._count=0; this._sum=0; this._windowStart=null;
+    }
+    _completeWindow() {
+      if(this._count && Math.sqrt(this._sum/this._count)>this.rmsThreshold) {
+        if(this.firstEnergyContext===null) this.firstEnergyContext=this._windowStart;
+        this.lastEnergyContext=this._windowStart+this._count/this._rate;
+      }
+      this._count=0; this._sum=0; this._windowStart=null;
+    }
+    observe(samples,rate,contextStart) {
+      if(!(samples instanceof Float32Array)) throw new TypeError('Expected normalized Float32 PCM.');
+      if(!Number.isFinite(rate) || rate<=0 || rate>384000) throw new TypeError('Invalid sample rate.');
+      if(!Number.isFinite(contextStart) || contextStart<0) throw new TypeError('Invalid audio context time.');
+      // Validate the complete packet before changing any state.
+      for(const sample of samples) if(!Number.isFinite(sample) || sample < -1 || sample > 1) throw new TypeError('PCM samples must be finite and normalized.');
+      if(!samples.length) return this;
+      const continuous=this._rate===rate && this._next!==null && Math.abs(contextStart-this._next)<=1/rate+1e-9;
+      if(!continuous) { this._count=0; this._sum=0; this._windowStart=null; }
+      const start=continuous?this._next:contextStart;
+      this._rate=rate;
+      if(this.recordStartContext===null) this.recordStartContext=contextStart;
+      const windowFrames=Math.max(1,Math.round(rate*this.windowMs/1000));
+      for(let index=0;index<samples.length;index++) {
+        if(this._count===0) this._windowStart=start+index/rate;
+        this._sum+=samples[index]*samples[index]; this._count++;
+        if(this._count===windowFrames) this._completeWindow();
+      }
+      this.frames+=samples.length; this._next=start+samples.length/rate;
+      this.recordEndContext=this._next;
+      return this;
+    }
+    finish() { this._completeWindow(); return this; }
+    snapshot() {
+      return {
+        first_energy_context:this.firstEnergyContext,
+        last_energy_context:this.lastEnergyContext,
+        record_start_context:this.recordStartContext,
+        record_end_context:this.recordEndContext,
+        frames:this.frames,
+        window_ms:this.windowMs,
+        rms_threshold:this.rmsThreshold
+      };
+    }
+  }
+  function summarize(source,translated) {
+    const valid=value=>typeof value==='number' && Number.isFinite(value) && value>=0;
+    const difference=(end,start)=>valid(end)&&valid(start)?(end-start)*1000:null;
+    return {
+      onset_to_onset_ms:difference(translated?.first_energy_context,source?.first_energy_context),
+      first_translation_after_last_source_energy_ms:difference(translated?.first_energy_context,source?.last_energy_context),
+      tail_to_tail_ms:difference(translated?.last_energy_context,source?.last_energy_context),
+      first_translation_after_source_file_end_ms:difference(translated?.first_energy_context,source?.record_end_context)
+    };
+  }
+  const api={PcmEnergyClock,summarize};
+  root.BrivanyDubTiming=api;
+  if(typeof module!=='undefined' && module.exports) module.exports=api;
+})(globalThis);

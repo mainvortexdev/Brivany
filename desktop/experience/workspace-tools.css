@@ -1,0 +1,21 @@
+/* Compact menu clusters, centered companion and a fixed wordmark at the left. */
+:root{--eye-bay-width:72px}
+.toolstrip{padding:0 16px}
+#tools{grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr);gap:16px}
+#tools .tool-group{gap:8px;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain;pointer-events:auto}
+#tools .tool-group::-webkit-scrollbar{display:none}
+#tools .tools-left{justify-content:flex-start}
+#tools .tools-right{justify-content:flex-end}
+#tools button{flex:none;padding:5px 9px;letter-spacing:.01em}
+#tools .workspace-brand{font-size:19px;letter-spacing:-.85px;font-weight:700;color:#f5f5f5;gap:0;margin-right:12px;padding-left:0;min-width:80px;background:transparent}
+.workspace-brand span{color:#0071e3}
+#tools .workspace-brand:hover{background:transparent}
+@media(max-width:900px){.toolstrip{padding:0 10px}#tools{gap:10px}#tools button{padding:5px 7px;font-size:10px}#tools .workspace-brand{font-size:18px;min-width:74px;margin-right:5px}#tools .tool-group{gap:4px}}
+@media(max-width:700px){
+ #tools{display:flex;gap:8px;padding:0 70px 0 86px;overflow-x:auto;scrollbar-width:none;scroll-padding:0 70px 0 86px;pointer-events:auto}
+ #tools::-webkit-scrollbar{display:none}
+ #tools .tool-group{display:contents;overflow:visible}
+ #tools .workspace-brand{position:fixed;left:10px;top:5px;z-index:7;background:#000;margin:0;padding-right:8px}
+ #tools .eye-bay{position:fixed;right:6px;top:0;width:64px;background:#000;z-index:7}
+}
+@media(max-width:380px){.toolstrip{padding:0 6px}#tools{gap:4px}#tools .workspace-brand{font-size:17px;min-width:70px}#tools button{font-size:10px}}

@@ -1,0 +1,18 @@
+{
+  "suite": "application-learning-native",
+  "started_at": "2026-11-03T23:54:02.114533+00:00",
+  "finished_at": "2026-11-03T23:54:18.550152+00:00",
+  "duration_seconds": 16.435619,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "tools.check_application_learning_native"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "{\"passed\": false, \"type\": \"actual_owned_native_application_with_scripted_planner_research_and_review\", \"provider_requests\": 0, \"native_input_real\": true, \"real_application_data_used\": false, \"real_commercial_application_verified\": false, \"error\": \"Native team: None\"}\r\n"
+}

@@ -1,0 +1,23 @@
+{
+  "suite": "social",
+  "started_at": "2026-10-29T16:53:36.298996+00:00",
+  "finished_at": "2026-10-29T16:53:38.411782+00:00",
+  "duration_seconds": 2.112786,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_social.py"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "............................\r\n----------------------------------------------------------------------\r\nRan 28 tests in 1.625s\r\n\r\nOK\r\n"
+}

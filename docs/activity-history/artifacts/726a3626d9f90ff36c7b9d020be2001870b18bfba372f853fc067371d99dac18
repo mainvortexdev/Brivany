@@ -1,0 +1,26 @@
+# Brivany · experiencia de escritorio
+
+Propuesta de interfaz de escritorio a partir de las referencias visuales del usuario.
+El inicio pone a Melodi al frente y organiza los módulos existentes en un menú.
+La barra de título clara incluye arrastre y controles nativos de ventana. El tamaño
+inicial se limita al 90 % del ancho y 86 % de la altura de la pantalla seleccionada,
+con un máximo de 1120 × 760 px; el usuario puede redimensionar o maximizar.
+
+## Iniciar en Windows
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m desktop.experience.launcher
+```
+
+El lanzador abre una ventana pywebview y monta el servidor local de la aplicación;
+las vistas de Melodi, Espacios, Human-skills, Práctica, Video, Conexiones y Bitácora
+reutilizan las rutas existentes. Los proyectos y sus servicios permanecen locales.
+
+La capa de ventana selecciona Edge WebView2 en Windows, WKWebView en macOS y GTK
+en Linux. Windows se comprobó en el equipo de desarrollo; macOS y Linux requieren
+sus runtimes nativos y todavía no se han validado en esos sistemas. No es un
+instalador ni declara binarios empaquetados.
+
+Esta carpeta es una propuesta aislada. No modifica el lanzador ni los módulos
+existentes. El módulo de voz conserva sus confirmaciones de micrófono; abrir la
+ventana no inicia captura ni conversación.

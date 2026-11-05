@@ -1,0 +1,127 @@
+{
+  "type": "real_isolated_brave_inline_sync_local_protocol_fixture",
+  "passed": false,
+  "source_owned_synthetic": true,
+  "encoded_video_source": true,
+  "owned_caption_track": false,
+  "provider_trial_max_seconds": 0,
+  "billing_amount": 0,
+  "user_profile_used": false,
+  "physical_listening_verified": false,
+  "cloning_enabled": false,
+  "error_message": null,
+  "cues": [
+    {
+      "speaker": 1,
+      "category": "masculine",
+      "source": 0.25,
+      "picture": 0.24,
+      "rate": 1,
+      "duration": 1,
+      "played": 1,
+      "wall": 1.013,
+      "onset_ms": 4513,
+      "sync_error_ms": -10
+    },
+    {
+      "speaker": 2,
+      "category": "feminine",
+      "source": 6.25,
+      "picture": 6.229333,
+      "rate": 1,
+      "duration": 1,
+      "played": 1,
+      "wall": 1.0107999999970199,
+      "onset_ms": 10526,
+      "sync_error_ms": -21
+    },
+    {
+      "speaker": 1,
+      "category": "masculine",
+      "source": 12.25,
+      "picture": 12.234667,
+      "rate": 1,
+      "duration": 1,
+      "played": 1,
+      "wall": 1.0145,
+      "onset_ms": 16540,
+      "sync_error_ms": -15
+    }
+  ],
+  "no_new_window": true,
+  "protocol": [
+    {
+      "type": "ready",
+      "at": 0
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 250,
+      "end": 3250,
+      "at": 318
+    },
+    {
+      "type": "dub-cue",
+      "start": 250,
+      "end": 3250,
+      "speaker": 1,
+      "category": "masculine",
+      "at": 3280
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 6250,
+      "end": 9250,
+      "at": 6310
+    },
+    {
+      "type": "dub-cue",
+      "start": 6250,
+      "end": 9250,
+      "speaker": 2,
+      "category": "feminine",
+      "at": 9273
+    },
+    {
+      "type": "source-turn",
+      "phase": "start",
+      "start": 12250,
+      "end": 15250,
+      "at": 12306
+    },
+    {
+      "type": "dub-cue",
+      "start": 12250,
+      "end": 15250,
+      "speaker": 1,
+      "category": "masculine",
+      "at": 15268
+    },
+    {
+      "type": "done",
+      "at": 15290
+    }
+  ],
+  "last_processed_ms": 15280,
+  "last_buffer": {
+    "lag": 1.0629999999999988,
+    "reason": null,
+    "media": 14.217,
+    "capture": 15.28,
+    "processed": 15.28,
+    "paused": false,
+    "ready": 2,
+    "frames": 428,
+    "buffered": [
+      [
+        8.213,
+        15.196
+      ]
+    ]
+  },
+  "browser_voice_played": 3,
+  "finished_after_source": false,
+  "correct_speaker_sequence": true
+}

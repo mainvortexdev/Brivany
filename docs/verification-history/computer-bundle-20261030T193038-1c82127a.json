@@ -1,0 +1,19 @@
+{
+  "suite": "computer-bundle",
+  "started_at": "2026-10-30T19:30:38.338257+00:00",
+  "finished_at": "2026-10-30T19:30:40.075628+00:00",
+  "duration_seconds": 1.737371,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "tests.test_computer_backend"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": ".......s....\r\n----------------------------------------------------------------------\r\nRan 12 tests in 1.000s\r\n\r\nOK (skipped=1)\r\n"
+}

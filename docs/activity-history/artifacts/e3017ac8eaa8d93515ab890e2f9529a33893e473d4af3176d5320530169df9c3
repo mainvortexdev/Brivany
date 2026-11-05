@@ -1,0 +1,23 @@
+{
+  "suite": "translation",
+  "started_at": "2026-10-28T00:25:01.071684+00:00",
+  "finished_at": "2026-10-28T00:25:05.513063+00:00",
+  "duration_seconds": 4.441379,
+  "command": [
+    "<local-path>\\.venv\\Scripts\\python.exe",
+    "-X",
+    "utf8",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_translation.py"
+  ],
+  "exit_code": 1,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "----------------------------------------\r\nException occurred during processing of request from ('127.0.0.1', 54322)\r\nFTraceback (most recent call last):\r\n  File \"<local-path>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\socketserver.py\", line 697, in process_request_thread\r\n    self.finish_request(request, client_address)\r\n  File \"<local-path>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\socketserver.py\", line 362, in finish_request\r\n    self.RequestHandlerClass(request, client_address, self)\r\n  File \"<local-path>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\socketserver.py\", line 766, in __init__\r\n    self.handle()\r\n  File \"<local-path>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\http\\server.py\", line 442, in handle\r\n    self.handle_one_request()\r\n  File \"<local-path>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\http\\server.py\", line 408, in handle_one_request\r\n    self.raw_requestline = self.rfile.readline(65537)\r\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"<local-path>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\socket.py\", line 720, in readinto\r\n    return self._sock.recv_into(b)\r\n           ^^^^^^^^^^^^^^^^^^^^^^^\r\nConnectionAbortedError: [WinError 10053] Se ha anulado una conexión establecida por el software en su equipo host\r\n----------------------------------------\r\n..----------------------------------------\r\nException occurred during processing of request from ('127.0.0.1', 54328)\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\socketserver.py\", line 697, in process_request_thread\r\n    self.finish_request(request, client_address)\r\n  File \"<local-path>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\socketserver.py\", line 362, in finish_request\r\n    self.RequestHandlerClass(request, client_address, self)\r\n  File \"<local-path>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\socketserver.py\", line 766, in __init__\r\n    self.handle()\r\n  File \"<local-path>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\http\\server.py\", line 442, in handle\r\n    self.handle_one_request()\r\n  File \"<local-path>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\http\\server.py\", line 408, in handle_one_request\r\n    self.raw_requestline = self.rfile.readline(65537)\r\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"<local-path>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\socket.py\", line 720, in readinto\r\n    return self._sock.recv_into(b)\r\n           ^^^^^^^^^^^^^^^^^^^^^^^\r\nConnectionAbortedError: [WinError 10053] Se ha anulado una conexión establecida por el software en su equipo host\r\n----------------------------------------\r\n.........\r\n======================================================================\r\nFAIL: test_close_interrupts_blocked_request_and_discards_its_output (test_translation.TranslationKeepAliveTests.test_close_interrupts_blocked_request_and_discards_its_output)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"<local-path>\\tests\\test_translation.py\", line 208, in test_close_interrupts_blocked_request_and_discards_its_output\r\n    self.assertFalse(worker.is_alive()); self.assertEqual(outputs, [])\r\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: True is not false\r\n\r\n----------------------------------------------------------------------\r\nRan 12 tests in 3.787s\r\n\r\nFAILED (failures=1)\r\n"
+}

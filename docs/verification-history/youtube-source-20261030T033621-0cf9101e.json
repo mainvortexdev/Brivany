@@ -1,0 +1,16 @@
+{
+  "suite": "youtube-source",
+  "started_at": "2026-10-30T03:36:21.927726+00:00",
+  "finished_at": "2026-10-30T03:36:22.188028+00:00",
+  "duration_seconds": 0.260302,
+  "command": [
+    "node",
+    "--test",
+    "tests/youtube-source.test.cjs",
+    "tests/dub-audio-sink.test.cjs"
+  ],
+  "exit_code": 0,
+  "external_calls": 0,
+  "gpu_seconds": 0,
+  "output": "✔ client handshake requires exact popup, origin and random nonce; PCM transfers a copy (7.5635ms)\n✔ client cancellation before ready closes popup and rejects; blocked popup is actionable (4.1769ms)\n✔ client stop flushes generations, ignores late schedule and supports original volume (2.6071ms)\n✔ sink rejects wrong origin, wrong opener and nonce before constructing audio (9.8262ms)\n✔ autoplay denial asks for explicit activation and schedules no hidden audio (2.6456ms)\n✔ sink queue is bounded, source gain capped and stop prevents stale language audio (9.7146ms)\n✔ translation-only flush keeps original monitoring sources and pending acknowledgement alive (5.958ms)\n✔ strict YouTube links normalize only a safe fixed video identity (3.7321ms)\n✔ constructing does not request YouTube or autoplay; explicit load creates origin-bound controlled iframe (4.6993ms)\n✔ normalized states and video errors cannot arrive from a destroyed old player (3.0875ms)\n✔ API loads only after explicit load and cancelled initialization never inserts a stale iframe (1.8109ms)\nℹ tests 11\nℹ suites 0\nℹ pass 11\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 155.6476\n"
+}
