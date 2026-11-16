@@ -29,7 +29,8 @@ export async function createDesktopCommand(env,deviceId,phone,type,instruction,p
  if(!await stmt(env,"SELECT name FROM sqlite_master WHERE type='table' AND name='brivany_desktop_devices'").first())return null;
  const device=await stmt(env,'SELECT * FROM brivany_desktop_devices WHERE device_id=? AND phone=?',deviceId,phone).first();
  if(!device)return null;
- if(!device.enabled||phone!==owner(env))throw Error('desktop_disabled');
+ const tenant=await linkedTenant(env,phone,services);
+ if(!device.enabled||!tenant||tenant.userId!==device.user_id)throw Error('desktop_disabled');
  if(!['instruction','instruction_reference','screenshot'].includes(type)||typeof instruction!=='string'||!instruction.trim()||instruction.length>2000)throw Error('desktop_instruction_invalid');
  if(!Number.isInteger(ttl)||ttl<1000||ttl>600000)throw Error('desktop_ttl_invalid');
  const requestKey=payload?.requestKey||crypto.randomUUID();
@@ -64,6 +65,10 @@ export async function handleDesktopRoute(request,env,services,{userFromRequest}=
   const link=await stmt(env,'SELECT phone FROM vetsa_app_agent_links WHERE user_id=? AND linked_at IS NOT NULL',user.id).first();
   if(!link?.phone)return json({error:'Vincula tu WhatsApp desde Brivany.'},403);
   if(!desktopId(data.deviceId)||!keyOK(data.deviceKey)||typeof data.name!=='string'||!data.name.trim()||data.name.length>80||/[\x00-\x1f]/.test(data.name))return json({error:'Equipo no válido.'},400);
+  if(data.demoToken!==undefined){
+   if(typeof data.demoToken!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(data.demoToken)||!env.BRIVANY_DEMO?.enroll)return json({error:'La cuenta de demostración no está disponible.'},403);
+   try{await env.BRIVANY_DEMO.enroll(user.id,data.demoToken,link.phone);}catch{return json({error:'No se pudo vincular la cuenta de demostración.'},403);}
+  }
   const hash=await desktopHash(data.deviceKey);
   const changed=await stmt(env,`INSERT INTO brivany_desktop_devices VALUES(?,?,?,?,?,1,?,?) ON CONFLICT(device_id) DO UPDATE SET enabled=1,last_seen=excluded.last_seen,device_name=excluded.device_name WHERE user_id=excluded.user_id AND phone=excluded.phone AND key_hash=excluded.key_hash RETURNING device_id`,data.deviceId,user.id,link.phone,data.name,hash,now,now).first();
   return changed?json({registered:true,phone:'••••'+link.phone.slice(-4)}):json({error:'La identidad del equipo cambió.'},403);

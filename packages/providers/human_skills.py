@@ -5,6 +5,7 @@ Protocol: https://dev.meta.ai/docs/video-understanding and
 https://dev.meta.ai/docs/protocols/responses (checked 2026-10-27).
 """
 from __future__ import annotations
+from packages.providers.provider_access import endpoint,provider_request
 
 import base64
 from http.client import HTTPException
@@ -80,7 +81,7 @@ def human_skill_provider_status() -> dict:
 
 
 def _post_json(api_key: str, payload: bytes) -> bytes:
-    req = request.Request(ENDPOINT, data=payload, method="POST", headers={
+    req = provider_request(endpoint(ENDPOINT), data=payload, method="POST", headers={
         "Authorization": "Bearer " + api_key, "Content-Type": "application/json",
         "Accept": "application/json", "User-Agent": "Brivany-HumanSkills/0.1",
     })

@@ -1,3 +1,4 @@
+import {demoChannelEnvironment} from './demo-channel.js';
 import {melodiEnvironment} from './melodi-identity.js';
 
 const phone=value=>String(value||'').replace(/\D/g,'');
@@ -40,7 +41,7 @@ export async function linkedTenant(env,number,services){
   let profile={};
   if(row.profile_encrypted){const decoded=await services.decrypt(row.profile_encrypted,row.profile_iv);profile=typeof decoded==='string'?JSON.parse(decoded):decoded;
     if(profile?.userId!==row.user_id)throw Error('tenant_profile_integrity');}
-  return{userId:row.user_id,phone:normalized,email:profile.email||'',timeZone:row.time_zone||env.TIME_ZONE||'UTC'};
+  return{userId:row.user_id,name:profile.name||'',phone:normalized,email:profile.email||'',timeZone:row.time_zone||env.TIME_ZONE||'UTC'};
 }
 export function tenantEnvironment(env,tenant){
   if(!validPhone(tenant?.phone)||typeof tenant.userId!=='string'||!tenant.userId)throw Error('tenant_scope_required');
@@ -53,9 +54,10 @@ export function tenantEnvironment(env,tenant){
       'OWNER_COGNIRA_DEVICE_ID','REQUESTED_MOTIVATION_RESTORE_REV','PERSONAL_ROUTINES_SETUP_REV','OWNER_CONTACT_POLICY_BOOTSTRAP_TOPICS'])scoped[key]='';
     for(const key of Object.keys(scoped))if(key.startsWith('REQUESTED_')&&key.endsWith('_REV'))scoped[key]='';
     scoped.OWNER_EMAIL_FORWARD_TO=tenant.email;
+    scoped.MELODI_OWNER_NAME=tenant.name||'titular de esta cuenta';
     scoped.GOOGLE_CALENDAR_OWNER_EMAIL='';
   }
-  return melodiEnvironment(scoped);
+  return melodiEnvironment(demoChannelEnvironment(scoped,tenant.userId));
 }
 export async function queuedTenantEnvironment(env,number,services){
   const normalized=phone(number),primary=phone(env.MELODI_PRIMARY_OWNER||env.OWNER_WHATSAPP_NUMBER);

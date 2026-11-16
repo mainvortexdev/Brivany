@@ -6,6 +6,41 @@ Una aplicación de escritorio para conversar con Melodi, trabajar con agentes y 
 
 **Vista previa 0.2.0.** Algunas integraciones necesitan cuentas, permisos y servicios adicionales. La descarga no incluye claves de API ni acceso de pago a los proveedores.
 
+## Evaluación privada del equipo de Jon
+
+La edición **Brivany Jon Demo 0.2.1** se facilita mediante un enlace privado con
+caducidad. Incluye una cuenta de demostración y acceso temporal a Meta, Cartesia
+y Deepgram a través del servidor de Brivany. **No contiene sus claves API.** El
+presupuesto compartido de la evaluación es de **5 USD**, con reservas
+conservadoras antes de cada petición; no es un saldo independiente por equipo.
+El acceso se revoca al terminar la evaluación. El instalador privado incluye el
+backend verificado del ordenador, Node y FFmpeg; la descarga pública 0.2.0 sigue
+siendo la edición para configurar proveedores propios.
+
+Para la evaluación, sigue la [guía de prueba](docs/demo-jon-20261116.md):
+
+1. Instala la edición privada y abre el chat de Melodi. La cuenta demo se activa
+   por Internet; puedes consultar su saldo en **Ajustes → Cuenta**.
+2. Prioriza **Traducción auditiva** en WorkSpace. Para videos de YouTube/Chromium,
+   instala la [extensión](browser-extension/README.md). La captura directa del
+   audio general de Windows requiere una ruta separada de salida, actualmente
+   FxSound; no viene instalado con Brivany.
+3. Para controlar tu PC desde WhatsApp, inicia sesión con **tu propia Cuenta
+   Vetsa**, vincula tu número en **Ajustes → Conexiones** enviando el código al
+   número de Melodi y activa el control de **este ordenador**. Déjalo encendido,
+   conectado y con Brivany en segundo plano. Las aprobaciones se resuelven desde
+   tu WhatsApp; desactivar el vínculo detiene el acceso.
+4. Para llamadas, introduce **tu API key de Telnyx y tu número emisor activo o
+   verificado** en el panel de la demo. Brivany prepara la conexión de voz; no
+   compra números. Telnyx factura las llamadas en tu cuenta. El servicio puede
+   programarlas desde la nube con el PC apagado. No se ofrecen llamadas por
+   WhatsApp; ese chat sirve para pedir llamadas telefónicas.
+
+Las conexiones oficiales de Calendar, Drive y Gmail conservan el OAuth de
+Brivany y la autorización separada de cada usuario. Su revisión pública de
+Google sigue pendiente. No compartas tus tokens, el instalador privado ni su
+invitación en repositorios públicos.
+
 ## Probar Melodi en Windows
 
 1. Descarga **Brivany-Setup-0.2.0-x64.exe** desde [Releases](https://github.com/mainvortexdev/Brivany/releases/tag/v0.2.0). Instálalo y abre **Brivany** desde el menú Inicio. El instalador incluye Python; no necesitas instalarlo por separado.

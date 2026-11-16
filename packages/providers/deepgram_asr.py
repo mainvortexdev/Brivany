@@ -14,6 +14,7 @@ the latest interim:
 (Deepgram's `start + duration`). No speaker labels are used: speakers come from
 local clustering. No audio or text is stored.
 """
+from packages.providers.provider_access import endpoint,demo_headers
 import json
 import os
 import queue
@@ -49,7 +50,7 @@ class DeepgramAsrSocket:
         if not key:
             raise ValueError('Configura Deepgram para usar su transcripción.')
         language = language or os.environ.get('BRIVANY_DEEPGRAM_LANGUAGE', 'multi').strip() or 'multi'
-        self.socket = connector(deepgram_url(language=language), additional_headers={'Authorization': 'Token ' + key},
+        self.socket = connector(endpoint(deepgram_url(language=language)), additional_headers=demo_headers({'Authorization': 'Token ' + key}),
                                 open_timeout=open_timeout, close_timeout=1, max_size=262144, max_queue=16,
                                 compression=None, proxy=None,
                                 # Audio flows continuously; a client ping timing out
@@ -201,7 +202,7 @@ class DeepgramFluxSocket(DeepgramAsrSocket):
             from websockets.sync.client import connect as connector
         def flux_connector(_url, **options):
             url = FLUX_URL + '?' + urlencode({'model': FLUX_MODEL, 'encoding': 'linear16', 'sample_rate': 24000})
-            return connector(url, **options)
+            return connector(endpoint(url), **options)
         super().__init__(connector=flux_connector, key=key, open_timeout=open_timeout, language=language)
 
     def translate(self, event):

@@ -1,3 +1,4 @@
+import {prepareReviewDraft} from './review-draft.js';
 import { melodiEnvironment, MELODI_RELEASE } from './melodi-identity.js';
 import {recallWebhook,recallJob} from './meetings/service.js';
 import {meetingMedia} from './meetings/media.js';
@@ -1237,6 +1238,8 @@ export default {
             try{await env.MELODI_CALLS.list(String(message.body.ownerPhone));result.checks.storage='passed';}catch{result.checks.storage='unavailable';}
             for(const [provider,status] of Object.entries(result.checks||{}))await env.VETSA_CLOUD.prepare(`INSERT INTO brivany_whatsapp_integration_checks VALUES(?,?,?,?,?) ON CONFLICT(release,provider) DO UPDATE SET status=excluded.status,http_status=excluded.http_status,updated_at=excluded.updated_at`).bind(MELODI_RELEASE,'calls-'+provider,status,null,Date.now()).run();
           }
+        }else if(message.body?.type==='melodi_review_draft'){
+          await prepareReviewDraft(melodiEnvironment(env),message.body,sendWhatsApp);
         }else if(message.body?.type==='melodi_google_check'){
           await checkGoogleConsentStarts(env,message.body);
         }else if(message.body?.type==='melodi_notify'){

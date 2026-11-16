@@ -1,5 +1,22 @@
 # 17. Bitácora local y evidencias
 
+16 de noviembre, edición privada Jon Demo 0.2.1. Cuenta con presupuesto compartido
+de 5 USD en servidor, claves nuevas de Meta/Cartesia/Deepgram cifradas, activación
+por equipo y revocación. Instalador con invitación limitada, backend verificado y
+Node/FFmpeg; auditoría sin credenciales conocidas ni perfiles. Instalar, abrir,
+activar cuenta, sondear backend y desinstalar pasan en perfil separado. Se conserva
+la versión pública 0.2.0 y el OAuth oficial de Google por usuario.
+
+Las pruebas reales descubren y corrigen PCM convertido a texto en el proxy
+WebSocket. Una frase sintética pasa por Muse, Ink-2 y Deepgram, traducción y voz
+Cartesia; el recorrido River termina con PCM de salida. Los primeros rechazos y
+una interrupción intermedia permanecen registrados. Saldo reservado restante:
+3,4316 USD; factura real y GPU desconocidas. WhatsApp se publica conservando el
+servicio y Recall, con cuenta demo por usuario, PC aislado y Telnyx propio API +
+número. Quedan pendientes la primera orden desde el teléfono del evaluador, la
+captura/escucha física y una llamada real; no se declaran verificadas. Notas de voz
+de WhatsApp fuera de la demo. [Guía, pruebas y límites](demo-jon-20261116.md).
+
 16 de noviembre, preparación de la vista previa pública 0.2.0 con instalador
 Windows y README de prueba. Contacto cambiado a daniel@vetsa.es y publicado en
 la web oficial; se conservan los servicios OAuth de Google para las cuentas del

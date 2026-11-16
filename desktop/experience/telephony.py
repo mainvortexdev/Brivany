@@ -73,6 +73,13 @@ class TelephoneBridge:
 
     def _telephone_gateway(self):
         """Telnyx profile saved by `python -m tools.setup_telnyx provision`."""
+        from services.demo_account import current
+        demo=current()
+        if demo is not None:
+            if not hasattr(self,'_demo_telephone_client'):
+                from services.telephony.demo_client import DemoCallClient
+                self._demo_telephone_client=DemoCallClient(demo)
+            return self._demo_telephone_client
         from services.telephony.call_control import load_environment
         import os
         load_environment()

@@ -162,6 +162,10 @@ def resolve_backend(source=None,*,bundle_root=BUNDLES,environ=None):
             if set(value)!={'schema_version','id'} or value['schema_version']!=1 or not re.fullmatch('[0-9a-f]{32}',value['id']):raise BackendError('Selección de backend inválida.')
             return BackendLocation(bundle_root/value['id'],'bundled')
         except (OSError,ValueError,TypeError):return BackendLocation(bundle_root/'unavailable','bundled','invalid_bundle_selection')
+    # A private, allowlisted distribution can carry the same verified backend
+    # read-only. User-selected bundles retain priority; no personal profile ships.
+    installed=ROOT/'computer-backend'
+    if installed!=bundle_root and (installed/'active.json').is_file():return resolve_backend(bundle_root=installed,environ={})
     return BackendLocation(ROOT.parent/'cognira-desktop','development')
 
 

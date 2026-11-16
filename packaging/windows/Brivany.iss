@@ -4,6 +4,9 @@
 #ifndef AppVersion
   #define AppVersion "0.1.0"
 #endif
+#ifndef SetupName
+  #define SetupName "Brivany-Setup-" + AppVersion + "-x64"
+#endif
 [Setup]
 AppId={code:PackageAppId}
 AppName=Brivany
@@ -12,7 +15,11 @@ AppPublisher=Brivany
 AppPublisherURL=https://brivany.vetsa.es
 AppSupportURL=https://brivany.vetsa.es
 AppUpdatesURL=https://brivany.vetsa.es/windows/stable.json
+#ifdef DemoEdition
+DefaultDirName={localappdata}\Programs\Brivany Demo
+#else
 DefaultDirName={localappdata}\Programs\Brivany
+#endif
 DefaultGroupName=Brivany
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
@@ -25,7 +32,7 @@ SetupIconFile=..\..\desktop\assets\brivany.ico
 UninstallDisplayIcon={app}\Brivany.exe
 UninstallDisplayName=Brivany
 OutputDir={#OutputDir}
-OutputBaseFilename=Brivany-Setup-{#AppVersion}-x64
+OutputBaseFilename={#SetupName}
 Compression=lzma2/fast
 SolidCompression=yes
 LZMANumBlockThreads=2
@@ -75,7 +82,11 @@ end;
 
 function PackageAppId(Param: String): String;
 begin
+#ifdef DemoEdition
+  if NormalInstall() then Result := '{31DBAA40-6E27-43BC-92A8-175F2EDE9AD4}'
+#else
   if NormalInstall() then Result := '{42C77CCB-DA68-4ED2-909F-5EE7A3E4885B}'
+#endif
   else Result := 'Brivany.Package.Acceptance';
 end;
 

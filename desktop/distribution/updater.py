@@ -93,6 +93,9 @@ class UpdateService:
         except (OSError,ValueError,KeyError,TypeError):pass
     def status(self):return dict(self.state)
     def check(self):
+        if (TRUST.parent/'demo-bootstrap.json').is_file():
+            self.state={'state':'current','version':VERSION,'message':'Esta edición de evaluación se actualiza con el instalador privado que proporciona Daniel.'}
+            return self.status()
         if not self.lock.acquire(False):return self.status()
         try:
             if self.state['state']=='ready':return self.status()

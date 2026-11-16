@@ -6,6 +6,7 @@ session owns its HTTP/1.1 connection and can interrupt an in-flight read.
 Protocol: https://dev.meta.ai/docs/protocols/chat-completions
 """
 from __future__ import annotations
+from packages.providers.provider_access import https_connection
 
 import io
 import json
@@ -256,7 +257,7 @@ class MetaTranslationSession:
         with self._request_lock:
             with self._state_lock:
                 if self._closed:return False
-                if self._connection is None:self._connection=self._factory(self.host,443,timeout=2)
+                if self._connection is None:self._connection=https_connection(self._factory,self.host,443,timeout=2)
                 connection=self._connection;self._active=True
             success=False
             try:
@@ -315,7 +316,7 @@ class MetaTranslationSession:
                 if self._closed:
                     raise VoiceError("mt_session_closed", "La sesión de traducción está cerrada.")
                 if self._connection is None:
-                    self._connection = self._factory(self.host, 443, timeout=timeout)
+                    self._connection = https_connection(self._factory,self.host,443,timeout=timeout)
                 connection = self._connection
                 self._active = True
             started = time.monotonic()

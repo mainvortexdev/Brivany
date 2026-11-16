@@ -5,6 +5,7 @@ https://dev.meta.ai/docs/image-understanding
 https://dev.meta.ai/docs/protocols/responses
 No retry, media persistence, tool call, price inference or automatic scheduling.
 """
+from packages.providers.provider_access import endpoint,provider_request
 import base64
 from datetime import date
 from http.client import HTTPException
@@ -117,7 +118,7 @@ def validate_image(image, mime_type):
 
 
 def _post_json(key, payload):
-    req = request.Request(ENDPOINT, data=payload, method='POST', headers={
+    req = provider_request(endpoint(ENDPOINT), data=payload, method='POST', headers={
         'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json',
         'Accept': 'application/json', 'User-Agent': 'Brivany-Sous/0.1'})
     with request.build_opener(_NoRedirect()).open(req, timeout=TIMEOUT_SECONDS) as response:

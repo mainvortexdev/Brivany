@@ -1,9 +1,10 @@
 """Bounded semantic planning with Meta; no generated code is ever evaluated."""
+from packages.providers.provider_access import endpoint,provider_request as Request
 import json
 import os
 import re
 import threading
-from urllib.request import Request, build_opener
+from urllib.request import  build_opener
 from packages.providers.live_voice import NoRedirect
 from packages.providers.conversation import cancellable_reply
 
@@ -218,7 +219,7 @@ class MetaPlanner:
         body = {'model':model, 'messages':[{'role':'developer','content':prompt}, {'role':'user','content':user}],
                 'max_completion_tokens':max_tokens, 'reasoning_effort':'minimal', 'stream':False}
         if response_schema is not None:body.update(tools=[{'type':'function','function':{'name':'evaluate_agent','description':'Entrega el veredicto y una comprobación por criterio.','strict':True,'parameters':response_schema}}],tool_choice='auto',parallel_tool_calls=False)
-        request = Request('https://api.meta.ai/v1/chat/completions', data=json.dumps(body).encode(),
+        request = Request(endpoint('https://api.meta.ai/v1/chat/completions'), data=json.dumps(body).encode(),
                           headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'}, method='POST')
         if cancelled is not None and cancelled.is_set(): raise ValueError('Tarea cancelada.')
         with self.opener.open(request, timeout=35) as response, cancellable_reply(response, cancelled):

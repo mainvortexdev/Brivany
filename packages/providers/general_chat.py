@@ -11,6 +11,8 @@ def status():
             'model':value.get('model','deepseek-ai/DeepSeek-V4-Flash'),'via_cloudflare':bool(value.get('gateway_id') or value.get('relay_url')),
             'enabled':value.get('enabled',False),'encrypted':True}
 def configuration():
+    from packages.providers.provider_access import enabled
+    if enabled():return None
     value=store().read()
     if not value.get('enabled'):return None
     relay=value.get('relay_url','')

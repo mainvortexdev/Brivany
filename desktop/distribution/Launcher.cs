@@ -10,8 +10,8 @@ using System.Reflection;
 [assembly: AssemblyTitle("Brivany")]
 [assembly: AssemblyProduct("Brivany")]
 [assembly: AssemblyCompany("Brivany")]
-[assembly: AssemblyVersion("0.2.0.0")]
-[assembly: AssemblyFileVersion("0.2.0.0")]
+[assembly: AssemblyVersion("0.2.1.0")]
+[assembly: AssemblyFileVersion("0.2.1.0")]
 static class Launcher {
     static string Quote(string value) { return "\"" + value.Replace("\"", "\\\"") + "\""; }
     [STAThread] static int Main(string[] args) {
@@ -30,7 +30,11 @@ static class Launcher {
             p.Arguments="-I -B "+Quote(script);
             foreach(string arg in args)p.Arguments+=" "+Quote(arg);
             p.EnvironmentVariables["BRIVANY_INSTALL_DIR"]=home;
+#if PRIVATE_DEMO
+            p.EnvironmentVariables["BRIVANY_DATA_DIR"]=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"Brivany Demo","User Data");
+#else
             p.EnvironmentVariables["BRIVANY_DATA_DIR"]=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"Brivany","User Data");
+#endif
             // Keep an explicit isolated directory for automated package checks.
             string testData=Environment.GetEnvironmentVariable("BRIVANY_TEST_DATA_DIR");
             if(!String.IsNullOrEmpty(testData))p.EnvironmentVariables["BRIVANY_DATA_DIR"]=Path.GetFullPath(testData);

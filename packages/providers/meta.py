@@ -9,6 +9,7 @@ https://dev.meta.ai/docs/protocols/chat-completions
 https://dev.meta.ai/docs/structured-output
 """
 from __future__ import annotations
+from packages.providers.provider_access import provider_request
 
 import json
 import os
@@ -104,7 +105,7 @@ class _NoRedirect(request.HTTPRedirectHandler):
 
 
 def _post_json(url: str, api_key: str, payload: bytes) -> bytes:
-    req = request.Request(url, data=payload, method="POST", headers={
+    req = provider_request(url, data=payload, method="POST", headers={
         "Authorization": f"Bearer {api_key}", "Content-Type": "application/json",
         "Accept": "application/json", "User-Agent": "Brivany-H1/0.1",
     })

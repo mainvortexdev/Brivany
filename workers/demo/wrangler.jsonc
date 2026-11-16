@@ -1,0 +1,13 @@
+{
+ "$schema":"../whatsapp/node_modules/wrangler/config-schema.json",
+ "name":"brivany-demo",
+ "main":"worker.mjs",
+ "compatibility_date":"2026-11-16",
+ "workers_dev":false,
+ "preview_urls":false,
+ "r2_buckets":[{"binding":"DEMO_RELEASES","bucket_name":"vetsa-media-prod"}],
+ "routes":[{"pattern":"demo.brivany.vetsa.es","custom_domain":true}],
+ "durable_objects":{"bindings":[{"name":"DEMO_ACCOUNTS","class_name":"DemoAccount"},{"name":"DEMO_PHONES","class_name":"DemoPhone"}]},
+ "migrations":[{"tag":"demo-accounts-v1","new_sqlite_classes":["DemoAccount","DemoPhone"]}],
+ "observability":{"enabled":true,"logs":{"enabled":true,"head_sampling_rate":0.1},"traces":{"enabled":true,"head_sampling_rate":0.1},"redact_query_string":true}
+}

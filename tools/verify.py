@@ -11,6 +11,11 @@ from services.activity import ActivityStore, ROOT
 VETSA_WORKER = Path(os.environ.get("BRIVANY_VETSA_INTELLIGENCE_DIR", str(ROOT.parent / "Vetsa-Intelligence"))) / "cloudflare-worker"
 
 SUITES = {
+    "demo-cloud": ["node","--test","--test-timeout=45000","workers/demo/test/policy.test.mjs","workers/demo/test/runtime.test.mjs","workers/demo/test/socket.test.mjs","workers/demo/test/membership.test.mjs","workers/demo/test/download.test.mjs","workers/demo/test/audio-http.test.mjs"],
+    "demo-phone": ["node","--import","./workers/calls/test/register.mjs","--test","--test-timeout=45000","workers/demo/test/phone.test.mjs"],
+    "demo-native": [sys.executable,"-X","utf8","-B","-m","unittest","tests.test_demo_account"],
+    "distribution": [sys.executable,"-X","utf8","-B","-m","unittest","tests.test_distribution"],
+    "review-draft": ["node","--test","workers/whatsapp/test/review-draft.test.js"],
     "windows-installer": [sys.executable,"-X","utf8","-B","-m","tools.check_windows_installer"],
     "windows-release": [sys.executable,"-X","utf8","-B","-m","tools.audit_windows_release","--local-only"],
     "recall-meetings": ["node","--test","--test-timeout=20000","--import","./workers/whatsapp/test/cloudflare-register.js","workers/whatsapp/test/recall-meetings.test.js"],

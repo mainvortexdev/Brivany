@@ -51,7 +51,7 @@ for name in ('volume-ducking.js','workspace-tools.css','icons.js','module.css', 
     ASSETS[name] = (EXPERIENCE / name, 'text/css; charset=utf-8' if name.endswith('.css') else 'text/javascript; charset=utf-8')
 for name in ('file-approvals.js','file-approvals.css'):
     ASSETS[name]=(EXPERIENCE/name,'text/css; charset=utf-8' if name.endswith('.css') else 'text/javascript; charset=utf-8')
-for name in ('agent-avatars.js','agent-avatars.css','blobatar-motion.css','account.js','account.css','workspace-agents.js','workspace-agents.css','workspace-results.js','workspace-results.css','glisse.css'):
+for name in ('agent-avatars.js','agent-avatars.css','blobatar-motion.css','account.js','account.css','demo-account.js','demo-account.css','workspace-agents.js','workspace-agents.css','workspace-results.js','workspace-results.css','glisse.css'):
     ASSETS[name]=(EXPERIENCE/name,'text/css; charset=utf-8' if name.endswith('.css') else 'text/javascript; charset=utf-8')
 for name in ('chat-media.js','chat-history.js','chat-activity.js','chat-activity.css','chat-text.js','chat-scroll.js','chat-agents.js','chat-agents.css','image-viewer.js','image-viewer.css','shell-boot.js'):
     ASSETS[name]=(ROOT/'desktop/experience'/name,'text/css; charset=utf-8' if name.endswith('.css') else 'text/javascript; charset=utf-8')
@@ -211,7 +211,7 @@ def experience_handler(base_handler):
                 else:
                     page = (ROOT / 'web' / STATIC[route][0]).read_text(encoding='utf-8')
                 if route=='/connections':page=page.replace('</head>','<link rel="stylesheet" href="/desktop-shell/spotify-connections.css"><script src="/desktop-shell/spotify-connections.js" defer></script><link rel="stylesheet" href="/desktop-shell/sync-connections.css"><script src="/desktop-shell/sync-connections.js" defer></script></head>')
-                if route=='/settings':page=page.replace('</head>','<link rel="stylesheet" href="/desktop-shell/account.css"><script src="/desktop-shell/account.js" defer></script></head>')
+                if route=='/settings':page=page.replace('</head>','<link rel="stylesheet" href="/desktop-shell/account.css"><script src="/desktop-shell/account.js" defer></script><link rel="stylesheet" href="/desktop-shell/demo-account.css"><script src="/desktop-shell/demo-account.js" defer></script></head>')
                 framing='' if route in {'/app','/app/','/settings'} else '<link rel="stylesheet" href="/desktop-shell/module.css">'
                 page = page.replace('</head>', framing+'<script src="/desktop-shell/icons.js"></script><script src="/desktop-shell/module.js"></script><link rel="stylesheet" href="/desktop-shell/computer.css"><link rel="stylesheet" href="/desktop-shell/references.css"><script src="/desktop-shell/computer.js" defer></script><script src="/desktop-shell/references.js" defer></script></head>')
                 self.send_bytes(200, page.encode('utf-8'), 'text/html; charset=utf-8')

@@ -98,7 +98,13 @@ class WhatsAppDesktop:
             profile=dict(self.profile);generation=self.generation
         from services.whatsapp_cloud import WhatsAppCloudHTTP
         # The account object checks its generation after the authenticated request.
-        result=self.account.call_whatsapp('/desktop/register',{'deviceId':profile['deviceId'],'deviceKey':profile['deviceKey'],'name':profile['name']},http=WhatsAppCloudHTTP())
+        body={'deviceId':profile['deviceId'],'deviceKey':profile['deviceKey'],'name':profile['name']}
+        from services.demo_account import current as demo_account
+        demo=demo_account()
+        if demo is not None:
+            with demo.lock:body['demoToken']=(demo.session or {}).get('token','')
+            if not body['demoToken']:raise AccountFailure('Activa la cuenta de demostración antes de vincular el ordenador.')
+        result=self.account.call_whatsapp('/desktop/register',body,http=WhatsAppCloudHTTP())
         if result.get('registered') is not True:raise AccountFailure('No se pudo vincular este ordenador.')
         with self.lock:
             if generation!=self.generation:raise AccountFailure('El permiso cambió durante la vinculación.')

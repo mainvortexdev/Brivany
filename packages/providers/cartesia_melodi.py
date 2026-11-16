@@ -4,6 +4,7 @@ One context per requested phrase, no retries, redirects, cloning or fallback.
 The caller owns closing this stream, including when playback is cancelled.
 """
 from __future__ import annotations
+from packages.providers.provider_access import endpoint,demo_headers
 import base64
 import json
 import os
@@ -50,7 +51,7 @@ class CartesiaPCMStream:
         key=os.getenv('BRIVANY_CARTESIA_API_KEY','').strip()
         if not key:raise VoiceError('tts_not_configured','Configura la clave de Cartesia en el servidor local.')
         try:
-            self.socket=connect(URL,additional_headers={'X-API-Key':key},open_timeout=5,close_timeout=1,
+            self.socket=connect(endpoint(URL),additional_headers=demo_headers({'X-API-Key':key}),open_timeout=5,close_timeout=1,
                 max_size=262144,max_queue=4,compression=None,proxy=None)
             self.socket.send(json.dumps({'model_id':MODEL,'transcript':text,'voice':self.voice_id,
                 'language':self.language,'context_id':self.context_id,'continue':False,

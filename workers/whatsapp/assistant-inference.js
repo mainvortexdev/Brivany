@@ -15,6 +15,7 @@ function completion(result,jsonMode) {
 /** Private assistant aliases have pinned upstream models. Existing image,
  * voice and shared Intelligence API routes remain on their current providers. */
 export async function runAssistantInference(env,body,{timeoutMs=45000}={}) {
+  if(env.BRIVANY_DEMO && env.MELODI_TENANT_USER_ID){const result=await env.BRIVANY_DEMO.generate(env.MELODI_TENANT_USER_ID,body);if(result!==null)return result;}
   if (!assistantNativeInferenceEnabled(env) || !['spaik-flash','spaik-pro'].includes(body?.model)) return null;
   const options=body.options || {};
   if (options.image || options.audio || options.imageUrl || options.audioBase64 || options.mode || options.output) return null;

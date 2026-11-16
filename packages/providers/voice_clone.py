@@ -1,4 +1,5 @@
 """Fixed Cartesia clone endpoint for explicitly authorized speech, in memory."""
+from packages.providers.provider_access import https_connection
 from http.client import HTTPSConnection
 import io
 import json
@@ -17,7 +18,7 @@ class CartesiaVoiceCloner:
         self.journal=journal
 
     def _request(self,method,path,body=None,content_type='application/json'):
-        connection=self.factory('api.cartesia.ai',443,timeout=20)
+        connection=https_connection(self.factory,'api.cartesia.ai',443,timeout=20)
         try:
             connection.request(method,path,body=body,headers={'Authorization':'Bearer '+self.key,'Cartesia-Version':'2026-08-14','Content-Type':content_type,'Accept':'application/json'})
             reply=connection.getresponse();raw=reply.read(65537)

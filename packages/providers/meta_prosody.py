@@ -6,6 +6,7 @@ must have been observed in the operator's model catalog before inference.
 See https://dev.meta.ai/docs/video-understanding (Spark 1.3 audio is preview).
 """
 from __future__ import annotations
+from packages.providers.provider_access import https_connection
 
 import base64
 from datetime import datetime,timezone
@@ -281,7 +282,7 @@ class MetaProsodySession:
                 'response_format':{'type':'json_schema','json_schema':{'name':'BrivanyAudioAdvisory','strict':True,'schema':SCHEMA}},
                 'max_completion_tokens':768,'reasoning_effort':'minimal','stream':False},ensure_ascii=False,allow_nan=False).encode('utf-8')
             if len(body)>MAX_REQUEST_BYTES:raise VoiceError('prosody_input_limit','El análisis de voz supera el tamaño permitido.')
-            connection=self._factory(HOST,443,timeout=TIMEOUT_SECONDS)
+            connection=https_connection(self._factory,HOST,443,timeout=TIMEOUT_SECONDS)
             with self._lock:self._connection=connection
             check();monitor.start();self.requests+=1
             connection.request('POST',PATH,body=body,headers={'Authorization':'Bearer '+self._key,'Content-Type':'application/json','Accept':'application/json'})

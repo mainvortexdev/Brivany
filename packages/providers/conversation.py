@@ -1,11 +1,12 @@
 """Bounded, streamed replies for Melodi. No persistence and no tools or invented sources."""
+from packages.providers.provider_access import endpoint,provider_request as Request
 import json
 import os
 import re
 import socket
 import threading
 from contextlib import contextmanager
-from urllib.request import Request, build_opener
+from urllib.request import  build_opener
 from urllib.error import HTTPError, URLError
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Literal
@@ -148,7 +149,7 @@ def stream_reply(value, *, instructions=INSTRUCTIONS, context=None, cancelled=No
         body['messages'][0]['role']='system';body['max_tokens']=body.pop('max_completion_tokens');body.pop('reasoning_effort')
         body['enable_thinking']=False
         headers.update({'cf-aig-skip-cache':'true','cf-aig-collect-log':'false','User-Agent':'BrivanyDesktop/0.1.0'})
-    request = Request(alternate['endpoint'] if alternate else "https://api.meta.ai/v1/chat/completions", data=json.dumps(body).encode(), method="POST",headers=headers)
+    request = Request(alternate['endpoint'] if alternate else endpoint("https://api.meta.ai/v1/chat/completions"), data=json.dumps(body).encode(), method="POST",headers=headers)
     try:
         with build_opener(NoRedirect()).open(request, timeout=45 if value.source=='chat' else 25) as response, cancellable_reply(response,cancelled):
             if cancelled is not None and cancelled.is_set():return

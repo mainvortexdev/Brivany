@@ -15,6 +15,7 @@ position sent when the event arrived (an upper bound, adequate for direct
 capture, not for synchronized video). Speakers come from local clustering.
 No audio or text is stored.
 """
+from packages.providers.provider_access import endpoint,demo_headers
 import json
 import os
 import queue
@@ -45,7 +46,7 @@ class InkAsrSocket:
         key = (key if key is not None else os.environ.get('BRIVANY_CARTESIA_API_KEY', '')).strip()
         if not key:
             raise ValueError('Configura Cartesia para usar Ink-2.')
-        self.socket = connector(ink_url(), additional_headers={'X-API-Key': key}, open_timeout=open_timeout,
+        self.socket = connector(endpoint(ink_url()), additional_headers=demo_headers({'X-API-Key': key}), open_timeout=open_timeout,
                                 close_timeout=1, max_size=262144, max_queue=16, compression=None, proxy=None)
         self.events = queue.Queue(maxsize=256)
         self.frames = 0

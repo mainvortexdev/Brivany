@@ -1,4 +1,5 @@
 """Fixed-origin Meta tools. Provider content never becomes executable code."""
+from packages.providers.provider_access import endpoint,provider_request as Request
 import base64
 from datetime import datetime, timezone
 from io import BytesIO
@@ -7,7 +8,7 @@ import os
 import re
 import hashlib
 from pathlib import Path
-from urllib.request import Request,build_opener
+from urllib.request import build_opener
 from urllib.error import HTTPError,URLError
 from PIL import Image
 from packages.providers.live_voice import NoRedirect
@@ -146,7 +147,7 @@ class MetaTools:
   key=os.environ.get('BRIVANY_META_API_KEY','').strip()
   if not key:raise ValueError('Configura Meta en Ajustes → Servicios.')
   if cancelled.is_set():raise ValueError('Tarea cancelada.')
-  request=Request('https://api.meta.ai/v1/'+path,data=json.dumps(body,ensure_ascii=False,allow_nan=False).encode(),headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'},method='POST')
+  request=Request(endpoint('https://api.meta.ai/v1/'+path),data=json.dumps(body,ensure_ascii=False,allow_nan=False).encode(),headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'},method='POST')
   charge()
   try:
    with self.opener.open(request,timeout=timeout) as response,cancellable_reply(response,cancelled):

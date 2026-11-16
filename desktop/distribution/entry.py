@@ -27,6 +27,9 @@ def main():
                 index=sys.argv.index('--diagnose')
                 Path(sys.argv[index+1]).write_text(json.dumps(report,indent=2),encoding='utf-8')
                 return 0 if report['dependencies']['edgechromium_available'] else 2
+            from packages.runtime_paths import DATA_ROOT
+            from services.demo_account import start_private_demo
+            start_private_demo(APP,DATA_ROOT)
             from desktop.experience.launcher import main as launch
             return launch(sys.argv[1:])
         except Exception:

@@ -1,5 +1,6 @@
 """Muse ASR and Melodi Cartesia TTS. Credentials stay on the local server."""
 from __future__ import annotations
+from packages.providers.provider_access import endpoint, demo_headers
 
 import json
 import logging
@@ -213,7 +214,7 @@ class MuseBridge:
             options=json.loads(first)
             handshake = muse_handshake(options)
             pace=MusePace(options.get('bargeIn') is True and options.get('mode')!='meeting')
-            upstream = connect(MUSE_URL, open_timeout=15, close_timeout=2,
+            upstream = connect(endpoint(MUSE_URL), additional_headers=demo_headers(), open_timeout=15, close_timeout=2,
                                max_size=65536, max_queue=8, compression=None, proxy=None)
             upstream.send(json.dumps(handshake))
             ack = json.loads(upstream.recv(timeout=15))

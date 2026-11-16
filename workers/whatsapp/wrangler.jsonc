@@ -34,6 +34,7 @@
   ],
   "ai": { "binding": "AI" },
   "services": [
+    {"binding":"BRIVANY_DEMO","service":"brivany-demo","entrypoint":"DemoAccess"},
     {"binding":"MELODI_CALLS","service":"brivany-calls"},
     {"binding":"VETSA_IDENTITY","service":"cognira-auth"},
     {

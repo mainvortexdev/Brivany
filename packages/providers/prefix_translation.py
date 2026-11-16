@@ -1,5 +1,6 @@
 """Bounded, in-memory transcription of a selected video's initial ten seconds."""
 from __future__ import annotations
+from packages.providers.provider_access import https_connection
 
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field, replace
@@ -108,7 +109,7 @@ def _transcribe(pcm, *, cancelled, connection_factory=HTTPSConnection):
             f'Content-Type: application/json\r\n\r\n{json.dumps(settings)}\r\n'
             f'--{boundary}\r\nContent-Disposition: form-data; name="audio"; filename="prefix.wav"\r\n'
             'Content-Type: audio/wav\r\n\r\n').encode('utf-8') + buffer.getvalue() + f'\r\n--{boundary}--\r\n'.encode('ascii')
-    connection = connection_factory('api.meta.ai', 443, timeout=ASR_TIMEOUT)
+    connection = https_connection(connection_factory,'api.meta.ai',443,timeout=ASR_TIMEOUT)
     finished = threading.Event()
     deadline = time.monotonic() + ASR_TIMEOUT
     active_socket = None

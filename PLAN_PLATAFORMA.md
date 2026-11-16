@@ -1,5 +1,13 @@
 # Brivany · Plan de la plataforma espacial
 
+16 de noviembre, evaluación privada de Brivany 0.2.1 para el equipo de Jon.
+Traducción auditiva prioritaria; Meta, Cartesia y Deepgram mediante cuenta demo
+limitada a 5 USD compartidos en servidor, claves separadas y revocables.
+Instalador privado con backend verificado y runtime de video; vínculo Vetsa,
+WhatsApp y PC por usuario. Telnyx con API y emisor propios. La versión pública
+no contiene invitaciones ni claves. Se conservan los límites de Google y las
+capacidades aún no acreditadas en la [guía de evaluación](docs/demo-jon-20261116.md).
+
 16 de noviembre, reuniones de Melodi mediante Recall v1.11 en Vetsa AI,
 Frankfurt. Vista Reuniones con enlace Meet/Zoom, entrada inmediata o programada,
 Calendar con selección expresa por evento, transcripción y resumen cifrados.

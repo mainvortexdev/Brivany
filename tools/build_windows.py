@@ -54,9 +54,23 @@ def copy_dependencies(target):
  return done
 
 def main():
+ global BUILD,PAYLOAD,RELEASE,OUT
  parser=argparse.ArgumentParser();parser.add_argument('--iscc',type=Path);parser.add_argument('--refresh',action='store_true',help='Refresh application sources while reusing the verified Python runtime.')
  parser.add_argument('--bundle-motion-binaries',action='store_true',help='Include existing Node/FFmpeg/FFprobe from PATH in app/runtime-bin; downloads nothing.')
+ parser.add_argument('--demo-bootstrap',type=Path,help='Private demo invitation only; provider keys are forbidden.')
+ parser.add_argument('--computer-bundle',type=Path,help='Include an independently verified pinned backend in the private demo.')
+ parser.add_argument('--reuse-runtime',help='Reuse a previously built Python runtime, without downloading dependencies.')
  args=parser.parse_args()
+ bootstrap=None
+ if args.demo_bootstrap:
+  from packages.providers.provider_access import DEMO_ORIGIN
+  bootstrap=json.loads(args.demo_bootstrap.read_text(encoding='utf-8'))
+  if set(bootstrap)!={'schema','origin','invitation','account_name'} or bootstrap['schema']!=1 or bootstrap['origin']!=DEMO_ORIGIN or not re.fullmatch('[A-Za-z0-9_-]{43}',bootstrap['invitation']):raise SystemExit('Invalid private demo invitation. Never supply provider credentials.')
+  BUILD=PRIVATE/('build-'+VERSION+'-jon-demo');PAYLOAD=BUILD/'payload';RELEASE=PAYLOAD/'releases'/VERSION;OUT=ROOT/'Exports'/('Brivany-Jon-Demo-'+VERSION);OUT.mkdir(parents=True,exist_ok=True)
+ if args.computer_bundle:
+  if not bootstrap:raise SystemExit('The supplied backend is allowed only in this explicitly private demo build.')
+  from services.computer.backend import verify_bundle
+  verify_bundle(args.computer_bundle,force=True)
  # Resolve missing motion dependencies before replacing any private build tree.
  from tools.stage_motion_runtime import node_runtime_entries,portable_binary_entries
  motion_entries=node_runtime_entries(ROOT)
@@ -73,6 +87,11 @@ def main():
   target=(RELEASE/'app').resolve()
   if target.parent!=RELEASE.resolve() or not target.is_relative_to(PRIVATE.resolve()) or (RELEASE/'app').is_symlink():raise SystemExit('Unsafe build directory.')
   shutil.rmtree(target)
+ elif args.reuse_runtime:
+  if not re.fullmatch(r'\d+\.\d+\.\d+',args.reuse_runtime):raise SystemExit('Invalid source runtime version.')
+  previous=PRIVATE/('build-'+args.reuse_runtime)/'payload/releases'/args.reuse_runtime
+  deps=json.loads((previous/'app/desktop/distribution/dependencies.json').read_text())
+  shutil.copytree(previous/'python',runtime)
  else:
   runtime.mkdir(parents=True)
   base=Path(sys.base_prefix)
@@ -88,7 +107,7 @@ def main():
   src=ROOT/name
   for p in src.rglob('*'):
    rel=p.relative_to(ROOT)
-   if not p.is_file() or any(x in exclude for x in rel.parts) or p.suffix in {'.pyc','.pyo','.log','.sqlite3','.dpapi','.pfx'} or p.name.startswith('.env'):continue
+   if not p.is_file() or any(x in exclude for x in rel.parts) or p.suffix in {'.pyc','.pyo','.log','.sqlite3','.dpapi','.pfx'} or p.name.startswith('.env') or p.name=='demo-bootstrap.json':continue
    if name=='desktop' and 'ui' in rel.parts and p.suffix not in {'.js','.css','.json'}:continue
    dst=RELEASE/'app'/rel;dst.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,dst)
  # Referenced Python workers; no cloud secrets or project outputs.
@@ -116,12 +135,18 @@ def main():
   if (ROOT/name).is_file():shutil.copy2(ROOT/name,RELEASE/'app'/name)
  # Bundled third-party notices are kept next to their distributions.
  (RELEASE/'app/desktop/distribution/dependencies.json').write_text(json.dumps(deps,indent=2))
+ if bootstrap:
+  (RELEASE/'app/desktop/distribution/demo-bootstrap.json').write_text(json.dumps(bootstrap,ensure_ascii=False),encoding='utf-8')
+ if args.computer_bundle:
+  destination=RELEASE/'app/computer-backend'/args.computer_bundle.name
+  shutil.copytree(args.computer_bundle,destination)
+  (RELEASE/'app/computer-backend/active.json').write_text(json.dumps({'schema_version':1,'id':args.computer_bundle.name}))
  (PAYLOAD/'current.json').write_text(json.dumps({'version':VERSION}))
  csc=Path(os.environ['WINDIR'])/'Microsoft.NET/Framework64/v4.0.30319/csc.exe'
- subprocess.run([str(csc),'/nologo','/target:winexe','/platform:x64','/optimize+',
+ subprocess.run([str(csc),'/nologo','/target:winexe','/platform:x64','/optimize+',*(['/define:PRIVATE_DEMO'] if bootstrap else []),
   '/reference:System.Windows.Forms.dll','/reference:System.Web.Extensions.dll',
   '/win32icon:'+str(ROOT/'desktop/assets/brivany.ico'),'/out:'+str(PAYLOAD/'Brivany.exe'),str(ROOT/'desktop/distribution/Launcher.cs')],check=True)
- archive=OUT/f'Brivany-{VERSION}-windows-x64.zip';expanded=0
+ archive=OUT/(f'Brivany-Jon-Demo-{VERSION}-windows-x64.zip' if bootstrap else f'Brivany-{VERSION}-windows-x64.zip');expanded=0
  with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED,compresslevel=5) as z:
   for p in RELEASE.rglob('*'):
    if p.is_file():z.write(p,p.relative_to(RELEASE).as_posix());expanded+=p.stat().st_size
@@ -129,11 +154,11 @@ def main():
  now=int(time.time());payload={'schema':1,'version':VERSION,'channel':'stable','url':f'https://brivany.vetsa.es/windows/{archive.name}',
  'sha256':filehash(archive),'size':archive.stat().st_size,'expanded_size':expanded,'published':now,'expires':now+365*86400,'min_launcher':1}
  envelope={'payload':payload,'signature':base64.b64encode(key.sign(canonical(payload))).decode()}
- (OUT/'stable.json').write_text(json.dumps(envelope,indent=2))
- report={'version':VERSION,'payload':str(PAYLOAD),'runtime':sys.version.split()[0],'dependencies':deps,'expanded_bytes':expanded,'zip_bytes':archive.stat().st_size,'sha256':payload['sha256'],'private_files_included':False,'motion_cli_included':True,'motion_binary_mode':'bundled' if args.bundle_motion_binaries else 'existing_system_path'}
+ (OUT/('private-manifest.json' if bootstrap else 'stable.json')).write_text(json.dumps(envelope,indent=2))
+ report={'version':VERSION,'edition':'private-jon-demo' if bootstrap else 'public','payload':str(PAYLOAD),'runtime':sys.version.split()[0],'dependencies':deps,'expanded_bytes':expanded,'zip_bytes':archive.stat().st_size,'sha256':payload['sha256'],'provider_keys_included':False,'demo_invitation_included':bool(bootstrap),'computer_backend_included':bool(args.computer_bundle),'motion_cli_included':True,'motion_binary_mode':'bundled' if args.bundle_motion_binaries else 'existing_system_path'}
  (OUT/'build-report.json').write_text(json.dumps(report,indent=2))
  if args.iscc:
-  subprocess.run([str(args.iscc),'/Qp','/DPayload='+str(PAYLOAD),'/DAppVersion='+VERSION,'/DOutputDir='+str(OUT),str(ROOT/'packaging/windows/Brivany.iss')],check=True)
+  subprocess.run([str(args.iscc),'/Qp','/DPayload='+str(PAYLOAD),'/DAppVersion='+VERSION,'/DOutputDir='+str(OUT),*(['/DDemoEdition=1','/DSetupName=Brivany-Jon-Demo-Setup-'+VERSION+'-x64'] if bootstrap else []),str(ROOT/'packaging/windows/Brivany.iss')],check=True)
  print(json.dumps(report))
 
 if __name__=='__main__':main()

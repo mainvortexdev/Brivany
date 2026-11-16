@@ -4,7 +4,8 @@ import {PhoneVoice} from './voice.js';
 import {phoneComputer} from './computer.js';
 import {probeVoice,probeDesktop,probeModel} from './probe.js';
 
-const view=row=>({id:row.id,state:row.state,dueAt:row.due_at,startedAt:row.started_at||null,answeredAt:row.answered_at||null,timeZone:row.time_zone,transport:'cloud',channel:'telephone',reason:row.reason||null,...(row.metrics?{metrics:JSON.parse(row.metrics)}:{})});
+export const callView=row=>({id:row.id,state:row.state,dueAt:row.due_at,startedAt:row.started_at||null,answeredAt:row.answered_at||null,timeZone:row.time_zone,transport:'cloud',channel:'telephone',reason:row.reason||null,...(row.metrics?{metrics:JSON.parse(row.metrics)}:{})});
+const view=callView;
 export class MelodiPhone extends DurableObject {
   constructor(ctx,env){
     super(ctx,env);this.voices=new Map();
@@ -82,10 +83,10 @@ export class MelodiPhone extends DurableObject {
     try{
       const result=await telnyx(this.env,'/calls',{
         connection_id:this.env.TELNYX_CONNECTION_ID,from:this.env.TELNYX_FROM_NUMBER,to:'+'+row.phone,
-        webhook_url:'https://ia.vetsa.es/webhooks/telnyx-cloud',webhook_url_method:'POST',
+        webhook_url:(this.env.PUBLIC_CALLS_ORIGIN||'https://ia.vetsa.es')+'/webhooks/telnyx-cloud',webhook_url_method:'POST',
         client_state:bytes64(new TextEncoder().encode(JSON.stringify({v:1,id:row.id}))),command_id:row.id,
         timeout_secs:LIMITS.ringSeconds,time_limit_secs:LIMITS.callSeconds,
-        stream_url:'wss://ia.vetsa.es/media/telnyx-cloud/'+row.id+'?token='+token,stream_track:'inbound_track',stream_codec:'PCMU',stream_bidirectional_mode:'rtp',stream_bidirectional_codec:'PCMU',stream_bidirectional_sampling_rate:8000
+        stream_url:(this.env.PUBLIC_CALLS_ORIGIN||'https://ia.vetsa.es').replace(/^https:/,'wss:')+'/media/telnyx-cloud/'+row.id+'?token='+token,stream_track:'inbound_track',stream_codec:'PCMU',stream_bidirectional_mode:'rtp',stream_bidirectional_codec:'PCMU',stream_bidirectional_sampling_rate:8000
       });
       if(typeof result.call_control_id!=='string'||!result.call_control_id||result.call_control_id.length>1500)throw Error('telnyx_call_id_missing');
       const current=this.row('SELECT * FROM calls WHERE id=?',row.id);if(current.control_id&&current.control_id!==result.call_control_id)throw Error('telnyx_call_id_mismatch');
@@ -141,7 +142,7 @@ export class MelodiPhone extends DurableObject {
     if(data.id!==id||data.phone!==row.phone)return new Response('Unauthorized',{status:401});
     const claim=this.rows('UPDATE calls SET media_used=1 WHERE id=? AND media_used=0 RETURNING id',id);if(!claim.length)return new Response('Conflict',{status:409});
     const pair=new WebSocketPair(),client=pair[0],socket=pair[1];
-    const voice=new PhoneVoice({env:this.env,socket,controlId:row.control_id,objective:data.objective,computer:phoneComputer(this.env,row.phone,id),
+    const voice=new PhoneVoice({env:this.env,socket,controlId:row.control_id,objective:data.objective,computer:phoneComputer(this.env,row.phone,id),...(this.providerFetch?{fetcher:(...args)=>this.providerFetch(id,...args)}:{}),
       validateStart:async start=>{
         const current=this.row('SELECT * FROM calls WHERE id=?',id);
         if(!current||!['dialing','ringing','active'].includes(current.state)||start.to!=='+'+row.phone||start.from!==this.env.TELNYX_FROM_NUMBER||current.control_id&&current.control_id!==start.call_control_id)return false;

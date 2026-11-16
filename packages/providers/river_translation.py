@@ -4,6 +4,7 @@ One transient MT recovery before any delta, no transcript/audio persistence. Nat
 of the captured browser tab, preventing translated speech from re-entering ASR.
 """
 from __future__ import annotations
+from packages.providers.provider_access import endpoint, demo_headers
 from packages.runtime_paths import DATA_ROOT, CONFIG_PATH
 
 import base64
@@ -736,6 +737,12 @@ class RiverBridge(TranslationBridge):
 
         def fail(exc):
             if stopped.is_set(): return
+            observer=getattr(self,'failure_observer',None)
+            if callable(observer):
+                import traceback
+                frames=traceback.extract_tb(exc.__traceback__)
+                try:observer({'exception_type':type(exc).__name__,'source_line':frames[-1].lineno if frames else None,'source_file':Path(frames[-1].filename).name if frames else None})
+                except Exception:pass
             code=getattr(exc,'code',None) if not isinstance(exc,ConnectionClosed) else None
             if not isinstance(code,str):code='translation_interrupted'
             message=str(exc) if isinstance(exc,VoiceError) or code.startswith('native_audio') else 'La conexión se interrumpió. Se detuvo todo sin reintentar.'
@@ -887,7 +894,7 @@ class RiverBridge(TranslationBridge):
             if not resume_ms:asr_requested.set()
             def setup_tts():
                 nonlocal cartesia
-                cartesia=track(connect(CARTESIA_URL,additional_headers={'X-API-Key':os.environ['BRIVANY_CARTESIA_API_KEY']},
+                cartesia=track(connect(endpoint(CARTESIA_URL),additional_headers=demo_headers({'X-API-Key':os.environ['BRIVANY_CARTESIA_API_KEY']}),
                     open_timeout=5,close_timeout=1,max_size=262144,max_queue=4,compression=None,proxy=None))
                 if not stopped.is_set():tts_ready.set()
             def setup_asr():
@@ -915,7 +922,7 @@ class RiverBridge(TranslationBridge):
                     muse.send(json.dumps({'type':'start'}));json.loads(muse.recv(timeout=5))
                     if not stopped.is_set():asr_ready.set()
                     return
-                muse=track(connect(MUSE_URL,open_timeout=5,close_timeout=1,max_size=65536,max_queue=4,compression=None,proxy=None))
+                muse=track(connect(endpoint(MUSE_URL),additional_headers=demo_headers(),open_timeout=5,close_timeout=1,max_size=65536,max_queue=4,compression=None,proxy=None))
                 if stopped.is_set():return
                 # Keep ASR speaker boundaries as well as the independent local
                 # acoustic groups. The endpointing experiment 078 did not meet
