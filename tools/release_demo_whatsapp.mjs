@@ -19,7 +19,7 @@ export async function prepare(){
   if(source.includes('BRIVANY_DEMO_CHANNEL_V1'))throw Error('unexpected_nested_overlay');
  }
  for(const name of ['tenantEnvironment','createDesktopCommand','handleDesktopRoute','runAssistantInference'])if(!new RegExp('function '+name+'\\(').test(source))throw Error('hook_missing_'+name);
- const built=await build({stdin:{contents:"export {tenantEnvironment,linkedTenant} from './workers/whatsapp/melodi-tenants.js'; export {createDesktopCommand,handleDesktopRoute} from './workers/whatsapp/melodi-desktop.js';export {runAssistantInference} from './workers/whatsapp/assistant-inference.js';export {prepareReviewDraft} from './workers/whatsapp/review-draft.js';",resolveDir:root},bundle:true,format:'iife',globalName:'BrivanyDemoChannel',platform:'browser',target:'es2022',write:false,legalComments:'inline'});
+ const built=await build({stdin:{contents:"export {tenantEnvironment,linkedTenant} from './workers/whatsapp/melodi-tenants.js'; export {createDesktopCommand,handleDesktopRoute} from './workers/whatsapp/melodi-desktop.js';export {runAssistantInference} from './workers/whatsapp/assistant-inference.js';export {prepareReviewDraft,sendReviewedDraft} from './workers/whatsapp/review-draft.js';",resolveDir:root},bundle:true,format:'iife',globalName:'BrivanyDemoChannel',platform:'browser',target:'es2022',write:false,legalComments:'inline'});
  const overlay='\n'+built.outputFiles[0].text+`
 // BRIVANY_DEMO_CHANNEL_V1: account-scoped server budget, no provider keys on PC.
 tenantEnvironment=BrivanyDemoChannel.tenantEnvironment;
@@ -31,8 +31,8 @@ const brivanyReviewOriginalQueue=worker_default.queue;
 worker_default.queue=async function(batch,env,ctx){
  const rest=[];
  for(const message of batch.messages){
-  if(message.body?.type!=='melodi_review_draft'){rest.push(message);continue;}
-  try{await BrivanyDemoChannel.prepareReviewDraft(melodiEnvironment(env),message.body,sendWhatsApp);message.ack();}
+  if(!['melodi_review_draft','melodi_send_review_draft'].includes(message.body?.type)){rest.push(message);continue;}
+  try{if(message.body.type==='melodi_send_review_draft')await BrivanyDemoChannel.sendReviewedDraft(melodiEnvironment(env),message.body,sendOwnerEmail,sendWhatsApp);else await BrivanyDemoChannel.prepareReviewDraft(melodiEnvironment(env),message.body,sendWhatsApp);message.ack();}
   catch{console.error(JSON.stringify({event:'review_draft_unavailable'}));message.ack();}
  }
  if(rest.length)return brivanyReviewOriginalQueue.call(this,{...batch,messages:rest},env,ctx);

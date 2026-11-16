@@ -2828,3 +2828,19 @@ la mano y pizarra nativas de Zoom no se presentan como soportadas. Se preservan
 los seis fallos sintéticos previos y los contadores de consumo conocido; coste
 total y GPU desconocidos. No se adjuntan conversaciones, claves ni medios
 originales. [Correcciones, evidencia y límites](recall-reuniones-20261116.md).
+
+
+16 de noviembre, envío expresamente autorizado al equipo de Jon desde
+daniel@vetsa.es. Se reutiliza el correo corporativo: Worker en Cloudflare y
+entrega de Brevo, con remitente activo y dominio autenticado comprobados.
+El servicio lee el borrador previamente revisado de Gmail y exige que coincida
+con su contenido aprobado antes de enviarlo; una reserva persistente evita
+repetir el correo o el aviso ante resultados ambiguos.
+
+Pasan nueve pruebas locales de autorización, contenido, remitente, duplicados
+y fallos de correo/WhatsApp, además del arranque del artefacto exacto en workerd
+con D1 e identidades sintéticas. Se publica preservando el código anterior y sus
+bindings. Comprobación real: Brevo acepta un correo y Meta acepta una confirmación
+privada de Melodi por WhatsApp al titular. No se acredita recepción o lectura del
+destinatario; coste real no consultado. La bitácora conserva un informe sin el
+texto del correo, claves, conversaciones ni enlace privado del instalador.
