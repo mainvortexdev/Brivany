@@ -10,6 +10,10 @@ import threading
 
 class DesktopInstance:
     def __init__(self,name='Brivany.Desktop'):
+        # Package smoke checks must not activate or close the user's live app.
+        test_profile=os.environ.get('BRIVANY_TEST_DATA_DIR')
+        if test_profile and os.environ.get('BRIVANY_SMOKE_REPORT'):
+            name += '.Test.'+hashlib.sha256(str(Path(test_profile).absolute()).encode()).hexdigest()[:16]
         self.name=name;self.primary=False;self._thread=None;self._closed=False
         self._handles=[];self._lock_file=None;self._socket=None
 

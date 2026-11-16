@@ -10,3 +10,5 @@ body .agent-alert{display:flex;align-items:center;gap:12px;padding:12px 14px;max
 
 /* Consistent SVG controls, independent of platform glyph rendering. */
 .window-control svg,.settings-close svg,.subtle-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;display:block;margin:auto}.window-control svg{width:13px;height:13px}.module-link svg{stroke-width:1.65}.subtle-icon{border-radius:10px}
+
+.module-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:var(--surface,#fff);color:var(--muted,#7a8580);font:13px Segoe UI,sans-serif;z-index:3}.module-loading[hidden]{display:none!important}.module-loading p{margin:0}.module-loading button{padding:8px 13px;border:1px solid var(--line,#e5eae7);border-radius:9px;background:var(--surface,#fff);color:var(--ink,#25322f);font:inherit;cursor:pointer}

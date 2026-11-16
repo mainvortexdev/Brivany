@@ -14,7 +14,7 @@
 .agent-mini-hand{position:absolute;top:14px;width:3px;height:4px;background:#d8e9e2;border-radius:50%;z-index:3}.agent-mini-hand.left{left:0}.agent-mini-hand.right{right:0}
 .agent-mini-desk{position:absolute;left:1px;bottom:1px;width:20px;height:1px;background:linear-gradient(90deg,transparent,#7b9e9670,transparent)}
 .agent-mini-status{position:absolute;right:1px;bottom:4px;height:3px;width:3px;border-radius:50%;background:#88908d;box-shadow:0 0 3px #000;z-index:4}
-.agent-child[data-state=running] .agent-mini,.agent-child[data-state=planning] .agent-mini{animation:agent-work 1.35s ease-in-out infinite;animation-delay:var(--agent-delay,0s)}
+.agent-child[data-state=running] .agent-mini:not(.agent-blobatar),.agent-child[data-state=planning] .agent-mini:not(.agent-blobatar){animation:agent-work 1.35s ease-in-out infinite;animation-delay:var(--agent-delay,0s)}
 .agent-child[data-state=running] .agent-mini-hand.left{animation:agent-type .48s ease-in-out infinite}.agent-child[data-state=running] .agent-mini-hand.right{animation:agent-type .48s .24s ease-in-out infinite}
 .agent-child[data-state=reviewing] .agent-mini-body{animation:agent-review 1.5s ease-in-out infinite}.agent-child[data-state=reviewing] .agent-mini-status{background:#c4c7ee}
 .agent-child[data-state=succeeded] .agent-mini-status{background:#1686ff;animation:agent-done-beat 1.8s ease-in-out infinite}.agent-child[data-state=awaiting_user] .agent-mini-status,.agent-child[data-state=awaiting_approval] .agent-mini-status{background:#e0bd88}

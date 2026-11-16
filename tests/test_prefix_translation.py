@@ -175,7 +175,7 @@ class PrefixTests(unittest.TestCase):
 
         result = prefix.prepare_prefix(PCM, cancelled=threading.Event(), prosody_factory=Advisor,
                                        content_filter_factory=Filter, transcriber=lambda *_args, **_kwargs: rows)
-        self.assertEqual((result.duration_ms, result.resume_from_ms), (7000, 6200))
+        self.assertEqual((result.duration_ms, result.resume_from_ms), (prefix.PREFIX_MS, 6200))
         self.assertEqual([(row.speaker, row.content) for row in result.turns], [('A', 'speech'), ('B', 'singing')])
         self.assertEqual(classified, [prefix.PREFIX_BYTES, 101760, 96000])
         self.assertEqual(advisories, [(101760, False)])
@@ -225,7 +225,7 @@ class PrefixTests(unittest.TestCase):
         advice=result.turns[0].prosody.as_dict('en')
         self.assertEqual((advice['voice_timbre'],advice['timbre_confidence'],advice['timbre_inference_source']),
             ('uncertain',.806631,'local_robust_voice_timbre'))
-        self.assertFalse(advice['applied']);self.assertEqual(result.resume_from_ms,7000)
+        self.assertFalse(advice['applied']);self.assertEqual(result.resume_from_ms,prefix.PREFIX_MS)
 
     def test_cancelling_active_upload_interrupts_provider_headers(self):
         cancelled = threading.Event()
@@ -256,9 +256,9 @@ class PrefixTests(unittest.TestCase):
                 prefix._transcribe(PCM, cancelled=cancelled, connection_factory=lambda *_args, **_kwargs: Connection())
         self.assertTrue(interrupted.is_set())
 
-    def test_fully_transcribed_or_silent_prefix_resumes_at_seven_seconds(self):
+    def test_fully_transcribed_or_silent_prefix_resumes_at_the_prefix_end(self):
         result = prefix.prepare_prefix(PCM, cancelled=threading.Event(), transcriber=lambda *_args, **_kwargs: transcription())
-        self.assertEqual((result.turns, result.resume_from_ms), ((), 7000))
+        self.assertEqual((result.turns, result.resume_from_ms), ((), prefix.PREFIX_MS))
 
     def test_music_or_singing_only_opening_never_calls_muse_or_prosody(self):
         for kind in ('music', 'singing'):
@@ -272,10 +272,11 @@ class PrefixTests(unittest.TestCase):
                         transcriber=transcriber, content_filter_factory=lambda: content_filter)
                 transcriber.assert_not_called()
                 prosody_factory.assert_not_called()
-                self.assertEqual(content_filter.classify.call_count, 10)
-                self.assertEqual(result.resume_from_ms, 7000)
+                windows = len(range(0, prefix.PREFIX_MS - prefix.SONG_WINDOW_MS + 1, prefix.SONG_STEP_MS))
+                self.assertEqual(content_filter.classify.call_count, 1 + windows)
+                self.assertEqual(result.resume_from_ms, prefix.PREFIX_MS)
                 interval, = result.turns
-                self.assertEqual((interval.start_ms, interval.end_ms, interval.content, interval.text), (0, 7000, kind, ''))
+                self.assertEqual((interval.start_ms, interval.end_ms, interval.content, interval.text), (0, prefix.PREFIX_MS, kind, ''))
                 self.assertEqual(set(dict(result.preparation_metrics)), {'content_gate_ms','total_ms'})
 
     def test_brief_speech_between_whole_clip_windows_still_reaches_muse(self):
@@ -299,10 +300,43 @@ class PrefixTests(unittest.TestCase):
 
     def test_duplicate_or_out_of_range_provider_turn_is_rejected(self):
         for rows in (transcription(turn(0, 100, 1000, 'Owned.'), turn(0, 1500, 2000, 'Again.')),
-                     transcription(turn(1, 100, 7200, 'Owned.'))):
+                     transcription(turn(1, 100, prefix.PREFIX_MS + 200, 'Owned.'))):
             with self.subTest(rows=rows), self.assertRaisesRegex(VoiceError, 'turno'):
                 prefix.prepare_prefix(PCM, cancelled=threading.Event(), transcriber=lambda *_args, **_kwargs: rows)
 
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class PreparedTranslationTests(unittest.TestCase):
+    def turns(self):
+        return (prefix.PrefixTurn('1', 0, 1500, 'A', 'Hola a todos.', 'speech'),
+                prefix.PrefixTurn('2', 1600, 3000, None, '', 'singing'))
+
+    def test_speech_turns_are_translated_into_spanish_and_english(self):
+        calls = []
+        class Translator:
+            def stream_for_duration(self, text, target, history, *, duration_ms):
+                calls.append((text, target, duration_ms)); yield {'es':'Hola a todos.', 'en':'Hello everyone.'}[target]
+            def close(self):pass
+        turns, metrics = prefix.translate_prepared(self.turns(), cancelled=threading.Event(), translator_factory=Translator)
+        self.assertEqual(sorted(calls), [('Hola a todos.', 'en', 1500), ('Hola a todos.', 'es', 1500)])
+        self.assertEqual((turns[0].translation('en'), turns[0].translation('es')), ('Hello everyone.', 'Hola a todos.'))
+        self.assertEqual(turns[1].translations, (), 'Songs are never translated')
+        self.assertEqual(metrics['translations_prepared'], 2)
+
+    def test_a_failed_translation_leaves_the_turn_for_the_live_path(self):
+        class Broken:
+            def stream_for_duration(self, *a, **k):raise OSError('offline')
+            def close(self):pass
+        turns, metrics = prefix.translate_prepared(self.turns(), cancelled=threading.Event(), translator_factory=Broken)
+        self.assertIsNone(turns[0].translation('en'))
+
+    def test_cancelled_preparation_raises(self):
+        cancelled = threading.Event(); cancelled.set()
+        class Translator:
+            def stream_for_duration(self, *a, **k):yield 'x'
+            def close(self):pass
+        with self.assertRaises(VoiceError):
+            prefix.translate_prepared(self.turns(), cancelled=cancelled, translator_factory=Translator)

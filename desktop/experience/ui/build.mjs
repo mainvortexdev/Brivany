@@ -1,4 +1,4 @@
-import {build} from '../../../official-site/node_modules/esbuild/lib/main.js';
+import {build} from 'esbuild';
 import {readFile,writeFile} from 'node:fs/promises';
 await build({entryPoints:[new URL('./results.jsx',import.meta.url).pathname.replace(/^\/([A-Z]:)/,'$1')],outfile:new URL('../workspace-results.js',import.meta.url).pathname.replace(/^\/([A-Z]:)/,'$1'),bundle:true,format:'iife',platform:'browser',minify:true,define:{'process.env.NODE_ENV':'"production"'},legalComments:'external',jsx:'automatic'});
 const licenses=await Promise.all(['glisse','react','react-dom'].map(async name=>'\n\n'+name+'\n'+await readFile(new URL('./node_modules/'+name+'/LICENSE',import.meta.url),'utf8')));

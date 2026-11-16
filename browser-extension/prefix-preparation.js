@@ -1,5 +1,5 @@
-/* Seven seconds of the selected element only. No image, playback or volume change. */
-const FRAMES=88,FRAME_BYTES=3840,MAX_START=.8,PREFIX_TTL_MS=600000;
+/* Ten seconds of the selected element only. No image, playback or volume change. */
+const FRAMES=125,PREFIX_MS=10000,FRAME_BYTES=3840,MAX_START=.8,PREFIX_TTL_MS=600000;
 const attempted=new WeakMap();
 const setupAttempts=new WeakMap();
 let watching=false,pending=null,prepared=null;
@@ -83,7 +83,7 @@ function begin(video,source){
  port.onMessage.addListener(message=>{
   if(closed)return;
   if(message.type==='prefix-capture'){captureReady=true;try{send();}catch{close();}return;}
-  if(message.type==='prefix-ready'&&position!==null&&message.duration_ms===7000&&sameSource()&&
+  if(message.type==='prefix-ready'&&position!==null&&message.duration_ms===PREFIX_MS&&sameSource()&&
     typeof message.prefix_id==='string'&&/^[\w-]{16,128}$/.test(message.prefix_id)){
    const anchor=Number.isInteger(message.position_ms)&&message.position_ms>=0&&message.position_ms<=MAX_START*1000?message.position_ms:position;
    prepared={video,source,media,position:anchor,prefixId:message.prefix_id,expires:Date.now()+PREFIX_TTL_MS,

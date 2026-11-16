@@ -363,6 +363,13 @@ Write-Output ($node.GetRuntimeId() -join '.')`,8000);
    if(!session)controller=new AbortController();busy=true;activeId=message.id;currentRoots=[workspace,...(message.roots||[])].map(r=>fs.realpathSync(r));
    await tasks.run(session||{controller},async()=>{let started=false;try{
     if(message.method==='observe'){send({id:message.id,result:await observe()});return;}
+    if(message.method==='desktop_capture'){
+     const display=screen.getPrimaryDisplay();
+     const sources=await require('electron').desktopCapturer.getSources({types:['screen'],thumbnailSize:{width:1920,height:1080}});
+     const source=sources.find(item=>item.display_id===String(display.id));
+     if(!source||source.thumbnail.isEmpty())throw Error('No se pudo capturar la pantalla principal.');
+     send({id:message.id,result:{png_base64:source.thumbnail.toPNG().toString('base64'),primary_display:true}});return;
+    }
     if(message.method==='inspect_window'){
      const params=validateStep({action:'focus_window',params:message.target}).params;
      const check=async()=>{

@@ -1,9 +1,11 @@
 import {handleSpotifyOAuth} from './spotify-oauth.mjs';
 import {sitePage,sitemap} from './pages.mjs';
+import {handleWhatsApp} from './whatsapp.mjs';
 export {SpotifyOAuthSession} from './spotify-oauth.mjs';
 
 export default {
   async fetch(request,env) {
+    const whatsapp=await handleWhatsApp(request,env);if(whatsapp)return whatsapp;
     const oauth=await handleSpotifyOAuth(request,env);
     if(oauth)return oauth;
     const headers = {
@@ -11,7 +13,7 @@ export default {
       'Cache-Control': 'public, max-age=60',
       'X-Content-Type-Options': 'nosniff',
       'Referrer-Policy': 'no-referrer',
-      'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
+      'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     };
     if (!['GET', 'HEAD'].includes(request.method)) {
       return new Response(null, {status: 405, headers: {...headers, Allow: 'GET, HEAD'}});
@@ -29,7 +31,7 @@ export default {
       return new Response(request.method==='HEAD'?null:asset.body,{status:asset.status,headers:resultHeaders});
     }
     if (pathname === '/robots.txt') {
-      return new Response(request.method === 'HEAD' ? null : 'User-agent: *\nAllow: /\nDisallow: /spotify/\nSitemap: https://brivany.example/sitemap.xml\n', {
+      return new Response(request.method === 'HEAD' ? null : 'User-agent: *\nAllow: /\nDisallow: /spotify/\nSitemap: https://brivany.vetsa.es/sitemap.xml\n', {
         headers: {...headers, 'Content-Type': 'text/plain; charset=utf-8'},
       });
     }

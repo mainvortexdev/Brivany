@@ -1,0 +1,43 @@
+/* Brivany graphite: quiet surfaces, a fine rim of light and finite sparks. */
+body[data-surface]{--workspace-accent:#78aaff;--workspace-rgb:120,170,255;--workspace-surface:#0d0e11;--workspace-line:#ffffff17}
+body[data-accent=mint]{--workspace-accent:#87d8bf;--workspace-rgb:135,216,191}
+body[data-accent=amber]{--workspace-accent:#e7c38b;--workspace-rgb:231,195,139}
+body[data-accent=rose]{--workspace-accent:#e7a5bd;--workspace-rgb:231,165,189}
+body[data-theme=soft][data-surface]{--workspace-surface:#202126;--workspace-line:#ffffff24}
+body[data-surface]:where(:not([data-panel=result])) #island-content{background:var(--workspace-surface);border:1px solid var(--workspace-line);border-radius:20px;box-shadow:inset 0 1px 0 #ffffff0b,0 12px 30px #0005;isolation:isolate}
+body[data-surface] .panel-top{border-bottom:1px solid #ffffff0a;padding-bottom:0;height:25px;margin-bottom:7px}
+body[data-surface]:not([data-surface=bar]):is([data-panel=files],[data-panel=widgets]) #island-content{
+ display:flex;flex-direction:column;padding:6px 11px 8px;border-radius:14px
+}
+body:is([data-panel=files],[data-panel=widgets]) .panel-top{height:26px;margin:0 2px 4px}
+[data-view]:is([data-view=files],[data-view=widgets]){
+ flex:1;min-height:0;overflow:auto;scrollbar-width:thin;scrollbar-color:#42444e transparent;scrollbar-gutter:stable;padding:3px
+}
+body:is([data-panel=files],[data-panel=widgets]) #work-status{
+ flex:none;margin:3px 3px 0;font-size:10px;line-height:1.4;overflow-wrap:anywhere
+}
+body[data-surface] #panel-label{color:#b4b6c0;font-size:10px;font-weight:600;letter-spacing:.07em}
+body[data-surface] .panel-top .icon-button{width:26px;min-height:26px;height:26px;padding:6px;border-radius:50%;background:#ffffff06}
+body:is([data-panel=files],[data-panel=widgets]) .panel-top .icon-button{
+ width:24px;min-width:24px;min-height:24px;height:24px;padding:5px;background:transparent
+}
+body[data-surface] .panel-top .icon-button:hover{background:#ffffff14;color:#fff}
+body[data-surface] #tools button:not(.workspace-brand):hover,body[data-surface] #tools button[aria-expanded=true]{background:rgba(var(--workspace-rgb),.09);color:#f6f8ff}
+body[data-surface] button:focus-visible,body[data-surface] input:focus-visible,body[data-surface] textarea:focus-visible{outline:2px solid var(--workspace-accent);outline-offset:3px}
+[data-view]:is([data-view=files],[data-view=widgets]) :is(button,input,select,textarea):focus-visible{outline-offset:1px}
+body[data-surface] button{transition:background 160ms ease,color 160ms ease,border-color 160ms ease,transform 160ms ease}
+body[data-surface] button:active{transform:scale(.97)}
+.workspace-sparks{position:absolute;inset:0;overflow:hidden;border-radius:inherit;pointer-events:none;z-index:20}
+.workspace-sparks i{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--workspace-accent,#98beff);box-shadow:0 0 7px rgba(var(--workspace-rgb,120,170,255),.55);opacity:0;pointer-events:none}
+.workspace-sparks i:nth-child(3n){width:2px;height:5px;border-radius:1px;background:#eff7ff}
+body[data-drop-active=true] .toolstrip{box-shadow:inset 0 -1px rgba(var(--workspace-rgb),.65);background:#10151d}
+body[data-drop-active=true] .melodi-character .mascot-body{box-shadow:0 0 16px rgba(var(--workspace-rgb),.25)}
+body[data-surface] #workspace-timer-glance{color:var(--workspace-accent);font-variant-numeric:tabular-nums;font-size:10px;background:rgba(var(--workspace-rgb),.08)}
+body[data-surface] [data-view=auditory]{min-height:0}
+/* Pause ambient CSS work in the default economy mode. One-off feedback remains optional. */
+body[data-economy=true] .workspace-waves,body[data-economy=true] .eye,body[data-economy=true] .mascot-sleep,body[data-economy=true] .melodi-character,body[data-economy=true] .melodi-character *{animation-play-state:paused!important}
+body[data-economy=true] .eye-wander{will-change:auto}
+body[data-motion=false] .workspace-sparks{display:none}
+#app-settings{transform-origin:50% 38%;box-shadow:0 22px 80px #12251d30,inset 0 1px 0 #ffffff30}
+#app-settings::backdrop{background:#0c141e55;backdrop-filter:none}
+@media(prefers-reduced-motion:reduce){.workspace-sparks{display:none}body[data-surface] *,body[data-surface] *::before,body[data-surface] *::after{animation:none!important;transition:none!important}}

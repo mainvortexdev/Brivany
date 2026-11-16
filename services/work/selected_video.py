@@ -17,6 +17,19 @@ from packages.providers.pcm_pacing import PCMRateGate,PCMFrameClock
 
 VIDEO_PROTOCOL=2
 SELECTION_SETUP_TIMEOUT=20
+EVENT_LOG=None  # Path set by the desktop: local JSONL of selection events, no caption text.
+
+
+def selection_event(event,**fields):
+    """Append one local diagnostic line (event names, counts, error kinds)."""
+    path=EVENT_LOG
+    if path is None:return
+    try:
+        path.parent.mkdir(parents=True,exist_ok=True)
+        if path.exists() and path.stat().st_size>256_000:path.replace(path.with_suffix('.old.jsonl'))
+        safe={k:(v[:160] if isinstance(v,str) else v) for k,v in fields.items() if isinstance(v,(str,int,float,bool)) or v is None}
+        with path.open('a',encoding='utf-8') as handle:handle.write(json.dumps({'at':time.strftime('%Y-%m-%dT%H:%M:%S'),'event':event,**safe},ensure_ascii=False)+'\n')
+    except Exception:pass
 
 
 class SelectedVideoError(ValueError):
@@ -25,12 +38,16 @@ class SelectedVideoError(ValueError):
 
 class SelectedVideo:
     def __init__(self,socket,options,*,connector=connect):
-        if not isinstance(options,dict) or set(options)-{'type','selection','source','has_captions','translate','audio_ack'} or not {'type','selection','source','has_captions'}<=set(options) or options.get('type')!='select':raise SelectedVideoError('Selección de video no válida.')
+        if not isinstance(options,dict) or set(options)-{'type','selection','source','has_captions','translate','audio_ack','timeline_only'} or not {'type','selection','source','has_captions'}<=set(options) or options.get('type')!='select':raise SelectedVideoError('Selección de video no válida.')
         if not isinstance(options['selection'],str) or not re.fullmatch(r'[\w-]{8,80}',options['selection']):raise ValueError('Identificador de video no válido.')
         if not isinstance(options['source'],str) or not re.fullmatch(r'(?:youtube:[\w-]{11}|video:[0-9a-f]{1,8})',options['source']):raise ValueError('Origen de video no válido.')
         if type(options['has_captions']) is not bool:raise ValueError('Pista de video no válida.')
         if type(options.get('translate',False)) is not bool:raise ValueError('Modo de traducción no válido.')
         if type(options.get('audio_ack',False)) is not bool:raise SelectedVideoError('Confirmación de audio no válida.')
+        # Silent extension: captions + playback clock only. No audio is sent,
+        # no recognizer is opened and Directa keeps capturing system audio.
+        if type(options.get('timeline_only',False)) is not bool or options.get('timeline_only') and (not options['has_captions'] or options.get('translate')):raise SelectedVideoError('Línea de tiempo no válida.')
+        self.timeline_only=options.get('timeline_only',False);self.position_at=None;self.language=''
         self.socket=socket;self.connector=connector;self.selection=options['selection'];self.source=options['source'];self.has_captions=options['has_captions']
         self.lock=threading.RLock();self.send_lock=threading.Lock();self.stopped=threading.Event();self.asr_stop=threading.Event();self.asr=None;self.worker=None
         self.pcm=queue.Queue(maxsize=100);self.subscriber=None;self.cues=[];self.rows=deque(maxlen=500);self.partial='';self.error='';self.state='preparing';self.frames=0;self.calls=0
@@ -78,6 +95,7 @@ class SelectedVideo:
                         with self.lock:
                             text=normalized['text'][:800];self.partial='' if normalized['final'] else text
                             if normalized['final']:self.rows.append({'text':text,'speaker':normalized.get('speaker'),'at':normalized.get('at',0),'origin':'asr'})
+                        self.send({'type':'transcript','source':'original','text':text,'final':normalized['final'] is True})
             except Exception:
                 if not stop.is_set() and not self.stopped.is_set():
                     self.error='La transcripción se interrumpió. Vuelve a marcar el video.';self.state='error'
@@ -90,6 +108,7 @@ class SelectedVideo:
         self.worker=threading.Thread(target=work,daemon=True,name='brivany-selected-video-transcription');self.worker.start()
     def accept(self,raw):
         if self.stopped.is_set():return
+        if self.timeline_only:raise SelectedVideoError('Una línea de tiempo no envía audio.')
         if not isinstance(raw,bytes) or len(raw)!=3840:raise ValueError('El video debe enviar PCM16 mono de 80 ms.')
         if not self.pacing.accept(len(raw),time.monotonic()):
             if not self.audio_ack:raise SelectedVideoError('El audio del video llegó demasiado rápido. Vuelve a seleccionar el video.')
@@ -110,12 +129,16 @@ class SelectedVideo:
         if set(message)!={'type','cues','done'} or type(message.get('done')) is not bool or not isinstance(message.get('cues'),list) or len(message['cues'])>8:raise ValueError('Subtítulos no válidos.')
         clean=[]
         for cue in message['cues']:
-            if not isinstance(cue,dict) or set(cue)!={'start','end','text','speaker'}:raise ValueError('Subtítulos no válidos.')
+            if not isinstance(cue,dict) or not {'start','end','text','speaker'}<=set(cue) or set(cue)-{'start','end','text','speaker','words'}:raise ValueError('Subtítulos no válidos.')
             if any(type(cue[k]) not in (int,float) or not math.isfinite(cue[k]) for k in ('start','end')) or not 0<=cue['start']<cue['end'] or cue['end']-cue['start']>30:raise ValueError('Intervalo no válido.')
             if not isinstance(cue['text'],str) or not 1<=len(cue['text'])<=400 or cue['speaker'] is not None and (not isinstance(cue['speaker'],str) or len(cue['speaker'])>60):raise ValueError('Texto de subtítulo no válido.')
+            words=cue.get('words')
+            if words is not None:
+                # Word onsets (seconds) let the dub start on the same word.
+                if not isinstance(words,list) or len(words)>120 or any(not isinstance(w,list) or len(w)!=2 or type(w[0]) not in (int,float) or not math.isfinite(w[0]) or not cue['start']-.05<=w[0]<=cue['end']+.05 or not isinstance(w[1],str) or len(w[1])>80 for w in words):raise ValueError('Palabras de subtítulo no válidas.')
             clean.append(dict(cue))
         with self.lock:
-            if not self.has_captions or len(self.cues)+len(clean)>2000:raise ValueError('Límite de subtítulos excedido.')
+            if not self.has_captions or len(self.cues)+len(clean)>4000:raise ValueError('Límite de subtítulos excedido.')
             self.cues.extend(clean)
             if message['done']:self.state='translating' if self.subscriber is not None else 'ready'
     def route(self):return SelectedVideoRoute(self)
@@ -136,7 +159,13 @@ class SelectedVideo:
         self.send({'type':'transcript','source':source,'text':text,'final':event.get('final') is True})
     def set_position(self,position):
         if type(position) not in (int,float) or not math.isfinite(position) or not 0<=position<=604800:raise ValueError('Posición del video no válida.')
-        with self.lock:self.position=position
+        with self.lock:self.position=position;self.position_at=time.monotonic()
+    def timeline(self):
+        """Captions and an estimated playback clock for scheduled dubbing."""
+        with self.lock:
+            if self.stopped.is_set() or not self.cues or self.position_at is None:return None
+            return {'source':self.source,'position':self.position,'position_at':self.position_at,'paused':self.paused,
+                    'cues':self.cues,'revision':len(self.cues)}
     def lookahead(self):
         with self.lock:
             if self.stopped.is_set() or self.paused:return None
@@ -215,7 +244,11 @@ class SelectedVideoHub:
         try:raw=socket.recv(timeout=SELECTION_SETUP_TIMEOUT)
         except TimeoutError:raise SelectedVideoError('El navegador no terminó de preparar el audio. Reproduce el video y vuelve a pulsar la extensión.') from None
         options=json.loads(raw) if isinstance(raw,str) else None
-        selected=SelectedVideo(socket,options,connector=self.connector)
+        try:selected=SelectedVideo(socket,options,connector=self.connector)
+        except Exception as error:
+            selection_event('select_rejected',error=type(error).__name__,message=str(error),keys=','.join(sorted(options)) if isinstance(options,dict) else type(options).__name__);raise
+        selection_event('selected',timeline_only=selected.timeline_only,has_captions=bool(options.get('has_captions')),translate=bool(options.get('translate')),source=str(options.get('source',''))[:24])
+        positions=0;closing='closed'
         with self.lock:old=self.current;self.current=selected
         if old:
             old.close()
@@ -237,14 +270,21 @@ class SelectedVideoHub:
                 else:
                     control=json.loads(raw)
                     if control=={'type':'stop'}:break
-                    if isinstance(control,dict) and control.get('type')=='captions':selected.captions(control);selected.send({'type':'caption-ack'})
+                    if isinstance(control,dict) and control.get('type')=='captions':
+                        selected.captions(control);selected.send({'type':'caption-ack'})
+                        if control.get('done'):selection_event('captions_done',cues=len(selected.cues),words=any('words' in c for c in selected.cues))
                     elif isinstance(control,dict) and set(control)=={'type','paused'} and control['type']=='media-state':
                         changed=selected.paused is not control['paused'];selected.set_paused(control['paused'])
                         if changed and self.on_pause:self.on_pause(selected,control['paused'])
-                    elif isinstance(control,dict) and set(control)=={'type','position'} and control['type']=='position':selected.set_position(control['position'])
+                    elif isinstance(control,dict) and set(control)=={'type','position'} and control['type']=='position':
+                        selected.set_position(control['position']);positions+=1
+                        if positions in (1,40) or positions%1200==0:selection_event('position',count=positions,position=round(float(control['position']),1),paused=selected.paused)
                     else:raise ValueError('Control de video no válido.')
-        except ConnectionClosed:pass
+        except ConnectionClosed:closing='browser_closed'
+        except Exception as error:
+            closing='error';selection_event('selection_error',error=type(error).__name__,message=str(error));raise
         finally:
+            selection_event('selection_end',reason=closing,timeline_only=selected.timeline_only,cues=len(selected.cues),positions=positions)
             selected.close()
             if self.on_closed:self.on_closed(selected)
             with self.lock:
@@ -254,6 +294,7 @@ class SelectedVideoHub:
     def route(self):
         selected=self.selected()
         if not selected:raise ValueError('Selecciona un video desde la extensión.')
+        if selected.timeline_only:raise ValueError('El video aporta subtítulos, no audio.')
         return selected.route()
     def status(self):
         selected=self.selected();return selected.status() if selected else {'selected':False}

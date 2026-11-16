@@ -1,4 +1,5 @@
 """Native-window entrypoint with an owned ephemeral loopback HTTP server."""
+from packages.runtime_paths import DATA_ROOT, CONFIG_PATH
 import argparse
 from http.server import ThreadingHTTPServer
 import importlib.metadata
@@ -134,6 +135,9 @@ def launch(*,project=None,startup_report=None):
         raise DesktopError('desktop_runtime','Faltan .NET o WebView2 disponibles para EdgeChromium; no se usará el motor MSHTML.',503)
     if sys.platform not in {'win32','darwin'}:raise DesktopError('desktop_platform','El empaquetado de esta plataforma sigue pendiente.',503)
     import webview
+    if sys.platform=='win32':
+        from desktop.experience.tray import set_app_identity
+        set_app_identity()
     # Disable file navigation/download helpers. Assets are served only through
     # the owned manifest-scoped HTTP handler, not pywebview's file server.
     webview.settings['ALLOW_FILE_URLS']=False;webview.settings['ALLOW_DOWNLOADS']=False
@@ -143,7 +147,7 @@ def launch(*,project=None,startup_report=None):
     with LocalDesktopServer(session=session,live=True) as server:
         def source():
             spatial=getattr(server.http,'spatial',None)
-            return SpatialProjectSource(spatial.root if spatial is not None else ROOT/'.local'/'spatial')
+            return SpatialProjectSource(spatial.root if spatial is not None else DATA_ROOT/'.local'/'spatial')
         bridge=DesktopBridge(server.base_url,session,source,folder_dialog=webview.FileDialog.FOLDER,save_dialog=webview.FileDialog.SAVE)
         window=webview.create_window('Brivany',server.base_url+'/spaces',js_api=bridge,width=1440,height=950,min_size=(900,650),background_color='#ffffff',confirm_close=False)
         bridge._bind_window(window)
@@ -151,7 +155,7 @@ def launch(*,project=None,startup_report=None):
         if startup_report is not None:
             from desktop.diagnostics import StartupProbe
             probe=StartupProbe(window,startup_report);window.events.loaded+=probe.loaded
-        webview.start(func=probe.run if probe else None,gui='edgechromium' if sys.platform=='win32' else None,debug=False,private_mode=True,http_server=False)
+        webview.start(func=probe.run if probe else None,gui='edgechromium' if sys.platform=='win32' else None,debug=False,private_mode=True,http_server=False,icon=str(ROOT/'desktop/assets/brivany.ico'))
 
 
 def main(argv=None):

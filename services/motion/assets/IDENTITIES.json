@@ -1,0 +1,19 @@
+{
+  "Brivany": {
+    "description": "Aplicación de escritorio con Melodi, asistente de voz. Su función distintiva es la traducción auditiva de videos: reconocimiento, traducción y voz en otro idioma.",
+    "other_features": ["Chat y voz", "Herramientas personales", "Creación audiovisual por escenas"],
+    "source": "Código y guía de Brivany",
+    "avoid": ["Prometer traducción instantánea sin retardo", "Inventar cifras de usuarios o investigaciones", "Afirmar capacidades no comprobadas"]
+  },
+  "Cognira Desktop": {
+    "description": "Proyecto de agente de inteligencia artificial para controlar el ordenador y realizar tareas en aplicaciones de escritorio.",
+    "source": "cognira-desktop/package.json: AI Autonomous Computer Control Agent",
+    "avoid": ["Desktop Master", "Prometer control universal o saltarse permisos de Windows", "Inventar casos de uso como si se hubieran probado"]
+  },
+  "Vetsa AI": {
+    "description": "Identidad de Vetsa Intelligence, plataforma de IA multimodal que presenta lenguaje, visión, video y audio mediante una API unificada.",
+    "source": "Vetsa-Intelligence/README.md; descripción del proyecto, sin certificación de rendimiento",
+    "wordmark": "Vetsa IA",
+    "avoid": ["Inventar métricas de rendimiento", "Presentar como medida una promesa del README"]
+  }
+}

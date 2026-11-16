@@ -12,7 +12,7 @@ function deferred() {
   return { promise, resolve };
 }
 
-function harness({ mediaPromise } = {}) {
+function harness({ mediaPromise, museReady } = {}) {
   const timeouts = new Map(), intervals = new Map();
   const recognitions = [], utterances = [], transcripts = [], errors = [], states = [];
   let nextTimer = 0, audioContexts = 0, trackStops = 0;
@@ -52,6 +52,10 @@ function harness({ mediaPromise } = {}) {
     setInterval(callback) { const id = ++nextTimer; intervals.set(id, callback); return id; },
     clearInterval(id) { intervals.delete(id); },
   };
+  if (museReady !== undefined) sandbox.BrivanyLive = { MuseCapture: class {
+    async start() { return museReady; }
+    stop() {}
+  } };
   vm.createContext(sandbox);
   vm.runInContext(fs.readFileSync(path.join(__dirname, '../web/voice-engine.js'), 'utf8'), sandbox);
   const { Microphone, VoiceOutput } = browser.BrivanyVoice;
@@ -108,6 +112,16 @@ test('stop invalida getUserMedia pendiente y libera el stream que llega después
   assert.equal(h.recognitions.length, 0);
   assert.equal(h.intervals.size, 0);
   assert.equal(h.timeouts.size, 0);
+});
+
+test('un inicio ASR fallido libera el micrófono y su medidor', async () => {
+  const h = harness({ museReady: false });
+  assert.equal(await h.microphone.start({ transcribe: true, provider: 'muse' }), false);
+  assert.equal(h.microphone.active, false);
+  assert.equal(h.microphone.stream, null);
+  assert.equal(h.microphone.audio, null);
+  assert.equal(h.trackStops, 1);
+  assert.equal(h.intervals.size, 0);
 });
 
 test('voice.cancel invalida el siguiente segmento y callbacks tardíos de la frase anterior', () => {

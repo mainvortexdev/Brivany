@@ -1,0 +1,13 @@
+{
+  "name": "vetsa-instagram-operations",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test ./test/**/*.test.js",
+    "check": "wrangler deploy --dry-run",
+    "types": "wrangler types"
+  },
+  "devDependencies": {
+    "wrangler": "4.127.1"
+  }
+}

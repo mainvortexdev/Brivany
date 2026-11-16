@@ -14,25 +14,25 @@ function roundRect(ctx,x,y,w,h,r,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.ro
 function desktopTexture(mode='chat'){
  return texture(1280,800,(c,w,h)=>{
   c.fillStyle='#f8faf7';c.fillRect(0,0,w,h);c.fillStyle='#e8ede7';c.fillRect(0,0,230,h);
-  c.fillStyle='#16251d';c.font='bold 45px Segoe UI';c.fillText('brivany',30,70);c.fillStyle='#0071e3';c.fillText('.',173,70);
-  c.font='24px Segoe UI';c.fillStyle='#405749';['Melodi','Espacios','Videos','Ajustes'].forEach((s,i)=>{if(i===0)roundRect(c,15,110,200,54,12,'#d7e3d7');c.fillStyle='#405749';c.fillText(s,35,148+i*82);});
-  c.fillStyle='#233d2e';c.font='42px Georgia';c.textAlign='center';c.fillText(mode==='chat'?'¿Qué creamos hoy?':'Tu archivo, preparado.',750,232);
+  c.fillStyle='#16251d';c.font='500 45px "Brivany Editorial"';c.fillText('brivany',30,70);c.fillStyle='#0071e3';c.fillText('.',173,70);
+  c.font='24px "Brivany Editorial"';c.fillStyle='#405749';['Melodi','Espacios','Videos','Ajustes'].forEach((s,i)=>{if(i===0)roundRect(c,15,110,200,54,12,'#d7e3d7');c.fillStyle='#405749';c.fillText(s,35,148+i*82);});
+  c.fillStyle='#233d2e';c.font='42px "Brivany Editorial"';c.textAlign='center';c.fillText(mode==='chat'?'¿Qué creamos hoy?':'Tu archivo, preparado.',750,232);
   roundRect(c,378,320,736,184,23,'#fff');c.strokeStyle='#e0e6dd';c.lineWidth=2;c.strokeRect(401,340,690,143);
-  c.textAlign='left';c.font='26px Segoe UI';c.fillStyle='#687d6b';c.fillText(mode==='chat'?'Extrae el audio de este video.':'Audio extraído del video.',425,386);
-  c.font='22px Segoe UI';c.fillStyle='#849184';c.fillText(mode==='chat'?'Guárdalo en Documentos / Entrevistas.':'Guardado en Documentos / Entrevistas.',425,436);
-  roundRect(c,1100,645,65,65,18,'#365944');c.font='34px Segoe UI';c.fillStyle='white';c.fillText('↑',1122,690);
+  c.textAlign='left';c.font='26px "Brivany Editorial"';c.fillStyle='#687d6b';c.fillText(mode==='chat'?'Extrae el audio de este video.':'Audio extraído del video.',425,386);
+  c.font='22px "Brivany Editorial"';c.fillStyle='#849184';c.fillText(mode==='chat'?'Guárdalo en Documentos / Entrevistas.':'Guardado en Documentos / Entrevistas.',425,436);
+  roundRect(c,1100,645,65,65,18,'#365944');c.font='34px "Brivany Editorial"';c.fillStyle='white';c.fillText('↑',1122,690);
   c.fillStyle='#101a14';c.fillRect(0,0,w,22);roundRect(c,619,0,43,20,11,'#eaf4e9');c.fillStyle='#385440';c.fillRect(631,8,3,5);c.fillRect(643,8,3,5);
  });
 }
 
 function phoneTexture(plan=false){return texture(600,1200,(c,w,h)=>{
- c.fillStyle='#f4f5ef';c.fillRect(0,0,w,h);c.fillStyle='#1f362a';c.font='bold 40px Segoe UI';c.fillText('brivany',42,120);c.fillStyle='#0071e3';c.fillText('.',176,120);
- c.font='44px Georgia';c.fillStyle='#263e30';c.fillText(plan?'Tu espacio 3D':'Captura tu espacio',40,225);
+ c.fillStyle='#f4f5ef';c.fillRect(0,0,w,h);c.fillStyle='#1f362a';c.font='500 40px "Brivany Editorial"';c.fillText('brivany',42,120);c.fillStyle='#0071e3';c.fillText('.',176,120);
+ c.font='44px "Brivany Editorial"';c.fillStyle='#263e30';c.fillText(plan?'Tu espacio 3D':'Captura tu espacio',40,225);
  roundRect(c,32,285,536,560,28,'#e2e6dc');
- if(plan){c.strokeStyle='#627f67';c.lineWidth=10;c.strokeRect(95,360,390,400);c.lineWidth=4;c.strokeRect(135,420,170,120);c.strokeRect(350,600,75,85);c.beginPath();c.arc(420,420,30,0,Math.PI*2);c.stroke();c.font='22px Segoe UI';c.fillStyle='#526f57';c.fillText('Escena de demostración',103,810);}
+ if(plan){c.strokeStyle='#627f67';c.lineWidth=10;c.strokeRect(95,360,390,400);c.lineWidth=4;c.strokeRect(135,420,170,120);c.strokeRect(350,600,75,85);c.beginPath();c.arc(420,420,30,0,Math.PI*2);c.stroke();c.font='22px "Brivany Editorial"';c.fillStyle='#526f57';c.fillText('Escena de demostración',103,810);}
  else{roundRect(c,85,370,430,300,4,'#d0d6c8');roundRect(c,160,460,185,90,4,'#9cae91');roundRect(c,380,500,55,115,6,'#6d8776');c.fillStyle='#aa9a7f';c.beginPath();c.moveTo(80,670);c.lineTo(520,670);c.lineTo(565,800);c.lineTo(35,800);c.fill();c.strokeStyle='#5a7f5f';c.lineWidth=3;c.strokeRect(62,315,476,498);}
- roundRect(c,43,930,514,92,30,'#2a4737');c.fillStyle='white';c.textAlign='center';c.font='26px Segoe UI';c.fillText(plan?'Explorar escena':'Preparar captura',300,987);
- c.fillStyle='#98a591';c.font='20px Segoe UI';c.fillText('Concepto de Brivany en móvil',300,1090);
+ roundRect(c,43,930,514,92,30,'#2a4737');c.fillStyle='white';c.textAlign='center';c.font='26px "Brivany Editorial"';c.fillText(plan?'Explorar escena':'Preparar captura',300,987);
+ c.fillStyle='#98a591';c.font='20px "Brivany Editorial"';c.fillText('Concepto de Brivany en móvil',300,1090);
  });}
 
 function createLaptop(){

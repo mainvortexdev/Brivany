@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+ <title>Brivany · Archivos</title><link rel="stylesheet" href="/transfer/drop/phone.css">
+ <script src="/transfer/drop/locales.js" defer></script><script src="/transfer/drop/peer.js" defer></script>
+ <script src="/transfer/drop/edge.js" defer></script><script src="/transfer/drop/phone.js" defer></script>
+</head>
+<body>
+ <div id="edge-aura" data-active="false" data-edge="right" aria-hidden="true"><span id="edge-aura-label"></span></div>
+ <main>
+  <a class="brand" href="/" aria-label="Brivany">brivany<span>.</span></a>
+  <div class="devices" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="5" y="9" width="38" height="26" rx="3"/><path d="M17 41h14m-7-6v6"/></svg><div class="link"><i></i><i></i><i></i></div><svg viewBox="0 0 48 48"><rect x="12" y="4" width="24" height="40" rx="5"/><path d="M21 9h6m-5 30h4"/></svg></div>
+  <h1 id="heading">Tus dispositivos, conectados.</h1><p id="status" role="status">Conectando…</p>
+  <section id="edge-selection" hidden aria-label="Archivos seleccionados">
+   <button id="edge-stack" type="button" aria-label="Arrastra los archivos al borde">
+    <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M16 6h17l8 9v24a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V9a3 3 0 0 1 3-3Z"/><path d="M31 6v11h10M8 12H6a3 3 0 0 0-3 3v24M21 27h12m-6-6 6 6-6 6"/></svg>
+    <strong id="selection-count"></strong><small>Arrastra al borde para enviar</small>
+   </button>
+   <ul id="edge-files"></ul>
+   <div class="actions"><button id="clear-selected" class="secondary" type="button">Quitar selección</button><button id="send-selected" type="button">Enviar</button></div>
+  </section>
+  <p id="edge-queue" role="status" hidden></p>
+  <section id="offer" hidden><div class="file-info"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M19 3H8a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10l-7-7Z"/><path d="M19 3v8h7"/></svg><div><strong id="offer-name"></strong><small id="offer-size"></small></div></div><div class="actions"><button id="decline" class="secondary">Rechazar</button><button id="accept">Recibir</button></div></section>
+  <section id="transfer" hidden><strong id="file-name"></strong><progress id="progress" max="1" value="0"></progress><div class="progress-meta"><span id="amount"></span><button id="cancel-file" class="text-button">Cancelar</button></div></section>
+  <a id="save" class="primary" hidden>Guardar archivo</a><div id="received-files"></div>
+  <label class="primary secondary" id="send-label" for="send-file" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>Elegir archivos</label>
+  <input type="file" id="send-file" multiple hidden>
+  <button id="disconnect" class="text-button" hidden>Desconectar</button>
+  <p class="privacy">Transferencia cifrada · Hasta 1 GB</p><p class="hint" id="hint" hidden>Mantén esta pantalla abierta durante el envío.</p>
+ </main>
+</body>
+</html>

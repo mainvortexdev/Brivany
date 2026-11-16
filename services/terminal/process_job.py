@@ -17,7 +17,7 @@ class ExtendedLimits(ctypes.Structure):
 
 
 class ProcessJob:
-    def __init__(self):
+    def __init__(self, *, max_process_memory=None):
         self.handle=None;self.assigned=False
         if os.name!='nt':return
         self.kernel=ctypes.WinDLL('kernel32',use_last_error=True)
@@ -28,6 +28,9 @@ class ProcessJob:
         self.handle=self.kernel.CreateJobObjectW(None,None)
         if not self.handle:raise ctypes.WinError(ctypes.get_last_error())
         limits=ExtendedLimits();limits.basic.flags=0x2000 # JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
+        if max_process_memory is not None:
+            limits.basic.flags |= 0x100  # JOB_OBJECT_LIMIT_PROCESS_MEMORY
+            limits.process_memory = max_process_memory
         if not self.kernel.SetInformationJobObject(self.handle,9,ctypes.byref(limits),ctypes.sizeof(limits)):
             error=ctypes.get_last_error();self.close();raise ctypes.WinError(error)
 

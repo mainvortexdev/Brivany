@@ -8,18 +8,20 @@ import json
 import secrets
 import threading
 from services.spotify import SpotifyError
+from .scripts import post_script
 
 
 class SpotifyPlayerBridge:
-    def __init__(self,music,base,on_state=None):
+    def __init__(self,music,base,on_state=None,on_activity=None):
         self._music=music;self._base=base;self._window=None;self._on_state=on_state
         self._pending={};self._lock=threading.Lock()
         self._ducked=False
+        self._on_activity=on_activity
     def ducking(self):
         self._trusted();return {'active':self._ducked}
     def set_ducked(self,active):
         self._ducked=active is True
-        if self._window:self._window.evaluate_js('window.BrivanySpotifyPlayer?.duck('+json.dumps(self._ducked)+')')
+        if self._window:post_script(self._window,'window.BrivanySpotifyPlayer?.duck('+json.dumps(self._ducked)+')','spotify-ducking')
     def _trusted(self):
         value=urlsplit(self._window.get_current_url() if self._window else '')
         base=urlsplit(self._base)
@@ -28,9 +30,12 @@ class SpotifyPlayerBridge:
     def token(self):
         self._trusted();return self._music.sdk_token()
     def event(self,kind,device_id=''):
-        self._trusted();return self._music.sdk_event(kind,device_id)
+        self._trusted();state=self._music.sdk_event(kind,device_id)
+        if self._on_activity:self._on_activity()
+        return state
     def playback(self,value):
         self._trusted();state=self._music.sdk_playback(value)
+        if self._on_activity:self._on_activity()
         if state and self._on_state:self._on_state(state)
         return {'ok':True}
     def result(self,identifier,ok):
@@ -77,6 +82,7 @@ class SpotifyPlayerBridge:
         with self._lock:
             for pending in self._pending.values():pending['event'].set()
         self._music.sdk_event('idle')
+        if self._on_activity:self._on_activity()
 
 
 def start_player(owner):
@@ -88,8 +94,12 @@ def start_player(owner):
         if music.status()['local_player']['state'] in ('starting','ready'):return music.status()['local_player']
         host.close()
     import webview
-    host=SpotifyPlayerBridge(music,owner._base,getattr(owner,'_broadcast_spotify',None));owner._spotify_player_host=host
     ducker=getattr(owner,'_audio_ducker',None)
+    def update_activity():
+        if ducker and owner._spotify_player_host is host:
+            ducker.playback_changed()
+    host=SpotifyPlayerBridge(music,owner._base,getattr(owner,'_broadcast_spotify',None),update_activity)
+    owner._spotify_player_host=host
     if ducker:host._ducked=ducker.status()['ducked']
     music.sdk_event('starting')
     off_x=off_y=-10000

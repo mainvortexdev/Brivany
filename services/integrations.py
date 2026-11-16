@@ -183,7 +183,7 @@ class IntegrationService:
     def registry(self):
         return {'connectors':[{'id':key,'label':value['label'],'state':'declared_not_connected','connected':False,
             'credentials':[{'env':name,'available':bool(self.env.get(name))} for name in value['env']],
-            'operations':[{'name':name,'classification':classification,'approval_required':True} for name,(connector,classification) in OPERATIONS.items() if connector==key],
+            'operations':[{'name':name,'classification':classification,'approval_required':True} for name,(connector,classification) in OPERATIONS.items() if connector==key and name in getattr(self.transports.get(key),'available_operations',OPERATIONS)],
             'pending':list(value['pending']),'real_transport_implemented':False} for key,value in CONNECTORS.items()],
             'execution_enabled':self.config['execution_enabled'],'webhook_enabled':self.config['webhook_enabled'],
             'self_recipient_opted_in':self.config['self_recipient'] in self.config['opted_in_recipients'] if self.config['self_recipient'] else False,
@@ -262,7 +262,11 @@ class IntegrationService:
 
     def propose(self,operation,parameters,*,origin='local_ui',ttl_seconds=300,request_id=None):
         if origin not in {'local_ui','whatsapp_webhook','planner'} or type(ttl_seconds) is not int or not 1<=ttl_seconds<=3600:raise IntegrationError('integration_proposal','Revisa el origen y el plazo.',422)
-        value=_parameters(operation,parameters,self.config);action_hash=_hash({'operation':operation,'parameters':value})
+        value=_parameters(operation,parameters,self.config)
+        transport=self.transports.get(OPERATIONS[operation][0])
+        if operation not in getattr(transport,'available_operations',OPERATIONS):
+            raise IntegrationError('integration_operation','Esta operación no está disponible en el conector.',422)
+        action_hash=_hash({'operation':operation,'parameters':value})
         social_review=None
         if operation in SOCIAL_WRITES:
             from packages.providers.social import SocialTransport

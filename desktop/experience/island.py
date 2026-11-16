@@ -18,13 +18,20 @@ PANEL_WIDTHS.update(melodi=250,chat=388,**{'live-wave':560})
 PANEL_WIDTHS.update(auditory=400)
 PANELS.update(agent=284)
 PANEL_WIDTHS.update(agent=336)
+PANELS.update(team=396)
+PANEL_WIDTHS.update(team=500)
 PANELS.update(result=380)
 PANEL_WIDTHS.update(result=520)
+PANELS.update(files=182,widgets=192)
+PANEL_WIDTHS.update(files=376,widgets=360)
 PANELS.update(reply=120);PANEL_WIDTHS.update(reply=420)
 BAR_HEIGHT=40
 PANEL_GAP=6
 CHAT_MIN_HEIGHT=148
 CHAT_MAX_HEIGHT=404
+TOOL_MIN_HEIGHT=100
+TOOL_MAX_HEIGHT=344
+TOOL_PANELS={'files','widgets'}
 
 
 def pointer_presence(screen,width,height,x,y):
@@ -35,9 +42,11 @@ def pointer_presence(screen,width,height,x,y):
     return {'inside':abs(dx)<=width/2 and 0<=dy<=height,'near':abs(dx)<=width/2+16 and -8<=dy<=height+16}
 
 
-def geometry(screen,expanded=False,size='normal',panel='home',*,docked=False,offset=None,anchor_x=None,chat_height=CHAT_MIN_HEIGHT):
+def geometry(screen,expanded=False,size='normal',panel='home',*,docked=False,offset=None,anchor_x=None,chat_height=CHAT_MIN_HEIGHT,tool_height=None):
     if type(expanded) is not bool or size not in SIZES or panel not in PANELS:raise ValueError('Diseño de isla inválido.')
     if type(chat_height) is not int or not CHAT_MIN_HEIGHT<=chat_height<=CHAT_MAX_HEIGHT:raise ValueError('Altura de conversación inválida.')
+    if tool_height is not None and (panel not in TOOL_PANELS or type(tool_height) is not int or not TOOL_MIN_HEIGHT<=tool_height<=TOOL_MAX_HEIGHT):
+        raise ValueError('Altura de herramienta inválida.')
     sw=max(240,int(screen.width));sh=max(150,int(screen.height));sx=int(getattr(screen,'x',0));sy=int(getattr(screen,'y',0))
     host_width=min(780,sw-16);host_height=min(404,sh-16)
     preferred=round(PANEL_WIDTHS.get(panel,384)*{'compact':.92,'normal':1,'large':1.08}[size])
@@ -47,6 +56,7 @@ def geometry(screen,expanded=False,size='normal',panel='home',*,docked=False,off
     elif expanded and panel=='auditory' and width<350:preferred_height=400
     else:preferred_height=PANELS[panel]
     if panel=='chat':preferred_height=chat_height+BAR_HEIGHT
+    if tool_height is not None:preferred_height=tool_height+BAR_HEIGHT
     height=min(preferred_height-(BAR_HEIGHT if docked else 0) if expanded else (0 if docked else 48),host_height)
     if anchor_x is not None and (type(anchor_x) not in (int,float) or not 0<=anchor_x<=sw):raise ValueError('Anclaje inválido.')
     anchor=sw/2 if anchor_x is None else anchor_x
@@ -66,6 +76,7 @@ class IslandHost:
         self.screen=screen;self.window=None;self.region=None;self.generation=0;self.lock=threading.Lock()
         self.docked=docked;self.offset=BAR_HEIGHT
         self.chat_height=CHAT_MIN_HEIGHT
+        self.tool_heights={}
         self._visible=False;self._presentation=0;self._animate_open=False;self.dark_surface=False
         self.value=geometry(screen,expanded,docked=docked);self.current=(self.value['width'],self.value['height']);self.transparency=0;self.transparency_applied=False;self.taskbar_hidden=False
     def bind(self,window):
@@ -151,15 +162,17 @@ class IslandHost:
         return self.glass_applied
     def _resize(self):
         if self.window:self.window.resize(self.value['width'],self.value['height']);self.window.move(self.value['x'],self.value['y'])
-    def layout(self,expanded,size='normal',panel='home',*,animate=True,anchor_x=None,chat_height=None):
+    def layout(self,expanded,size='normal',panel='home',*,animate=True,anchor_x=None,chat_height=None,tool_height=None):
         if anchor_x is None:anchor_x=self.value.get('anchor_x')
         requested=self.chat_height if chat_height is None else chat_height
-        value=geometry(self.screen,expanded,size,panel,docked=self.docked,offset=self.offset,anchor_x=anchor_x,chat_height=requested)
+        height=self.tool_heights.get(panel) if tool_height is None else tool_height
+        value=geometry(self.screen,expanded,size,panel,docked=self.docked,offset=self.offset,anchor_x=anchor_x,chat_height=requested,tool_height=height)
         old_host=(self.value['host_width'],self.value['host_height'])
         if panel=='chat':self.chat_height=requested
         with self.lock:
+            if tool_height is not None:self.tool_heights[panel]=tool_height
             self.generation+=1;generation=self.generation;start=self.current;self.value=value
-            self._animate_open=animate and self.docked and (panel in {'melodi','chat','result'} or panel.startswith('music'))
+            self._animate_open=animate and self.docked
         target=(value['width'],value['height'])
         if not expanded and panel=='chat' and animate and self.window and self.region:
             def finish_close():
@@ -170,7 +183,7 @@ class IslandHost:
         if self.window and self.region:
             if old_host!=(value['host_width'],value['host_height']):self.window.resize(value['host_width'],value['host_height'])
             self.window.move(value['host_x'],value['y'])
-        if self.window and self.region and self.docked and (panel in {'melodi','chat','result'} or panel.startswith('music')):
+        if self.window and self.region and self.docked:
             # Content surfaces use their final bounds before exposure. A native
             # size morph looks like a provisional/loading player or cuts pills.
             with self.lock:self.current=target

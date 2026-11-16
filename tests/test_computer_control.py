@@ -55,7 +55,7 @@ class LocalProtocolRuntime(NativeRuntime):
                 target.put({'result':{'verified':True}})
         self.socket=Socket()
     def start(self):self.started=True
-    def availability(self):return {'available':True}
+    def availability(self, *, refresh=False):return {'available':True}
 
 
 class NativeProtocolTests(unittest.TestCase):
@@ -79,7 +79,12 @@ class ComputerTests(unittest.TestCase):
         deadline=time.monotonic()+10
         while time.monotonic()<deadline:
             value=self.service.jobs[job['id']]
-            if value['state'] not in {'queued','planning','running'}:return value
+            if value['state'] not in {'queued','planning','running'}:
+                # The terminal state precedes receipt/export finalization. Wait
+                # for the owned worker before tearing down its temporary files.
+                finished=value.get('finished')
+                if finished is not None and not finished.wait(max(0,deadline-time.monotonic())):self.fail('Task finalization did not complete')
+                return value
             time.sleep(.01)
         self.fail('Task did not complete')
     def test_no_control_without_native_grant(self):
@@ -87,6 +92,24 @@ class ComputerTests(unittest.TestCase):
         self.assertEqual(self.runtime.calls,[])
         self.service.native=False
         with self.assertRaises(ValueError):self.service.arm()
+    def test_saved_folder_survives_restart_and_revocation_without_reusing_grants(self):
+        folder=Path(self.temp.name)/'documents'
+        folder.mkdir()
+        self.service.grant_folder(folder)
+        old_token=self.service.arm()['token']
+        root=self.service.root
+        self.service.close()
+        self.service=ComputerService('http://127.0.0.1:1',lambda:self.spatial,root=root,
+                                     runtime=self.runtime,planner=self.planner,native=True)
+        self.assertEqual(self.service.folder_settings()['saved_folders'],[str(folder)])
+        self.assertIn(str(folder),self.service.roots)
+        self.assertFalse(self.service.authorized(old_token))
+        token=self.service.arm()['token']
+        self.service.revoke_folder(str(folder))
+        self.assertFalse(self.service.authorized(token))
+        self.assertNotIn(str(folder),self.service.roots)
+        from services.computer.access import AccessPolicy
+        self.assertEqual(AccessPolicy(root).available_folders(),[])
     def test_observe_execute_observe_then_done(self):
         token=self.service.arm()['token'];job=self.service.enqueue('desktop','Crear nota sintética',token)
         value=self.wait(job)
@@ -153,8 +176,60 @@ class ComputerTests(unittest.TestCase):
     def test_voice_turn_returns_job_receipt_and_stays_conversational(self):
         token=self.service.arm()['token'];events=list(self.service.turn(ConversationRequest(text='Fixture',consent=True),token))
         self.assertEqual(events[0]['type'],'computer_task');self.assertTrue(events[-1]['await_user'])
-        self.assertIn(next(e['text'] for e in events if e['type']=='sentence'),['Me pongo con ello.','Voy con eso.','Ahora lo hago.','Dame un momento, voy con ello.'])
+        self.assertIn('Fixture',next(e['text'] for e in events if e['type']=='sentence'))
         self.wait(events[0]['job'])
+    def test_summary_receives_conversation_and_keeps_it_out_of_operational_receipts(self):
+        self.planner.route_kind='document';captured=[]
+        def generate(prompt,data,**kwargs):
+            captured.append(data)
+            return {'title':'Resumen sintético','body':'Se pidieron cambios; queda pendiente comprobarlos.'}
+        self.planner.generate=generate;self.service.creations.export=lambda identifier:None
+        history=[{'role':'user','content':'PRIVATE_CONTEXT: acordamos probar el video.'},{'role':'assistant','content':'La prueba quedó pendiente.'}]
+        value=ConversationRequest(text='Crea un resumen de nuestra conversación',conversation_context=history,consent=True)
+        event=next(e for e in self.service.chat_turn(value,None) if e['type']=='reference_action')
+        result=self.service.execute_prepared(event['ticket'],self.service.arm()['token']);job=self.wait(result)
+        self.assertEqual(captured[0]['conversation_history_data'],history)
+        self.assertFalse(captured[0]['conversation_history_truncated'])
+        self.assertIn('pendiente',job['result']['message'])
+        raw=(self.service.receipts/(job['id']+'.json')).read_text(encoding='utf-8');self.assertNotIn('PRIVATE_CONTEXT',raw)
+        child={'kind':'document','grant':self.service.grant,'cancelled':threading.Event(),'external_calls':0,'parent_id':job['id']}
+        self.service.request_plan(child,'Resume los mensajes',{'goal':'Resumen delegado'})
+        self.assertEqual(captured[-1]['conversation_history_data'],history)
+    def test_informational_installation_question_never_creates_a_task(self):
+        from services.computer.planner import MetaPlanner
+        planner=MetaPlanner();planner.generate=lambda *a,**k:self.fail('No hace falta clasificar esta pregunta')
+        for text in ('Como se instala una impresora, cual es el primer paso?','¿Cómo puedo instalar un programa?'):
+            self.assertEqual(planner.route(ConversationRequest(text=text,consent=True))['kind'],'chat')
+    def test_media_upload_and_clear_are_local_only_and_do_not_execute(self):
+        from urllib.parse import quote
+        with LocalDesktopServer(handler=experience_handler(Handler)) as server:
+            server.http.computer_lock=threading.RLock();server.http.computer=self.service
+            def upload(name,origin,data=b'fake-video'):
+                headers={'Content-Type':'application/octet-stream','X-Brivany-Media-Name':quote(name)}
+                if origin:headers['Origin']=origin
+                return urlopen(Request(server.base_url+'/api/computer/media-input',data=data,headers=headers),timeout=4)
+            for origin in (None,'https://outside.invalid'):
+                with self.assertRaises(HTTPError) as denied:upload('fixture.mp4',origin)
+                self.assertEqual(denied.exception.code,403)
+            with upload('video de prueba.mp4',server.base_url) as response:uploaded=json.load(response)
+            self.assertEqual(uploaded['selected'],['video de prueba.mp4'])
+            original=self.service.edits_inputs[0]
+            self.assertEqual(Path(original).read_bytes(),b'fake-video');self.assertFalse(self.service.jobs)
+            selected_id=uploaded['attachment']['id'];self.planner.route_kind='motion'
+            ticket=list(self.service.chat_turn(ConversationRequest(text='Crea un video',media_ids=[selected_id],consent=True),None))[0]['ticket']
+            self.assertEqual(self.service.prepared[ticket]['selected_media'],(original,));self.assertEqual(self.service.edits_inputs,[])
+            with upload('siguiente.mp4',server.base_url) as response:new_attachment=json.load(response)['attachment']
+            empty=list(self.service.chat_turn(ConversationRequest(text='Crea otro video',media_ids=[],consent=True),None))[0]['ticket']
+            self.assertEqual(self.service.prepared[empty]['selected_media'],());self.assertEqual(self.service.prepared[ticket]['selected_media'],(original,))
+            self.assertEqual(Path(original).read_bytes(),b'fake-video')
+            retry=list(self.service.chat_turn(ConversationRequest(text='Crea un video',media_ids=[selected_id],consent=True),None))[0]['ticket']
+            self.assertEqual(self.service.prepared[retry]['selected_media'],(original,))
+            self.assertEqual(Path(self.service.edits_inputs[0]).name,new_attachment['name']);self.assertFalse(self.service.jobs)
+            for name in ('../escape.mp4','script.exe','file:stream.mp4','CON.mp4'):
+                with self.assertRaises(HTTPError) as denied:upload(name,server.base_url)
+                self.assertEqual(denied.exception.code,422)
+            with urlopen(Request(server.base_url+'/api/computer/media-inputs/clear',data=b'{}',headers={'Content-Type':'application/json','Origin':server.base_url}),timeout=4) as response:self.assertEqual(json.load(response)['selected'],[])
+            self.assertEqual(self.service.edits_inputs,[])
     def test_models_run_while_desktop_is_busy(self):
         token=self.service.arm()['token'];entered=threading.Event();release=threading.Event()
         original=self.runtime.call

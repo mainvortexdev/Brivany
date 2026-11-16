@@ -1,9 +1,14 @@
 """Native-only renderer boundary with an actual local HTTP server, no accounts."""
 from http.client import HTTPConnection
+from html.parser import HTMLParser
+import json
+from pathlib import Path
+import tempfile
 from urllib.parse import urlsplit,urlencode
 import unittest
 from desktop.experience.ui_session import DesktopUISession
 from desktop.experience.launcher import experience_handler,NATIVE_PAGES
+from desktop.experience.workspace_preferences import WorkspacePreferences
 from desktop.launcher import LocalDesktopServer
 from services.h1.server import Handler
 
@@ -16,10 +21,90 @@ class NativeUISessionTests(unittest.TestCase):
         self.port=urlsplit(self.server.base_url).port
 
     def get(self,path,headers=None):
+        return self.request('GET', path, headers=headers)
+
+    def request(self, method, path, headers=None, body=None):
         c=HTTPConnection('127.0.0.1',self.port,timeout=4)
         try:
-            c.request('GET',path,headers=headers or {});r=c.getresponse();return r.status,dict(r.getheaders()),r.read()
+            c.request(method,path,body=body,headers=headers or {});r=c.getresponse();return r.status,dict(r.getheaders()),r.read()
         finally:c.close()
+
+    def test_preferences_require_local_desktop_and_persist_across_store_restarts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'preferences.json'
+            self.server.http.workspace_preferences=WorkspacePreferences(path)
+            endpoint='/api/desktop/workspace-preferences'
+            headers={self.ui.HEADER:self.ui.secret, 'Origin':self.server.base_url,
+                     'Content-Type':'application/json'}
+            payload=json.dumps({'patch':{'recording':{'fps':30},'general':{'quiet':True,'rate':1},
+                                         'interface':{'locale':'en'}},
+                                'initial':{'appearance':{'accent':'mint','motion':'invalid'}}})
+            self.assertEqual(self.get(endpoint)[0],403)
+            self.assertEqual(self.request('POST',endpoint,headers={'Origin':self.server.base_url},body=payload)[0],403)
+            self.assertEqual(self.request('POST',endpoint,headers={**headers,'Origin':'https://foreign.example'},body=payload)[0],403)
+            self.assertFalse(path.exists())
+            self.assertEqual(self.request('POST',endpoint,headers=headers,body=payload)[0],200)
+            self.server.http.workspace_preferences=WorkspacePreferences(path)
+            snapshot=json.loads(self.get(endpoint,headers)[2])
+            self.assertEqual(snapshot['recording']['fps'],30)
+            self.assertEqual(snapshot['appearance']['accent'],'mint')
+            self.assertTrue(snapshot['appearance']['motion'])
+            self.assertTrue(snapshot['general']['quiet'])
+            self.assertEqual(snapshot['general']['rate'],1)
+            self.assertEqual(snapshot['general']['language'],'es-ES')
+            self.assertEqual(snapshot['interface']['locale'],'en')
+            self.assertEqual(snapshot['revision'],1)
+            invalid=json.dumps({'patch':{'general':{'rate':True}}})
+            self.assertEqual(self.request('POST',endpoint,headers=headers,body=invalid)[0],422)
+            invalid_locale=json.dumps({'patch':{'interface':{'locale':'unknown'}}})
+            self.assertEqual(self.request('POST',endpoint,headers=headers,body=invalid_locale)[0],422)
+            self.assertEqual(json.loads(self.get(endpoint,headers)[2]),snapshot)
+            status,_,body=self.get('/work-widget',headers)
+            self.assertEqual(status,200)
+            self.assertIn(b'brivany-workspace-preferences',body)
+            self.assertIn(b'&quot;accent&quot;: &quot;mint&quot;',body)
+            self.assertNotIn(self.ui.secret.encode(),body)
+
+    def test_saved_locale_embeds_its_catalog_and_serves_matching_messages(self):
+        class CatalogMeta(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.catalogs = []
+            def handle_starttag(self, tag, attrs):
+                fields = dict(attrs)
+                if tag == 'meta' and fields.get('name') == 'brivany-workspace-catalog':
+                    self.catalogs.append(fields)
+        from re import findall
+        from desktop.experience.workspace_preferences import WORKSPACE_LOCALES
+
+        with tempfile.TemporaryDirectory() as directory:
+            store=WorkspacePreferences(Path(directory)/'preferences.json')
+            self.server.http.workspace_preferences=store
+            headers={self.ui.HEADER:self.ui.secret}
+            baseline=json.loads(self.get('/desktop-shell/workspace-locales/en.json',headers)[2])
+            for locale in WORKSPACE_LOCALES:
+                with self.subTest(locale=locale):
+                    store.update({'interface':{'locale':locale}})
+                    page=CatalogMeta()
+                    status,_,html=self.get('/work-widget',headers)
+                    self.assertEqual(status,200)
+                    page.feed(html.decode('utf-8'))
+                    if locale=='es':
+                        self.assertEqual(page.catalogs,[])
+                        continue
+                    meta,=page.catalogs
+                    self.assertEqual(meta['data-locale'],locale)
+                    status,_,catalog=self.get('/desktop-shell/workspace-locales/'+locale+'.json',headers)
+                    self.assertEqual(status,200)
+                    messages=json.loads(catalog)
+                    self.assertEqual(json.loads(meta['content']),messages)
+                    self.assertEqual(messages.keys(),baseline.keys())
+                    for source,value in messages.items():
+                        self.assertTrue(isinstance(value,str) and value)
+                        self.assertEqual(sorted(findall(r'\{\w+\}',source)),sorted(findall(r'\{\w+\}',value)))
+            status,_,html=self.get('/brivany-shell',headers)
+            self.assertEqual(status,200)
+            self.assertNotIn(b'brivany-workspace-catalog',html)
 
     def test_browser_has_no_web_edition_but_native_cookie_loads_the_renderer(self):
         for path in ('/','/index.html','/brivany-shell','/connections','/app','/work-widget?surface=bar','/work-voice','/spotify-player'):

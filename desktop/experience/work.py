@@ -46,7 +46,7 @@ class WorkBridge(CompanionBridge,WorkTranslationBridge):
             self._workspace_offset=round(rect['bottom']/scale-int(getattr(host.screen,'y',0)))
             host.offset=self._workspace_offset+(72 if host.value['panel']=='chat' and self._companion_snapshot().get('listening') else 0)
             with host.lock:
-                host.generation+=1;old=host.value;host.value=geometry(host.screen,old['expanded'],old['size'],old['panel'],docked=True,offset=host.offset,anchor_x=min(host.screen.width,old.get('anchor_x',host.screen.width/2)),chat_height=host.chat_height)
+                host.generation+=1;old=host.value;host.value=geometry(host.screen,old['expanded'],old['size'],old['panel'],docked=True,offset=host.offset,anchor_x=min(host.screen.width,old.get('anchor_x',host.screen.width/2)),chat_height=host.chat_height,tool_height=host.tool_heights.get(old['panel']))
                 host.current=(host.value['width'],host.value['height'])
                 window=host.window;value=dict(host.value);current=host.current
             # WinForms Invoke/SetWindowRgn can reenter window callbacks. Never
@@ -60,6 +60,14 @@ class WorkBridge(CompanionBridge,WorkTranslationBridge):
             if getattr(self,'_voice_host',None):self._voice_host.hide()
         elif not active:self._show_island()
     def _close_island_windows(self):
+        stop_game = getattr(self, '_stop_game_monitor', None)
+        if stop_game:
+            stop_game()
+        stop_control = getattr(self, '_stop_phone_control', None)
+        if stop_control:
+            stop_control()
+        with _WORK_START_LOCK:
+            self._workspace_window_epoch=getattr(self,'_workspace_window_epoch',0)+1
         for key in ('_workspace_reply_timer','_workspace_overlay_hide'):
             timer=getattr(self,key,None)
             if timer:timer.cancel()
@@ -82,14 +90,8 @@ class WorkBridge(CompanionBridge,WorkTranslationBridge):
                 except Exception:pass
     def _keep_work_background(self):
         if getattr(self,'_exit_requested',False):return
-        if getattr(getattr(self,'_tray_host',None),'active',False) and not self._work().active:
-            self.start_work();return False
-        if self._work().active:
-            self._window.hide()
-            if getattr(self,'_work_window',None):self._show_island()
-            return False
-        close_audio=getattr(self,'_close_spotify_player',None)
-        if close_audio:close_audio()
+        self._window.minimize()
+        return False
     def _sync_work(self):
         value=self._work().status()
         state={'active':value['active'],'recording':value['translation_state']=='recording'}
@@ -144,21 +146,9 @@ class WorkBridge(CompanionBridge,WorkTranslationBridge):
             self._voice_host=IslandHost(screen,expanded=False,docked=True)
             self._voice_host.value=geometry(screen,False,panel='live-wave',docked=True)
             self._voice_host.current=(self._voice_host.value['width'],self._voice_host.value['height'])
-            wave=self._voice_host.value
-            self._voice_window=webview.create_window('Melodi WorkSpace · Voz',self._desktop_url('/work-voice'),js_api=self,width=wave['host_width'],height=wave['host_height'],x=wave['host_x'],y=wave['y'],hidden=True,frameless=True,easy_drag=False,on_top=True,resizable=False,min_size=(220,1),shadow=False,focus=False,transparent=True,background_color='#000000')
-            def voice_ready():
-                if self._voice_window:
-                    self._voice_host.bind(self._voice_window)
-                    self._voice_host.click_through()
-                    # WebView2 can expose a window created with hidden=True
-                    # while its initial page loads. Hide the native surface
-                    # explicitly before deciding whether there is audio/reply.
-                    self._voice_host.hide()
-                    self._publish_companion(self._companion_snapshot())
-            self._voice_window.events.loaded+=voice_ready
             session=getattr(self,'_desktop_ui_session',None)
             if session:
-                for view in (self._work_window,self._bar_window,self._voice_window):session.bind_window(view,self._base)
+                for view in (self._work_window,self._bar_window):session.bind_window(view,self._base)
             def island_ready():
                 if self._work_window:
                     self._island_host.bind(self._work_window);self._show_island()
@@ -177,7 +167,32 @@ class WorkBridge(CompanionBridge,WorkTranslationBridge):
         else:
             self._show_island();self._work_window.evaluate_js('window.BrivanyIsland?.reopen()')
         self._sync_work();self._window.hide();return {'ok':True}
-    def work_island_layout(self,expanded,size='normal',panel='home',animate=True,manual=False,anchor_x=None,chat_height=None):
+    def _ensure_companion_window(self):
+        """Allocate the third WebView only when voice or a reply needs it."""
+        with _WORK_START_LOCK:
+            if getattr(self,'_voice_window',None) or not self._work().active:return
+            host=getattr(self,'_voice_host',None)
+            if not host:return
+            epoch=getattr(self,'_workspace_window_epoch',0)
+            import webview
+            wave=host.value
+            window=webview.create_window('Melodi WorkSpace · Voz',self._desktop_url('/work-voice'),js_api=self,width=wave['host_width'],height=wave['host_height'],x=wave['host_x'],y=wave['y'],hidden=True,frameless=True,easy_drag=False,on_top=True,resizable=False,min_size=(220,1),shadow=False,focus=False,transparent=True,background_color='#000000')
+            if not self._work().active or self._voice_host is not host or epoch!=getattr(self,'_workspace_window_epoch',0):
+                window.destroy();return
+            self._voice_window=window
+            def voice_ready():
+                if self._voice_window is not window or not self._work().active or self._voice_host is not host or epoch!=getattr(self,'_workspace_window_epoch',0):
+                    window.destroy();return
+                host.bind(window)
+                if not self._work().active or self._voice_host is not host or epoch!=getattr(self,'_workspace_window_epoch',0):
+                    host.close();window.destroy();return
+                host.click_through();host.hide()
+                self._publish_companion(self._companion_snapshot())
+            window.events.loaded+=voice_ready
+            session=getattr(self,'_desktop_ui_session',None)
+            if session:session.bind_window(window,self._base)
+
+    def work_island_layout(self,expanded,size='normal',panel='home',animate=True,manual=False,anchor_x=None,chat_height=None,tool_height=None):
         self._trusted()
         if type(animate) is not bool or type(manual) is not bool:raise ValueError('Movimiento inválido.')
         if not getattr(self,'_island_host',None):raise ValueError('Activa Work antes de abrir la isla.')
@@ -189,16 +204,18 @@ class WorkBridge(CompanionBridge,WorkTranslationBridge):
             elif panel=='music':panel='music-player'
         previous=self._island_host.value['panel']
         was_expanded=self._island_host.value['expanded']
+        if tool_height is not None and (not was_expanded or previous!=panel):
+            return self._island_state()
         if expanded and self._island_host.value['expanded'] and previous!=panel and not (previous.startswith('music') and panel.startswith('music')):
             # Retire the old painted content before changing the native region.
             # The new view is rendered below before the window is revealed.
             self._island_host.hide()
         if not expanded:self._workspace_keyboard=False
-        self._workspace_pinned=expanded and panel=='result'
+        self._workspace_pinned=expanded and panel in {'result','files','widgets'}
         self._chat_visibility().opened_chat(expanded and panel=='chat')
         if expanded and hasattr(self._island_host,'glass_mode'):self._island_host.glass_mode(panel=='result')
         self._island_host.offset=getattr(self,'_workspace_offset',BAR_HEIGHT)+(72 if panel=='chat' and self._companion_snapshot().get('listening') else 0)
-        self._island_host.layout(expanded,size,panel,animate=animate,anchor_x=anchor_x,chat_height=chat_height);state=self._island_state()
+        self._island_host.layout(expanded,size,panel,animate=animate,anchor_x=anchor_x,chat_height=chat_height,tool_height=tool_height);state=self._island_state()
         self._workspace_preparing=state['revision']
         if music_status is not None:state['music_status']=music_status
         if panel=='agent':
@@ -255,8 +272,12 @@ class WorkBridge(CompanionBridge,WorkTranslationBridge):
         if route not in {'/spaces','/human-skills','/practice','/dubbing','/connections','/activity','/sous','/desktop-services'}:raise ValueError('Módulo inválido.')
         self._window.evaluate_js('window.BrivanyNavigate?.('+json.dumps(route)+')')
         return self.return_to_chat()
-    def workspace_app_settings(self):
-        self._trusted();self._window.evaluate_js('window.BrivanyOpenSettings?.()');return self.return_to_chat()
+    def workspace_app_settings(self,section=''):
+        self._trusted()
+        if section not in ('','work'):
+            raise ValueError('Sección de ajustes no disponible.')
+        self._window.evaluate_js('window.BrivanyOpenSettings?.('+json.dumps('#'+section if section else '')+')')
+        return self.return_to_chat()
     def return_to_chat(self):
         self._trusted();self._window.show();self._window.restore()
         if getattr(self,'_island_host',None):self.work_island_layout(False,self._island_host.value['size'],self._island_host.value['panel'])

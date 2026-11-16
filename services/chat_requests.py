@@ -18,7 +18,7 @@ from uuid import UUID,uuid5,NAMESPACE_URL
 from services.integrations import IntegrationError,_parameters
 from services.personal_notes import _moment
 
-HELP='Prepara una solicitud con /recordatorio fecha-ISO-con-zona | texto, /nota título | texto, /agenda inicio-ISO | fin-ISO, /evento título | inicio-ISO | fin-ISO, /drive búsqueda, /gmail búsqueda o /borrador correo | asunto | texto. Luego revísala en Conexiones de Brivany. No se ejecuta desde este mensaje.'
+HELP='Prepara una solicitud con /recordatorio fecha-ISO-con-zona | texto, /nota título | texto, /agenda inicio-ISO | fin-ISO, /drive búsqueda, /gmail búsqueda o /borrador correo | asunto | texto. Luego revísala en Conexiones de Brivany. No se ejecuta desde este mensaje.'
 
 
 def fail(code='chat_request',message='Revisa los datos de la solicitud del chat.',status=422):raise IntegrationError(code,message,status)
@@ -45,7 +45,7 @@ def parse_command(text,config):
         if len(parts[0])>120 or len(parts[1])>1000 or any(ord(char)<32 and char not in '\n\t' for char in body):fail()
         return {'kind':'personal','operation':'note.create','parameters':{'title':parts[0],'body':parts[1]}}
     if command=='/agenda' and len(parts)==2:operation='calendar.list';parameters=dict(zip(('start','end'),parts))
-    elif command=='/evento' and len(parts)==3:operation='calendar.create';parameters=dict(zip(('title','start','end'),parts))
+    elif command=='/evento':fail('calendar_read_only','Google Calendar en Desktop permite solo consultar la agenda.',403)
     elif command in {'/drive','/gmail'} and body.strip():operation=command[1:]+'.search';parameters={'query':body.strip()}
     elif command=='/borrador' and len(parts)==3:operation='gmail.draft';parameters=dict(zip(('to','subject','body'),parts))
     else:fail('chat_command_format',HELP)

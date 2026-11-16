@@ -78,6 +78,18 @@ class TranslationTests(unittest.TestCase):
         owner.configuration=lambda:{'configured':False}
         with self.assertRaises(ValueError):owner.start()
         self.assertEqual(self.routes,[])
+        self.assertEqual(owner.status()['state'],'error')
+        self.assertIn('Ajustes',owner.status()['error'])
+        self.assertEqual(owner.status()['control_revision'],1)
+    def test_configuration_error_survives_status_refresh_and_retry_clears_it(self):
+        owner=self.owner();owner.configuration=lambda:{'configured':True,'access_blocked':True}
+        with self.assertRaises(ValueError):owner.start('es','masculine')
+        failure=owner.status()
+        self.assertEqual(owner.status(),failure)
+        self.assertFalse(failure['active']);self.assertEqual(failure['state'],'error')
+        owner.configuration=lambda:{'configured':True,'access_blocked':False}
+        owner.start('es','masculine');self.until(lambda:len(self.bridges)>0)
+        self.assertEqual(owner.status()['error'],'');self.assertTrue(owner.status()['active'])
     def test_stop_silences_output_without_waiting_for_blocked_provider(self):
         owner=self.owner();entered=threading.Event();release=threading.Event();closed=threading.Event()
         class Stalled(Bridge):

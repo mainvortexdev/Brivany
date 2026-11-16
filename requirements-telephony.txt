@@ -1,0 +1,7 @@
+-r requirements-h1.txt
+# Dedicated HTTP/webhook/WebSocket listener; no application-wide public server.
+aiohttp==3.14.5
+cryptography==50.0.2
+# Streaming conversion between Telnyx PCMU 8 kHz and Melodi PCM 24 kHz.
+numpy==2.3.5
+soxr==1.1.0

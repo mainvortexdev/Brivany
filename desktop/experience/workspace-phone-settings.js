@@ -1,0 +1,15 @@
+/* Network and certificate details stay in Settings, away from the file card. */
+(() => {
+ 'use strict';const target=document.querySelector('[data-section="work"]');if(!target)return;
+ const owner=parent.location.origin===location.origin?parent:window,block=document.createElement('div');block.hidden=true;
+ block.innerHTML='<h3>Archivos al teléfono</h3><div class="setting-row"><span>brivany.vetsa.es<small>Enlace temporal cifrado · HTTPS</small></span></div><div class="setting-row"><label for="settings-phone-network">Red de Control móvil</label><select id="settings-phone-network"><option value="">Elige una red</option></select><button id="settings-phone-refresh" aria-label="Actualizar redes locales">↻</button></div><div class="setting-row"><span>Certificado de archivos · SHA-256<small id="settings-phone-fingerprint" style="font-family:monospace;overflow-wrap:anywhere">Disponible al iniciar un envío</small></span></div><div id="settings-control-cert" class="setting-row" hidden><span>Certificado de Control móvil · SHA-256<small id="settings-control-fingerprint" style="font-family:monospace;overflow-wrap:anywhere"></small></span></div><p class="section-note">La red local y el certificado se usan únicamente para Control móvil.</p><p id="settings-phone-status" class="settings-status" role="status"></p>';
+ target.append(block);const $=id=>block.querySelector(id);let busy=false;
+ async function load(address){
+  if(busy||!owner.pywebview?.api?.workspace_phone_settings)return;busy=true;block.hidden=false;$('#settings-phone-network').disabled=true;
+  try{const value=await owner.pywebview.api.workspace_phone_settings(...(address===undefined?[]:[address]));const select=$('#settings-phone-network');select.replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent=value.addresses?.length?'Elige una red':'Sin red local';select.append(empty);for(const ip of value.addresses||[]){const option=document.createElement('option');option.value=ip;option.textContent=ip;select.append(option)}select.value=value.address||'';select.disabled=value.active===true;$('#settings-phone-fingerprint').closest('.setting-row').hidden=value.official_https===true;$('#settings-phone-fingerprint').textContent=value.fingerprint||'Disponible al iniciar un envío';$('#settings-control-cert').hidden=!value.control_fingerprint;$('#settings-control-fingerprint').textContent=value.control_fingerprint||'';$('#settings-phone-status').textContent=''}catch(error){$('#settings-phone-status').textContent=error.message||'No se pudo consultar la red.';$('#settings-phone-network').disabled=false}finally{busy=false}
+ }
+ $('#settings-phone-network').onchange=()=>{if($('#settings-phone-network').value)load($('#settings-phone-network').value)};$('#settings-phone-refresh').onclick=()=>load();
+ owner.addEventListener('pywebviewready',()=>load(),{once:true});
+ if(window.BrivanySettings){const refresh=window.BrivanySettings.refresh;window.BrivanySettings.refresh=async(...args)=>{await refresh(...args);await load()}}
+ load();
+})();

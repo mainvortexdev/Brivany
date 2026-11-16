@@ -1,0 +1,11 @@
+{
+  "name": "brivany-updates",
+  "main": "worker.mjs",
+  "account_id": "62a87427406c2ed15f92d4da29116214",
+  "compatibility_date": "2026-11-08",
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {"directory": "../../.local/distribution/update-channel", "binding": "ASSETS", "run_worker_first": true, "html_handling": "none"},
+  "routes": [{"pattern": "brivany.vetsa.es/windows/*", "zone_name": "vetsa.es"}],
+  "observability": {"enabled": true, "traces": {"enabled": true}}
+}

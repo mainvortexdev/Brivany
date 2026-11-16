@@ -48,14 +48,14 @@ export function prefixOpeningDiagnostic(value){
  const finite=value=>typeof value==='number'&&Number.isFinite(value);
  const bounded=(value,max=60000)=>finite(value)&&value>=0&&value<=max;
  const result={diagnostic_partial:true,prepared_before_activation:bounded(value.ready_at,Number.MAX_SAFE_INTEGER)&&value.ready_at>0};
- for(const name of ['duration_ms','resume_from_ms','position_ms'])if(bounded(value[name],7000))result[name]=value[name];
- if(bounded(value.pcm_bytes,88*3840))result.pcm_sent_ms=value.pcm_bytes/48;
+ for(const name of ['duration_ms','resume_from_ms','position_ms'])if(bounded(value[name],10000))result[name]=value[name];
+ if(bounded(value.pcm_bytes,125*3840))result.pcm_sent_ms=value.pcm_bytes/48;
  if(finite(value.ready_at)&&finite(value.started_at)&&bounded(value.ready_at-value.started_at))result.elapsed_ms=value.ready_at-value.started_at;
  result.error_code=typeof value.error_code==='string'&&/^prefix_[a-z0-9_]{1,40}$/.test(value.error_code)?value.error_code:null;
  result.preparation_metrics=Object.fromEntries(['content_gate_ms','asr_ms','turn_classification_ms','prosody_ms','local_timbre_ms','postprocess_ms','total_ms','capture_receive_ms']
   .filter(name=>bounded(value.preparation_metrics?.[name])).map(name=>[name,value.preparation_metrics[name]]));
  result.turns=(Array.isArray(value.turns)?value.turns:[]).slice(0,16)
-  .filter(row=>row&&bounded(row.start_ms,7000)&&bounded(row.end_ms,7000)&&row.end_ms>row.start_ms&&['speech','unknown','music','singing'].includes(row.content))
+  .filter(row=>row&&bounded(row.start_ms,10000)&&bounded(row.end_ms,10000)&&row.end_ms>row.start_ms&&['speech','unknown','music','singing'].includes(row.content))
   .map(({start_ms,end_ms,content})=>({start_ms,end_ms,content}));
  return result;
 }

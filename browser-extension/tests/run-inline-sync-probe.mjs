@@ -244,10 +244,10 @@ if(local){
         const event=JSON.parse(bytes);
         if(event.type==='authenticate')send({type:'authenticated'});
         else if(event.type==='prepare-video'){
-          anchor=event.position_ms;send({type:'prefix-capture',duration_ms:7000,sample_rate:24000,input_frame_ms:80});
+          anchor=event.position_ms;send({type:'prefix-capture',duration_ms:10000,sample_rate:24000,input_frame_ms:80});
         }else if(event.type==='finish'){
-          if(pcmBytes!==88*3840){send({type:'error',code:'fixture_prefix_length'});return;}
-          send({type:'prefix-ready',prefix_id:prefixId,position_ms:anchor,duration_ms:7000,resume_from_ms:7000,
+          if(pcmBytes!==125*3840){send({type:'error',code:'fixture_prefix_length'});return;}
+          send({type:'prefix-ready',prefix_id:prefixId,position_ms:anchor,duration_ms:10000,resume_from_ms:10000,
             turns:[{start_ms:250,end_ms:3250,content:'speech'},{start_ms:3500,end_ms:5000,content:'music'}]});
         }
       });
@@ -256,7 +256,7 @@ if(local){
     ws.on('message',(bytes,binary)=>{
       if(binary){
         seconds+=.08;send({type:'source-progress',processed_ms:Math.round(seconds*1000)});
-        if(prefix&&seconds>=7&&seconds-.08<7)send({type:'live-asr-start',source_start_ms:7000});
+        if(prefix&&seconds>=10&&seconds-.08<10)send({type:'live-asr-start',source_start_ms:10000});
         if(workspaceStop&&seconds>=6.4){ws.close(1000,'workspace-stop');return;}
         if(providerError&&seconds>=6.4){send({type:'error',message:interruption});ws.close();return;}
         const starts=progressiveFixture?[.25,7.25,10.25,13.25,16.25]:prefix?[.25,7.25,12.25]:[.25,6.25,12.25];
@@ -279,7 +279,7 @@ if(local){
       else if(event.type==='start'){
         starts++;send({type:'ready'});
         if(prefix&&event.prefix_id===prefixId){
-          send({type:'prefix-used',duration_ms:7000,resume_from_ms:7000});
+          send({type:'prefix-used',duration_ms:10000,resume_from_ms:10000});
           send({type:'source-skipped',cue_id:'owned-music',source_start_ms:3500,source_end_ms:5000,reason:'music'});
         }
       }
@@ -326,7 +326,9 @@ function mergedDuration(intervals){
 let context,worker,phase='abrir-brave-aislado';
 try{
   context=await chromium.launchPersistentContext(path.join(temporary,'profile'),{executablePath:'C:/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe',headless:true,ignoreDefaultArgs:['--disable-extensions'],args:[`--disable-extensions-except=${extension}`,`--load-extension=${extension}`,'--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows','--autoplay-policy=no-user-gesture-required']});
-  worker=context.serviceWorkers()[0]||await context.waitForEvent('serviceworker',{timeout:8000});
+  // Brave runs its own built-in extension workers too: pick Brivany's.
+  const ownWorker=candidate=>candidate.url().endsWith('/background.js');
+  worker=context.serviceWorkers().find(ownWorker)||await context.waitForEvent('serviceworker',{predicate:ownWorker,timeout:8000});
   const page=await context.newPage(), url=youtube?'https://www.youtube.com/watch?v=sr_iLGKNsxU'+(position>0?`&t=${position}s`:''):`http://127.0.0.1:${server.address().port}/`;
   phase='abrir-video';
   let source;
@@ -526,16 +528,16 @@ try{
     const latestLiveEnd=liveCues.reduce((latest,cue)=>Math.max(latest,cue.source_end*1000),0);
     const preparedSpeech=report.prefix.turns.some(turn=>!['singing','music'].includes(turn.content));
     Object.assign(report.prefix,{attached:transport.attached===true,activation_position_ms:transport.activation_position_ms,capture_anchor_ms:clocks.anchor,
-      used_duration_ms:used?.duration_ms,live_asr_start_ms:liveStart,exact_boundary:liveStart===7000,
-      replay_overlap_ms:Number.isFinite(liveStart)?7000-liveStart:null,
+      used_duration_ms:used?.duration_ms,live_asr_start_ms:liveStart,exact_boundary:liveStart===10000,
+      replay_overlap_ms:Number.isFinite(liveStart)?10000-liveStart:null,
       repeated_cue_starts:observed.length-uniqueStarts.size,observed_prefix_cues:observed.filter(cue=>cue.source_end*1000<=resume+20).length,
       observed_live_cues:observed.filter(cue=>isLiveCue(cue,resume)).length,completed_live_cues:liveCompleted,required_live_cues:liveCueTarget,
       completed_live_source_end_ms:latestLiveEnd,required_live_source_end_ms:minimumLiveSourceEnd*1000,
       prepared_speech_played:preparedSpeech?completed.some(cue=>cue.source_end*1000<=resume+20):null,
       songs_skipped:skippedSongs.length,prepared_songs:preparedSongs.length,
       songs_without_dub:songs.length?songs.every(song=>observed.every(cue=>cue.source_end*1000<=song.start+20||cue.source*1000>=song.end-20)):null});
-    report.prefix.verified=report.prefix.prepared_before_activation&&report.prefix.original_unchanged&&report.prefix.duration_ms===7000&&
-      report.prefix.pcm_sent_ms===7040&&resume>0&&resume<=7000&&report.prefix.attached&&report.prefix.used_duration_ms===7000&&
+    report.prefix.verified=report.prefix.prepared_before_activation&&report.prefix.original_unchanged&&report.prefix.duration_ms===10000&&
+      report.prefix.pcm_sent_ms===10000&&resume>0&&resume<=10000&&report.prefix.attached&&report.prefix.used_duration_ms===10000&&
       liveStart===resume&&report.prefix.repeated_cue_starts===0&&liveCompleted>=liveCueTarget&&latestLiveEnd>=minimumLiveSourceEnd*1000&&
       report.prefix.prepared_speech_played!==false&&report.prefix.songs_without_dub!==false;
   }

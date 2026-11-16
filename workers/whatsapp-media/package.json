@@ -1,0 +1,11 @@
+{
+  "name": "vetsa-public-media-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "check": "wrangler deploy --dry-run --strict",
+    "deploy": "wrangler deploy --keep-vars --strict"
+  },
+  "devDependencies": { "wrangler": "4.127.1" }
+}

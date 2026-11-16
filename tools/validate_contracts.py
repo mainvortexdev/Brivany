@@ -151,7 +151,7 @@ def main():
                 continue
             path = Path(directory) / name
             for link in re.findall(r"\]\(([^)]+)\)", path.read_text(encoding="utf-8")):
-                if "://" in link or link.startswith("#"):
+                if "://" in link or link.startswith(("#", "mailto:", "tel:")):
                     continue
                 target = (path.parent / link.split("#")[0]).resolve()
                 # The ledger retains historical evidence independently of the

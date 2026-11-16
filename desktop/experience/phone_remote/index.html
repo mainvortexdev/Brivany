@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+ <meta name="color-scheme" content="dark">
+ <title>Control móvil · Brivany</title>
+ <link rel="stylesheet" href="/remote.css">
+ <script src="/remote.js" defer></script>
+</head>
+<body>
+ <main>
+  <header><strong>brivany<span>.</span></strong><button id="disconnect" hidden>Desconectar</button></header>
+  <section id="pairing">
+   <h1>Vincular con tu PC</h1>
+   <button id="claim" class="primary" hidden>Vincular</button>
+   <p id="pair-help">Escanea el QR de Control móvil en Brivany.</p>
+   <output id="pair-code" aria-label="Código de vinculación" hidden></output>
+  </section>
+  <section id="controls" hidden>
+   <nav aria-label="Controles del PC">
+    <button data-view="desktop">Escritorio</button><button data-view="music">Música</button>
+    <button data-view="slides">Diapositivas</button><button data-view="power">Energía</button>
+   </nav>
+   <div data-pane="desktop" hidden>
+    <div id="screen-tools" hidden>
+     <button id="screen-toggle">Ver pantalla</button>
+     <div id="screen-wrap" hidden><img id="screen" alt="Pantalla principal del PC"></div>
+    </div>
+    <div id="input-tools" hidden>
+     <div id="trackpad" role="group" aria-label="Trackpad"><span>Trackpad</span></div>
+     <div class="row pointer-buttons"><button data-click="left">Clic</button><button data-click="right">Clic derecho</button></div>
+     <form id="typing"><input id="text" aria-label="Texto para el PC" autocomplete="off" maxlength="160" placeholder="Escribir en el PC…" required><button class="primary">Enviar</button></form>
+     <div class="row keys" aria-label="Teclas">
+      <button data-key="left" aria-label="Izquierda">←</button><button data-key="up" aria-label="Arriba">↑</button>
+      <button data-key="down" aria-label="Abajo">↓</button><button data-key="right" aria-label="Derecha">→</button>
+      <button data-key="backspace" aria-label="Retroceso">⌫</button><button data-key="enter" aria-label="Intro">↵</button>
+     </div>
+    </div>
+   </div>
+   <div data-pane="music" hidden>
+    <div class="row media"><button data-music="previous" aria-label="Anterior">⏮</button><button class="primary" data-music="toggle" aria-label="Reproducir o pausar">⏯</button><button data-music="next" aria-label="Siguiente">⏭</button></div>
+    <div class="row"><button data-music="volume-down" aria-label="Bajar volumen">−</button><button data-music="mute">Silenciar</button><button data-music="volume-up" aria-label="Subir volumen">+</button></div>
+   </div>
+   <div data-pane="slides" hidden>
+    <div class="row media"><button data-slide="previous">← Anterior</button><button class="primary" data-slide="next">Siguiente →</button></div>
+    <button data-slide="end">Salir de la presentación</button>
+   </div>
+   <div data-pane="power" hidden>
+    <div class="row"><button data-power="lock">Bloquear PC</button><button class="danger" data-power="shutdown">Apagar PC</button></div>
+    <p>Confirma la acción en Brivany desde el PC.</p>
+   </div>
+  </section>
+  <p id="status" role="status" aria-live="polite"></p>
+ </main>
+</body>
+</html>

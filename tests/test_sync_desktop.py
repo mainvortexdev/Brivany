@@ -26,6 +26,23 @@ class Bridge(WorkTranslationBridge):
 
 
 class SyncDesktopTests(unittest.TestCase):
+    def test_direct_start_uses_capture_without_creating_or_requesting_extension(self):
+        from types import SimpleNamespace
+        bridge=Bridge();calls=[]
+        bridge._window=SimpleNamespace(evaluate_js=lambda script:None)
+        bridge._auditory_mode='synchronized';bridge._browser_translation_pending_until=time.monotonic()+30
+        class Owner:
+            def start(self,target,voice):
+                calls.append((target,voice));return {'active':True,'state':'starting'}
+        bridge._work_translation=Owner()
+        bridge._sync_translation_factory=lambda:self.fail('Direct translation must not create an extension relay')
+        value=bridge.work_audio_translation_start('es','masculine')
+        self.assertEqual(calls,[('es','masculine')])
+        self.assertEqual(value,{'active':True,'state':'starting','mode':'direct'})
+        self.assertEqual(bridge._browser_translation_pending_until,0)
+        self.assertEqual(bridge._auditory_mode,'direct')
+        self.assertFalse(hasattr(bridge,'_sync_translation_relay'))
+        self.assertEqual(bridge.events,[value])
     def test_workspace_requests_browser_selection_before_opening_any_capture(self):
         from types import SimpleNamespace
         bridge=Bridge();calls=[]
@@ -35,6 +52,13 @@ class SyncDesktopTests(unittest.TestCase):
             def set_voice(self,voice):calls.append(('voice',voice))
         bridge._work_translation=Owner();bridge.relay.request_video=lambda:calls.append('select-active-video')
         value=bridge.work_browser_translation_start('en','auto');self.assertTrue(value['awaiting_browser']);self.assertEqual(value['state'],'selecting');self.assertEqual(calls,[('target','en'),('voice','auto'),'select-active-video'])
+    def test_direct_capture_cannot_overlap_an_active_browser_translation(self):
+        bridge=Bridge();bridge._sync_translation_relay=bridge.relay;bridge.relay.active=1
+        bridge._work_translation_factory=lambda:self.fail('Active browser audio must not be recaptured')
+        with self.assertRaisesRegex(ValueError,'Detén la traducción del navegador'):
+            bridge.work_audio_translation_start('es','auto')
+        self.assertFalse(hasattr(bridge,'_auditory_mode'))
+        self.assertEqual(bridge.events,[])
     def test_stopping_inline_video_keeps_workspace_control_and_sends_an_intentional_close(self):
         bridge=Bridge();relay=bridge._sync_translation();relay.lock=threading.RLock();closed=[]
         class Socket:

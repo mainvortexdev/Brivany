@@ -1,4 +1,5 @@
 """Pinned local backend bundles. Never copy a checkout or user profile wholesale."""
+from packages.runtime_paths import DATA_ROOT, CONFIG_PATH
 from dataclasses import dataclass
 import hashlib
 import json
@@ -10,7 +11,7 @@ import threading
 from uuid import uuid4
 
 ROOT=Path(__file__).resolve().parents[2]
-BUNDLES=ROOT/'.local/computer/backend'
+BUNDLES=DATA_ROOT/'.local/computer/backend'
 NOTICE='''Brivany / Melodi local computer backend
 
 Cognira Desktop / Stacy: Vortex Developer. Source reused from the directory

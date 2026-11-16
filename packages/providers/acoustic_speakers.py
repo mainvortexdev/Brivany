@@ -25,6 +25,8 @@ WINDOW_SAMPLES = 3 * 24000
 MATCH_THRESHOLD = .65
 NOVEL_THRESHOLD = .45
 MATCH_MARGIN = .12
+TENTATIVE_THRESHOLD = .5
+TENTATIVE_MARGIN = .05
 MAX_SPEAKERS = 8
 _LOCK = threading.RLock()
 _EXTRACTOR = None
@@ -148,4 +150,13 @@ class SessionSpeakers:
             # Do not turn a borderline match into an extra speaker, and do
             # not learn from a sample which could match either known voice.
             result['reason'] = 'ambiguous_match'
+            # Advisory for voice continuity only: a clearly leading known
+            # speaker. The cluster centre is not updated.
+            if best >= TENTATIVE_THRESHOLD and best - second >= TENTATIVE_MARGIN:
+                result['best_cluster'] = identifier
         return result
+
+    def only_cluster(self):
+        """The single known speaker, when exactly one exists (else None)."""
+        with self.lock:
+            return next(iter(self.clusters)) if len(self.clusters) == 1 else None

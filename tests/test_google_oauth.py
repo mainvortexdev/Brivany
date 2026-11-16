@@ -87,16 +87,33 @@ class GoogleOAuthTests(unittest.TestCase):
         serialized=json.dumps(safe);self.assertNotIn('synthetic-access',serialized);self.assertNotIn('synthetic-refresh',serialized)
         self.assertTrue(safe['connectors'][0]['authorized']);self.assertFalse(safe['connectors'][0]['connected'])
 
-    def test_grants_are_separate_minimal_and_calendar_write_can_read(self):
-        self.authorize('calendar',['calendar.list','calendar.create'])
+    def test_grants_are_separate_minimal_and_calendar_is_readonly(self):
+        self.authorize('calendar',['calendar.list'])
         self.assertEqual(self.transport.calls[0][1]['grant_type'],'authorization_code')
         self.assertEqual(self.service.access_token('calendar',required_scopes=[PREFIX+'calendar.events.readonly']),'synthetic-access-token-private')
-        self.assertEqual(self.service.status('calendar')['connectors'][0]['granted_scopes'],[PREFIX+'calendar.events'])
+        self.assertEqual(self.service.status('calendar')['connectors'][0]['granted_scopes'],[PREFIX+'calendar.events.readonly'])
         self.authorize('gmail')
         self.assertTrue(self.service.status('calendar')['connectors'][0]['authorized'])
         self.assertEqual(self.service.status('gmail')['connectors'][0]['granted_scopes'],[PREFIX+'gmail.readonly'])
         with self.assertRaises(GoogleOAuthError) as missing:self.service.access_token('gmail',required_scopes=[PREFIX+'gmail.compose'])
         self.assertEqual(missing.exception.status,403);self.assertFalse(self.service.status('drive')['connectors'][0]['authorized'])
+
+    def test_calendar_write_consent_is_rejected_and_existing_read_grant_survives(self):
+        self.authorize('calendar');calls=len(self.transport.calls)
+        with self.assertRaises(GoogleOAuthError):self.begin('calendar',['calendar.create'])
+        grant=self.service.status('calendar')['connectors'][0]
+        self.assertEqual(grant['authorized_operations'],['calendar.list'])
+        self.assertEqual(grant['granted_scopes'],[PREFIX+'calendar.events.readonly'])
+        self.assertEqual(len(self.transport.calls),calls)
+
+    def test_legacy_calendar_write_grant_is_exposed_as_readonly(self):
+        self.authorize('calendar')
+        with self.service._db() as db:
+            value=self.service._load_token(db,'calendar');generation=value.pop('_generation')
+            value['scopes']=[PREFIX+'calendar.events'];self.service._save(db,'calendar',generation,value)
+        restored=self.instance();grant=restored.status('calendar')['connectors'][0]
+        self.assertEqual(grant['authorized_operations'],['calendar.list'])
+        self.assertEqual(restored.access_token('calendar',required_scopes=[PREFIX+'calendar.events.readonly']),'synthetic-access-token-private')
 
     def test_desktop_pkce_client_secret_is_optional(self):
         service=self.instance(env={'BRIVANY_GOOGLE_CLIENT_ID':self.env['BRIVANY_GOOGLE_CLIENT_ID']})
@@ -176,13 +193,13 @@ class GoogleOAuthTests(unittest.TestCase):
         self.assertTrue(self.instance().status('calendar')['connectors'][0]['refresh_token_saved'])
 
     def test_previous_grant_can_refresh_while_new_consent_is_pending(self):
-        self.authorize(expires_in=60);_,pending=self.begin('calendar',['calendar.create']);self.clock[0]+=20
+        self.authorize('gmail',expires_in=60);_,pending=self.begin('gmail',['gmail.search','gmail.draft']);self.clock[0]+=20
         self.transport.response={'access_token':'synthetic-refreshed-private','expires_in':3600,'token_type':'Bearer'}
-        self.assertEqual(self.service.access_token('calendar'),'synthetic-refreshed-private')
-        self.assertTrue(self.service.status('calendar')['connectors'][0]['pending'])
+        self.assertEqual(self.service.access_token('gmail'),'synthetic-refreshed-private')
+        self.assertTrue(self.service.status('gmail')['connectors'][0]['pending'])
         self.transport.response=self.response(pending)
         self.service.finish({'state':pending['state'],'code':'synthetic-new-code'})
-        self.assertEqual(self.service.status('calendar')['connectors'][0]['authorized_operations'],['calendar.list','calendar.create'])
+        self.assertEqual(self.service.status('gmail')['connectors'][0]['authorized_operations'],['gmail.search','gmail.draft'])
 
     def test_expired_grant_cleanup_is_committed_and_no_retry_occurs(self):
         self.authorize(expires_in=60);self.clock[0]+=20

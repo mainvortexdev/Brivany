@@ -27,7 +27,7 @@ def export_document(value):
     section.page_width=Inches(8.5);section.page_height=Inches(11)
     section.top_margin=section.bottom_margin=section.left_margin=section.right_margin=Inches(1)
     for name in ('Normal','Title','Heading 1','Heading 2','Heading 3'):
-        style=document.styles[name];style.font.name='Calibri';style.font.color.rgb=RGBColor(0,0,0)
+        style=document.styles[name];style.font.name='Brivany Editorial';style.font.color.rgb=RGBColor(0,0,0)
     normal=document.styles['Normal'];normal.font.size=Pt(11)
     normal.paragraph_format.line_spacing=1.15;normal.paragraph_format.space_after=Pt(7)
     document.add_paragraph(value.title,style='Title')

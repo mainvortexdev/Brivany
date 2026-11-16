@@ -1,0 +1,17 @@
+{
+  "$schema": "../whatsapp/node_modules/wrangler/config-schema.json",
+  "name": "brivany-calls",
+  "main": "worker.js",
+  "compatibility_date": "2026-11-14",
+  "workers_dev": false,
+  "services": [{"binding":"MELODI_DESKTOP","service":"vetsa-whatsapp-assistant","entrypoint":"MelodiPhoneDesktop"}],
+  "durable_objects": {"bindings": [{"name": "MELODI_PHONE", "class_name": "MelodiPhone"}]},
+  "migrations": [{"tag": "melodi-phone-v1", "new_sqlite_classes": ["MelodiPhone"]}],
+  "vars": {"OWNER_WHATSAPP_NUMBER": "18495205246", "PUBLIC_CALLS_ORIGIN": "https://ia.vetsa.es"},
+  "observability": {
+    "enabled": true,
+    "logs": {"enabled": true, "head_sampling_rate": 1},
+    "traces": {"enabled": true, "head_sampling_rate": 1},
+    "redact_query_string": true
+  }
+}

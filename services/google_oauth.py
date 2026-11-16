@@ -34,7 +34,6 @@ CALLBACK_PATH='/api/integrations/google/callback'
 PREFIX='https://www.googleapis.com/auth/'
 OPERATIONS={
     'calendar.list':('calendar',PREFIX+'calendar.events.readonly'),
-    'calendar.create':('calendar',PREFIX+'calendar.events'),
     'gmail.search':('gmail',PREFIX+'gmail.readonly'),
     'gmail.draft':('gmail',PREFIX+'gmail.compose'),
     'drive.search':('drive',PREFIX+'drive.metadata.readonly'),
@@ -199,6 +198,8 @@ class GoogleOAuthService:
             _text(value['access_token'],16384);_text(value['refresh_token'],16384)
             if type(value['expires_at']) not in (int,float) or not math.isfinite(value['expires_at']) or type(value['simulated']) is not bool:raise ValueError()
             expected={scope for owner,scope in OPERATIONS.values() if owner==connector}
+            # Keep existing broader Calendar records usable for reads only.
+            if connector=='calendar':expected.add(PREFIX+'calendar.events')
             if not isinstance(value['scopes'],list) or not value['scopes'] or any(not isinstance(scope,str) or scope not in expected for scope in value['scopes']):raise ValueError()
             if not isinstance(value['client_sha256'],str) or not re.fullmatch('[0-9a-f]{64}',value['client_sha256']):raise ValueError()
         except (ValueError,GoogleOAuthError):_fail('google_secret_storage','El registro privado no cumple el contrato.',503)
@@ -219,9 +220,6 @@ class GoogleOAuthService:
         if not isinstance(operations,list) or not operations or len(operations)>3 or any(not isinstance(op,str) or op not in OPERATIONS or OPERATIONS[op][0]!=connector for op in operations) or len(set(operations))!=len(operations):
             _fail('google_scopes','Selecciona sólo las operaciones necesarias de este conector.',422)
         scopes=sorted({OPERATIONS[op][1] for op in operations})
-        # calendar.events covers event reads; request one scope when writes are
-        # explicitly selected instead of redundant read/write scopes together.
-        if PREFIX+'calendar.events' in scopes and PREFIX+'calendar.events.readonly' in scopes:scopes.remove(PREFIX+'calendar.events.readonly')
         state=secrets.token_urlsafe(32);verifier=secrets.token_urlsafe(64)
         challenge=urlsafe_b64encode(hashlib.sha256(verifier.encode('ascii')).digest()).rstrip(b'=').decode('ascii')
         expiry=self.now()+300

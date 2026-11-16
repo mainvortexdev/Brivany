@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS cognira_report_schedules (id TEXT PRIMARY KEY, owner_phone TEXT NOT NULL, channel TEXT NOT NULL CHECK(channel IN ('email','whatsapp')), target TEXT NOT NULL, next_at TEXT NOT NULL, recurring INTEGER NOT NULL DEFAULT 0, time_zone TEXT NOT NULL, local_hour TEXT NOT NULL, lease_until TEXT);
+CREATE INDEX IF NOT EXISTS cognira_report_due ON cognira_report_schedules(next_at);

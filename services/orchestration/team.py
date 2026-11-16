@@ -12,6 +12,7 @@ from typing import Literal
 from PIL import Image, ImageChops
 from .meta import KINDS,MetaTools
 from .research_delivery import research_output
+from .motion_result import motion_artifact
 
 class AgentTask(BaseModel):
  model_config=ConfigDict(extra='forbid',strict=True)
@@ -62,13 +63,20 @@ def evidence(service,job):
   spatial=service.spatial_factory();path=artifact(spatial.root/'scenes'/identifier/'model-plan.json',spatial.root,1000000)
   plan=json.loads(path.read_text(encoding='utf-8'));info['conceptual_model']=plan;info['limits']='Conceptual; no certifica geometría física.';valid=result.get('object_count',0)>0
  elif job['kind']=='motion':
-  path=artifact(result.get('path',''),service.workspace,500000000);valid=path.stat().st_size>0 and result.get('verified') is True
+  path=motion_artifact(service.workspace,job['id'],result);valid=result.get('verified') is True
+  info['artifact_type']='image' if path.suffix=='.png' else 'video'
   # Reuse the renderer's own review frames when present; never original media.
   candidates=[]
-  if result.get('evidence_folder'):
+  if path.suffix=='.png':
+   with Image.open(path) as picture:
+    picture.load();valid=valid and picture.width>=128 and picture.height>=128
+    info['dimensions']=picture.size;picture.thumbnail((768,1365));output=BytesIO();picture.convert('RGB').save(output,'JPEG',quality=85)
+    images.append('data:image/jpeg;base64,'+base64.b64encode(output.getvalue()).decode())
+  elif result.get('evidence_folder'):
    folder=Path(result['evidence_folder'])/'snapshots'
    if folder.resolve().is_relative_to(service.workspace.resolve()) and not folder.is_symlink():candidates=list(sorted(folder.glob('*.png')))[2:7:3]
-  for name in ('review_frames',):candidates.extend((result.get(name) or [])[:2])
+  if path.suffix!='.png':
+   for name in ('review_frames',):candidates.extend((result.get(name) or [])[:2])
   for raw in candidates[:2]:
     try:
      frame=artifact(raw,service.workspace,10000000)
@@ -207,7 +215,8 @@ class TeamOrchestrator:
     parent['cancelled'].wait(.08)
   if parent['cancelled'].is_set():raise ValueError('Tarea cancelada.')
   agents=[{'key':t.key,'kind':t.kind,'title':t.title,'job_id':accepted.get(t.key) or next((i for i in reversed(parent['children']) if service.jobs[i].get('task_key')==t.key),None),'attempts':attempts.get(t.key,0),'accepted':t.key in accepted} for t in plan]
-  message='Terminé la tarea y revisé el resultado.'
+  completed=[service.jobs[identifier] for identifier in accepted.values()]
+  message='\n\n'.join(str((child.get('result') or {}).get('message') or (child.get('result') or {}).get('title') or child.get('phase') or 'Resultado disponible') for child in completed)[:2200] or 'No recibí una descripción del resultado; revisa el estado de cada paso.'
   if failed:
    details=[]
    for row in agents:

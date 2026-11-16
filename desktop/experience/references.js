@@ -22,7 +22,7 @@
    const row=document.createElement('div');row.className='reference-item';
    const select=document.createElement('button');select.type='button';select.className='reference-select';select.setAttribute('aria-label','Usar imagen '+(index+1)+' para Paint');select.setAttribute('aria-pressed',String(state.active===item.id));
    const image=document.createElement('img');image.src=item.preview;image.alt='Referencia '+(index+1);image.width=56;image.height=48;select.append(image);select.onclick=()=>{state.active=item.id;changed();};
-   const label=document.createElement('span');label.textContent=(state.active===item.id?'Activa · ':'')+item.width+' × '+item.height;
+   const label=document.createElement('span');label.textContent=(state.active===item.id?'Activa · ':'')+item.width+' × '+item.height;label.hidden=document.body.classList.contains('chat-clean');select.setAttribute('aria-label','Usar imagen '+(index+1));
    const button=document.createElement('button');button.type='button';button.className='reference-remove';if(window.BrivanyIcons)window.BrivanyIcons.set(button,'close');else button.textContent='×';button.setAttribute('aria-label','Quitar imagen '+(index+1));button.onclick=()=>remove(item.id);
    row.append(select,label,button);list.append(row);
   }
@@ -81,7 +81,7 @@
   }catch(error){answer.textContent=error.message;}
  }
  function attachFromWork(value){if(state.items.length>=4){reportError('Quita una imagen antes de adjuntar la región.');rawFetch('/api/computer/references/remove',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:value.id})});return false;}state.items.push(value);state.active=value.id;changed();return true;}
- window.BrivanyImageRequest={requestTurn,send,clear,attachFromWork,hasImages:()=>state.items.length>0};
+ window.BrivanyImageRequest={requestTurn,send,clear,attachFromWork,attachFiles:add,hasImages:()=>state.items.length>0};
  if(owner.BrivanyPendingWorkRegion){const value=owner.BrivanyPendingWorkRegion;delete owner.BrivanyPendingWorkRegion;if(attachFromWork(value))window.BrivanyChat?.send(value.question);}
  if(!root&&!document.body.classList.contains('chat-clean')){
   const form=document.createElement('form');form.className='reference-prompt';form.innerHTML='<label class="sr-only">Pedir a Melodi sobre las imágenes<input maxlength="1200"></label>';

@@ -8,6 +8,7 @@ replayed. A public HTTPS reverse proxy and real account verification are separat
 deployment prerequisites; this module does not create or configure them.
 """
 from __future__ import annotations
+from packages.runtime_paths import DATA_ROOT, CONFIG_PATH
 
 import argparse
 from contextlib import contextmanager
@@ -334,7 +335,7 @@ def create_server(gateway,*,port=0,public_host=None):
 
 def main(argv=None):
     parser=argparse.ArgumentParser(description='Receptor WhatsApp aislado; necesita proxy HTTPS externo ya autorizado.')
-    parser.add_argument('--port',type=int,default=8767);parser.add_argument('--root',type=Path,default=ROOT/'.local/integrations')
+    parser.add_argument('--port',type=int,default=8767);parser.add_argument('--root',type=Path,default=DATA_ROOT/'.local/integrations')
     parser.add_argument('--allow-replies',action='store_true',help='Autorizar respuestas al chat propio con Meta/WhatsApp; puede consumir créditos')
     parser.add_argument('--share-kitchen',action='store_true',help='Incluir contexto de Sous en las respuestas a tu chat propio')
     parser.add_argument('--allow-action-requests',action='store_true',help='Preparar comandos del chat para revisión local; no concede ejecución remota')
@@ -363,7 +364,7 @@ def main(argv=None):
         kitchen=None
         if args.share_kitchen:
             from services.sous import SousService
-            kitchen=SousService(ROOT/'.local/sous')
+            kitchen=SousService(DATA_ROOT/'.local/sous')
         requests=None
         if args.allow_action_requests:
             from services.chat_requests import ChatRequestsService

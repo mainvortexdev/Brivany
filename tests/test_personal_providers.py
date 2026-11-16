@@ -24,13 +24,11 @@ class PersonalProviderTests(unittest.TestCase):
         GoogleTransport(self.oauth,'drive',http=self.http).readiness()
         self.http.assert_not_called();self.oauth.access_token.assert_not_called()
 
-    def test_calendar_create_is_deterministic_and_never_adds_attendees(self):
-        self.http.return_value={'id':'b'+self.key.replace('-',''),'summary':'Reunión sintética'}
-        result=GoogleTransport(self.oauth,'calendar',http=self.http).execute('calendar.create',{'title':'Reunión sintética','start':'2026-11-01T12:00:00-04:00','end':'2026-11-01T13:00:00-04:00'},self.key)
-        method,url,token,payload=self.http.call_args.args
-        self.assertEqual(method,'POST');self.assertRegex(payload['id'],r'^[0-9a-v]{5,1024}$');self.assertNotIn('attendees',payload)
-        self.assertIn('sendUpdates=none',url);self.assertFalse(result.payload['attendees_notified'])
-        self.oauth.access_token.assert_called_once_with('calendar',required_scopes=[SCOPES['calendar.create']])
+    def test_calendar_create_is_rejected_before_token_access_or_provider_call(self):
+        transport=GoogleTransport(self.oauth,'calendar',http=self.http)
+        with self.assertRaises(IntegrationError):transport.execute('calendar.create',{'title':'Synthetic'},self.key)
+        self.assertEqual(transport.available_operations,{'calendar.list'})
+        self.oauth.access_token.assert_not_called();self.http.assert_not_called()
 
     def test_calendar_list_bounds_fields_and_results(self):
         self.http.return_value={'items':[{'id':'x','summary':'Test','start':{},'end':{},'unknown':'omit'}],'nextPageToken':'never-auto-fetch'}

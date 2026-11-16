@@ -59,7 +59,8 @@ class SingingFilter:
         self.np=np;self.model,self.labels,self.input,self.output=_MODEL
 
     def classify(self,pcm):
-        if not isinstance(pcm,bytes) or len(pcm)%2 or len(pcm)>384000:raise ValueError('Muestra acústica fuera de límites.')
+        # Up to 10 s: the prepared video opening. At most four windows are run.
+        if not isinstance(pcm,bytes) or len(pcm)%2 or len(pcm)>480000:raise ValueError('Muestra acústica fuera de límites.')
         started=time.perf_counter();np=self.np
         if len(pcm)<46800:return {'skip':False,'kind':'unknown','reason':'short_sample','model':'yamnet','latency_ms':0.}
         samples=np.frombuffer(pcm,dtype='<i2').astype(np.float32)/32768

@@ -1,4 +1,5 @@
 """Owned temporary remote IDs only. Never stores PCM, names or transcripts."""
+from packages.runtime_paths import DATA_ROOT, CONFIG_PATH
 import hashlib
 import json
 from pathlib import Path
@@ -11,7 +12,7 @@ _LOCK=threading.RLock()
 
 
 class VoiceCleanupJournal:
-    def __init__(self,key,path=None):self.path=Path(path) if path is not None else ROOT/'.local/translation/temporary-voices.json';self.key_hash=hashlib.sha256(key.encode()).hexdigest()
+    def __init__(self,key,path=None):self.path=Path(path) if path is not None else DATA_ROOT/'.local/translation/temporary-voices.json';self.key_hash=hashlib.sha256(key.encode()).hexdigest()
     def _read(self):
         if not self.path.exists():return []
         if self.path.stat().st_size>524288:raise ValueError('La lista de voces temporales supera el límite.')

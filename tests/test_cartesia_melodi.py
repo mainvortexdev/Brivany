@@ -58,6 +58,23 @@ class CartesiaMelodiTests(unittest.TestCase):
         while not self.requests and time.monotonic()<deadline:time.sleep(.01)
         stream.close();reader.join(.5)
         self.assertFalse(reader.is_alive());self.assertEqual(result,[b'']);self.assertTrue(self.cancelled.wait(.5))
+    def test_dialogue_keeps_exact_melodi_voice_and_a_distinct_cartesia_counterpart(self):
+        for role in ['melodi','counterpart']:
+            with tts.open_character_speech('Synthetic dialogue.',role) as stream:
+                while stream.read1():pass
+        self.assertEqual(self.requests[0]['voice'],tts.VOICES['es']);self.assertEqual(self.requests[1]['voice'],tts.COUNTERPART_VOICE)
+        self.assertNotEqual(self.requests[0]['voice'],self.requests[1]['voice'])
+        with self.assertRaises(VoiceError):tts.open_character_speech('Synthetic phrase.','untrusted-voice-id')
+        self.assertEqual(len(self.requests),2)
+
+    def test_male_counterpart_is_a_catalogue_voice_and_cannot_replace_melodi(self):
+        with tts.open_character_speech('Synthetic doctor.', 'counterpart',gender='male') as stream:
+            while stream.read1():pass
+        self.assertEqual(self.requests[0]['voice'],tts.COUNTERPART_MALE_VOICE)
+        self.assertNotIn(self.requests[0]['voice'],tts.VOICES.values())
+        for role,gender in [('melodi','male'),('counterpart','arbitrary-id')]:
+            with self.assertRaises(VoiceError):tts.open_character_speech('Synthetic.',role,gender=gender)
+        self.assertEqual(len(self.requests),1)
 
     def test_rejection_has_no_retry_and_no_provider_body_leak(self):
         self.reject=True

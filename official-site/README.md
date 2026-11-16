@@ -1,3 +1,5 @@
+> Tipografía vigente desde el 15 de noviembre de 2026: Brivany Editorial 300/400/500. Ver `brand/typography/README.md`. Las referencias antiguas de este documento son históricas.
+
 # Dominio de Brivany
 
 ## Presentación publicada · 1 de noviembre de 2026

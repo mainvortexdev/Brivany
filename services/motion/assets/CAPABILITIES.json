@@ -1,0 +1,45 @@
+{
+  "_note": "Capacidades que Melodi puede presentar en redes. 'claim' es lo que se puede afirmar; 'limits' es lo que no se debe prometer. Revisar este archivo cuando cambie el producto.",
+  "ecosystem": {
+    "brand": "Vetsa AI",
+    "site": "https://vetsa.es",
+    "brand_line": "Tus ideas merecen llegar más lejos.",
+    "products": "Brivany (app de escritorio con Melodi) y Cognira forman parte del ecosistema Vetsa AI.",
+    "limits": ["La web de Vetsa no enlaza todavía una descarga de Brivany: no inventes URLs de descarga."]
+  },
+  "capabilities": [
+    {"id": "traduccion_auditiva", "name": "Traducción auditiva en tiempo real",
+     "claim": "Melodi escucha una voz en otro idioma y la devuelve traducida a tu idioma mientras sigue hablando, en videos y en reuniones.",
+     "limits": ["Hay un pequeño retardo: no es instantánea", "No prometer todos los idiomas del mundo"], "kits": ["dubbing", "languages", "meeting"]},
+    {"id": "voz_clonada", "name": "Misma voz, otro idioma",
+     "claim": "La traducción puede sonar con la misma voz de quien habla (voz clonada). Con una voz nueva, la clonación tarda unos segundos en aplicarse.",
+     "limits": ["La clonación no es instantánea: tarda unos segundos con cada voz nueva", "Requiere el consentimiento que exige el producto"], "kits": ["voice_clone"]},
+    {"id": "hablantes", "name": "Distinción de hablantes",
+     "claim": "Distingue a las personas que hablan y mantiene una voz distinta para cada una.",
+     "limits": ["No prometer precisión perfecta"], "kits": ["speakers"]},
+    {"id": "extension_brave", "name": "Doblaje en YouTube con la extensión de Brave",
+     "claim": "La extensión para Brave sincroniza el doblaje de Melodi con los subtítulos de YouTube.",
+     "limits": ["Solo YouTube en Brave", "Depende de que el video tenga subtítulos"], "kits": ["dubbing"]},
+    {"id": "workspace", "name": "WorkSpace",
+     "claim": "Un espacio de trabajo en el escritorio que reúne traducción, chat, agentes y creaciones en paneles.",
+     "limits": [], "kits": ["workspace"]},
+    {"id": "chat_voz_live", "name": "Chat y voz live con Melodi",
+     "claim": "Puedes escribirle o hablarle en voz live; Melodi responde con su propia voz.",
+     "limits": [], "kits": ["chat", "live_voice", "melodi"]},
+    {"id": "agentes", "name": "Agentes",
+     "claim": "Melodi reparte tareas entre agentes (buscar, redactar, revisar) y te devuelve el resultado.",
+     "limits": ["No inventar integraciones concretas ni resultados medidos"], "kits": ["agents"]},
+    {"id": "resumenes", "name": "Resúmenes",
+     "claim": "Al terminar una reunión o un video, Melodi prepara un resumen con decisiones y puntos clave.",
+     "limits": [], "kits": ["summary", "checklist"]},
+    {"id": "creacion_video", "name": "Melodi crea videos para redes",
+     "claim": "Melodi elige el tema, escribe el guion, anima las ilustraciones, pone su voz, música y efectos y entrega historias, reels y videos de YouTube con portada, subtítulos y texto para publicar.",
+     "limits": ["Las ilustraciones explican; no son capturas reales", "Publicar sigue siendo decisión tuya"], "kits": ["video_maker", "melodi"]}
+  ],
+  "hook_ideas": [
+    "Una cifra o pregunta que sorprenda en los dos primeros segundos",
+    "Mostrar el antes y el después (otro idioma → tu idioma)",
+    "Melodi habla en primera persona: «Te enseño algo que puedo hacer»",
+    "Una promesa concreta y comprobable, nunca exagerada"
+  ]
+}

@@ -82,6 +82,15 @@ class ConnectionsHTTPTests(unittest.TestCase):
     def execute(self,proposal,approval):
         return self.request('POST','/api/integrations/execute',{'proposal_id':proposal['id'],'parameters':proposal['parameters'],'approval_id':approval['approval_id'],'execute':True})
 
+    def test_calendar_write_is_not_advertised_or_authorized_or_proposed(self):
+        status,result=self.request('GET','/api/integrations/status');self.assertEqual(status,200)
+        calendar=next(item for item in result['registry']['connectors'] if item['id']=='calendar')
+        self.assertEqual([item['name'] for item in calendar['operations']],['calendar.list'])
+        status,_=self.request('POST','/api/integrations/google/begin',{'connector':'calendar','operations':['calendar.create']})
+        self.assertEqual(status,422)
+        status,_=self.request('POST','/api/integrations/proposals',{'operation':'calendar.create','parameters':{'title':'Synthetic','start':'2027-01-15T09:00:00Z','end':'2027-01-15T10:00:00Z'}})
+        self.assertEqual(status,422);self.assertEqual(self.calls,[])
+
     def test_status_is_read_only_and_never_exposes_tokens_or_secret_values(self):
         for _ in range(2):
             status,result=self.request('GET','/api/integrations/status');self.assertEqual(status,200)

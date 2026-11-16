@@ -1,0 +1,13 @@
+.git
+.test-deps
+__pycache__
+tests
+models
+*.pyc
+*.log
+*.tmp
+.env
+.env.*
+.dev.vars
+*.pem
+*.key

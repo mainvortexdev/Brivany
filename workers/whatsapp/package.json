@@ -1,0 +1,16 @@
+{
+  "name": "brivany-melodi-whatsapp",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "postal-mime": "4.0.7"
+  },
+  "devDependencies": {
+    "wrangler": "4.151.1"
+  },
+  "scripts": {
+    "test": "node --test --test-timeout=20000 --import ./test/cloudflare-register.js test/brivany-melodi.test.js test/melodi-tenants.test.js test/melodi-notifications.test.js test/melodi-release.test.js",
+    "deploy": "wrangler deploy",
+    "check": "wrangler deploy --dry-run"
+  }
+}

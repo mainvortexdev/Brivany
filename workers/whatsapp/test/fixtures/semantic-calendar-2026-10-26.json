@@ -1,0 +1,35 @@
+{
+  "route": "events",
+  "relation": "new_request",
+  "events": [
+    {
+      "title": "Ir al boxeo",
+      "localDateTime": "2026-10-26T09:10",
+      "source": { "task": "me toca ir al boxeo", "time": "9:10 a.m", "request": "Recuérdamelo" }
+    },
+    {
+      "title": "Live del Hackaton de Meta",
+      "localDateTime": "2026-10-26T12:00",
+      "source": {
+        "task": "hoy empieza el Hackaton de Meta, el live iniciará a las 12 p.m",
+        "time": "12 p.m", "date": "hoy", "request": "Recuérdamelo"
+      }
+    },
+    {
+      "title": "Decirle a Alfredo: “Primerísimo primer plano (ojos), plano detalle número en la espalda (7 tomas)” correspondiente a la grabación que tenemos el domingo 1 de noviembre",
+      "localDateTime": "2026-10-26T11:30",
+      "source": {
+        "task": "decirle esto a Alfredo a las 11:30 a.m “Primerísimo primer plano (ojos), plano detalle número en la espalda (7 tomas)” correspondiente a la grabación que tenemos el domingo 1 de noviembre",
+        "time": "11:30 a.m", "date": "hoy", "request": "recuérdame también decirle esto a Alfredo"
+      }
+    },
+    {
+      "title": "Grabación",
+      "localDateTime": "2026-11-01T05:00",
+      "source": {
+        "task": "ese evento de la grabación", "time": "5 a.m", "date": "el domingo 1 de noviembre",
+        "request": "también anota ese evento de la grabación para las 5 a.m del domingo"
+      }
+    }
+  ]
+}

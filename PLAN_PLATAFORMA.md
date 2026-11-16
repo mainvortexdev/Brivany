@@ -1,5 +1,194 @@
 # Brivany · Plan de la plataforma espacial
 
+16 de noviembre, reuniones de Melodi mediante Recall v1.11 en Vetsa AI,
+Frankfurt. Vista Reuniones con enlace Meet/Zoom, entrada inmediata o programada,
+Calendar con selección expresa por evento, transcripción y resumen cifrados.
+Backend alojado en Cloudflare y ampliación del servicio existente sin sustituir
+el código publicado de WhatsApp. Voz opcional de Cartesia con la identidad de
+Melodi, escucha silenciosa y respuesta al llamarla. Pizarra propia compartida y
+solicitud visual de palabra; no se declaran controles nativos de mano o pizarra
+de Zoom. Las comprobaciones reales y las capacidades aún no acreditadas se
+detallan en [la entrega de reuniones](docs/recall-reuniones-20261116.md).
+
+15 de noviembre, Brivany Editorial elegida por el usuario como tipografía de
+toda la marca, web, programa, promociones y nuevos videos. Light 300, Regular
+400 y Medium 500 del paquete suministrado; fuentes locales y licencia preservada.
+La dirección vigente está en [identidad tipográfica](brand/typography/README.md).
+
+13 de noviembre, Melodi sustituye al runtime de Dona en WhatsApp. Código y
+adaptadores trasladados a `workers/whatsapp*` dentro de Brivany, con el número,
+colas y almacenamiento existentes. Vinculación por cuenta Vetsa y código enviado
+desde el teléfono, aislamiento por usuario y aprobaciones concretas del titular.
+La instalación nativa se actualizó con respaldo y reinicio normal. Calendar
+conectado por el titular; revisión de acceso a datos de Drive/Gmail preparada,
+pendiente de demostración nueva y del proceso de Google/CASA. No se declara
+acceso público de Google aprobado. [Migración, pruebas y límites](docs/melodi-whatsapp-migracion-20261113.md).
+
+13 de noviembre, transferencia por el borde en ambos sentidos, por petición
+expresa del usuario. Aura nativa de Windows tras emparejar por QR, selección
+táctil dentro de la página del móvil y cola de hasta ocho archivos. Pasan
+pruebas locales de contenido y arrastre OLE entre procesos propios; teléfono
+físico, publicación y actualización de la instalación quedan por comprobar.
+[Implementación y límites](docs/transferencia-borde-20261113.md).
+
+12 de noviembre, primer intento PSTN de Telnyx autorizado por el usuario.
+Registro SIP 200, pero la terminación devolvió 404 / Q.850 1. El CDR confirma
+el destino solicitado y declara UNALLOCATED_NUMBER, ruta Intra y coste US$0.
+El usuario confirma que la línea recibe llamadas normales; la causa del rechazo
+debe aclararse con el operador. No hubo conversación ni un segundo marcado.
+[Prueba y diagnóstico](docs/melodi-telnyx-primera-prueba-20261112.md).
+
+12 de noviembre, configuración real de Telnyx para Melodi: perfil de salida y
+conexión SIP con credenciales, emisor verificado y límites comprobados por API.
+Se corrigió un fallo previo al registro y Telnyx respondió SIP 200. Pasan 28
+pruebas locales en Windows. La primera llamada PSTN y la conversación real
+siguen pendientes; no se marcó ningún número ni se cambió la instalación activa.
+[Configuración, corrección y evidencias](docs/melodi-telnyx-configuracion-20261112.md).
+
+12 de noviembre, Live adopta las reglas de turnos de Vetsa, generación y voz
+solapadas, interrupción durante preparación y dieciséis señales variadas de
+escucha, junto con muletillas contextuales. Se repara el ejecutor ausente de la
+instalación y se confirma su arranque nativo. Las mediciones reales de proveedor
+varían; la conversación física completa y la igualdad de latencia siguen sin
+certificarse. [Implementación, pruebas y consumo](docs/melodi-live-vetsa-20261112.md).
+
+12 de noviembre, vista central de voz con Melodi y ondas detrás durante la
+reproducción. Se corrigen configuración antigua, plazos incompatibles, arranque
+fallido sin explicación y cancelación tardía. Pasan pruebas locales y la conexión
+de control real con Muse; la conversación física completa sigue sin comprobarse.
+[Cambios, instalación local y evidencia](docs/melodi-voz-central-20261112.md).
+
+12 de noviembre, cuenta compartida de Vetsa y Cognira incorporada a Brivany
+Desktop. Acceso y gestión en ventanas nativas aisladas, PKCE, sesiones revocables
+y persistencia DPAPI. El soporte central ya está publicado y la instalación local
+actualizada. Pasaron pruebas del servidor, del cliente y de renderizado nativo;
+el inicio con la cuenta y el dispositivo reales del usuario queda por probar.
+[Entrega, seguridad y evidencia](docs/cuenta-vetsa-20261112.md).
+
+8 de noviembre, Blobatar para el equipo de Melodi. Se instaló la versión
+MIT 2.7.0 y se integró en barra, detalle y avisos, con identidad estable entre
+reintentos, expresiones por estado y pausas por visibilidad o movimiento reducido.
+Pasaron seis pruebas y dos recorridos en Edge con agentes simulados. Se corrigió
+la inserción de estilos de ojos bajo la CSP sin modificar la política de seguridad.
+Los assets suman 24.468 bytes sin comprimir; consumo físico sin medir.
+[Instalación, evidencia y límites](docs/blobatar-agentes-20261108.md).
+
+8 de noviembre, implementación autorizada del canal del cliente WhatsApp.
+Se añadieron pasarela, revisión, recibos persistentes, simulación vocal y
+adaptadores experimentales de UI Automation y audio virtual. Pasaron 26 pruebas
+nuevas, 34 regresiones unitarias y recorridos de panel y controles nativos
+propios. El modo inicial es simulación, con llamadas reales deshabilitadas.
+El usuario reserva las llamadas públicas y la conexión real de Meta para otra
+fase. Cuenta, controles reales, dispositivos y compatibilidad del número API
+siguen por verificar. Se conserva la arquitectura Meta/WhatsApp y Netelip.
+[Entrega y evidencias](docs/melodi-whatsapp-cliente-implementacion-20261108.md).
+
+8 de noviembre, arquitectura definida por el usuario: Meta/WhatsApp Business
+para llamadas de WhatsApp y Netelip para telefonía convencional entrante y
+saliente. Se estudia una tercera vía de salida mediante el cliente oficial de
+WhatsApp y audio virtual, aprovechando sus llamadas normales por Internet.
+Es un candidato para prototipo, sin automatización ni compatibilidad de cuenta
+comprobadas. El requisito de permiso de las salientes por API se mantiene.
+No se migra el número ni se hacen llamadas reales en esta fase.
+[Alternativa investigada y límites](docs/melodi-whatsapp-cliente-alternativa-20261108.md).
+
+8 de noviembre, auditoría posterior al cierre de WorkSpace. Doce turnos de
+agenda en los dos formatos telefónicos no despacharon herramientas: consultar,
+agendar, buscar huecos, hacer espacio, reorganizar y desplazar siguen sin
+acceso desde la llamada. El usuario reserva las llamadas reales para después.
+Ya tiene un número de WhatsApp Business registrado directamente en Meta y
+prioriza coste mínimo sin pedir permiso técnico a cada destinatario. WhatsApp
+saliente conserva su requisito de permiso; estudiar Meta directa y mantener
+SIP como alternativa para ese criterio. No se habilitan llamadas ni pagos.
+[Auditoría, pruebas y alternativas](docs/melodi-agenda-whatsapp-auditoria-20261108.md).
+
+8 de noviembre, cierre de esta entrega por indicación del usuario.
+El [catálogo de funciones](CATALOGO_FUNCIONES.md) enumera las implementaciones
+y marca las revisiones pendientes. La conversación telefónica pública,
+las pruebas con dispositivos físicos y las demás limitaciones quedan
+registradas para los recorridos posteriores solicitados.
+
+7 de noviembre, prioridad corregida por el usuario: detener las otras funciones
+de Brivany hasta que Melodi pueda mantener llamadas correctamente y con rapidez
+comparable a Live. Twitch/YouTube no son relevantes para este hito. La vía elegida
+es SIP con Netelip, conservando Muse, Meta y la voz Cartesia. El objetivo amplio
+de WorkSpace permanece en pausa; no se activan pagos sin decisión del usuario.
+
+7 de noviembre, continuación de telefonía: el usuario mantiene las entrantes
+en su móvil y aplaza validar su identificador de salida. Se requiere aviso y
+autorización antes de una llamada real que muestre su número. Panel, SIP y voz
+Live están conectados en código y probados localmente con IA sustituida; quedan
+pendientes la activación de la cuenta y la conversación telefónica real.
+[Estado y evidencias](docs/melodi-sip-netelip-20261107.md#integración-posterior-panel-y-voz-live).
+
+7 de noviembre, activación posterior: el perfil SIP se guardó con DPAPI tras
+autorización del usuario y Netelip aceptó su registro con estado 200, sin
+marcar. Se recuperó la configuración de voz Meta/Cartesia del respaldo y el
+puente local detectó la salida habilitada. No se ha comprobado una conversación
+PSTN ni la latencia pública. Se mantiene pendiente el identificador propio y
+el aviso al usuario antes de cualquier prueba que muestre su número.
+[Activación y límites](docs/melodi-sip-netelip-20261107.md#guardado-autorizado-y-registro-real-del-perfil).
+
+7 de noviembre, corrección posterior: llamadas SIP sin registrar previamente
+cada destinatario. El número se indica en el encargo y se confirma; el perfil
+anterior se conserva sin volver a pedir credenciales. Dos intentos públicos
+terminaron con rechazo 603 antes de respuesta confirmada. Se corrigió el inicio
+de voz durante medios tempranos. Saldo observado US$0,02 y tarifa móvil
+US$0,0959/min; se consultó al usuario la recarga mínima de US$5, sin efectuarla.
+La conversación telefónica correcta y su rapidez siguen sin comprobarse.
+[Intentos y correcciones](docs/melodi-sip-netelip-20261107.md#destinos-sin-registro-previo-y-primeros-intentos-reales).
+
+7 de noviembre, recarga posterior: el usuario informó que pagó. Netelip muestra
+la operación PayPal pendiente de revisión y mantiene US$0,02 disponibles.
+Se espera su aprobación antes de repetir la llamada; no se hizo un pago nuevo.
+[Estado de recarga](docs/melodi-sip-netelip-20261107.md#recarga-del-usuario-pendiente-de-revisión).
+
+7 de noviembre, el usuario reactivó el objetivo de WorkSpace mientras se
+aprueba el saldo. Pidió conservar los ajustes al cerrar Brivany. Se guardan
+en disco las preferencias de interfaz, voz, grabación, traducción y clima.
+Las carpetas elegidas se recuerdan y pueden quitarse en Ajustes. Edge comprobó
+la restauración desde un perfil vacío y otro servidor local. Se añadieron
+transiciones breves al cambiar de herramienta y se comprobó el movimiento
+reducido. La prueba telefónica sigue pendiente de saldo disponible.
+[Ajustes y comprobaciones](docs/workspace-diseno-y-recursos-20261107.md#persistencia-de-ajustes-y-cambio-de-herramienta).
+
+7 de noviembre, continuación de WorkSpace. Se restauró fuera de GitHub el
+árbol del ZIP original, separado de la copia activa y del histórico de videos.
+WebView2 verificó el panel compacto y se eliminó el sondeo de puntero con la
+barra cerrada. El panel Glisse volvió a ocupar su región completa y la
+regresión nativa pasó con servicios sustituidos. El objetivo sigue activo.
+[Medición nativa](docs/workspace-arranque-recursos-20261107.md#medición-nativa-de-la-barra-y-el-panel).
+
+7 de noviembre, continuación de Archivos. Preguntar prepara extractos de
+Office y PDF con texto, y Correo guarda un EML con el adjunto original. Se
+conservaron el compositor editable, la distribución compacta y la revisión del
+usuario. WebView2 probó ambos recorridos con documentos sintéticos. OCR y
+apertura en el cliente personal quedan pendientes.
+[Alcance y evidencias](docs/workspace-bandeja-archivos-20261107.md#extractos-de-office-y-pdf-y-correo-con-adjunto).
+
+7 de noviembre, idioma de WorkSpace. El español y el inglés se pueden elegir
+en Ajustes y se conservan en disco de forma independiente a la escucha de
+Melodi. Edge y WebView2 comprobaron actualización en vivo, estado y reapertura.
+Quedan idiomas, ventanas auxiliares y estados por localizar.
+[Alcance y pruebas](docs/workspace-diseno-y-recursos-20261107.md#idioma-de-workspace).
+
+8 de noviembre, WorkSpace incorpora francés y portugués de Brasil. Se carga
+solo el catálogo elegido y se preservan los formularios al cambiar de idioma.
+La apertura nativa y los cambios rápidos pasaron con documentos y servicios
+de prueba. Quedan otros idiomas, revisión lingüística y ventanas auxiliares.
+[Ampliación y evidencia](docs/workspace-diseno-y-recursos-20261107.md#francés-y-portugués-de-brasil).
+
+7 de noviembre, nueva prioridad del usuario: incorporar funciones e interacciones
+de tres videos de referencia a WorkSpace, conservar la distribución de Brivany
+y reducir CPU, memoria y actividad en segundo plano. El objetivo permanece activo;
+no se marcan como listas las funciones móviles, de sistema o de juegos pendientes.
+[Objetivo, referencias y matriz de alcance](OBJETIVO_WORKSPACE.md).
+
+7 de noviembre, Melodi prepara llamadas telefónicas con revisión local y buzón
+de voz. La pasarela y el panel se prueban con telefonía y modelos sustituidos.
+La primera llamada gratuita depende de verificar el destino en la consola de
+prueba. [Implementación y conexión](docs/melodi-telefonia-20261107.md).
+
 4 de noviembre, continuación. Traducción 0.4.4 conserva una sola selección
 y recupera la reproducción del video cuando una intervención tarda demasiado.
 [Alcance y comprobaciones](docs/traduccion-auditiva-recuperacion-044.md).
@@ -589,3 +778,89 @@ evidencia y fuentes que llegan al chat y WorkSpace. Las preguntas temporales
 incluyen el reloj local y deben comprobar el día del lugar consultado.
 Pruebas reales de documentación y clima, con corrección temporal registrada
 en la [bitácora](docs/17-bitacora.md).
+
+13 de noviembre, actualización posterior: transferencia por borde publicada e
+instalada con respaldo; móvil físico pendiente. Expansión musical instalada y
+activada por petición del usuario, con variantes lunar y ámbar, casilla de
+inactividad y pruebas locales; fuentes personales y audio real sin certificar.
+La interfaz nueva de acompañantes se mantiene en código para revisión posterior.
+Se recuperó el chat bloqueado y se instaló recuperación nativa antes de su
+inicialización. Spotify usa el servicio real de Brivany y autorización individual
+sin campo de Client ID; se comprueba la identidad y se aíslan cambios de cuenta.
+El acceso público sin lista de cuentas depende de aprobación de Spotify, y el
+SDK exige Premium. No se acreditan aún consentimiento ni reproducción reales.
+[Arranque y Spotify](docs/arranque-spotify-20261113.md),
+[Expansión musical](docs/expansion-musical-20261113.md).
+
+13 de noviembre, Spotify Development para uso inmediato: se conserva la identidad
+de aplicación expresamente autorizada, verificada en el servicio publicado.
+Contacto confirmado daniel@vetsa.es. Se aplicó compatibilidad de modo al cliente
+y se verificó su nuevo arranque después de terminar la transferencia y autorizar
+el reinicio. Servidor con metadatos/consentimiento preparado en código, publicación
+separada del sitio pendiente. El acceso público requiere elegibilidad y aprobación
+de Spotify; el usuario informa que aún no existe empresa registrada.
+[Entrega y evidencia](docs/spotify-development-20261113.md).
+
+14 de noviembre, Melodi en WhatsApp. El código y el servicio canónicos residen
+en Brivany. Se publica e instala el puente saliente para tareas del ordenador,
+adjuntos privados, resultados y aprobaciones por tarea, junto a llamadas
+programadas por canal. Telnyx confirma configuración disponible; no se ensayó
+una llamada pública. Meta rechaza Calling API con 138015 y queda como dependencia
+externa pendiente, incluida la certificación de la suscripción `calls`. Google
+está en revisión presentada por el titular, no aprobado. El segundo diagnóstico
+real del puente pasa; se conserva el primer fallo sin atribuir una causa no
+certificada. Avatar blanco de Melodi generado para perfil, sin publicación.
+[Evidencia y alcance](docs/melodi-whatsapp-escritorio-llamadas-20261114.md).
+
+14 de noviembre, corrección posterior: aislamiento al cambiar de cuenta y
+cancelación durante recuperación del despacho de llamadas, publicados e instalados.
+Pasan 361 pruebas del servicio y 18 del puente; instalación activa y latido
+comprobados. Aviso operativo y requisitos leídos por WhatsApp. Se conserva Meta
+138015 como bloqueo externo y la llamada pública y el control gráfico como
+comprobaciones pendientes; el primer fallo remoto no se declara resuelto.
+
+14 de noviembre, cambio posterior solicitado por el titular: WhatsApp Calling se
+retira del flujo activo. Las llamadas telefónicas y su programación se trasladan
+a `workers/calls/` y Cloudflare Durable Objects, usando la aplicación Telnyx
+existente. Funcionan sin depender del PC; la voz se fija exclusivamente a la voz
+seleccionada de Melodi en Cartesia. WhatsApp sigue siendo el canal de pedidos y
+aprobaciones. Se incorpora control del ordenador durante la conversación mediante
+su puente privado, con identidad por llamada e instrucción. Para ejecutar acciones
+en el ordenador, Brivany debe estar abierta. La primera activación se limita al
+titular original y su número. Las comprobaciones de voz, transcripción, modelo y
+diagnóstico remoto quedan registradas; la prueba telefónica está condicionada a
+completar las verificaciones, por petición expresa del usuario. Google continúa
+en revisión externa. [Alcance y evidencia](docs/melodi-llamadas-cloud-20261114.md).
+
+14 de noviembre, prueba posterior: un único intento después de las verificaciones
+previas termina por espera sin respuesta; no se prueba conversación ni control
+desde el teléfono. Se publica espera de 45 segundos y clasificación «sin respuesta».
+Pasan 27 pruebas de llamadas y 361 de WhatsApp, con publicación verificada.
+Aviso actualizado entregado por WhatsApp. Queda pendiente atender una llamada;
+no se remarca automáticamente. [Resultado](docs/melodi-llamadas-cloud-20261114.md).
+
+15 de noviembre, nueva dirección de identidad: Melodi es la asistente personal de
+Daniel Luna. Para el acceso público, cada usuario tendrá otro asistente con nombre
+y número propios, resueltos por cuenta y con aislamiento de herramientas y datos.
+El aprovisionamiento individual queda pendiente; el número compartido actual no
+se declara convertido en números por usuario. Se conserva la voz de Melodi y los
+human-skills. [Decisión y alcance](docs/identidad-asistentes-20261115.md).
+
+16 de noviembre, encargo del titular en WhatsApp. Melodi encuentra el informe de
+entrega de correo que envía el proveedor, abre su adjunto comprimido y lo explica
+en palabras corrientes; el aviso llega solo, una vez por informe, y un adjunto que
+no abre se declara en lugar de resumirse. Se añade la nota de voz con su voz
+exacta, enviada sólo a petición, y una regla de registro que le pide contar
+consecuencias en vez de mecanismos internos. 384 pruebas locales y 35 de
+whatsapp-cloud en verde, con proveedores simulados; sin cuentas reales, sin
+mensajes enviados y sin consumo medido. Falta comprobarlo con un informe real y
+añadir la burbuja nativa de nota de voz.
+[Resultado](docs/informes-entrega-correo-20261116.md).
+
+
+16 de noviembre, Melodi en reuniones por URL (investigación, pendiente de
+prototipo). Entrada a Zoom/Google Meet desde chat o WhatsApp, coordinación
+remota y voz exacta de Cartesia. Candidato inicial: API de participante con
+Cloudflare; Browser Run requiere comprobar audio bidireccional. No usar la
+Meet Media API en retirada como base nueva. Sin despliegue ni ingreso real
+confirmado. [Opciones y aceptación](docs/melodi-reuniones-enlaces-20261116.md).

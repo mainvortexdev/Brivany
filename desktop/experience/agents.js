@@ -1,14 +1,15 @@
-/* Background task notices; no task counter or persistent agent panel. */
+/* Background task snapshots and notices. */
 (() => {
  if(location.pathname!=='/brivany-shell')return;
  const session=window.BrivanyComputerSession||={token:null},seen=new Map(),seenEvents=new Map();
  const alert=document.createElement('aside');alert.className='agent-alert';alert.hidden=true;alert.setAttribute('aria-live','polite');
  const message=document.createElement('span'),open=document.createElement('button'),close=document.createElement('button');
+ const avatar=document.createElement('i');avatar.className='agent-alert-avatar';avatar.hidden=true;avatar.setAttribute('aria-hidden','true');
  open.type=close.type='button';open.textContent='Ver resultado';close.textContent='×';close.setAttribute('aria-label','Ocultar aviso de agente');
  open.className='agent-result-action';close.className='agent-dismiss';
- alert.append(message,open,close);document.body.append(alert);close.onclick=()=>alert.hidden=true;
+ alert.append(avatar,message,open,close);document.body.append(alert);close.onclick=()=>alert.hidden=true;
  const active=job=>['queued','planning','running','reviewing'].includes(job.state);
- const labels={queued:'En cola',planning:'Preparando',running:'En curso',reviewing:'Melodi revisa',succeeded:'Listo para revisar',failed:'Se detuvo con error',cancelled:'Cancelado',interrupted:'Interrumpido',awaiting_user:'Necesita tu intervención',awaiting_approval:'Espera tu aprobación',waiting_for_user:'En pausa'};
+ const labels={queued:'En cola',planning:'Preparando',running:'En curso',reviewing:'Estoy revisando',succeeded:'Listo para revisar',failed:'Se detuvo con error',cancelled:'Cancelado',interrupted:'Interrumpido',awaiting_user:'Necesita tu intervención',awaiting_approval:'Espera tu aprobación',waiting_for_user:'En pausa'};
  let initialized=false,alertTimer,requestSequence=0,lastApplied=0;
  async function review(job){
   if(job.state==='awaiting_approval'){window.BrivanyFileApprovals?.show(job.id);alert.hidden=true;return;}
@@ -20,6 +21,9 @@
   alert.hidden=true;
  }
  function notify(text,job=null){
+  if(job?.state==='succeeded')return;
+  if(window.BrivanyChatAgents?.hidden()&&job&&!['awaiting_approval','awaiting_user','waiting_for_user'].includes(job.state))return;
+  avatar.hidden=!job;if(job)window.BrivanyAgentAvatars?.render(avatar,job);else window.BrivanyAgentAvatars?.dispose(avatar);
   message.textContent=text;open.hidden=!job;open.onclick=()=>review(job);alert.hidden=false;
   open.textContent=job?.state==='waiting_for_user'?'Continuar':'Ver resultado';
   if(job?.state==='waiting_for_user')open.onclick=async()=>{try{await window.pywebview.api.continue_assistant_job(job.id);alert.hidden=true;}catch{message.textContent='La tarea todavía no está disponible para continuar.';}};
@@ -27,6 +31,7 @@
   document.querySelector('#module-frame')?.contentWindow?.BrivanyLiveNotice?.queue(text);
  }
  function observe(jobs,schedules=[]){
+  window.BrivanyChatAgents?.receive(jobs);
   window.BrivanyFileApprovals?.observe(jobs);
   document.querySelector('#module-frame')?.contentWindow?.BrivanyChat?.taskStatus(jobs);
   for(const job of jobs){

@@ -40,9 +40,12 @@ def mixed_output(family):
 
 
 class MusicDucking:
-    def __init__(self,path,apply,*,meter_factory=None,clock=time.monotonic,supported=None):
+    def __init__(self,path,apply,*,meter_factory=None,clock=time.monotonic,supported=None,should_monitor=None):
         self.path=Path(path);self.apply=apply;self.clock=clock;self.supported=os.name=='nt' if supported is None else supported
-        self.meter_factory=meter_factory;self.lock=threading.RLock();self.stop=threading.Event();self.thread=None
+        if should_monitor is not None and not callable(should_monitor):raise ValueError('La condición de monitorización debe ser una función.')
+        self.meter_factory=meter_factory;self.should_monitor=should_monitor;self.lock=threading.RLock();self.stop=threading.Event();self.thread=None;self.monitoring=False
+        self.changed = threading.Event()
+        self.playing = None
         self.enabled=True;self.excluded=[];self.registered=game_paths();self.ducked=False;self.last_sound=-1e9;self.error='';self.internal=set()
         try:
             saved=json.loads(self.path.read_text(encoding='utf-8'));self.enabled=saved.get('enabled',True) is True
@@ -50,7 +53,7 @@ class MusicDucking:
         except (OSError,ValueError,TypeError):pass
 
     def status(self):
-        with self.lock:return {'supported':self.supported,'enabled':self.enabled,'ducked':self.ducked,'monitoring':bool(self.thread and self.thread.is_alive()),'error':self.error,'excluded':[PureWindowsPath(p).name for p in self.excluded]}
+        with self.lock:return {'supported':self.supported,'enabled':self.enabled,'ducked':self.ducked,'monitoring':self.monitoring,'error':self.error,'excluded':[PureWindowsPath(p).name for p in self.excluded]}
 
     def configure(self,enabled=None,exclude=None,remove=None):
         with self.lock:
@@ -67,6 +70,7 @@ class MusicDucking:
             self.path.parent.mkdir(parents=True,exist_ok=True);temporary=self.path.with_suffix('.tmp')
             temporary.write_text(json.dumps({'enabled':self.enabled,'excluded':self.excluded}),encoding='utf-8');temporary.replace(self.path)
             if not self.enabled:self.last_sound=-1e9;self._set(False)
+            self.playback_changed(force=True)
             return self.status()
 
     def _set(self,value):
@@ -92,26 +96,72 @@ class MusicDucking:
             if self.thread and self.thread.is_alive() or not self.supported or self.stop.is_set():return
             self.thread=threading.Thread(target=self._run,name='brivany-music-ducking',daemon=True);self.thread.start()
 
+    def _needed(self):
+        try:
+            return self.enabled and (self.should_monitor is None or self.should_monitor())
+        except Exception:
+            return False
+
+    def playback_changed(self, *, force=False):
+        """Wake on the first local playback and on actual state transitions."""
+        with self.lock:
+            if self.stop.is_set():
+                return
+            needed = self._needed()
+            if not force and needed == self.playing:
+                return
+            self.playing = needed
+            self.changed.set()
+            if needed and self.should_monitor is not None:
+                self.start()
+
     def _run(self):
         meter=None
+        def release():
+            nonlocal meter
+            if meter is not None:
+                try:meter.close()
+                except Exception:pass
+                meter=None
+            with self.lock:self.monitoring=False
         try:
-            if self.meter_factory:meter=self.meter_factory()
-            else:
-                from .audio_sessions import WindowsSessionMeter
-                meter=WindowsSessionMeter()
             while not self.stop.is_set():
-                if self.enabled:
-                    try:self.observe(meter.read())
-                    except Exception:
-                        with self.lock:self._set(False);self.error='No se pudo consultar el audio del dispositivo.'
-                        if self.stop.wait(2):break
-                self.stop.wait(.1 if self.enabled else .5)
+                # Clear before observing the predicate so no transition is
+                # lost between the predicate and the blocking wait.
+                self.changed.clear()
+                if self.stop.is_set():break
+                if not self._needed():
+                    # COM meter lives and dies on this worker. A paused/absent
+                    # local player never enumerates endpoints or audio sessions.
+                    release()
+                    with self.lock:self.last_sound=-1e9;self._set(False)
+                    self.changed.wait()
+                    continue
+                try:
+                    if meter is None:
+                        if self.meter_factory:meter=self.meter_factory()
+                        else:
+                            from .audio_sessions import WindowsSessionMeter
+                            meter=WindowsSessionMeter()
+                        with self.lock:self.monitoring=True
+                    sessions=meter.read()
+                    with self.lock:
+                        if self.stop.is_set():break
+                        if self._needed():self.observe(sessions)
+                except Exception:
+                    release()
+                    with self.lock:self._set(False);self.error='No se pudo consultar el audio del dispositivo.'
+                    self.changed.wait(2)
+                    continue
+                self.changed.wait(.1)
         except Exception:
             with self.lock:self.error='La reducción automática de música no está disponible.'
         finally:
-            if meter:meter.close()
+            release()
+            with self.lock:self.last_sound=-1e9;self._set(False)
 
     def close(self):
         self.stop.set()
+        self.changed.set()
         if self.thread and self.thread is not threading.current_thread():self.thread.join(timeout=3)
         with self.lock:self._set(False)

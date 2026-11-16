@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vetsa-public-media-processor",
+  "account_id": "62a87427406c2ed15f92d4da29116214",
+  "main": "worker.js",
+  "compatibility_date": "2026-10-08",
+  "workers_dev": false,
+  "preview_urls": false,
+  "containers": [{
+    "class_name": "PublicMediaProcessor",
+    "image": "../processor/Dockerfile",
+    "instance_type": "standard-2",
+    "max_instances": 1
+  }],
+  "durable_objects": { "bindings": [{ "name": "PUBLIC_MEDIA_PROCESSOR", "class_name": "PublicMediaProcessor" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["PublicMediaProcessor"] }],
+  "observability": { "enabled": true, "logs": { "enabled": true, "head_sampling_rate": 1 }, "traces": { "enabled": true, "head_sampling_rate": 1 } }
+}

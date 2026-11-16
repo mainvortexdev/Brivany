@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import {readVideoCaptions,upcomingCaptions} from '../caption-probe.js';
-async function load(chrome,extra={}){const source=await readFile(new URL('../background.js',import.meta.url),'utf8');return vm.runInNewContext(source.replace(/^import .*$/gm,'').replace(/^export /gm,'')+'\n({prepareSource,activateSource})',{chrome,console,URL,Map,Set,Uint8Array,atob,readVideoCaptions,upcomingCaptions,...extra});}
+async function load(chrome,extra={}){const source=await readFile(new URL('../background.js',import.meta.url),'utf8');return vm.runInNewContext(source.replace(/const TRANSCRIPTION_ONLY=(true|false);/,'const TRANSCRIPTION_ONLY='+String(extra.transcriptionOnly??true)+';').replace(/const SILENT_TIMELINE=(true|false);/,'const SILENT_TIMELINE='+String(extra.silent??false)+';').replace(/^import .*$/gm,'').replace(/^export /gm,'')+'\n({prepareSource,activateSource})',{chrome,console,URL,Map,Set,Uint8Array,atob,readVideoCaptions,upcomingCaptions,...extra});}
 test('browser action captures its granted source into a separate consumer and navigation stops it',async()=>{
   const handlers={},own='chrome-extension://test/player.html',sent=[],requests=[],injections=[];
   const sources=new Map([[11,{id:11,url:'https://www.youtube.com/watch?v=abcdefghijk'}],[22,{id:22,url:own+'?source=11'}]]);
@@ -12,6 +12,7 @@ test('browser action captures its granted source into a separate consumer and na
   await load(chrome);
   await handlers.action(sources.get(11));
   assert.equal(injections.length,1);assert.equal(typeof injections[0].func,'function');assert.equal(injections[0].args[0],'chrome-extension://test/video-selection.js');assert.equal(injections[0].target.tabId,11);
+  assert.equal(injections[0].args[1],true,'the extension action selects transcription without translation');
   const portHandlers={},port={name:'brivany-player',sender:{url:own+'?source=11'},onMessage:{addListener:value=>portHandlers.message=value},onDisconnect:{addListener:value=>portHandlers.disconnect=value},postMessage:value=>sent.push(value)};
   handlers.connect(port);await portHandlers.message({type:'capture-request',player_id:22});
   assert.equal(requests.length,1);assert.equal(requests[0].targetTabId,11);assert.equal(requests[0].consumerTabId,22);assert.equal(sent[0].type,'capture-ready');
@@ -61,7 +62,7 @@ test('opening preparation requires a granted active tab and sends only the bound
  const chrome={action:{onClicked:{addListener(){}}},runtime:{id:'owned-extension',getURL:()=> 'chrome-extension://owned/player.html',onConnect:{addListener:f=>listeners.push(f)}},
   permissions:{contains:async()=>granted},scripting:{executeScript:async options=>{injections.push(options);return [{frameId:0,result:'ready'}];}},tabs:{query:async()=>[tab],onRemoved:{addListener(){}},onUpdated:{addListener(){}}}};
  class Socket{constructor(url){this.url=url;this.readyState=1;this.listeners={};this.sent=[];sockets.push(this);}addEventListener(k,f){this.listeners[k]=f;}send(v){this.sent.push(v);}close(){this.listeners.close?.();}}
- const {prepareSource}=await load(chrome,{WebSocket:Socket,connectDesktop:async()=>({prefix_url:'ws://127.0.0.1:1/prefix',token:'owned'}),reply:async()=>({type:'authenticated'})});
+ const {prepareSource}=await load(chrome,{transcriptionOnly:false,WebSocket:Socket,connectDesktop:async()=>({prefix_url:'ws://127.0.0.1:1/prefix',token:'owned'}),reply:async()=>({type:'authenticated'})});
  assert.equal(await prepareSource(tab),false);assert.equal(injections.length,0);
  granted=true;assert.equal(await prepareSource({...tab,active:false}),false);assert.equal(await prepareSource(tab),true);
  assert.equal(injections.at(-1).files[0],'video-prepare-loader.js');
@@ -73,16 +74,16 @@ test('opening preparation requires a granted active tab and sends only the bound
  assert.deepEqual(JSON.parse(socket.sent[0]),{type:'prepare-video',source:'youtube:abcdefghijk',position_ms:180,generation});
  const data=Buffer.alloc(3840).toString('base64');
  await callbacks.message({type:'prefix-pcm',data});assert.equal(socket.sent.length,1,'audio waits for authorized capture');
- socket.listeners.message({data:JSON.stringify({type:'prefix-capture',sample_rate:24000,input_frame_ms:80,duration_ms:7000})});
- for(let i=0;i<88;i++)await callbacks.message({type:'prefix-pcm',data});
+ socket.listeners.message({data:JSON.stringify({type:'prefix-capture',sample_rate:24000,input_frame_ms:80,duration_ms:10000})});
+ for(let i=0;i<125;i++)await callbacks.message({type:'prefix-pcm',data});
  await callbacks.message({type:'prefix-finish'});await callbacks.message({type:'prefix-pcm',data});
- assert.equal(socket.sent.length,90);assert.equal(JSON.parse(socket.sent.at(-1)).type,'finish');
- socket.listeners.message({data:JSON.stringify({type:'prefix-ready',prefix_id:'prefix-example-token',duration_ms:7000,position_ms:180,resume_from_ms:7000,turns:[
+ assert.equal(socket.sent.length,127);assert.equal(JSON.parse(socket.sent.at(-1)).type,'finish');
+ socket.listeners.message({data:JSON.stringify({type:'prefix-ready',prefix_id:'prefix-example-token',duration_ms:10000,position_ms:180,resume_from_ms:10000,turns:[
   {content:'speech',start_ms:0,end_ms:3000,text:'Owned phrase',speaker:'person-a',emotion:'calm',confidence:.9,voice_register:'high',register_confidence:.8,voice_timbre:'masculine',timbre_confidence:.9},
   {content:'music',start_ms:3100,end_ms:6500,text:'Do not forward lyrics'},
-  {content:'speech',start_ms:0,end_ms:8000,text:'Invalid span'}]})});
+  {content:'speech',start_ms:0,end_ms:11000,text:'Invalid span'}]})});
  const ready=JSON.parse(JSON.stringify(sent.at(-1)));
- assert.equal(ready.prefix_id,'prefix-example-token');assert.equal(ready.position_ms,180);assert.equal(ready.resume_from_ms,7000);
+ assert.equal(ready.prefix_id,'prefix-example-token');assert.equal(ready.position_ms,180);assert.equal(ready.resume_from_ms,10000);
  assert.deepEqual(ready.turns,[{start_ms:0,end_ms:3000,text:'Owned phrase',speaker:'person-a',emotion:'calm',register:'high',timbre:'masculine'}]);
  assert.equal(ready.omitted_music,true);assert.equal(disconnected,false);
 });
@@ -96,7 +97,7 @@ test('an authorized committed navigation recovers a missed activation without br
   scripting:{getRegisteredContentScripts:async()=>[],registerContentScripts:async scripts=>registrations.push(scripts),
    executeScript:async options=>{injections.push(options);return [{frameId:0,result:'ready'}];}},
   tabs:{get:async()=>({...tab,url:'about:blank'}),onActivated:hook('activated'),onRemoved:hook('removed'),onUpdated:hook('updated')}};
- await load(chrome);
+ await load(chrome,{transcriptionOnly:false});
  await handlers.activated({tabId:tab.id});assert.equal(injections.length,0);
  handlers.updated(tab.id,{status:'loading'},tab);
  handlers.updated(tab.id,{url:tab.url},tab);
@@ -118,7 +119,7 @@ test('completed navigation can retry a failed early injection without a polling 
  const chrome={action:{onClicked:{addListener(){}}},runtime:{getURL:()=>'',onConnect:{addListener(){}}},
   permissions:{contains:async()=>true},scripting:{executeScript:()=>++attempts===1?new Promise((_,reject)=>{rejectEarly=reject;}):Promise.resolve([{frameId:0,result:'ready'}])},
   tabs:{get:async()=>tab,onRemoved:{addListener(){}},onUpdated:{addListener:callback=>updated=callback}}};
- await load(chrome);
+ await load(chrome,{transcriptionOnly:false});
  updated(tab.id,{url:tab.url},tab);await new Promise(setImmediate);
  assert.equal(attempts,1);
  updated(tab.id,{status:'complete'},tab);await new Promise(setImmediate);

@@ -24,12 +24,12 @@ test('all source-opening stages share one deadline and safe phase-specific failu
 });
 
 test('partial prefix snapshot exports numeric metadata without text, audio or capability IDs',()=>{
- const diagnostic=prefixOpeningDiagnostic({started_at:1000,ready_at:9000,pcm_bytes:88*3840,duration_ms:7000,resume_from_ms:7000,
+ const diagnostic=prefixOpeningDiagnostic({started_at:1000,ready_at:9000,pcm_bytes:125*3840,duration_ms:10000,resume_from_ms:10000,
   position_ms:18,prefix_id:'private capability',transcript:'private text',pcm_base64:'private audio',
   preparation_metrics:{asr_ms:2000,total_ms:3100,prosody_ms:true,local_timbre_ms:Infinity,transcript:'private text'},
-  turns:[{start_ms:0,end_ms:2000,content:'speech',text:'private source'}, {start_ms:0,end_ms:8000,content:'speech'}]});
- assert.deepEqual(diagnostic,{diagnostic_partial:true,prepared_before_activation:true,duration_ms:7000,resume_from_ms:7000,
-  position_ms:18,pcm_sent_ms:7040,elapsed_ms:8000,error_code:null,preparation_metrics:{asr_ms:2000,total_ms:3100},
+  turns:[{start_ms:0,end_ms:2000,content:'speech',text:'private source'}, {start_ms:0,end_ms:11000,content:'speech'}]});
+ assert.deepEqual(diagnostic,{diagnostic_partial:true,prepared_before_activation:true,duration_ms:10000,resume_from_ms:10000,
+  position_ms:18,pcm_sent_ms:10000,elapsed_ms:8000,error_code:null,preparation_metrics:{asr_ms:2000,total_ms:3100},
   turns:[{start_ms:0,end_ms:2000,content:'speech'}]});
  assert.equal(prefixOpeningDiagnostic(null),null);
  assert.equal(prefixOpeningDiagnostic({error_code:'prefix_asr_timeout'}).error_code,'prefix_asr_timeout');

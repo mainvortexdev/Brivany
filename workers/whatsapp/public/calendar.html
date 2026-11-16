@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mi Calendario — Vetsa</title>
+<meta name="description" content="Tu calendario personal potenciado por Vetsa Intelligence">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a12;--surface:#12121e;--card:#1a1a2e;--border:#252540;--primary:#7c3aed;--primary-glow:rgba(124,58,237,.25);--accent:#a78bfa;--text:#e4e4f0;--text-dim:#8888a0;--green:#22c55e;--blue:#3b82f6;--amber:#f59e0b;--red:#ef4444;--goal-bg:rgba(124,58,237,.15);--reminder-bg:rgba(59,130,246,.15);--google-bg:rgba(34,197,94,.15);--radius:12px;--transition:all .3s cubic-bezier(.4,0,.2,1)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── PIN SCREEN ── */
+.pin-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;animation:fadeIn .6s ease}
+.pin-logo{width:48px;height:48px;background:linear-gradient(135deg,var(--primary),#9333ea);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px;box-shadow:0 4px 24px var(--primary-glow)}
+.pin-title{font-size:22px;font-weight:600;margin-bottom:4px}
+.pin-phone{color:var(--text-dim);font-size:14px;margin-bottom:32px}
+.pin-boxes{display:flex;gap:10px;margin-bottom:24px}
+.pin-box{width:48px;height:56px;background:var(--card);border:2px solid var(--border);border-radius:10px;text-align:center;font-size:24px;font-weight:600;color:var(--text);outline:none;caret-color:var(--primary);transition:var(--transition)}
+.pin-box:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+.pin-box.filled{border-color:var(--accent)}
+.pin-error{color:var(--red);font-size:13px;min-height:20px;margin-bottom:16px}
+.pin-btn{background:linear-gradient(135deg,var(--primary),#9333ea);color:#fff;border:none;padding:12px 48px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:var(--transition);opacity:.5;pointer-events:none}
+.pin-btn.active{opacity:1;pointer-events:auto}
+.pin-btn.active:hover{transform:translateY(-1px);box-shadow:0 6px 24px var(--primary-glow)}
+.pin-btn.loading{pointer-events:none;opacity:.6}
+
+/* ── CALENDAR APP ── */
+.cal-app{display:none;min-height:100vh;animation:fadeIn .5s ease}
+.cal-header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}
+.cal-header-left{display:flex;align-items:center;gap:12px}
+.cal-header-logo{width:32px;height:32px;background:linear-gradient(135deg,var(--primary),#9333ea);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.cal-header h1{font-size:16px;font-weight:600}
+.cal-header-phone{font-size:12px;color:var(--text-dim)}
+
+/* Navigation */
+.cal-nav{display:flex;align-items:center;gap:8px;padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border)}
+.cal-nav-btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px;transition:var(--transition)}
+.cal-nav-btn:hover{border-color:var(--primary);color:var(--accent)}
+.cal-nav-title{flex:1;text-align:center;font-size:15px;font-weight:600;text-transform:capitalize}
+.cal-nav-today{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* Grid */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;padding:0 20px;margin-top:8px}
+.cal-day-label{text-align:center;font-size:11px;color:var(--text-dim);padding:8px 0;text-transform:uppercase;letter-spacing:1px;font-weight:500}
+.cal-cell{min-height:72px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px;cursor:pointer;transition:var(--transition);position:relative}
+.cal-cell:hover{border-color:var(--accent);background:var(--card)}
+.cal-cell.today{border-color:var(--primary);background:rgba(124,58,237,.08)}
+.cal-cell.selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--primary-glow)}
+.cal-cell.other-month{opacity:.3}
+.cal-cell-num{font-size:13px;font-weight:500;margin-bottom:4px}
+.cal-cell.today .cal-cell-num{background:var(--primary);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px}
+.cal-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin:1px}
+.cal-dot.goal{background:var(--primary)}
+.cal-dot.reminder{background:var(--blue)}
+.cal-dot.google{background:var(--green)}
+
+/* Event List */
+.cal-events{padding:16px 20px}
+.cal-events-title{font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.cal-event-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:var(--transition);cursor:pointer;position:relative}
+.cal-event-card:hover{border-color:var(--accent);transform:translateX(2px)}
+.cal-event-badge{width:4px;height:36px;border-radius:2px;flex-shrink:0}
+.cal-event-badge.goal{background:var(--primary)}
+.cal-event-badge.reminder{background:var(--blue)}
+.cal-event-badge.google{background:var(--green)}
+.cal-event-info{flex:1;min-width:0}
+.cal-event-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-event-time{font-size:12px;color:var(--text-dim);margin-top:2px}
+.cal-event-type{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500}
+.cal-event-type.goal{background:var(--goal-bg);color:var(--accent)}
+.cal-event-type.reminder{background:var(--reminder-bg);color:var(--blue)}
+.cal-event-type.google{background:var(--google-bg);color:var(--green)}
+.cal-event-actions{display:flex;gap:6px}
+.cal-event-actions button{background:transparent;border:1px solid var(--border);color:var(--text-dim);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:12px;transition:var(--transition)}
+.cal-event-actions button:hover{border-color:var(--red);color:var(--red)}
+.cal-empty{text-align:center;padding:40px;color:var(--text-dim);font-size:14px}
+
+/* FAB */
+.cal-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;background:linear-gradient(135deg,var(--primary),#9333ea);border:none;border-radius:16px;color:#fff;font-size:28px;cursor:pointer;box-shadow:0 8px 32px var(--primary-glow);transition:var(--transition);z-index:20;display:flex;align-items:center;justify-content:center}
+.cal-fab:hover{transform:scale(1.08);box-shadow:0 12px 40px var(--primary-glow)}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:30;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:420px;width:100%;animation:slideUp .3s ease}
+.modal h2{font-size:18px;font-weight:600;margin-bottom:16px}
+.modal-field{margin-bottom:14px}
+.modal-field label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:6px;font-weight:500}
+.modal-field input,.modal-field select{width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:var(--transition)}
+.modal-field input:focus,.modal-field select:focus{border-color:var(--primary)}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-actions button{flex:1;padding:10px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:var(--transition)}
+.btn-cancel{background:var(--card);color:var(--text);border:1px solid var(--border) !important}
+.btn-save{background:linear-gradient(135deg,var(--primary),#9333ea);color:#fff}
+.btn-save:hover{box-shadow:0 4px 16px var(--primary-glow)}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+@media(max-width:640px){
+  .cal-grid{padding:0 8px}.cal-cell{min-height:56px;padding:4px}
+  .cal-cell-num{font-size:11px}.cal-events{padding:12px 8px}
+  .pin-boxes{gap:6px}.pin-box{width:42px;height:50px;font-size:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- PIN SCREEN -->
+<div class="pin-screen" id="pinScreen">
+  <div class="pin-logo">📅</div>
+  <div class="pin-title">Mi Calendario</div>
+  <div class="pin-phone" id="pinPhone">+1 000 000 0000</div>
+  <div class="pin-boxes" id="pinBoxes"></div>
+  <div class="pin-error" id="pinError"></div>
+  <button class="pin-btn" id="pinBtn" onclick="submitPin()">Acceder</button>
+</div>
+
+<!-- CALENDAR APP -->
+<div class="cal-app" id="calApp">
+  <div class="cal-header">
+    <div class="cal-header-left">
+      <div class="cal-header-logo">📅</div>
+      <div>
+        <h1>Mi Calendario</h1>
+        <div class="cal-header-phone" id="calPhone"></div>
+      </div>
+    </div>
+  </div>
+  <div class="cal-nav">
+    <button class="cal-nav-btn" onclick="changeMonth(-1)">◀</button>
+    <div class="cal-nav-title" id="calMonthTitle"></div>
+    <button class="cal-nav-btn" onclick="changeMonth(1)">▶</button>
+    <button class="cal-nav-btn cal-nav-today" onclick="goToday()">Hoy</button>
+  </div>
+  <div class="cal-grid" id="calGrid"></div>
+  <div class="cal-events" id="calEvents"></div>
+  <button class="cal-fab" onclick="openCreateModal()" title="Nuevo evento">+</button>
+</div>
+
+<!-- CREATE/EDIT MODAL -->
+<div class="modal-overlay" id="eventModal">
+  <div class="modal">
+    <h2 id="modalTitle">Nuevo Evento</h2>
+    <div class="modal-field">
+      <label>Título</label>
+      <input type="text" id="evTitle" placeholder="Ej: Reunión con equipo">
+    </div>
+    <div class="modal-field">
+      <label>Fecha y Hora</label>
+      <input type="datetime-local" id="evDateTime">
+    </div>
+    <div class="modal-field">
+      <label>Tipo</label>
+      <select id="evType">
+        <option value="REMINDER">⏰ Recordatorio</option>
+        <option value="GOAL">🎯 Meta</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveEvent()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let token = null;
+let phone = '';
+let events = [];
+const CALENDAR_ZONE = 'America/Santo_Domingo';
+function localParts(value = new Date()) {
+  return Object.fromEntries(new Intl.DateTimeFormat('en-CA', {timeZone:CALENDAR_ZONE,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(value)).map(p=>[p.type,p.value]));
+}
+function calendarToday() {
+  const p=localParts();
+  return new Date(Number(p.year),Number(p.month)-1,Number(p.day),12);
+}
+let currentDate = calendarToday();
+let selectedDate = calendarToday();
+let editingEventId = null;
+
+// Extract phone from URL path
+phone = window.location.pathname.replace(/^\/\+?/, '').replace(/\D/g, '');
+document.getElementById('pinPhone').textContent = '+' + phone;
+
+// Init PIN boxes
+(function initPinBoxes(){
+  const c = document.getElementById('pinBoxes');
+  for(let i=0;i<6;i++){
+    const inp = document.createElement('input');
+    inp.type='tel';inp.maxLength=1;inp.className='pin-box';inp.dataset.idx=i;
+    inp.addEventListener('input',function(){
+      if(this.value.length===1){
+        this.classList.add('filled');
+        const next=c.children[i+1];if(next)next.focus();
+      }else{this.classList.remove('filled')}
+      checkPinComplete();
+    });
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'&&!this.value){
+        const prev=c.children[i-1];if(prev){prev.focus();prev.value='';prev.classList.remove('filled')}
+      }
+      if(e.key==='Enter')submitPin();
+    });
+    c.appendChild(inp);
+  }
+  c.children[0].focus();
+})();
+
+function checkPinComplete(){
+  const boxes=[...document.querySelectorAll('.pin-box')];
+  const full=boxes.every(b=>b.value.length===1);
+  document.getElementById('pinBtn').classList.toggle('active',full);
+}
+
+async function submitPin(){
+  const boxes=[...document.querySelectorAll('.pin-box')];
+  const pin=boxes.map(b=>b.value).join('');
+  if(pin.length!==6)return;
+  const btn=document.getElementById('pinBtn');
+  btn.classList.add('loading');btn.textContent='Verificando...';
+  document.getElementById('pinError').textContent='';
+  try{
+    const res=await fetch(API+'/api/calendar/verify-pin',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({phone,pin})
+    });
+    const data=await res.json();
+    if(data.valid){
+      token=data.token;
+      localStorage.setItem('cal_token_'+phone,token);
+      showCalendar();
+    }else{
+      document.getElementById('pinError').textContent=data.message||'PIN incorrecto';
+      boxes.forEach(b=>{b.value='';b.classList.remove('filled')});
+      boxes[0].focus();
+    }
+  }catch(e){
+    document.getElementById('pinError').textContent='Error de conexión';
+  }
+  btn.classList.remove('loading');btn.textContent='Acceder';
+}
+
+// Check saved session
+(async function checkSession(){
+  const saved=localStorage.getItem('cal_token_'+phone);
+  if(saved){
+    try{
+      const res=await fetch(API+'/api/calendar/events?token='+saved);
+      if(res.ok){token=saved;showCalendar();return;}
+    }catch(_){}
+    localStorage.removeItem('cal_token_'+phone);
+  }
+})();
+
+async function showCalendar(){
+  document.getElementById('pinScreen').style.display='none';
+  document.getElementById('calApp').style.display='block';
+  document.getElementById('calPhone').textContent='+'+phone;
+  await loadEvents();
+  renderCalendar();
+}
+
+async function loadEvents(){
+  try{
+    const res=await fetch(API+'/api/calendar/events',{headers:{'x-calendar-token':token}});
+    const data=await res.json();
+    if(data.success)events=(data.events||[]).map(ev=>({...ev,time:ev.time||ev.dateTime}));
+  }catch(e){console.error('Error loading events:',e)}
+}
+
+function renderCalendar(){
+  const y=currentDate.getFullYear(),m=currentDate.getMonth();
+  const months=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  document.getElementById('calMonthTitle').textContent=`${months[m]} ${y}`;
+
+  const grid=document.getElementById('calGrid');
+  grid.innerHTML='';
+  const days=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+  days.forEach(d=>{const el=document.createElement('div');el.className='cal-day-label';el.textContent=d;grid.appendChild(el)});
+
+  const firstDay=new Date(y,m,1);
+  let startDay=(firstDay.getDay()+6)%7;
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const prevDays=new Date(y,m,0).getDate();
+  const today=calendarToday();
+
+  for(let i=startDay-1;i>=0;i--){
+    const cell=createCell(prevDays-i,true);grid.appendChild(cell);
+  }
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday=d===today.getDate()&&m===today.getMonth()&&y===today.getFullYear();
+    const isSel=d===selectedDate.getDate()&&m===selectedDate.getMonth()&&y===selectedDate.getFullYear();
+    const dayEvents=getEventsForDay(y,m,d);
+    const cell=createCell(d,false,isToday,isSel,dayEvents);
+    cell.onclick=()=>{selectedDate=new Date(y,m,d);renderCalendar()};
+    grid.appendChild(cell);
+  }
+  const totalCells=startDay+daysInMonth;
+  const remaining=(7-totalCells%7)%7;
+  for(let i=1;i<=remaining;i++){
+    grid.appendChild(createCell(i,true));
+  }
+  renderEvents();
+}
+
+function createCell(num,other,isToday,isSel,dayEvents){
+  const cell=document.createElement('div');
+  cell.className='cal-cell'+(other?' other-month':'')+(isToday?' today':'')+(isSel?' selected':'');
+  const numEl=document.createElement('div');
+  numEl.className='cal-cell-num';numEl.textContent=num;
+  cell.appendChild(numEl);
+  if(dayEvents&&dayEvents.length>0){
+    const dots=document.createElement('div');
+    dayEvents.slice(0,3).forEach(ev=>{
+      const dot=document.createElement('span');
+      dot.className='cal-dot '+getEventClass(ev.type);
+      dots.appendChild(dot);
+    });
+    cell.appendChild(dots);
+  }
+  return cell;
+}
+
+function getEventsForDay(y,m,d){
+  return events.filter(ev=>{
+    const t=localParts(ev.time);
+    return Number(t.year)===y&&Number(t.month)===m+1&&Number(t.day)===d;
+  });
+}
+
+function getEventClass(type){
+  if(type==='GOAL'||type==='DYNAMIC_RECURRING')return 'goal';
+  if(type==='GOOGLE_EVENT'||type==='GOOGLE_CALENDAR')return 'google';
+  return 'reminder';
+}
+
+function getEventLabel(type){
+  if(type==='GOAL')return'🎯 Meta';
+  if(type==='DYNAMIC_RECURRING')return'🔄 Recurrente';
+  if(type==='GOOGLE_EVENT'||type==='GOOGLE_CALENDAR')return'🗓️ Google';
+  return'⏰ Recordatorio';
+}
+
+function renderEvents(){
+  const cont=document.getElementById('calEvents');
+  const y=selectedDate.getFullYear(),m=selectedDate.getMonth(),d=selectedDate.getDate();
+  const dayEvs=getEventsForDay(y,m,d);
+  const months=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const dateStr=`${d} de ${months[m]}`;
+
+  if(dayEvs.length===0){
+    cont.innerHTML=`<div class="cal-events-title">📋 ${dateStr}</div><div class="cal-empty">No hay eventos para este día</div>`;
+    return;
+  }
+  let html=`<div class="cal-events-title">📋 ${dateStr} — ${dayEvs.length} evento${dayEvs.length>1?'s':''}</div>`;
+  dayEvs.forEach(ev=>{
+    const t=new Date(ev.time);
+    const timeStr=t.toLocaleTimeString('es',{timeZone:CALENDAR_ZONE,hour:'2-digit',minute:'2-digit',hour12:true});
+    const cls=getEventClass(ev.type);
+    html+=`<div class="cal-event-card">
+      <div class="cal-event-badge ${cls}"></div>
+      <div class="cal-event-info">
+        <div class="cal-event-name">${ev.title}</div>
+        <div class="cal-event-time">${timeStr}</div>
+      </div>
+      <span class="cal-event-type ${cls}">${getEventLabel(ev.type)}</span>
+      <div class="cal-event-actions">
+        <button onclick="deleteEvent('${ev.id}')" title="Eliminar">🗑</button>
+      </div>
+    </div>`;
+  });
+  cont.innerHTML=html;
+}
+
+function changeMonth(dir){currentDate.setDate(1);currentDate.setMonth(currentDate.getMonth()+dir);renderCalendar()}
+function goToday(){currentDate=calendarToday();selectedDate=calendarToday();renderCalendar()}
+
+function openCreateModal(){
+  editingEventId=null;
+  document.getElementById('modalTitle').textContent='Nuevo Evento';
+  document.getElementById('evTitle').value='';
+  const p=localParts();
+  document.getElementById('evDateTime').value=`${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
+  document.getElementById('evType').value='REMINDER';
+  document.getElementById('eventModal').classList.add('show');
+}
+
+function closeModal(){document.getElementById('eventModal').classList.remove('show')}
+
+async function saveEvent(){
+  const title=document.getElementById('evTitle').value.trim();
+  const dateTime=document.getElementById('evDateTime').value;
+  const type=document.getElementById('evType').value;
+  if(!title||!dateTime)return;
+  try{
+    const res=await fetch(API+'/api/calendar/events',{
+      method:'POST',headers:{'Content-Type':'application/json','x-calendar-token':token},
+      body:JSON.stringify({title,dateTime:dateTime+'-04:00',type})
+    });
+    const data=await res.json();
+    if(data.success){closeModal();await loadEvents();renderCalendar()}else{alert(data.error||'No se pudo guardar el evento')}
+  }catch(e){console.error(e)}
+}
+
+async function deleteEvent(id){
+  if(!confirm('¿Eliminar este evento?'))return;
+  try{
+    await fetch(API+'/api/calendar/events/'+id,{method:'DELETE',headers:{'x-calendar-token':token}});
+    await loadEvents();renderCalendar();
+  }catch(e){console.error(e)}
+}
+</script>
+</body>
+</html>

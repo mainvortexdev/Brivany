@@ -2,19 +2,21 @@
 "use strict";
 window.BrivanyVoice = (() => {
   class VoiceOutput {
-    constructor(onState, onError = () => {}) {
-      this.onState = onState; this.token = 0; this.timer = null; this.speaking = false;
-      this.remote = window.BrivanyLive ? new BrivanyLive.MelodiOutput(value => { this.speaking = value; this.onState(value); }, onError) : null;
+    constructor(onState, onError = () => {}, onPlayback = () => {}) {
+      this.onState = onState; this.onPlayback = onPlayback; this.token = 0; this.timer = null; this.speaking = false; this.playing = false;
+      this.remote = window.BrivanyLive ? new BrivanyLive.MelodiOutput(value => { this.speaking = value; this.onState(value); }, onError, value => this.playback(value)) : null;
     }
+    playback(value) { if (this.playing !== value) { this.playing = value; this.onPlayback(value); } }
     voices(language = "es") { return (window.speechSynthesis?.getVoices() || []).filter(v => v.localService === true && v.lang.toLowerCase().startsWith(language)); }
     cancel() {
       this.token++; clearTimeout(this.timer); window.speechSynthesis?.cancel();
       this.remote?.cancel();
+      this.playback(false);
       this.speaking = false; this.onState(false);
     }
-    speak(segments, { voiceURI, language = "es", rate = 1.05, quiet = false, signal } = {}) {
+    speak(segments, { voiceURI, language = "es", rate = 1.05, quiet = false, signal, live = false } = {}) {
       this.cancel();
-      if (voiceURI === "melodi-cartesia" || voiceURI === "melodi-cloudflare") return this.remote?.speak(segments, { language, rate, quiet, signal }) || false;
+      if (voiceURI === "melodi-cartesia" || voiceURI === "melodi-cloudflare") return this.remote?.speak(segments, { language, rate, quiet, signal, live }) || false;
       const voices = this.voices(language);
       const voice = voices.find(v => v.voiceURI === voiceURI) || voices[0];
       if (!voice || !window.SpeechSynthesisUtterance) return false;
@@ -23,15 +25,16 @@ window.BrivanyVoice = (() => {
       let index = 0;
       const next = () => {
         if (token !== this.token) return;
-        if (index >= segments.length) { this.speaking = false; this.onState(false); return; }
+        if (index >= segments.length) { this.playback(false); this.speaking = false; this.onState(false); return; }
         const segment = segments[index++];
         const utterance = new SpeechSynthesisUtterance(segment.text);
         utterance.voice = voice; utterance.lang = voice.lang; utterance.rate = Math.min(1.2, Math.max(0.7, rate));
         utterance.pitch = 1; utterance.volume = quiet ? 0.18 : 0.85;
-        utterance.onend = () => { if (token === this.token) this.timer = setTimeout(next, segment.pauseAfter || 0); };
-        utterance.onerror = () => { if (token === this.token) { this.speaking = false; this.onState(false); } };
+        utterance.onstart = () => { if (token === this.token) this.playback(true); };
+        utterance.onend = () => { if (token === this.token) { this.playback(false); this.timer = setTimeout(next, segment.pauseAfter || 0); } };
+        utterance.onerror = () => { if (token === this.token) { this.playback(false); this.speaking = false; this.onState(false); } };
         try { window.speechSynthesis.speak(utterance); }
-        catch { if (token === this.token) { this.speaking = false; this.onState(false); } }
+        catch { if (token === this.token) { this.playback(false); this.speaking = false; this.onState(false); } }
       };
       next(); return true;
     }
@@ -78,7 +81,7 @@ window.BrivanyVoice = (() => {
             onError: message => { if (generation === this.generation) { this.stop(); this.onError(message); } } });
           const echoCancelled = stream.getAudioTracks()[0]?.getSettings?.().echoCancellation === true;
           const ready = await this.live.start(this.audio, this.source, { ...live, language, bargeIn: live.bargeIn === true && echoCancelled });
-          if (!ready || generation !== this.generation) return false;
+          if (!ready || generation !== this.generation) { if (generation === this.generation) this.stop(); return false; }
         }
         else if (transcribe) this.startRecognition();
         else this.onStatus("Medición acústica local · transcripción desactivada");

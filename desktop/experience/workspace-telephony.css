@@ -1,0 +1,17 @@
+.telephone-tabs,.telephone-actions{display:flex;gap:6px;margin-bottom:8px}
+.telephone-tabs button,.telephone-actions button{min-height:27px;padding:4px 10px}
+.telephone-tabs button[aria-pressed=true]{color:var(--workspace-accent);background:rgba(var(--workspace-accent-rgb),.12)}
+#telephone-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:6px;align-items:start}
+#telephone-form label{display:grid;gap:4px}
+#telephone-form textarea{resize:vertical;min-height:44px}
+#telephone-form button{grid-column:1/-1;justify-self:end;min-height:29px}
+.telephone-tool p{overflow-wrap:anywhere}
+#telephone-review p,#telephone-progress p{font-size:11px;margin:4px 0 8px}
+#telephone-voicemails [role=listitem]{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid #ffffff10;font-size:10px}
+#telephone-voicemails button{min-height:26px;flex:none}
+#telephone-audio{display:block;width:100%;height:32px;margin-top:8px}
+.telephone-tool [hidden]{display:none!important}
+.telephone-routing{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.telephone-routing label{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--workspace-muted,#a1a4ab)}
+.telephone-routing select{min-height:26px;max-width:160px;padding:3px 7px;font-size:11px}
+#telephone-mode{font-size:10px;color:var(--workspace-accent);border:1px solid currentColor;border-radius:5px;padding:2px 5px}

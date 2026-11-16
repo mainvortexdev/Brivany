@@ -32,7 +32,7 @@ def publish_document(plan,workspace,identifier,cancelled):
     html='<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="stylesheet" href="/desktop-shell/references.css"><title>'+escape(plan['title'])+'</title><body class="melodi-document"><h1>'+escape(plan['title'])+'</h1><pre>'+escape(plan['body'])+'</pre></body></html>'
     with text.open('x',encoding='utf-8') as output:output.write(plan['title']+'\n\n'+plan['body'])
     with page.open('x',encoding='utf-8') as output:output.write(html)
-    return {'title':plan['title'],'path':str(text),'document_id':identifier,'conceptual':False,
+    return {'title':plan['title'],'path':str(text),'document_id':identifier,'conceptual':False,'message':plan['body'][:2200],
             'verified':True,'semantic_verification':False,'review_required':True}
 
 

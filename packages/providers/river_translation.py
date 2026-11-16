@@ -4,6 +4,7 @@ One transient MT recovery before any delta, no transcript/audio persistence. Nat
 of the captured browser tab, preventing translated speech from re-entering ASR.
 """
 from __future__ import annotations
+from packages.runtime_paths import DATA_ROOT, CONFIG_PATH
 
 import base64
 from collections import deque
@@ -45,6 +46,26 @@ RATE_BYTES = 48000
 MAX_CONTEXTS = 2
 MAX_CONTEXT_AUDIO_BYTES = RATE_BYTES * 30
 INLINE_ASR_LAG_MS = 4000
+# Direct capture: first TTS piece once ~4-5 words exist, later pieces as
+# whole phrases. Pace: brisker base, +step per waiting clause, bounded.
+DIRECT_FIRST_CHUNK = 24
+DIRECT_NEXT_CHUNK = 48
+DIRECT_BASE_SPEED = float(os.environ.get('BRIVANY_DIRECT_BASE_SPEED','1.25'))
+DIRECT_BACKLOG_STEP = .1
+# Share of the source clause the interpretation may take (speech keeps going).
+DIRECT_BUDGET_SHARE = float(os.environ.get('BRIVANY_DIRECT_BUDGET_SHARE','.8'))
+DIRECT_MAX_SPEED = 1.5
+# A live interpreter drops what is already too late rather than fall behind:
+# a committed clause still waiting this long (s) is skipped.
+DIRECT_STALE_AFTER = 3.0
+# Live clauses: commit this many stable words, holding one back.
+LIVE_COMMIT_WORDS = 6
+
+
+def direct_delivery_speed(waiting):
+    """Speed guidance for direct capture from clauses waiting to be spoken."""
+    if type(waiting) is not int or waiting<0:waiting=0
+    return round(min(DIRECT_MAX_SPEED,DIRECT_BASE_SPEED+DIRECT_BACKLOG_STEP*waiting),3)
 INLINE_PROSODY_GRACE = .12
 INLINE_MT_TIMEOUT = 6.5
 INLINE_MT_FAILURE_LIMIT = 3
@@ -59,7 +80,7 @@ VOICE_PALETTES = {
     'low':(('Daniel',VOICES['low']),('Jace','6776173b-fd72-460d-89b3-d85812ee518d')),
     'high':(('Skylar',VOICES['high']),('Tessa','6ccbfb76-1fc6-48f7-b71d-91ac6298247b'))}
 PROSODY_EMOTIONS=frozenset({'neutral','calm','happy','sad','angry','excited'})
-ACCESS_PATH = Path(__file__).resolve().parents[2] / '.local/translation/access.json'
+ACCESS_PATH = DATA_ROOT / '.local/translation/access.json'
 
 
 def inline_muse_close(error):
@@ -83,11 +104,14 @@ def access_checks():
     return result
 
 
-def river_status():
-    stages = {'asr': bool(muse_key()), 'translation': meta_translation_status()['configured'],
+def river_status(asr='muse',mt='meta'):
+    from .meta_translation import groq_configuration
+    stages = {'asr': bool(os.getenv('BRIVANY_CARTESIA_API_KEY')) if asr=='ink' else bool(os.getenv('BRIVANY_DEEPGRAM_API_KEY','').strip()) if asr=='deepgram' else bool(muse_key()),
+              'translation': groq_configuration()[2] if mt=='groq' else meta_translation_status()['configured'],
               'tts': bool(os.getenv('BRIVANY_CARTESIA_API_KEY'))}
     checks=access_checks()
-    model_blocked=checks.get('meta',{}).get('checked_model')==meta_translation_status()['model'] and checks.get('meta',{}).get('model_available') is False
+    if mt=='groq':checks={name:value for name,value in checks.items() if name!='meta'}  # Meta not used
+    model_blocked=mt=='meta' and checks.get('meta',{}).get('checked_model')==meta_translation_status()['model'] and checks.get('meta',{}).get('model_available') is False
     return {'provider': 'Muse · Meta Spark · Cartesia', 'configured': all(stages.values()), 'stages': stages,
         'access_checks':checks, 'access_blocked':model_blocked or any(check.get('access') is False for check in checks.values()),
         'model_blocked':model_blocked,
@@ -198,15 +222,22 @@ class MetaStream:
     unavailable errors with zero emitted deltas may use a second attempt.
     Refusal, HTTP 4xx, malformed responses and cancellation never retry.
     """
-    def __init__(self, *, inline_video=False):
+    def __init__(self, *, inline_video=False, provider='meta', live=False):
+        if provider not in ('meta','groq'):raise ValueError('Proveedor de traducción no válido.')
         self.lock=threading.RLock();self.closed=False;self.on_stage=None
-        self.inline_video=inline_video
+        # live: Directa interpretation (concise, timed to the source clause).
+        self.inline_video=inline_video;self.provider=provider;self.live=live is True and not inline_video
         self.session=self._new_session()
         self.configuration=(getattr(self.session,'model',None),getattr(self.session,'_key',None))
         self.attempts=0;self.recoveries=0;self.total_attempts=0;self.total_recoveries=0;self.usage={}
 
     def _new_session(self):
         options={'timeout_seconds':INLINE_MT_TIMEOUT} if self.inline_video else {}
+        if self.provider=='groq':
+            from .meta_translation import GroqTranslationSession
+            session=GroqTranslationSession(max_completion_tokens=MAX_TOKENS,allow_transport_reopen=True,**options)
+            session.live_interpretation=getattr(self,'live',False)
+            return session
         if self.inline_video and inline_translation_model() is not None:
             options['model_override'] = inline_translation_model()
         return MetaTranslationSession(max_completion_tokens=MAX_TOKENS,allow_transport_reopen=True,**options)
@@ -235,7 +266,7 @@ class MetaStream:
 
     def stream(self,text,target,history,*,duration_ms=None):
         context=[dict(row) if isinstance(row,dict) else {'source_text':row[0],'translated_text':row[1]} for row in history]
-        duration_options={'duration_ms':duration_ms} if self.inline_video and duration_ms is not None else {}
+        duration_options={'duration_ms':duration_ms} if (self.inline_video or self.live) and duration_ms is not None else {}
         total=0;emitted=False;self.attempts=0;self.recoveries=0;self.usage={}
         def counters():return {'attempts':self.attempts,'recoveries':self.recoveries,
             'total_attempts':self.total_attempts,'total_recoveries':self.total_recoveries}
@@ -271,7 +302,7 @@ class MetaStream:
 
 
 class LiveClauses(StableClauses):
-    """Also commit eight stable words, holding two back without punctuation.
+    """Also commit LIVE_COMMIT_WORDS stable words, holding one back without punctuation.
 
     Two cumulative observations are a heuristic. Later semantic revisions stop
     the session rather than incur duplicate translation/speech charges.
@@ -285,6 +316,7 @@ class LiveClauses(StableClauses):
                     del self.turns[identifier]
                     if len(self.turns)<64:break
         turn=str(event['id']);previous=self.turns.get(turn,{}).get('last','')
+        if getattr(self,'eager',False):return self._eager(event,now)
         segments=super().accept(event,now)
         if segments or event.get('final') is True:return segments
         state=self.turns[turn];text=state['last'];committed=state['committed']
@@ -293,14 +325,58 @@ class LiveClauses(StableClauses):
         for first,second in zip(previous,text):
             if first!=second:break
             common+=1
+        # Ink-2 partials rarely revise older words: commit from the latest
+        # partial (still holding the last word back) instead of waiting for
+        # a second identical observation.
+        if getattr(self,'eager',False):common=len(text)
         words=list(self.words(text[len(committed):common]))
-        if len(words)<10:return []
-        endpoint=len(committed)+words[7].end()
+        if len(words)<LIVE_COMMIT_WORDS+1:return []
+        endpoint=len(committed)+words[LIVE_COMMIT_WORDS-1].end()
         chosen=text[len(committed):endpoint].strip()
         if not chosen or len(chosen)>400:return []
         segment=Segment(turn,state['index'],state['revision'],chosen,True,False,False,
             time.monotonic() if now is None else now)
         state['index']+=1;state['committed']=text[:endpoint]
+        return [segment]
+
+    def _eager(self,event,now=None):
+        """Streaming ASR (Ink-2, Deepgram): commit by word count, never by text prefix.
+
+        These providers re-punctuate and re-case earlier words inside one long
+        turn ("thing, business" -> "thing. Business."). Counting committed words
+        survives that; a prefix check stalls the whole turn or stops the session.
+        Commits a sentence once its end is followed by another word, else
+        LIVE_COMMIT_WORDS words holding the newest one back; a final flushes.
+        """
+        created=time.monotonic() if now is None else now
+        turn=str(event['id']);text=' '.join(str(event.get('text','')).split())
+        state=self.turns.setdefault(turn,{'last':'','committed':'','count':0,'index':0,'revision':0,'final':False})
+        if state['final']:return []
+        state['last']=text;final=event.get('final') is True
+        words=list(self.words(text));count=state.setdefault('count',0)
+        rest=words[count:]
+        if final:
+            state['final']=True
+            if not rest:return []
+            chosen=text[rest[0].start():].strip()
+            pieces=self.split(chosen)
+            out=[]
+            for piece in pieces:
+                out.append(Segment(turn,state['index'],state['revision'],piece,False,False,False,created));state['index']+=1
+            state['count']=len(words);return out
+        if len(rest)<2:return []
+        take=0
+        # A sentence end that already has a following word is settled.
+        for position,word in enumerate(rest[:-1]):
+            tail=text[word.end():word.end()+2]
+            if position+1>=3 and re.match(r'[.!?;:]',tail):take=position+1
+        if not take and len(rest)>=LIVE_COMMIT_WORDS+1:take=LIVE_COMMIT_WORDS
+        if not take:return []
+        chosen=text[rest[0].start():rest[take-1].end()+1].strip()
+        if not chosen or len(chosen)>400:chosen=chosen[:400]
+        state['count']=count+take
+        segment=Segment(turn,state['index'],state['revision'],chosen,True,False,False,created)
+        state['index']+=1
         return [segment]
 
 
@@ -365,9 +441,23 @@ class SpeakerTracker:
         result=session.associate(sample)
         with self.condition:
             row=self.turns[turn];row['acoustic_association']=dict(result)
-            if result.get('cluster') is not None:
-                row['speaker_key']=('acoustic',result['cluster'])
-                self.speakers.setdefault(row['speaker_key'],{'index':len(self.speakers)+1,'style':'neutral','voices':{}})
+            cluster=result.get('cluster')
+            if cluster is None:
+                # Voice continuity only (never learning): a short or borderline
+                # piece keeps the most likely known speaker, so a ready clone is
+                # not replaced by a catalog voice. The next confident piece of
+                # this turn can still re-associate (nothing is cached here).
+                tentative=result.get('best_cluster')
+                # Only a too-short speech piece may fall back to the single known
+                # speaker; unknown content still never inherits a voice.
+                if tentative is None and result.get('reason')=='invalid_sample' and callable(getattr(session,'only_cluster',None)):tentative=session.only_cluster()
+                if tentative is not None:
+                    cluster=tentative;row['acoustic_tentative']=True;result=dict(result,tentative_cluster=tentative)
+            if cluster is not None:
+                row['speaker_key']=('acoustic',cluster)
+                # The cluster number is the label, so "Hablante N" and its clone
+                # stay the same across provider reconnects (shared clusters).
+                self.speakers.setdefault(row['speaker_key'],{'index':cluster if type(cluster) is int else len(self.speakers)+1,'style':'neutral','voices':{}})
                 self.condition.notify_all()
         return result
     def cached_timbre(self,turn):
@@ -543,7 +633,8 @@ class SpeakerTracker:
                     self.variants[palette_style]+=1
                 name,identifier=speaker['voices'][palette_style]
             else:name,identifier=('Skylar',VOICES['high']) if palette_style=='high' else ('Daniel',VOICES['low'])
-            cloned=self.voice_resolver(row['label']) if mode=='auto' and speaker and key[0]=='live' and self.voice_resolver else None
+            resolver_key=row['label'] if key and key[0]=='live' else f'acoustic:{key[1]}' if key and key[0]=='acoustic' else None
+            cloned=self.voice_resolver(resolver_key) if mode=='auto' and speaker and resolver_key and self.voice_resolver else None
             if cloned:name=f"Hablante {speaker['index']}";identifier=cloned
             return {'type':'voice-style','style':style,'voice_name':name,'voice_category':'feminine' if palette_style=='high' else 'masculine',
                 'voice_id':identifier,'method':'authorized_voice_clone' if cloned else 'manual' if mode!='auto' else 'provisional_catalog' if provisional_catalog else 'local_acoustic_speaker' if key and key[0]=='acoustic' else 'asr_speaker_stable_pitch' if speaker else 'local_pitch_heuristic',
@@ -568,18 +659,29 @@ class QueuedSegment:
     speaker_turn: str
     timing_quality: str = 'asr_turn'
     content: str = 'unknown'
+    # Source time (s) of the first sample byte; negative when unknown.
+    sample_start: float = -1.
 
 
 class RiverBridge(TranslationBridge):
-    def __init__(self, http_port, port=0, *, mixer_factory=None, translator_factory=None, clock=None,allow_synchronized=False,prosody_factory=None,content_filter_factory=None,voice_agents_factory=None,caption_prefetch_factory=None,caption_source=None):
+    def __init__(self, http_port, port=0, *, mixer_factory=None, translator_factory=None, clock=None,allow_synchronized=False,prosody_factory=None,content_filter_factory=None,voice_agents_factory=None,caption_prefetch_factory=None,caption_source=None,asr_provider='muse',translation_provider='meta'):
         super().__init__(http_port, port)
+        if asr_provider not in ('muse','ink','deepgram'):raise ValueError('Proveedor de transcripción no válido.')
+        # 'ink' applies to direct (non-synchronized) capture only; synchronized
+        # video keeps Muse, whose timestamps align cues with the video clock.
+        self.asr_provider=asr_provider
+        if translation_provider not in ('meta','groq'):raise ValueError('Proveedor de traducción no válido.')
+        # 'groq' applies to direct (non-synchronized) capture, like Ink-2.
+        self.translation_provider=translation_provider
         self.mixer_factory=mixer_factory or open_native_audio
         self.translator_factory=translator_factory or MetaStream
         self.clock=clock or time.monotonic
         self.allow_synchronized=allow_synchronized is True
         self.prosody_factory=prosody_factory
         self.content_filter_factory=content_filter_factory
-        self.voice_agents_factory=voice_agents_factory;self.voice_agents=None
+        self.voice_agents_factory=voice_agents_factory;self.voice_agents=None;self.acoustic_session=None
+        # Optional hooks for caption-scheduled dubbing (set by the owner).
+        self.live_voice_suppressed=None;self.voice_hint_value=None
         self.caption_prefetch_factory=caption_prefetch_factory
         self.caption_source=caption_source
 
@@ -593,7 +695,7 @@ class RiverBridge(TranslationBridge):
         pending=queue.Queue(maxsize=16); ingress=queue.Queue(maxsize=4); active={'context':None,'bytes':0,'segments':0,'characters':0,
             'output_bytes':0,'first_input':None,'first_output':None,'tts_started':None,'tts_activity':self.clock(),
             'voice_mode':'auto','flow_paused':False,'input_at':self.clock(),'asr_processed_ms':0.,'mt_failures':0}
-        audio_window=VoiceSamples(); speakers=SpeakerTracker();clauses=LiveClauses();turn_times={}; mixer=None; translator=None; muse=None; cartesia=None;voice_agents=None
+        audio_window=VoiceSamples(); speakers=SpeakerTracker();clauses=LiveClauses();turn_times={};direct_marks={};direct_spans={}; mixer=None; translator=None; muse=None; cartesia=None;voice_agents=None
         delivery_pace=DeliveryPace()
         closing_at=None; start=self.clock();caption_prefetch=None
 
@@ -666,7 +768,7 @@ class RiverBridge(TranslationBridge):
             prepared_prefix=getattr(browser,'prepared_prefix',None) if inline_video else None
             resume_ms=prepared_prefix.resume_from_ms if prepared_prefix else 0
             resume_bytes=resume_ms*48
-            prepared_advisories={}
+            prepared_advisories={};prefix_translations={}
             if type(synchronized) is not bool or synchronized and not self.allow_synchronized:raise VoiceError('sync_unavailable','La reproducción sincronizada requiere el enlace autorizado del navegador.')
             if type(epoch) is not int or not 1<=epoch<=2147483647:raise VoiceError('sync_epoch','La época del reproductor no es válida.')
             expressive=options.get('expressive',True)
@@ -682,8 +784,12 @@ class RiverBridge(TranslationBridge):
             if type(continuous_input) is not bool:raise VoiceError('options','El modo de entrada continua no es válido.')
             diarization=options.get('diarization',False)
             if type(diarization) is not bool:raise VoiceError('options','El modo de hablantes no es válido.')
+            # voice_agents (local) is owned and closed by this session. An owner
+            # may instead attach agents to the bridge (before or during the
+            # session); those outlive reconnects and are closed by that owner.
             if self.voice_agents_factory:
-                diarization=True;voice_agents=self.voice_agents_factory();self.voice_agents=voice_agents;speakers.voice_resolver=voice_agents.voice_for
+                diarization=True;voice_agents=self.voice_agents_factory();self.voice_agents=voice_agents
+            speakers.voice_resolver=lambda key:(lambda agents:agents.voice_for(key) if agents else None)(self.voice_agents)
             if synchronized and not continuous_input:raise VoiceError('sync_input','El reproductor sincronizado requiere entrada continua.')
             target=options.get('target_language')
             if not isinstance(target,str) or target not in LANGUAGES: raise VoiceError('language','Elige español, inglés o francés.')
@@ -692,16 +798,29 @@ class RiverBridge(TranslationBridge):
             voice_mode=options.get('voice_mode','auto')
             if voice_mode not in {'auto','masculine','feminine'}:raise VoiceError('voice_mode','Elige voz automática, masculina o femenina.')
             active['voice_mode']=voice_mode
-            configuration=river_status()
+            # Ink-2 and Deepgram share the streaming adapter contract (no ASR
+            # speaker labels, cumulative partials) in direct capture.
+            ink_asr=self.asr_provider in ('ink','deepgram') and not synchronized
+            clauses.eager=ink_asr
+            groq_mt=self.translation_provider=='groq' and not synchronized and self.translator_factory is MetaStream
+            # Inline video keeps Muse for its timestamps but may translate with
+            # Groq (~0.2 s per clause) instead of Meta (0.9-2 s).
+            groq_inline=self.translation_provider=='groq' and inline_video and self.translator_factory is MetaStream
+            configuration=river_status(asr=self.asr_provider if ink_asr else 'muse',mt='groq' if groq_mt or groq_inline else 'meta')
             if not configuration['configured']: raise VoiceError('configuration','Falta configurar una de las tres APIs en el servidor local.')
             if configuration['access_blocked']: raise VoiceError('access_blocked','Una API rechazó el acceso. Corrige la conexión y comprueba los metadatos antes de consumir audio.')
-            if inline_video:
-                speakers.enable_acoustic();run(warm_speaker_embedding)
+            # Ink-2 has no speaker labels: direct capture then groups speakers
+            # by local voice embeddings, as inline video already does.
+            acoustic_mode=inline_video or ink_asr
+            if acoustic_mode:
+                # An owner (WorkLiveTranslation) may share clusters across
+                # reconnects so speaker numbers and their clones stay stable.
+                speakers.enable_acoustic(self.acoustic_session);run(warm_speaker_embedding)
             # Open the local output first. Missing device cannot start a paid ASR.
             mixer=_SynchronizedSink() if synchronized else self.mixer_factory(); mixer.set_levels(original=gain,translation=.85)
             if synchronized or self.caption_source:
                 from .caption_prefetch import CaptionPrefetch
-                caption_prefetch=(self.caption_prefetch_factory or CaptionPrefetch)(target,translator_factory=self.translator_factory,epoch=epoch)
+                caption_prefetch=(self.caption_prefetch_factory or CaptionPrefetch)(target,translator_factory=(lambda:MetaStream(provider='groq')) if groq_inline else self.translator_factory,epoch=epoch)
             # Native CapturePeer has a single producer. Reserve capacity before
             # dequeuing the next PCM block, retaining it in the bounded capture
             # queue during a slow Muse.send. Controls/stop still bypass PCM.
@@ -742,12 +861,13 @@ class RiverBridge(TranslationBridge):
                     if inactive>30:
                         fail(VoiceError('input_inactive','Dejó de llegar audio del navegador. Todo se detuvo sin reconectar.')); return
             run(watchdog)
-            translator=MetaStream(inline_video=True) if inline_video and self.translator_factory is MetaStream else self.translator_factory()
+            inline_provider='groq' if groq_inline else 'meta'
+            translator=MetaStream(inline_video=True,provider=inline_provider) if inline_video and self.translator_factory is MetaStream else MetaStream(provider='groq',live=not synchronized) if groq_mt else self.translator_factory()
             # Both inline MT workers need their own serial HTTP connection.
             # Prepare verified TLS while ASR/TTS are connecting, rather than
             # charging the second clause for its first connection handshake.
             # This opens no HTTP request and performs no model inference.
-            second=track(MetaStream(inline_video=True) if self.translator_factory is MetaStream else self.translator_factory()) if inline_video else None
+            second=track(MetaStream(inline_video=True,provider=inline_provider) if self.translator_factory is MetaStream else self.translator_factory()) if inline_video else None
             if self.caption_source:
                 def anticipate_selected_video():
                     while not stopped.is_set():
@@ -775,6 +895,26 @@ class RiverBridge(TranslationBridge):
                 while not asr_requested.wait(.05):
                     if stopped.is_set() or asr_done.is_set():return
                 if stopped.is_set() or asr_done.is_set():return
+                if ink_asr:
+                    # Cartesia Ink-2 replaces Muse in direct capture: one provider
+                    # fewer. Same event shape; speakers come from local clusters.
+                    model=os.environ.get('BRIVANY_DEEPGRAM_MODEL','').strip().lower()
+                    if self.asr_provider=='deepgram' and model=='nova':
+                        from .deepgram_asr import DeepgramAsrSocket
+                        muse=track(DeepgramAsrSocket())
+                    elif self.asr_provider=='deepgram' and target!='en':
+                        # Flux is English-only: translating into es/fr means an
+                        # English source (measured 2026-11-11: commits ~1.2 s
+                        # after speech vs ~2.3 s with Ink-2).
+                        from .deepgram_asr import DeepgramFluxSocket
+                        muse=track(DeepgramFluxSocket())
+                    else:
+                        from .ink_asr import InkAsrSocket
+                        muse=track(InkAsrSocket())
+                    if stopped.is_set():return
+                    muse.send(json.dumps({'type':'start'}));json.loads(muse.recv(timeout=5))
+                    if not stopped.is_set():asr_ready.set()
+                    return
                 muse=track(connect(MUSE_URL,open_timeout=5,close_timeout=1,max_size=65536,max_queue=4,compression=None,proxy=None))
                 if stopped.is_set():return
                 # Keep ASR speaker boundaries as well as the independent local
@@ -948,7 +1088,7 @@ class RiverBridge(TranslationBridge):
                         classification_sample=audio_window.span(max(start,end-3),end,max_seconds=3)
                     stage('segment_ready',segment,source_start_ms=piece.start_ms,
                           timing_quality=piece.timing_quality,input_ms=round(active['bytes']/48,2))
-                    try:pending.put_nowait(QueuedSegment(segment,sample,classification_sample,bounds,speaker_turn,piece.timing_quality))
+                    try:pending.put_nowait(QueuedSegment(segment,sample,classification_sample,bounds,speaker_turn,piece.timing_quality,sample_start=start+edge))
                     except queue.Full:
                         emit({'type':'source-skipped',**cue,'reason':'translation_backlog'})
 
@@ -1029,14 +1169,17 @@ class RiverBridge(TranslationBridge):
                             elif type(at) in (int,float) and math.isfinite(at) and at>=0 and (not provisional or provisional[:2]!=(normalized['id'],text)):
                                 provisional=(normalized['id'],text,at)
                         if normalized.get('speaker'):speakers.observe(normalized['id'],normalized['speaker'])
-                        if voice_agents and normalized['final']:
+                        # Inline video clones per local acoustic cluster instead
+                        # (pending worker); its ASR letters remain annotations.
+                        if self.voice_agents and normalized['final'] and not inline_video and not ink_asr:
                             label=normalized.get('speaker')
                             with resources_lock:
                                 begin=turn_audio.get(normalized['id']);processed_at=event.get('audioProcessedMs')
                                 end=processed_at/1000 if type(processed_at) in (int,float) and math.isfinite(processed_at) and processed_at>=0 else None
                                 if begin is not None and end is not None:
                                     last=min(end,begin+8);clip=audio_window.span(begin,last)
-                                    voice_agents.observe(normalized['id'],label,clip,begin,last)
+                                    agents=self.voice_agents
+                                    if agents:agents.observe(normalized['id'],label,clip,begin,last)
                         emit({'type':'transcript','source':'original','text':normalized['text'],'final':normalized['final'],
                             'turn_id':normalized['id'],'asr_label':normalized.get('speaker'),'at':normalized.get('at',0)})
                         if inline_clauses:
@@ -1068,25 +1211,54 @@ class RiverBridge(TranslationBridge):
                         else:segments=clauses.accept(normalized)
                         for segment in segments:
                             # Never synthesize a late replacement of already heard speech.
-                            if segment.correction: raise VoiceError('asr_revision','Muse corrigió una cláusula ya emitida. Se detuvo para evitar repetir una traducción incierta.')
+                            # Never synthesize a late replacement either: the
+                            # corrected clause was already spoken, so skip it
+                            # and keep translating (stopping silenced the user).
+                            if segment.correction:
+                                stage('asr_revision_skipped',segment);continue
                             timing={'input_ms':round(active['bytes']/48,2)}
                             source_at=normalized.get('at');processed=event.get('audioProcessedMs')
                             if type(source_at) in (int,float) and math.isfinite(source_at) and source_at>=0:timing['source_start_ms']=round(source_at*1000,2)
                             if type(processed) in (int,float) and math.isfinite(processed) and processed>=0:timing['asr_processed_ms']=round(processed,2)
                             stage('segment_ready',segment,**timing)
+                            if not synchronized and 'asr_processed_ms' in timing:
+                                # Source interval of this clause, the live
+                                # interpreter's time budget.
+                                with resources_lock:
+                                    mark=direct_marks.get(segment.turn_id)
+                                    begin=mark if mark is not None else turn_audio.get(segment.turn_id,0)*1000
+                                    direct_marks[segment.turn_id]=timing['asr_processed_ms']
+                                    direct_spans[segment.id]=int(max(500,min(15000,(timing['asr_processed_ms']-begin)*DIRECT_BUDGET_SHARE)))
+                                    while len(direct_marks)>64:direct_marks.pop(next(iter(direct_marks)))
+                                    while len(direct_spans)>64:direct_spans.pop(next(iter(direct_spans)))
                             with resources_lock:
                                 if synchronized:
                                     bounds=turn_times[segment.turn_id]
                                     start,end=bounds['start']/1000,bounds['end']/1000
                                     edge=min(.12,(end-start)*.05) if inline_video else 0
                                     sample=audio_window.span(start+edge,end-edge,max_seconds=8 if inline_video else 2.4)
+                                elif ink_asr:
+                                    # Up to 8 s of this turn: enough for local
+                                    # speaker grouping and clone samples.
+                                    begin=turn_audio.get(normalized['id'],normalized.get('at')) or 0
+                                    finish=float(processed)/1000 if type(processed) in (int,float) and math.isfinite(processed) and processed>begin else audio_window.frames/24000
+                                    sample_begin=max(begin,finish-8);sample=audio_window.span(sample_begin,finish,max_seconds=8)
                                 else:sample=audio_window.turn(turn_audio.get(normalized['id'],normalized.get('at')))
                                 end=float(processed)/1000 if type(processed) in (int,float) and math.isfinite(processed) and processed>=0 else audio_window.frames/24000
                                 start=max(float(turn_audio.get(normalized['id'],normalized.get('at',0)) or 0),end-3)
                                 classification_sample=audio_window.span(start,end,max_seconds=3)
                             with resources_lock:source_bounds=dict(turn_times.get(segment.turn_id,{}))
-                            try: pending.put_nowait(QueuedSegment(segment,sample,classification_sample,source_bounds,segment.turn_id))
-                            except queue.Full: raise VoiceError('backlog','La traducción acumuló demasiadas cláusulas pendientes. Detenido sin omitir audio ni reconectar.')
+                            queued_segment=QueuedSegment(segment,sample,classification_sample,source_bounds,segment.turn_id,
+                                sample_start=sample_begin if ink_asr and not synchronized and sample else -1.)
+                            try: pending.put_nowait(queued_segment)
+                            except queue.Full:
+                                # Live speech cannot wait: drop the oldest unspoken
+                                # clause so the voice catches up instead of stopping.
+                                try:dropped=pending.get_nowait()
+                                except queue.Empty:dropped=None
+                                if dropped is not None:stage('backlog_skipped',dropped.segment,waiting=pending.qsize())
+                                try:pending.put_nowait(queued_segment)
+                                except queue.Full:raise VoiceError('backlog','La traducción acumuló demasiadas cláusulas pendientes.') from None
                             # External system audio keeps playing. Pausing its
                             # ASR stream violates realtime cadence and creates
                             # unbounded capture delay; its bounded queue fails
@@ -1131,8 +1303,26 @@ class RiverBridge(TranslationBridge):
                                     bounds=queued.source_bounds
                                     emit({'type':'source-skipped','epoch':epoch,'cue_id':'utterance-'+segment.turn_id,'source_start_ms':bounds.get('start'),'source_end_ms':bounds.get('end'),'reason':decision['kind']})
                                 continue
+                        suppress=getattr(self,'live_voice_suppressed',None)
+                        if not synchronized and callable(suppress) and suppress():
+                            # Caption-scheduled dubbing is speaking this part on
+                            # the video's clock. Keep only speaker identity and
+                            # clone samples from the live audio: no MT, no TTS.
+                            if acoustic_mode and speech_confirmed:
+                                association=speakers.associate(segment.turn_id,queued.sample,source_turn=queued.speaker_turn)
+                                agents=self.voice_agents
+                                if association and agents and association.get('cluster') is not None and association.get('reason') in ('matched','new_cluster') and queued.sample_start>=0:
+                                    begin=queued.sample_start;clip=queued.sample[:8*48000]
+                                    agents.observe(segment.turn_id,f"acoustic:{association['cluster']}",clip,begin,begin+len(clip)/48000)
+                            hint=speakers.voice(segment.turn_id,queued.sample,active['voice_mode'],stopped=stopped)
+                            if hint:self.voice_hint_value=hint.get('voice_id')
+                            stage('live_voice_suppressed',segment)
+                            continue
                         while not stopped.is_set() and not context_slots.acquire(timeout=.05):pass
                         if stopped.is_set():return
+                        age=time.monotonic()-segment.created_at
+                        if not synchronized and not inline_video and not segment.turn_id.startswith('prefix-') and age>DIRECT_STALE_AFTER:
+                            context_slots.release();stage('stale_skipped',segment,age_ms=round(age*1000));continue
                         if active['flow_paused'] and pending.qsize()<=1 and closing_at is None:
                             active['flow_paused']=False;emit({'type':'flow-control','paused':False})
                         active['segments']+=1
@@ -1147,12 +1337,18 @@ class RiverBridge(TranslationBridge):
                         history_row={'source_text':segment.text}
                         request_history=[dict(row) for row in translation_history] if inline_video else history
                         if inline_video:translation_history.append(history_row)
-                    if inline_video and speech_confirmed:
+                    if acoustic_mode and speech_confirmed:
                         association=speakers.associate(segment.turn_id,queued.sample,source_turn=queued.speaker_turn)
                         if association:
                             stage('speaker_acoustic',segment,cluster=association['cluster'],
                                 similarity=association['similarity'],reason=association['reason'],
                                 windows=association['windows'],latency_ms=association['latency_ms'])
+                            # Confident cluster speech feeds the background clone
+                            # agent; it never delays MT/TTS (bounded, non-blocking).
+                            agents=self.voice_agents
+                            if agents and association.get('cluster') is not None and association.get('reason') in ('matched','new_cluster') and queued.sample_start>=0:
+                                begin=queued.sample_start;clip=queued.sample[:8*48000]
+                                agents.observe(segment.turn_id,f"acoustic:{association['cluster']}",clip,begin,begin+len(clip)/48000)
                     context['timbre_ready']=threading.Event()
                     context['timbre_result']=None
                     if inline_video and speech_confirmed:
@@ -1231,9 +1427,18 @@ class RiverBridge(TranslationBridge):
                             context['voice']=speakers.voice(context['speaker_turn'],queued.sample,active['voice_mode'],stopped=stopped,wait=.2 if diarization else 0,
                                 advisory=context['prosody'] if inline_video else None,require_timbre=inline_video)
                             if context['voice'] is None:return
+                            # Latest speaker voice, for caption-scheduled dubbing.
+                            self.voice_hint_value=context['voice'].get('voice_id')
                             if inline_video:
                                 context['delivery_speed']=delivery_pace.speed(context['voice']['voice_id'],context['translated'] or text,
                                     source_bounds.get('start'),source_bounds.get('end'))
+                            elif not synchronized:
+                                # Direct capture has no video clock to pause, so
+                                # catch up with the speaker: brisker base pace plus
+                                # a step per clause already waiting to be spoken.
+                                with context_condition:
+                                    ahead=(play_order.index(identifier) if identifier in play_order else 0)+pending.qsize()
+                                context['delivery_speed']=direct_delivery_speed(ahead)
                             context['requested']=self.clock();context['activity']=context['requested'];stage('tts_request',segment,
                                 register_source=context['voice']['register_source'],register_confidence=context['prosody'].get('register_confidence',0.),
                                 voice_register=context['prosody'].get('voice_register','uncertain'),
@@ -1248,27 +1453,32 @@ class RiverBridge(TranslationBridge):
                         generation={}
                         if synchronized and context['prosody']['applied'] and target=='en':
                             generation['emotion']=context['prosody']['emotion']
-                        if inline_video:
-                            # Cartesia speaks the translation. Its word density
-                            # can differ substantially from the ASR source.
-                            # Freeze guidance when the first real text is sent,
-                            # including for streaming sentence continuations.
-                            speed=context['delivery_speed']
-                            if speed>1:generation['speed']=speed
+                        # Cartesia speaks the translation. Its word density can
+                        # differ substantially from the ASR source. Guidance is
+                        # frozen at the first real text and repeated on every
+                        # continuation so a sentence keeps one pace.
+                        speed=context.get('delivery_speed',1.)
+                        if speed>1:generation['speed']=speed
                         if generation:request['generation_config']=generation
                         cartesia.send(json.dumps(request))
                         sent=True
 
                     request_started=self.clock();first_delta=True;stage('mt_start',segment)
                     if hasattr(worker_translator,'on_stage'):worker_translator.on_stage=lambda name,**values:stage(name,segment,**values)
-                    cached=caption_prefetch.lookup(segment.text) if caption_prefetch else None
+                    # A prepared opening translation (target language) needs no
+                    # request at all; then captions; then the live translator.
+                    prepared_text=prefix_translations.pop(segment.turn_id,None)
+                    cached={'text':prepared_text,'usage':{'prefix_prepared':True}} if prepared_text else caption_prefetch.lookup(segment.text) if caption_prefetch else None
                     if cached:stage('caption_cache_hit',segment)
+                    with resources_lock:live_span=direct_spans.pop(segment.id,None)
                     duration_ms=min(30000,max(1,round(source_bounds['end']-source_bounds['start']))) if inline_video else None
                     try:
                         duration_stream=getattr(worker_translator,'stream_for_duration',None) if inline_video else None
                         if cached:deltas=[cached['text']]
                         elif callable(duration_stream):
                             deltas=duration_stream(segment.text,target,request_history,duration_ms=duration_ms)
+                        elif live_span is not None and getattr(worker_translator,'live',False):
+                            deltas=worker_translator.stream(segment.text,target,request_history,duration_ms=live_span)
                         else:deltas=worker_translator.stream(segment.text,target,request_history)
                         for delta in deltas:
                             if stopped.is_set(): return
@@ -1282,8 +1492,15 @@ class RiverBridge(TranslationBridge):
                                 boundary=max((match.end() for match in SENTENCE_BOUNDARY.finditer(chunk)),default=0)
                                 if boundary>=36:
                                     send_text(chunk[:boundary],True);chunk=chunk[boundary:]
-                            elif not inline_video and (chunk[-1:].isspace() or chunk[-1:] in '.!?;:,'):
-                                if len(chunk)>=32 or self.clock()-last_flush>=.12 or chunk.rstrip()[-1:] in '.!?;:':
+                            elif not inline_video and chunk[-1:].isspace():
+                                # Word-by-word flushing made Cartesia render each
+                                # word as its own utterance, with audible gaps
+                                # while Meta streamed the next one. Send whole
+                                # phrases: a sentence end, or a word boundary once
+                                # enough text exists (smaller for the first piece).
+                                ending=chunk.rstrip()[-1:]
+                                minimum=DIRECT_FIRST_CHUNK if not sent else DIRECT_NEXT_CHUNK
+                                if ending in '.!?' and len(chunk.strip())>=8 or len(chunk)>=minimum and ending not in ',;:':
                                     send_text(chunk,True);chunk='';last_flush=self.clock()
                     except Exception as error:
                         code=getattr(error,'code',None)
@@ -1415,7 +1632,11 @@ class RiverBridge(TranslationBridge):
                     emit({'type':'transcript','source':'original','text':turn.text,'final':True,'turn_id':identifier,
                           'asr_label':turn.speaker,'at':turn.start_ms/1000,'prepared':True})
                     sample=prepared_prefix.pcm[turn.start_ms*48:turn.end_ms*48]
-                    pending.put_nowait(QueuedSegment(Segment(identifier,0,0,turn.text,False,False,False,self.clock()),sample,b'',bounds,identifier,content=turn.content))
+                    # The prepared opening also seeds background cloning, so a
+                    # speaker's clone can start before live speech accumulates.
+                    prepared_text=turn.translation(target) if callable(getattr(turn,'translation',None)) else None
+                    if prepared_text:prefix_translations[identifier]=prepared_text
+                    pending.put_nowait(QueuedSegment(Segment(identifier,0,0,turn.text,False,False,False,self.clock()),sample,b'',bounds,identifier,content=turn.content,sample_start=turn.start_ms/1000))
                 emit({'type':'source-progress','epoch':epoch,'processed_ms':float(resume_ms)})
 
             run(receive_tts);run(receive_asr);run(lambda:prepare(translator));run(playback)

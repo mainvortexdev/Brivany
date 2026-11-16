@@ -1,4 +1,4 @@
-"""A private, bounded cache of the first seven seconds of selected videos."""
+"""A private, bounded cache of the first ten seconds of selected videos."""
 from dataclasses import dataclass
 import json
 import math
@@ -19,7 +19,7 @@ MAX_AGE = 600
 MAX_OPENING_ANCHOR_MS = 800
 ANCHOR_TOLERANCE_MS = 120
 SOURCE = re.compile(r'(?:youtube:[A-Za-z0-9_-]{11}|video:[0-9a-f]{1,8})\Z')
-PREPARATION_PHASES = frozenset({'content_gate_ms','asr_ms','turn_classification_ms','prosody_ms',
+PREPARATION_PHASES = frozenset({'content_gate_ms','translation_ms','asr_ms','turn_classification_ms','prosody_ms',
                               'local_timbre_ms','postprocess_ms','total_ms'})
 
 

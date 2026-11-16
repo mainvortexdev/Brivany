@@ -32,7 +32,7 @@ class LiveSkills:
             {'id':'document','title':'Redacción de documentos','kind':'agent','available':True},
             {'id':'schedule','title':'Esperas por hora y finalización de tareas','kind':'agent','available':True},
             {'id':'edits','title':'Edición de video · Cognira Edits MCP','kind':'agent','available':bool(edits and (edits.get('installed') or edits.get('descriptor_ready')))},
-            {'id':'motion','title':'Animaciones y videos · Bang Motion','kind':'agent','available':MotionService.availability()['available']},
+            {'id':'motion','title':'Videos e ilustraciones por escenas','kind':'agent','available':MotionService.availability()['available']},
             {'id':'media','title':'Videos, extracción de audio y traducción','kind':'agent','available':True},
             {'id':'support','title':'Manuales, documentación y controladores','kind':'agent','available':True},
             {'id':'personal','title':'Consultas revisadas de agenda, Gmail y Drive','kind':'agent','authorization_required':True}]

@@ -9,6 +9,7 @@ import webbrowser
 from services.connections import service
 from services.google_oauth import GoogleOAuthError
 from services.integrations import IntegrationError
+from services.brivany_account import AccountFailure
 
 CREDENTIALS={'google':{'BRIVANY_GOOGLE_CLIENT_ID','BRIVANY_GOOGLE_CLIENT_SECRET'},
     'whatsapp':{'BRIVANY_WHATSAPP_ACCESS_TOKEN','BRIVANY_META_APP_SECRET','BRIVANY_WHATSAPP_VERIFY_TOKEN'},
@@ -17,6 +18,18 @@ CREDENTIALS={'google':{'BRIVANY_GOOGLE_CLIENT_ID','BRIVANY_GOOGLE_CLIENT_SECRET'
 
 def get(handler,route):
     try:
+        if route.startswith('/api/integrations/meetings/'):
+            session=getattr(handler.server,'desktop_ui_session',None)
+            if session and not session.authorized(handler):handler.error(403,'desktop_meetings','Abre Reuniones desde Brivany Desktop.');return
+            session=getattr(handler.server,'desktop_ui_session',None)
+            if session and not session.authorized(handler):handler.error(403,'desktop_meetings','Abre Reuniones desde Brivany Desktop.');return
+            from services.meetings import service as meeting_service
+            values=parse_qs(urlsplit(handler.path).query)
+            if any(len(value)!=1 for value in values.values()) or set(values)-{'id','part'}:raise AccountFailure('Solicitud de reuniones no válida.')
+            handler.send_json(200,meeting_service(handler).call(route.rsplit('/',1)[-1],query={key:value[0] for key,value in values.items()}));return
+        if route=='/api/integrations/whatsapp-cloud/status':
+            from services.whatsapp_cloud import service as cloud_service
+            handler.send_json(200,cloud_service(handler).status());return
         current=service(handler)
         if route=='/api/integrations/status':handler.send_json(200,current.status());return
         if route=='/api/integrations/chat/requests':
@@ -31,6 +44,7 @@ def get(handler,route):
             handler.send_headers(200,'text/html; charset=utf-8',len(CALLBACK));handler.wfile.write(CALLBACK);return
         handler.error(404,'connection_not_found','Conexión no disponible.')
     except (GoogleOAuthError,IntegrationError) as exc:handler.error(exc.status,exc.code,str(exc))
+    except AccountFailure as exc:handler.error(409,'whatsapp_cloud',str(exc))
     except (OSError,ValueError,sqlite3.Error):handler.error(503,'connection_storage','No se pudo abrir la configuración local.')
 
 
@@ -38,6 +52,12 @@ CALLBACK='<!doctype html><html lang="es"><meta charset="utf-8"><title>Brivany</t
 
 
 def post(handler,route):
+    if route.startswith('/api/integrations/meetings/'):
+        session=getattr(handler.server,'desktop_ui_session',None)
+        if session and not session.authorized(handler):handler.reject_before_body(403,'desktop_meetings','Abre Reuniones desde Brivany Desktop.');return
+    if route.startswith('/api/integrations/meetings/'):
+        session=getattr(handler.server,'desktop_ui_session',None)
+        if session and not session.authorized(handler):handler.reject_before_body(403,'desktop_meetings','Abre Reuniones desde Brivany Desktop.');return
     if not handler.headers.get('Origin'):
         handler.reject_before_body(403,'local_form_required','Usa Conexiones desde Brivany local.');return
     try:length=int(handler.headers.get('Content-Length','0'))
@@ -50,6 +70,19 @@ def post(handler,route):
         if len(raw)!=length:raise ValueError()
         value=json.loads(raw)
         if not isinstance(value,dict):raise ValueError()
+        if route.startswith('/api/integrations/meetings/'):
+            from services.meetings import service as meeting_service
+            handler.send_json(200,meeting_service(handler).call(route.rsplit('/',1)[-1],value));return
+        if route.startswith('/api/integrations/whatsapp-cloud/'):
+            from services.whatsapp_cloud import service as cloud_service
+            cloud=cloud_service(handler);action=route.rsplit('/',1)[-1]
+            if action=='begin' and not set(value)-{'time_zone','open_browser'}:
+                handler.send_json(200,cloud.begin(time_zone=value.get('time_zone','UTC'),open_browser=value.get('open_browser',False)));return
+            if action=='disconnect' and not value:
+                handler.send_json(200,cloud.disconnect());return
+            if action=='google' and not set(value)-{'connector','open_browser'}:
+                handler.send_json(200,cloud.google(value.get('connector'),open_browser=value.get('open_browser',False)));return
+            raise ValueError()
         current=service(handler);integration=current.refresh_settings()
         match=re.fullmatch('/api/integrations/chat/requests/([0-9a-f-]{36})/(propose|execute-local|dismiss|settle)',route)
         if match:
@@ -106,5 +139,6 @@ def post(handler,route):
             handler.send_json(200,integration.execute(value['proposal_id'],value['parameters'],value['approval_id'],execute=value['execute']));return
         handler.error(404,'connection_not_found','Acción no disponible.')
     except (GoogleOAuthError,IntegrationError) as exc:handler.error(exc.status,exc.code,str(exc))
+    except AccountFailure as exc:handler.error(409,'whatsapp_cloud',str(exc))
     except (KeyError,ValueError,TypeError):handler.error(422,'connection_request','Revisa los campos de la conexión.')
     except (OSError,sqlite3.Error):handler.error(503,'connection_storage','No se pudo guardar el estado local.')

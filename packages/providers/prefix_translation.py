@@ -1,4 +1,4 @@
-"""Bounded, in-memory transcription of a selected video's initial seven seconds."""
+"""Bounded, in-memory transcription of a selected video's initial ten seconds."""
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
@@ -18,13 +18,19 @@ from .audio_content import SingingFilter
 from .live_voice import VoiceError, muse_handshake
 from .robust_voice_timbre import analyze_timbre
 
-PREFIX_MS = 7000
+# Ten seconds (was seven) so translation and cloning can start ahead.
+PREFIX_MS = 10000
 PCM_BYTES_PER_MS = 48
 PREFIX_BYTES = PREFIX_MS * PCM_BYTES_PER_MS
 ASR_TIMEOUT = 10
 MAX_RESPONSE_BYTES = 32768
 MAX_PREFIX_TURNS = 16
 MAX_ADVISORIES = 2
+# Prepared opening translations: Spanish and English, so switching between the
+# two most used targets never waits for a new translation of the opening.
+PREPARED_TARGETS = ('es', 'en')
+MAX_PREPARED_TRANSLATIONS = 12
+PREPARED_TRANSLATION_WORKERS = 4
 SONG_WINDOW_MS = 1000
 SONG_STEP_MS = 750
 EMOTIONS = frozenset({'neutral', 'calm', 'happy', 'sad', 'angry', 'excited'})
@@ -58,6 +64,11 @@ class PrefixTurn:
     text: str = field(repr=False)
     content: str = 'unknown'
     prosody: PrefixProsody | None = None
+    # ((target, translated text), ...) prepared before activation; memory only.
+    translations: tuple[tuple[str, str], ...] = field(default=(), repr=False)
+
+    def translation(self, target):
+        return next((text for language, text in self.translations if language == target), None)
 
 
 @dataclass(frozen=True, slots=True)
@@ -79,7 +90,7 @@ def _transcribe(pcm, *, cancelled, connection_factory=HTTPSConnection):
     _check_cancelled(cancelled)
     # Acoustic grouping supplies speaker identity after recognition. The
     # endpointing mode closes speech turns without waiting for ASR diarization.
-    # The seven-second batch must keep speaker boundaries. Endpointing merged
+    # The opening batch must keep speaker boundaries. Endpointing merged
     # multiple voices into one turn in the real 078 trial.
     settings = muse_handshake({'type': 'start', 'consent': True, 'mode': 'meeting', 'meetingConsent': True, 'language': 'es-ES'})
     authorization = settings.pop('authorization')['accessToken']
@@ -253,8 +264,53 @@ def _opening_song(raw, content_filter, cancelled):
     return 'singing' if 'singing' in kinds else 'music'
 
 
-def prepare_prefix(raw, *, cancelled, prosody_factory=None, content_filter_factory=None, transcriber=None):
-    """Prepare exactly seven seconds; keep provider data and PCM in memory."""
+def translate_prepared(turns, *, cancelled, translator_factory, targets=PREPARED_TARGETS):
+    """Translate confirmed speech turns into every prepared target, in parallel.
+
+    Optional: any failure leaves that turn untranslated and the live path
+    translates it normally. Returns (turns, metrics).
+    """
+    jobs = [(index, target) for index, turn in enumerate(turns) if turn.content == 'speech' and turn.text
+            for target in targets][:MAX_PREPARED_TRANSLATIONS]
+    if not jobs or translator_factory is None:
+        return turns, {}
+    started = time.monotonic()
+    def run(job):
+        index, target = job
+        if cancelled.is_set():
+            return job, None
+        translator = None
+        try:
+            translator = translator_factory()
+            turn = turns[index]
+            duration = max(1, min(30000, turn.end_ms - turn.start_ms))
+            stream = getattr(translator, 'stream_for_duration', None)
+            deltas = stream(turn.text, target, [], duration_ms=duration) if callable(stream) else translator.stream(turn.text, target, [])
+            text = ' '.join(''.join(deltas).split())
+            return job, text[:800] if text and not cancelled.is_set() else None
+        except Exception:
+            return job, None
+        finally:
+            if translator is not None:
+                try:
+                    translator.close()
+                except Exception:
+                    pass
+    results = {}
+    with ThreadPoolExecutor(max_workers=PREPARED_TRANSLATION_WORKERS, thread_name_prefix='brivany-prefix-mt') as pool:
+        for (index, target), text in pool.map(run, jobs):
+            if text:
+                results.setdefault(index, []).append((target, text))
+    _check_cancelled(cancelled)
+    updated = list(turns)
+    for index, rows in results.items():
+        updated[index] = replace(updated[index], translations=tuple(rows))
+    return tuple(updated), {'translation_ms': round(max(0., (time.monotonic() - started) * 1000), 3),
+                            'translations_prepared': sum(len(rows) for rows in results.values())}
+
+
+def prepare_prefix(raw, *, cancelled, prosody_factory=None, content_filter_factory=None, transcriber=None, translator_factory=None):
+    """Prepare exactly PREFIX_MS (ten seconds); keep provider data and PCM in memory."""
     started = time.monotonic()
     metrics = {}
     def elapsed(since):
@@ -339,4 +395,9 @@ def prepare_prefix(raw, *, cancelled, prosody_factory=None, content_filter_facto
                 timbre_confidence=timbre['timbre_confidence'],timbre_source=timbre.get('timbre_inference_source','local_robust_voice_timbre')))
     _check_cancelled(cancelled)
     metrics['postprocess_ms'] = elapsed(postprocess_started)
-    return PreparedPrefix(PREFIX_MS, resume, tuple(classified), raw, measured())
+    prepared_turns = tuple(classified)
+    if translator_factory is not None:
+        prepared_turns, translation_metrics = translate_prepared(prepared_turns, cancelled=cancelled, translator_factory=translator_factory)
+        if 'translation_ms' in translation_metrics:
+            metrics['translation_ms'] = translation_metrics['translation_ms']
+    return PreparedPrefix(PREFIX_MS, resume, prepared_turns, raw, measured())

@@ -20,6 +20,7 @@ class Window:
     def hide(self):self.hidden=True
     def show(self):self.hidden=False
     def restore(self):self.hidden=False
+    def minimize(self):self.minimized=True
     def resize(self,width,height):self.bounds.update(width=width,height=height)
     def move(self,x,y):self.bounds.update(x=x,y=y)
     def evaluate_js(self,source):self.scripts.append(source)
@@ -27,6 +28,13 @@ class Window:
 
 
 class BridgeTests(unittest.TestCase):
+    def test_minimize_and_close_leave_main_in_taskbar_without_starting_workspace(self):
+        from unittest.mock import Mock
+        from desktop.experience.launcher import ExperienceBridge
+        bridge=ExperienceBridge.__new__(ExperienceBridge);bridge._window=Mock();bridge._trusted=Mock();bridge.start_work=Mock()
+        for action in (bridge.minimize_window,bridge.close_window):
+            result=action();self.assertTrue(result['minimized']);self.assertTrue(result['background'])
+        self.assertEqual(bridge._window.minimize.call_count,2);bridge.start_work.assert_not_called();bridge._window.hide.assert_not_called();bridge._window.destroy.assert_not_called()
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.capture_calls=[];self.work=WorkSession(self.temp.name,capture=lambda *a,**k:self.capture_calls.append(True));self.main=Window();self.windows=[]
         self.bridge=WorkBridge();self.bridge._base='http://127.0.0.1:1';self.bridge._window=self.main;self.bridge._trusted=lambda:None;self.bridge._work_factory=lambda:self.work
@@ -54,20 +62,77 @@ class BridgeTests(unittest.TestCase):
     def test_start_keeps_chat_and_native_close_in_background_without_audio(self):
         self.bridge.start_work();self.assertTrue(self.main.hidden);self.assertTrue(self.work.active);self.assertEqual(self.capture_calls,[])
         self.assertLessEqual(self.windows[0][1]['width'],800);self.assertLessEqual(self.windows[0][1]['height'],600)
-        self.bridge.return_to_chat();self.assertFalse(self.main.hidden);self.assertFalse(self.bridge._keep_work_background());self.assertTrue(self.main.hidden)
+        self.bridge.return_to_chat();self.assertFalse(self.main.hidden);self.assertFalse(self.bridge._keep_work_background());self.assertTrue(self.main.minimized)
         self.bridge.stop_work();self.assertFalse(self.main.hidden);self.assertFalse(self.work.active);self.assertTrue(self.windows[0][0].destroyed)
-    def test_voice_cloning_requires_consent_and_is_locked_during_translation(self):
+    def test_idle_workspace_defers_voice_webview_until_first_live_use(self):
+        self.bridge.start_work();self.load_windows()
+        self.assertEqual(len(self.windows),2)
+        self.assertIsNone(getattr(self.bridge,'_voice_window',None))
+        self.bridge.workspace_chat_publish({'messages':[],'starting':True})
+        self.assertEqual(len(self.windows),3)
+        self.load_windows()
+        self.bridge.workspace_chat_publish({'messages':[],'listening':True})
+        self.assertEqual(len(self.windows),3)
+        self.assertEqual(self.capture_calls,[])
+        voice=self.bridge._voice_window
+        self.bridge.stop_work();self.assertTrue(voice.destroyed)
+    def test_file_and_widget_forms_stay_open_without_pointer(self):
+        self.bridge.start_work();self.load_windows()
+        for panel in ('files','widgets'):
+            result=self.bridge.work_island_layout(True,'normal',panel,False)
+            self.assertEqual((result['width'],result['height']),{'files':(376,142),'widgets':(360,152)}[panel])
+            with patch.object(self.bridge._island_host,'pointer',return_value={'near':False,'inside':False}):
+                self.assertTrue(self.bridge.work_island_pointer()['keep_open'])
+        self.assertEqual(self.capture_calls,[])
+    def test_tool_height_fits_only_the_open_panel_and_is_bounded(self):
+        self.bridge.start_work();self.load_windows()
+        self.bridge.work_island_layout(True,'normal','widgets',False)
+        self.assertEqual(self.bridge.work_island_layout(True,'normal','widgets',False,tool_height=125)['height'],125)
+        for height in (True,99,345,180.5):
+            with self.assertRaises(ValueError):
+                self.bridge.work_island_layout(True,'normal','widgets',False,tool_height=height)
+        self.bridge.work_island_layout(True,'normal','files',False)
+        stale=self.bridge.work_island_layout(True,'normal','widgets',False,tool_height=155)
+        self.assertEqual((stale['panel'],stale['height']),('files',142))
+        self.assertEqual(self.bridge.work_island_layout(True,'normal','widgets',False)['height'],125)
+    def test_workspace_settings_shortcut_selects_work_and_rejects_unknown_section(self):
+        self.bridge.workspace_app_settings('work')
+        self.assertIn('window.BrivanyOpenSettings?.("#work")',self.main.scripts)
+        self.assertFalse(self.main.hidden)
+        with self.assertRaises(ValueError):self.bridge.workspace_app_settings('control')
+    def test_stop_during_lazy_voice_creation_cannot_leave_a_window(self):
+        self.bridge.start_work();self.load_windows()
+        original=self.fake.create_window
+        def closing_create(*args,**kwargs):
+            window=original(*args,**kwargs)
+            self.bridge.stop_work()
+            return window
+        self.fake.create_window=closing_create
+        self.bridge._ensure_companion_window()
+        self.assertFalse(self.work.active)
+        self.assertIsNone(self.bridge._voice_window)
+        self.assertTrue(all(window.destroyed for window,options in self.windows))
+    def test_stop_during_voice_binding_cannot_reopen_overlay(self):
+        self.bridge.start_work();self.load_windows();self.bridge._ensure_companion_window()
+        host=self.bridge._voice_host;voice=self.bridge._voice_window;bind=host.bind
+        def closing_bind(window):
+            bind(window);self.bridge.stop_work()
+        with patch.object(host,'bind',side_effect=closing_bind):voice.events.loaded.fire()
+        self.assertFalse(self.work.active);self.assertIsNone(host.window)
+        self.assertTrue(voice.destroyed);self.assertFalse(host._visible)
+    def test_voice_cloning_requires_consent_keeps_direct_translation_and_locks_browser_translation(self):
+        from unittest.mock import Mock
         with self.assertRaises(ValueError):self.bridge.work_voice_cloning(True,'es',False)
         self.assertEqual(self.bridge.work_voice_cloning(True,'es',True),{'enabled':True,'language':'es'})
-        self.bridge._work_translation=SimpleNamespace(status=lambda:{'active':True})
-        with self.assertRaises(ValueError):self.bridge.work_voice_cloning(False,'es',False)
+        setter=Mock();self.bridge._work_translation=SimpleNamespace(status=lambda:{'active':True},set_voice_cloning=setter)
+        self.bridge.work_voice_cloning(False,'es',False);setter.assert_called_once_with(False,'es')
         self.bridge._work_translation=None
         self.bridge._sync_translation_relay=SimpleNamespace(status=lambda:{'active_sessions':1})
         with self.assertRaises(ValueError):self.bridge.work_voice_cloning(False,'es',False)
     def test_tray_keeps_close_in_background_and_explicit_exit_can_close(self):
         self.bridge._tray_host=SimpleNamespace(active=True)
         self.assertFalse(self.bridge._keep_work_background())
-        self.assertTrue(self.work.active);self.assertTrue(self.main.hidden);self.assertEqual(self.capture_calls,[])
+        self.assertFalse(self.work.active);self.assertTrue(self.main.minimized);self.assertEqual(self.capture_calls,[])
         self.bridge._exit_requested=True
         self.assertIsNone(self.bridge._keep_work_background())
 

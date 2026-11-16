@@ -3,13 +3,14 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const {createRequire}=require('node:module');
 const requireWrangler=createRequire(process.env.BRIVANY_WRANGLER_PACKAGE||path.join(process.env.APPDATA,'npm/node_modules/wrangler/package.json'));
 const {Miniflare,Log,LogLevel,convertV4MiniflareOptions}=requireWrangler('miniflare');
-const BASE='https://brivany.example',CLIENT='a'.repeat(32),SIGNING='synthetic-local-relay-signing-fixture-not-production-123456789';
+const BASE='https://brivany.vetsa.es',CLIENT='a'.repeat(32),SIGNING='synthetic-local-relay-signing-fixture-not-production-123456789';
 const random=()=>crypto.randomBytes(32).toString('base64url'),hash=s=>crypto.createHash('sha256').update(s).digest('hex');
 (async()=>{
  // The installed workerd supports 2026-09-04; production is checked separately.
- const mf=new Miniflare(convertV4MiniflareOptions({log:new Log(LogLevel.ERROR),workers:[{name:'brivany-relay-fixture',modules:[{type:'ESModule',path:path.resolve('official-site/worker.mjs')},{type:'ESModule',path:path.resolve('official-site/pages.mjs')},{type:'ESModule',path:path.resolve('official-site/spotify-oauth.mjs')}],compatibilityDate:'2026-09-04',
-  bindings:{SPOTIFY_CLIENT_ID:CLIENT,SPOTIFY_RELAY_SIGNING_KEY:SIGNING},durableObjects:{SPOTIFY_OAUTH_SESSIONS:{className:'SpotifyOAuthSession',useSQLite:true}},
+ const runtime=mode=>new Miniflare(convertV4MiniflareOptions({log:new Log(LogLevel.ERROR),workers:[{name:'brivany-relay-fixture',modules:[{type:'ESModule',path:path.resolve('official-site/worker.mjs')},{type:'ESModule',path:path.resolve('official-site/pages.mjs')},{type:'ESModule',path:path.resolve('official-site/whatsapp.mjs')},{type:'ESModule',path:path.resolve('official-site/spotify-oauth.mjs')}],compatibilityDate:'2026-09-04',
+  bindings:{SPOTIFY_CLIENT_ID:CLIENT,SPOTIFY_RELAY_SIGNING_KEY:SIGNING,...(mode===undefined?{}:{SPOTIFY_ACCESS_MODE:mode})},durableObjects:{SPOTIFY_OAUTH_SESSIONS:{className:'SpotifyOAuthSession',useSQLite:true}},
   ratelimits:{SPOTIFY_START_LIMIT:{namespace_id:'481736294',simple:{limit:8,period:60}},SPOTIFY_POLL_LIMIT:{namespace_id:'481736295',simple:{limit:180,period:60}}}}]}));
+ const mf=runtime();
  let checks=0;
  const request=(route,options={})=>mf.dispatchFetch(BASE+route,{...options,redirect:'manual'});
  async function publicPages(){
@@ -25,9 +26,13 @@ const random=()=>crypto.randomBytes(32).toString('base64url'),hash=s=>crypto.cre
  }
  const post=(route,data,secret,ip='198.51.100.4')=>request(route,{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':ip,...(secret?{Authorization:'Bearer '+secret}:{})},body:JSON.stringify(data)});
  async function start(ip){const reader=random(),launch=random(),nonce=random(),challenge=random();const r=await post('/api/spotify/oauth/start',{nonce,challenge,client_id:CLIENT,read_hash:hash(reader),launch_hash:hash(launch)},null,ip);assert.equal(r.status,201);return {reader,launch,nonce,challenge,...await r.json()};}
- async function launch(flow){const r=await request('/spotify/connect?'+new URLSearchParams({state:flow.state,launch:flow.launch}));assert.equal(r.status,303);const url=new URL(r.headers.get('Location'));assert.equal(url.origin,'https://accounts.spotify.com');assert.equal(url.searchParams.get('redirect_uri'),BASE+'/spotify/callback');assert.equal(url.searchParams.get('code_challenge'),flow.challenge);assert.equal(url.searchParams.get('code_challenge_method'),'S256');const cookie=r.headers.get('Set-Cookie');assert(cookie.includes('Secure')&&cookie.includes('HttpOnly')&&cookie.includes('SameSite=Lax'));return cookie.split(';')[0];}
+ async function launch(flow){const r=await request('/spotify/connect?'+new URLSearchParams({state:flow.state,launch:flow.launch}));assert.equal(r.status,303);const url=new URL(r.headers.get('Location'));assert.equal(url.origin,'https://accounts.spotify.com');assert.equal(url.searchParams.get('redirect_uri'),BASE+'/spotify/callback');assert.equal(url.searchParams.get('code_challenge'),flow.challenge);assert.equal(url.searchParams.get('code_challenge_method'),'S256');assert.equal(url.searchParams.get('show_dialog'),'true');const cookie=r.headers.get('Set-Cookie');assert(cookie.includes('Secure')&&cookie.includes('HttpOnly')&&cookie.includes('SameSite=Lax'));return cookie.split(';')[0];}
  try{
   await publicPages();
+  {const config=await (await request('/api/spotify/config')).json();assert.equal(config.access_mode,'development');assert.equal(config.premium_for_playback,true);assert.equal(config.application_name,'Brivany');checks++;}
+  for(const [mode,status] of [['extended',200],['invalid-mode',503]]){
+   const check=runtime(mode);try{const response=await check.dispatchFetch(BASE+'/api/spotify/config');assert.equal(response.status,status);if(status===200)assert.equal((await response.json()).access_mode,mode);checks++;}finally{await check.dispose()}
+  }
   let r=await request('/');assert.equal(r.status,200);assert((await r.text()).includes('Brivany es una aplicación de escritorio'));checks++;
   r=await request('/spotify/callback');assert.equal(r.status,200);assert.equal(r.headers.get('Cache-Control'),'no-store, private');checks++;
   r=await request('/api/spotify/config');assert.equal((await r.json()).redirect_uri,BASE+'/spotify/callback');checks++;

@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vetsa AI — Modo Voz</title>
+    <meta name="description" content="Modo de voz en vivo de Vetsa Intelligence - Conversación natural y fluida">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #030712;
+            --surface: rgba(255, 255, 255, 0.04);
+            --surface-hover: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f1f5f9;
+            --text-muted: #64748b;
+            --text-dim: #475569;
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --cyan: #06b6d4;
+            --cyan-glow: rgba(6, 182, 212, 0.4);
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* --- Background Ambient --- */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(99, 102, 241, 0.06), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* --- Header --- */
+        .header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 20px 8px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header img {
+            height: 28px;
+            opacity: 0.7;
+        }
+
+        /* --- Voice Selector --- */
+        .voice-selector {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            z-index: 20;
+        }
+
+        .voice-selector select {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            padding: 6px 28px 6px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            transition: all 0.2s;
+        }
+
+        .voice-selector select:hover {
+            border-color: var(--primary);
+            color: var(--text);
+        }
+
+        /* --- Main Content Area --- */
+        .main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* --- ORB --- */
+        .orb-wrapper {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .orb {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #4f46e5, #1e1b4b 70%, #000 100%);
+            box-shadow: 0 0 40px rgba(79, 70, 229, 0.3), inset 0 0 30px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Ripple rings */
+        .orb-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 1.5px solid rgba(99, 102, 241, 0);
+            transition: all 0.4s;
+        }
+
+        /* States */
+        .state-idle .orb {
+            animation: idle-breathe 4s infinite ease-in-out;
+        }
+
+        .state-listening .orb {
+            background: radial-gradient(circle at 35% 35%, #6366f1, #312e81 70%, #000 100%);
+            box-shadow: 0 0 60px var(--primary-glow), inset 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .state-listening .orb-ring {
+            border-color: rgba(99, 102, 241, 0.4);
+            animation: ripple 2s infinite ease-out;
+        }
+
+        .state-processing .orb {
+            background: radial-gradient(circle at 35% 35%, #8b5cf6, #3b0764 70%, #000 100%);
+            box-shadow: 0 0 50px rgba(139, 92, 246, 0.4);
+            animation: processing-spin 2s infinite linear;
+        }
+
+        .state-speaking .orb {
+            background: radial-gradient(circle at 35% 35%, #06b6d4, #164e63 70%, #000 100%);
+            box-shadow: 0 0 60px var(--cyan-glow), inset 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes idle-breathe {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.85;
+            }
+
+            50% {
+                transform: scale(1.03);
+                opacity: 1;
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: scale(1.8);
+                opacity: 0;
+            }
+        }
+
+        @keyframes processing-spin {
+            0% {
+                filter: hue-rotate(0deg);
+            }
+
+            100% {
+                filter: hue-rotate(30deg);
+            }
+        }
+
+        @keyframes speaking-pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.06);
+            }
+        }
+
+        /* --- Transcript Area --- */
+        .transcript-area {
+            width: 100%;
+            max-height: 220px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 0 8px;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
+        }
+
+        .transcript-area::-webkit-scrollbar {
+            display: none;
+        }
+
+        .transcript-area {
+            scrollbar-width: none;
+        }
+
+        .msg {
+            max-width: 90%;
+            text-align: center;
+            animation: msg-in 0.3s ease-out;
+        }
+
+        .msg-user {
+            color: var(--text);
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+
+        .msg-vetsa {
+            color: var(--primary);
+            font-size: 1.05rem;
+            font-weight: 400;
+        }
+
+        .msg-interim {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            font-style: italic;
+            opacity: 0.7;
+        }
+
+        .status-text {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 4px;
+        }
+
+        @keyframes msg-in {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Controls --- */
+        .controls {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 20px 32px;
+            z-index: 10;
+        }
+
+        .mic-btn {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mic-btn:hover {
+            background: var(--surface-hover);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .mic-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .mic-btn.active {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: var(--danger);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+        }
+
+        .mic-btn.speaking {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .mode-label {
+            margin-top: 12px;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* --- Login Modal --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 7, 18, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: opacity 0.4s;
+        }
+
+        .modal-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .login-card {
+            background: rgba(17, 24, 39, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px 32px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 80px rgba(99, 102, 241, 0.05);
+        }
+
+        .login-card .logo {
+            height: 40px;
+            margin-bottom: 24px;
+            opacity: 0.8;
+        }
+
+        .login-card h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .login-card .subtitle {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .input-group {
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            padding: 12px 14px;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .input-group input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 13px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .login-btn:hover {
+            background: #4f46e5;
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-bar {
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            font-size: 0.82rem;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-top: 14px;
+        }
+
+        .login-footer {
+            margin-top: 24px;
+            font-size: 0.68rem;
+            color: var(--text-dim);
+        }
+
+        /* --- Responsive --- */
+        @media (max-height: 650px) {
+            .orb-wrapper {
+                width: 120px;
+                height: 120px;
+                margin-bottom: 20px;
+            }
+
+            .orb {
+                width: 90px;
+                height: 90px;
+            }
+
+            .transcript-area {
+                max-height: 150px;
+            }
+        }
+
+        /* --- Keyboard Toggle --- */
+        .keyboard-toggle {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 20;
+        }
+
+        .keyboard-toggle:hover {
+            color: var(--text);
+            transform: scale(1.1);
+        }
+
+        /* --- Text Input Layer --- */
+        .text-input-layer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--bg);
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+            border-top: 1px solid var(--border);
+        }
+
+        .text-input-layer.visible {
+            transform: translateY(0);
+        }
+
+        .text-form {
+            display: flex;
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .text-input {
+            flex: 1;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 16px;
+            border-radius: 24px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .text-input:focus {
+            border-color: var(--primary);
+            background: var(--surface-hover);
+        }
+
+        .send-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <img src="https://app.vetsa.es/logo-dark.png" alt="Vetsa" onerror="this.style.display='none'">
+    </div>
+
+    <!-- Voz Vetsa (ElevenLabs Bella) — No se necesita selector -->
+
+    <!-- Main Area -->
+    <div class="main-area">
+        <!-- Orb -->
+        <div class="orb-wrapper state-idle" id="orbWrapper">
+            <div class="orb" id="orb"></div>
+            <div class="orb-ring"></div>
+        </div>
+
+        <!-- Transcript -->
+        <div class="transcript-area" id="transcript">
+            <div class="status-text" id="statusText">Conecta para comenzar</div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button class="mic-btn" id="micBtn" disabled>
+            <i class="fa-solid fa-microphone" id="micIcon"></i>
+        </button>
+        <div class="mode-label" id="modeLabel">Inicia sesión</div>
+
+        <!-- Toggle Keyboard -->
+        <button class="keyboard-toggle" id="keyboardToggle" title="Escribir mensaje">
+            <i class="fa-solid fa-keyboard"></i>
+        </button>
+    </div>
+
+    <!-- Text Input Layer -->
+    <div class="text-input-layer" id="textInputLayer">
+        <form class="text-form" id="textForm">
+            <input type="text" class="text-input" id="textInput" placeholder="Escribe a Vetsa..." autocomplete="off">
+            <button type="submit" class="send-btn">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="login-card">
+            <img src="https://app.vetsa.es/logo-dark.png" alt="Vetsa" class="logo" onerror="this.style.display='none'">
+            <h2 id="loginTitle">Vetsa AI — Modo Voz</h2>
+            <p class="subtitle" id="loginSubtitle">Ingresa tu nombre para hablar con Vetsa en tiempo real.</p>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>Tu nombre</label>
+                    <input type="text" id="nameInput" placeholder="Ej: Daniel" required autocomplete="name">
+                </div>
+                <button type="submit" class="login-btn" id="loginBtn">Conectar Voz</button>
+                <div class="error-bar" id="errorBar"></div>
+            </form>
+
+            <div class="login-footer">Vetsa Intelligence &middot; Acceso Libre</div>
+        </div>
+    </div>
+
+    <!-- Secret Dashboard Access Hotspots (invisible) -->
+    <div id="secretTopLeft" style="position:fixed;top:0;left:0;width:60px;height:60px;z-index:9999;cursor:default;">
+    </div>
+    <div id="secretTopRight" style="position:fixed;top:0;right:0;width:60px;height:60px;z-index:9999;cursor:default;">
+    </div>
+    <script>
+        (function () {
+            let step = 0, timer = null;
+            document.getElementById('secretTopLeft').addEventListener('dblclick', () => {
+                if (step === 0) { step = 1; clearTimeout(timer); timer = setTimeout(() => { step = 0; }, 5000); }
+            });
+            document.getElementById('secretTopRight').addEventListener('dblclick', () => {
+                if (step === 1) { step = 0; clearTimeout(timer); window.location.href = '/dashboard?vta=1'; }
+            });
+        })();
+    </script>
+
+    <!-- Audio -->
+    <audio id="vetsaAudio" class="hidden"></audio>
+
+    <script>
+        // ═══════════════════════════════════════
+        // CONFIGURACIÓN
+        // ═══════════════════════════════════════
+        const API_VOICE_CHAT = '/api/voice-chat';
+        const API_VOICE_AUTH = '/api/voice/auth';
+
+        const SILENCE_TIMEOUT = 2000;     // ms de silencio para finalizar escucha
+        const AUTO_LISTEN_DELAY = 400;    // ms antes de auto-escuchar tras hablar
+
+        // ═══════════════════════════════════════
+        // ESTADO
+        // ═══════════════════════════════════════
+        const state = {
+            userId: null,
+            userName: '',
+            isListening: false,
+            isSpeaking: false,
+            isProcessing: false,
+            recognition: null,
+            silenceTimer: null,
+            audioCtx: null,
+            analyser: null,
+            micStream: null,
+            animFrameId: null
+        };
+
+        // ═══════════════════════════════════════
+        // DOM ELEMENTS
+        // ═══════════════════════════════════════
+        const $ = id => document.getElementById(id);
+        const orbWrapper = $('orbWrapper');
+        const orb = $('orb');
+        const transcript = $('transcript');
+        const statusText = $('statusText');
+        const micBtn = $('micBtn');
+        const micIcon = $('micIcon');
+        const modeLabel = $('modeLabel');
+        const loginModal = $('loginModal');
+        const loginForm = $('loginForm');
+        const nameInput = $('nameInput');
+        const loginBtn = $('loginBtn');
+        const errorBar = $('errorBar');
+        const vetsaAudio = $('vetsaAudio');
+        const loginTitle = $('loginTitle');
+        const loginSubtitle = $('loginSubtitle');
+
+        // Text Input Elements
+        const keyboardToggle = $('keyboardToggle');
+        const textInputLayer = $('textInputLayer');
+        const textForm = $('textForm');
+        const textInput = $('textInput');
+
+        // ═══════════════════════════════════════
+        // URL PARAMS (Auto-fill from WhatsApp link)
+        // ═══════════════════════════════════════
+        window.addEventListener('DOMContentLoaded', () => {
+            const p = new URLSearchParams(window.location.search);
+            if (p.get('name')) {
+                const userName = p.get('name');
+                nameInput.value = userName;
+                loginTitle.innerText = `Hola, ${userName}`;
+                loginSubtitle.innerText = 'Toca "Conectar Voz" para empezar a hablar.';
+            }
+            // Auto-connect si viene con user param (desde WhatsApp)
+            if (p.get('user') && p.get('name')) {
+                state.userId = p.get('user');
+                state.userName = p.get('name');
+                loginModal.classList.add('hidden');
+                initVoiceSession();
+            }
+        });
+
+        // ═══════════════════════════════════════
+        // LOGIN
+        // ═══════════════════════════════════════
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = nameInput.value.trim();
+            if (!name) return;
+
+            loginBtn.disabled = true;
+            loginBtn.innerText = 'Conectando...';
+            errorBar.style.display = 'none';
+
+            try {
+                const res = await fetch(API_VOICE_AUTH, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name })
+                });
+
+                const data = await res.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Error de conexión');
+                }
+
+                // Auth success
+                state.userId = data.session.userId;
+                state.userName = data.session.name;
+
+                loginBtn.innerText = '¡Conectado!';
+                loginBtn.style.background = '#10b981';
+
+                setTimeout(() => {
+                    loginModal.classList.add('hidden');
+                    initVoiceSession();
+                }, 400);
+
+            } catch (err) {
+                errorBar.innerText = err.message;
+                errorBar.style.display = 'block';
+                loginBtn.disabled = false;
+                loginBtn.innerText = 'Conectar Voz';
+            }
+        });
+
+        // ═══════════════════════════════════════
+        // TEXT INPUT LOGIC
+        // ═══════════════════════════════════════
+        keyboardToggle.addEventListener('click', () => {
+            textInputLayer.classList.toggle('visible');
+            if (textInputLayer.classList.contains('visible')) {
+                textInput.focus();
+                // Pause Vetsa if speaking to allow typing
+                if (state.isSpeaking) {
+                    vetsaAudio.pause();
+                    state.isSpeaking = false;
+                }
+            }
+        });
+
+        textForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = textInput.value.trim();
+            if (!text) return;
+
+            textInput.value = '';
+            textInputLayer.classList.remove('visible'); // Hide after sending
+            handleUserMessage(text);
+        });
+
+        // Click outside to close (optional, maybe clicking on main area)
+        document.querySelector('.main-area').addEventListener('click', () => {
+            if (textInputLayer.classList.contains('visible')) {
+                textInputLayer.classList.remove('visible');
+            }
+        });
+
+        // ═══════════════════════════════════════
+        // INIT SESSION
+        // ═══════════════════════════════════════
+        async function initVoiceSession() {
+            setupSpeechRecognition();
+            micBtn.disabled = false;
+            keyboardToggle.style.display = 'block'; // Ensure it's shown
+            setVisualState('idle');
+
+            try {
+                const res = await fetch(API_VOICE_CHAT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'greet',
+                        name: state.userName,
+                        user: state.userId
+                    })
+                });
+
+                const data = await res.json();
+                addMessage('vetsa', data.reply);
+                if (data.audio) {
+                    playAudio(data.audio);
+                } else {
+                    setVisualState('idle');
+                }
+            } catch (err) {
+                console.error('Greeting error:', err);
+                addMessage('vetsa', `Hola ${state.userName}, estoy lista para hablar.`);
+                setVisualState('idle');
+            }
+        }
+
+        // ═══════════════════════════════════════
+        // SPEECH RECOGNITION (STT)
+        // ═══════════════════════════════════════
+        // ═══════════════════════════════════════════════════════════
+        // HYBRID SPEECH RECOGNITION (VAD + SERVER-SIDE STT)
+        // ═══════════════════════════════════════════════════════════
+
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let stream = null;
+
+        async function setupSpeechRecognition() {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) {
+                alert('Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.');
+                return;
+            }
+
+            // 1. Setup VAD (Voice Activity Detection) using Web Speech API
+            const vad = new SR();
+            vad.lang = 'es-ES';
+            vad.continuous = true;
+            vad.interimResults = true;
+
+            // 2. Setup Audio Recording
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    audioChunks = [];
+
+                    // Convert Blob to Base64
+                    const reader = new FileReader();
+                    reader.readAsDataURL(audioBlob);
+                    reader.onloadend = () => {
+                        const base64Audio = reader.result;
+                        handleUserMessage(null, base64Audio); // Send Audio!
+                    };
+                };
+
+            } catch (err) {
+                console.error("Error accessing microphone:", err);
+                alert("No pudimos acceder al micrófono. Verifica los permisos.");
+                return;
+            }
+
+            let vadSilenceTimer = null;
+            let isRecording = false;
+
+            vad.onstart = () => {
+                console.log("[VAD] Listening for speech...");
+                state.isListening = true;
+                setVisualState('listening');
+            };
+
+            vad.onresult = (e) => {
+                // User is speaking!
+                clearTimeout(vadSilenceTimer);
+
+                // Start recording if not already
+                if (!isRecording) {
+                    isRecording = true;
+                    if (mediaRecorder.state === "inactive") mediaRecorder.start();
+                    console.log("[Audio] Recording started...");
+
+                    // Visual feedback
+                    startMicVisualization();
+
+                    // Interrupt Vetsa if speaking
+                    if (!vetsaAudio.paused) {
+                        vetsaAudio.pause();
+                        vetsaAudio.currentTime = 0;
+                        state.isSpeaking = false;
+                    }
+                }
+
+                // Show some "Listening..." UI feedback (optional, or just the orb ripple)
+                // We don't use the transcript here because we trust the server STT more.
+                // But we can show interim if we want, though it might differ from final server text.
+                // For now, let's just keep the "Listening" state.
+
+                // Reset silence timer
+                vadSilenceTimer = setTimeout(() => {
+                    if (isRecording) {
+                        console.log("[VAD] Silence detected. Stopping recording.");
+                        if (mediaRecorder.state === "recording") mediaRecorder.stop();
+                        isRecording = false;
+                        stopMicVisualization();
+                        // Optional: Stop VAD temporarily or keep it running? 
+                        // If we stop VAD, we need to restart it after processing.
+                        // Let's stop VAD to avoid double detection during processing.
+                        vad.stop();
+                    }
+                }, 1200); // 1.2s silence
+            };
+
+            vad.onend = () => {
+                // VAD stopped (either by us or browser).
+                // If we were recording and VAD died unexpectedly, save what we have.
+                if (isRecording) {
+                    if (mediaRecorder.state === "recording") mediaRecorder.stop();
+                    isRecording = false;
+                    stopMicVisualization();
+                }
+                state.isListening = false;
+
+                // If not processing/speaking, go back to idle
+                if (!state.isProcessing && !state.isSpeaking) {
+                    setVisualState('idle');
+                }
+
+                // Auto-restart VAD if we are just idle (unless we manually stopped it to process)
+                // Note: We handle restart in `handleUserMessage` completion or manually.
+            };
+
+            // Expose VAD to be started/stopped externally
+            state.recognition = vad;
+        }
+
+        // Wrapper to start listening loop
+        function startListening() {
+            if (state.recognition) {
+                try {
+                    state.recognition.start();
+                } catch (e) {
+                    console.warn("VAD already started or error:", e);
+                }
+            } else {
+                setupSpeechRecognition(); // Initialize if null
+                // It will auto-start in setup usually, or we call start again
+                setTimeout(() => state.recognition && state.recognition.start(), 500);
+            }
+        }
+
+        // Override the mic button click
+        micBtn.onclick = () => {
+            if (state.isListening) {
+                state.recognition.stop();
+            } else {
+                startListening();
+            }
+        };
+
+        // Update handleUserMessage to receive audio
+        async function handleUserMessage(text, audioBase64 = null) {
+            setVisualState('processing');
+            state.isProcessing = true;
+            statusText.innerText = "Pensando...";
+
+            // Stop VAD while processing
+            if (state.recognition) state.recognition.stop();
+
+            try {
+                // Payload now includes audio if present
+                const payload = {
+                    action: 'chat',
+                    user: state.userId,
+                    name: state.userName
+                };
+
+                if (audioBase64) {
+                    payload.audio = audioBase64;
+                } else if (text) {
+                    payload.message = text;
+                } else {
+                    throw new Error("No input provided");
+                }
+
+                // Call API
+                const res = await fetch('/api/voice-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                // Render User Transcript (if server returns it or we have it)
+                // The server should return the transcribed text if we sent audio
+                if (data.transcription) {
+                    addMessage('user', data.transcription);
+                } else if (text) {
+                    addMessage('user', text);
+                } else {
+                    addMessage('user', "🎤 [Audio]");
+                }
+
+                // Render Vetsa Reply
+                addMessage('vetsa', data.reply);
+
+                // Check if server requested text input (fallback for bad audio)
+                if (data.requireInput) {
+                    setTimeout(() => {
+                        textInputLayer.classList.add('visible');
+                        textInput.focus();
+                        statusText.innerText = "Escribe tu mensaje...";
+                    }, 500);
+                }
+
+                if (data.audio) {
+                    await playAudio(data.audio);
+                    // playAudio handles the "speaking" state
+                    // After speaking, should we auto-listen?
+                    // Yes, for fluid conversation.
+                    setTimeout(startListening, 500);
+                } else {
+                    setVisualState('idle');
+                    state.isProcessing = false;
+                    setTimeout(startListening, 500); // Back to listening
+                }
+
+            } catch (err) {
+                console.error("Error processing message:", err);
+                statusText.innerText = "Error de conexión";
+                setVisualState('idle');
+                state.isProcessing = false;
+                setTimeout(startListening, 1000); // Retry listening
+            }
+        }
+
+
+        function toggleListening() {
+            if (state.isProcessing) return;
+
+            if (state.isSpeaking) {
+                // Interrupt
+                vetsaAudio.pause();
+                vetsaAudio.currentTime = 0;
+                state.isSpeaking = false;
+            }
+
+            if (state.isListening) {
+                state.recognition.stop();
+            } else {
+                try { state.recognition.start(); } catch (e) { }
+            }
+        }
+
+        function startSilenceTimer(cb) {
+            clearSilenceTimer();
+            state.silenceTimer = setTimeout(cb, SILENCE_TIMEOUT);
+        }
+
+        function clearSilenceTimer() {
+            if (state.silenceTimer) {
+                clearTimeout(state.silenceTimer);
+                state.silenceTimer = null;
+            }
+        }
+
+
+        // ═══════════════════════════════════════
+        // AUDIO PLAYBACK (TTS)
+        // ═══════════════════════════════════════
+        function playAudio(base64) {
+            setVisualState('speaking');
+            state.isSpeaking = true;
+
+            // Auto-detect format: OGG Vorbis from ElevenLabs, or MP3 fallback
+            let src;
+            if (base64.startsWith('data:')) {
+                src = base64;
+            } else if (base64.startsWith('T2dnUw')) {
+                src = `data:audio/ogg;base64,${base64}`; // OGG magic bytes
+            } else if (base64.startsWith('//')) {
+                src = `data:audio/mp3;base64,${base64}`; // MP3
+            } else {
+                src = `data:audio/mp3;base64,${base64}`; // Default to MP3
+            }
+            vetsaAudio.src = src;
+            vetsaAudio.play().catch(e => {
+                console.error('Play error:', e);
+                state.isSpeaking = false;
+                setVisualState('idle');
+                autoListen();
+            });
+
+            // Animate orb to audio level
+            startSpeakingVisualization();
+
+            vetsaAudio.onended = () => {
+                state.isSpeaking = false;
+                stopSpeakingVisualization();
+                setVisualState('idle');
+                autoListen();
+            };
+        }
+
+        function autoListen() {
+            setTimeout(() => {
+                if (!state.isListening && !state.isSpeaking && !state.isProcessing && state.recognition) {
+                    try { state.recognition.start(); } catch (e) { }
+                }
+            }, AUTO_LISTEN_DELAY);
+        }
+
+        // ═══════════════════════════════════════
+        // VISUAL STATE MACHINE
+        // ═══════════════════════════════════════
+        function setVisualState(s) {
+            orbWrapper.className = 'orb-wrapper state-' + s;
+
+            if (s === 'listening') {
+                micBtn.className = 'mic-btn active';
+                micIcon.className = 'fa-solid fa-stop';
+                modeLabel.innerText = 'Escuchando...';
+                statusText.innerText = 'Te escucho...';
+            } else if (s === 'processing') {
+                micBtn.className = 'mic-btn';
+                micBtn.disabled = true;
+                micIcon.className = 'fa-solid fa-circle-notch fa-spin';
+                modeLabel.innerText = 'Pensando...';
+                statusText.innerText = 'Un momento...';
+            } else if (s === 'speaking') {
+                micBtn.className = 'mic-btn speaking';
+                micBtn.disabled = false;
+                micIcon.className = 'fa-solid fa-hand';
+                modeLabel.innerText = 'Vetsa hablando';
+                statusText.innerText = '';
+            } else {
+                // idle
+                micBtn.className = 'mic-btn';
+                micBtn.disabled = false;
+                micIcon.className = 'fa-solid fa-microphone';
+                modeLabel.innerText = 'Mantén la conversación';
+                statusText.innerText = '';
+            }
+        }
+
+        // ═══════════════════════════════════════
+        // MESSAGES
+        // ═══════════════════════════════════════
+        function addMessage(role, text) {
+            // Remove old status text
+            const oldStatus = transcript.querySelector('.status-text');
+            if (oldStatus) oldStatus.remove();
+
+            const div = document.createElement('div');
+            div.className = role === 'user' ? 'msg msg-user' : 'msg msg-vetsa';
+            div.innerText = text
+                .replace(/\[(JOY|SAD|SURPRISED|ANGRY|NEUTRAL)\]\s*/gi, '')
+                .replace(/[*_#>~`\[\]{}|]/g, '')
+                .trim();
+            transcript.appendChild(div);
+
+            // Keep only last 8 messages
+            const msgs = transcript.querySelectorAll('.msg');
+            if (msgs.length > 8) {
+                msgs[0].style.transition = 'opacity 0.3s';
+                msgs[0].style.opacity = '0';
+                setTimeout(() => msgs[0].remove(), 300);
+            }
+
+            transcript.scrollTop = transcript.scrollHeight;
+        }
+
+        // ═══════════════════════════════════════
+        // MIC VISUALIZATION (AudioContext)
+        // ═══════════════════════════════════════
+        async function startMicVisualization() {
+            try {
+                if (!state.audioCtx) {
+                    state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                state.micStream = stream;
+
+                const source = state.audioCtx.createMediaStreamSource(stream);
+                state.analyser = state.audioCtx.createAnalyser();
+                state.analyser.fftSize = 256;
+                source.connect(state.analyser);
+
+                const data = new Uint8Array(state.analyser.frequencyBinCount);
+
+                function vizLoop() {
+                    if (!state.isListening) return;
+                    state.analyser.getByteFrequencyData(data);
+
+                    // Average volume
+                    let sum = 0;
+                    for (let i = 0; i < data.length; i++) sum += data[i];
+                    const avg = sum / data.length;
+                    const scale = 1 + (avg / 255) * 0.25; // 1.0 to 1.25
+
+                    orb.style.transform = `scale(${scale})`;
+                    orb.style.boxShadow = `0 0 ${40 + avg * 0.3}px rgba(99, 102, 241, ${0.3 + avg / 600})`;
+
+                    state.animFrameId = requestAnimationFrame(vizLoop);
+                }
+
+                vizLoop();
+            } catch (e) {
+                console.warn('Mic viz error:', e);
+            }
+        }
+
+        function stopMicVisualization() {
+            if (state.animFrameId) cancelAnimationFrame(state.animFrameId);
+            if (state.micStream) {
+                state.micStream.getTracks().forEach(t => t.stop());
+                state.micStream = null;
+            }
+            orb.style.transform = '';
+            orb.style.boxShadow = '';
+        }
+
+        // ═══════════════════════════════════════
+        // SPEAKING VISUALIZATION (Audio levels)
+        // ═══════════════════════════════════════
+        let speakAnimId = null;
+
+        function startSpeakingVisualization() {
+            if (!state.audioCtx) {
+                state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            try {
+                const source = state.audioCtx.createMediaElementSource(vetsaAudio);
+                const analyser = state.audioCtx.createAnalyser();
+                analyser.fftSize = 256;
+                source.connect(analyser);
+                analyser.connect(state.audioCtx.destination);
+
+                const data = new Uint8Array(analyser.frequencyBinCount);
+
+                function vizLoop() {
+                    if (!state.isSpeaking) return;
+                    analyser.getByteFrequencyData(data);
+
+                    let sum = 0;
+                    for (let i = 0; i < data.length; i++) sum += data[i];
+                    const avg = sum / data.length;
+                    const scale = 1 + (avg / 255) * 0.2;
+
+                    orb.style.transform = `scale(${scale})`;
+                    orb.style.boxShadow = `0 0 ${40 + avg * 0.4}px rgba(6, 182, 212, ${0.3 + avg / 500})`;
+
+                    speakAnimId = requestAnimationFrame(vizLoop);
+                }
+
+                vizLoop();
+            } catch (e) {
+                // MediaElementSource can only be created once per element
+                // Use CSS fallback animation
+                orb.style.animation = 'speaking-pulse 0.6s infinite alternate';
+            }
+        }
+
+        function stopSpeakingVisualization() {
+            if (speakAnimId) cancelAnimationFrame(speakAnimId);
+            orb.style.transform = '';
+            orb.style.boxShadow = '';
+            orb.style.animation = '';
+        }
+    </script>
+</body>
+
+</html>

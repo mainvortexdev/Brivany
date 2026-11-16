@@ -53,6 +53,10 @@ class CartesiaVoiceCloner:
         # Local lease only: no upload, inference or API request.
         for identifier in identifiers:self.journal.remember(identifier)
 
+    def persist(self,identifier):
+        # Kept by the user: leave the temporary cleanup journal. No request.
+        self.journal.forget(str(UUID(identifier)))
+
     def delete(self,identifier):
         identifier=str(UUID(identifier))
         self._request('DELETE','/voices/'+identifier)

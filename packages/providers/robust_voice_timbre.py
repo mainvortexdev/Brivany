@@ -1,5 +1,5 @@
 """Bounded CPU voice-catalog style advice, separate from a person's identity."""
-from hashlib import sha256
+from hashlib import file_digest
 import math
 from pathlib import Path
 import threading
@@ -25,8 +25,11 @@ def _session():
     global _SESSION
     if _SESSION is None:
         import onnxruntime as ort
-        if MODEL_PATH.stat().st_size != MODEL_BYTES or sha256(MODEL_PATH.read_bytes()).hexdigest() != MODEL_SHA256:
+        if MODEL_PATH.stat().st_size != MODEL_BYTES:
             raise ValueError('El modelo local de timbre no coincide con su versión verificada.')
+        with MODEL_PATH.open('rb') as stream:
+            if file_digest(stream, 'sha256').hexdigest() != MODEL_SHA256:
+                raise ValueError('El modelo local de timbre no coincide con su versión verificada.')
         options = ort.SessionOptions()
         options.intra_op_num_threads = 1
         options.inter_op_num_threads = 1

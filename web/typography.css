@@ -1,10 +1,11 @@
-/* Brivany: Georgia for headings, Segoe UI for reading and interaction. */
-:root{--brivany-body:"Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;--brivany-heading:Georgia,"Times New Roman",serif;--font:var(--brivany-body);--sans:var(--brivany-body);--serif:var(--brivany-heading)}
+/* Brivany Editorial: supplied Light 300, Regular 400, Medium 500. */
+@font-face{font-family:"Brivany Editorial";src:url("/fonts/BrivanyEditorial-Light.woff2") format("woff2");font-style:normal;font-weight:300;font-display:swap}@font-face{font-family:"Brivany Editorial";src:url("/fonts/BrivanyEditorial-Regular.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}@font-face{font-family:"Brivany Editorial";src:url("/fonts/BrivanyEditorial-Medium.woff2") format("woff2");font-style:normal;font-weight:500 900;font-display:swap}
+:root{--brivany-body:"Brivany Editorial",system-ui,sans-serif;--brivany-heading:var(--brivany-body);--font:var(--brivany-body);--sans:var(--brivany-body);--serif:var(--brivany-heading);font-synthesis:none}
 *{font-family:inherit!important}
 html,body,button,input,select,textarea,optgroup,option{font-family:var(--brivany-body)!important}
-h1,h2{font-family:var(--brivany-heading)!important;font-weight:400}
+h1,h2{font-family:var(--brivany-heading)!important;font-weight:300}
 code,pre,kbd,samp{font-family:ui-monospace,SFMono-Regular,Consolas,monospace!important}
-.brand,.wordmark{font-family:var(--brivany-body)!important;font-weight:700;letter-spacing:-.8px}
+.brand,.wordmark{font-family:var(--brivany-body)!important;font-weight:500;letter-spacing:-.8px}
 .brand>span,.wordmark>span{color:#0071e3!important}
 /* No rectangular focus rings. Keyboard focus uses text and icon emphasis. */
 button:focus,button:focus-visible,button:active,button[data-pointer-focus=true],summary:focus{outline:none!important;box-shadow:none!important}

@@ -48,9 +48,9 @@ superficie plateada; solo reacciona al audio cuando hay captura autorizada.
 
 ## Tipografía y espacio
 
-Tipografía de sistema: SF en Apple cuando esté disponible, Segoe UI en Windows.
-Titulares con peso medio, cuerpo legible y espacio en blanco amplio. No se
-descargan fuentes ni activos de terceros.
+Brivany Editorial local, elegida por el usuario: Light 300 en titulares, Regular
+400 en lectura y Medium 500 en marca y énfasis. Archivos suministrados con SIL
+OFL 1.1, sin CDN de fuentes. Roles y recursos en `brand/typography/README.md`.
 
 ## Estados funcionales
 

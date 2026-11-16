@@ -1,0 +1,32 @@
+{
+  "events": [
+    {
+      "title": "correr",
+      "localDateTime": "2026-10-26T07:00",
+      "dateRole": "requested",
+      "source": { "task": "mañana voy a correr 7:00 a.m", "time": "7:00 a.m", "day": "mañana" }
+    },
+    {
+      "title": "boxeo",
+      "localDateTime": "2026-10-26T09:10",
+      "dateRole": "requested",
+      "source": { "task": "ir al boxeo a las 9:10 a.m", "time": "9:10 a.m", "day": "mañana" }
+    },
+    {
+      "title": "decirle esto a Alfredo: “Primerísimo primer plano (ojos), plano detalle número en la espalda (7 tomas)”",
+      "localDateTime": "2026-10-26T11:30",
+      "dateRole": "requested",
+      "source": {
+        "task": "recuérdame también decirle esto a Alfredo a las 11:30 a.m “Primerísimo primer plano (ojos), plano detalle número en la espalda (7 tomas)”",
+        "time": "11:30 a.m",
+        "day": "mañana"
+      }
+    },
+    {
+      "title": "live del Hackaton de Meta",
+      "localDateTime": "2026-10-26T12:00",
+      "dateRole": "requested",
+      "source": { "task": "el live iniciará a las 12 p.m", "time": "12 p.m", "day": "mañana" }
+    }
+  ]
+}

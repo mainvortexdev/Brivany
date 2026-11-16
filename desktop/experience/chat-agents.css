@@ -1,0 +1,34 @@
+/* Compact, quiet team presence using Brivany's existing surface tokens. */
+.chat-agent-dock{position:absolute;z-index:5;top:9px;right:22px;display:flex;align-items:center;gap:10px;height:34px;color:var(--ink,#25322f)}
+.chat-agent-dock[hidden],.chat-agent-dock [hidden],.chat-agent-tooltip[hidden]{display:none!important}
+.module-view[data-agents-visible=true]>iframe{top:50px;height:calc(100% - 50px)}
+.chat-agent-strip{display:flex;align-items:center;gap:10px}
+.chat-agent-button,.chat-agent-toggle,.chat-agent-more,.chat-agent-card,.chat-agents-dismiss{font:12px/1.5 'Segoe UI',sans-serif;color:inherit;border:0;cursor:pointer;background:transparent}
+.chat-agent-button{display:grid;place-items:center;width:29px;height:32px;padding:3px;border-radius:8px}
+.chat-agent-avatar{width:24px;height:26px;display:block;flex:none}
+.chat-agent-button:hover,.chat-agent-button:focus-visible,.chat-agent-toggle:hover{background:var(--sidebar,#f5f7f5)}
+.chat-agent-more{color:var(--muted,#7a8580);font-size:11px;padding:5px 2px}
+.chat-agent-more:hover{color:var(--ink,#25322f)}
+.chat-agent-toggle{display:flex;align-items:center;gap:6px;padding:5px;border-radius:7px;color:var(--muted,#7a8580)}
+.chat-agent-eye{width:15px;height:10px;border:1.2px solid currentColor;border-radius:65% 45%;transform:rotate(-5deg);position:relative}
+.chat-agent-eye:before{content:'';position:absolute;inset:2px 5px;border-radius:50%;background:currentColor}
+.chat-agent-toggle[data-silent=true] .chat-agent-eye:after{content:'';position:absolute;left:5px;top:-4px;width:1px;height:17px;transform:rotate(-40deg);background:currentColor}
+.chat-agents-dialog{color:var(--ink,#25322f);background:var(--surface,#fff);border:1px solid var(--line,#e5eae7);border-radius:20px;padding:24px;width:min(680px,calc(100vw - 40px));max-width:none;max-height:min(660px,calc(100dvh - 60px));box-shadow:0 24px 90px #10251b25;overflow:auto}
+.chat-agents-dialog::backdrop{background:#101c1838;backdrop-filter:blur(3px)}
+.chat-agents-heading{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.chat-agents-heading h2{font-size:19px;font-weight:500;letter-spacing:-.4px;margin:0}
+.chat-agents-dismiss{font-size:23px;color:var(--muted,#7a8580);width:30px;height:30px;border-radius:8px}
+.chat-agents-description{font:13px/1.6 'Segoe UI',sans-serif;color:var(--muted,#7a8580);margin:8px 0 22px}
+.chat-agents-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.chat-agent-card{display:flex;align-items:center;gap:14px;text-align:left;border:1px solid var(--line,#e5eae7);border-radius:13px;padding:16px 14px;min-width:0;background:var(--surface,#fff)}
+.chat-agent-card:hover{background:var(--sidebar,#f5f7f5)}
+.chat-agent-card .chat-agent-avatar{width:40px;height:44px}
+.chat-agent-copy{min-width:0;display:grid;gap:4px}.chat-agent-copy strong{font-size:13px;font-weight:500}.chat-agent-copy small{font-size:11px;line-height:1.5;color:var(--muted,#7a8580);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-agent-tooltip{position:fixed;z-index:100;pointer-events:none;width:260px;max-width:calc(100vw - 24px);background:var(--surface,#fff);color:var(--ink,#25322f);border:1px solid var(--line,#e5eae7);border-radius:12px;padding:13px 15px;box-shadow:0 8px 28px #10251b13;font:12px/1.55 'Segoe UI',sans-serif;animation:briva-agent-tip .16s ease-out}
+.chat-agent-tooltip strong{font-weight:600;font-size:13px}.chat-agent-tooltip p{margin:6px 0}.chat-agent-tooltip p:empty{display:none}.chat-agent-tooltip span{font-size:11px;color:var(--muted,#7a8580)}
+.chat-agent-dock button:focus-visible,.chat-agents-dialog button:focus-visible{outline:2px solid #90b3a4;outline-offset:3px}
+@keyframes briva-agent-tip{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+@media(max-width:600px){.chat-agent-dock{right:12px;gap:7px}.chat-agent-strip{gap:5px}.chat-agent-more{max-width:100px;font-size:10px;line-height:1.25;text-align:left}.chat-agents-dialog{padding:18px;width:calc(100vw - 24px)}.chat-agents-grid{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.chat-agent-tooltip{animation:none}}
+
+.chat-agent-button,.chat-agent-card{opacity:1;transition:opacity 1.2s ease-in-out,filter .5s ease}.chat-agent-button[data-leaving=true],.chat-agent-card[data-leaving=true]{opacity:0;pointer-events:none}@media(prefers-reduced-motion:reduce){.chat-agent-button,.chat-agent-card{transition:none}}

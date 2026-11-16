@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Brivany · Videos con Melodi",
-  "version": "0.4.9",
+  "name": "Brivany · Sincronía con Melodi",
+  "version": "0.6.3",
   "minimum_chrome_version": "116",
-  "description": "Transcribe y escucha la traducción del video seleccionado mientras se reproduce.",
+  "description": "Sincroniza en silencio los subtítulos y el tiempo de los videos de YouTube con la traducción auditiva de Brivany.",
   "icons": {
     "128": "icon.png"
   },
@@ -15,9 +15,12 @@
     "alarms"
   ],
   "action": {
-    "default_title": "Seleccionar video para Melodi"
+    "default_title": "Brivany sincroniza YouTube automáticamente"
   },
-  "optional_host_permissions": ["https://*/*", "http://*/*"],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
   "commands": {
     "_execute_action": {
       "suggested_key": {
@@ -43,11 +46,44 @@
         "pcm-sender.js",
         "inline-translation.js",
         "buffered-player.js",
-        "sync-timeline.js"
+        "sync-timeline.js",
+        "transcript-overlay.js"
       ],
       "matches": [
         "<all_urls>"
       ]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*", "https://music.youtube.com/*"],
+      "js": ["music-presence.js"],
+      "run_at": "document_idle",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://www.youtube.com/*", "https://music.youtube.com/*"],
+      "js": ["music-bridge.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
+      "js": [
+        "timeline-capture.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
+      "js": [
+        "timeline-bridge.js"
+      ],
+      "run_at": "document_start"
     }
   ]
 }

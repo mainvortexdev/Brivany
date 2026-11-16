@@ -1,0 +1,17 @@
+{
+  "name": "brivany-file-transfer",
+  "main": "src/index.mjs",
+  "account_id": "62a87427406c2ed15f92d4da29116214",
+  "compatibility_date": "2026-11-10",
+  "workers_dev": false,
+  "preview_urls": false,
+  "vars": {"PUBLIC_ORIGIN":"https://brivany.vetsa.es"},
+  "routes": [
+    {"pattern":"brivany.vetsa.es/transfer","zone_name":"vetsa.es"},
+    {"pattern":"brivany.vetsa.es/transfer/*","zone_name":"vetsa.es"}
+  ],
+  "durable_objects":{"bindings":[{"name":"TRANSFERS","class_name":"FileTransfer"},{"name":"DROPS","class_name":"DropSession"}]},
+  "migrations":[{"tag":"encrypted-files-v1","new_sqlite_classes":["FileTransfer"]},{"tag":"paired-drop-v2","new_sqlite_classes":["DropSession"]}],
+  "ratelimits":[{"name":"UPLOAD_LIMIT","namespace_id":"481736310","simple":{"limit":12,"period":60}}],
+  "observability":{"enabled":true,"logs":{"enabled":true,"head_sampling_rate":0.01,"invocation_logs":false},"traces":{"enabled":true,"head_sampling_rate":0.01}}
+}

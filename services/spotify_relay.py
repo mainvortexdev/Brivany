@@ -5,7 +5,7 @@ from urllib.error import HTTPError,URLError
 from urllib.request import Request,build_opener,HTTPRedirectHandler,HTTPSHandler
 from services.spotify_tls import verified_context
 
-BASE='https://brivany.example'
+BASE='https://brivany.vetsa.es'
 REDIRECT=BASE+'/spotify/callback'
 
 
@@ -20,7 +20,7 @@ class NoRedirect(HTTPRedirectHandler):
 class SpotifyRelay:
     def request(self,path,*,data=None,secret=None):
         if path not in {'/api/spotify/config','/api/spotify/oauth/start','/api/spotify/oauth/poll','/api/spotify/oauth/ack'}:raise SpotifyRelayError('Ruta de vinculación inválida.')
-        headers={'Accept':'application/json','User-Agent':'BrivanyDesktop/0.1 (+https://brivany.example)'};body=None
+        headers={'Accept':'application/json','User-Agent':'BrivanyDesktop/0.1 (+'+BASE+')'};body=None
         if data is not None:body=json.dumps(data).encode();headers['Content-Type']='application/json'
         if secret:headers['Authorization']='Bearer '+secret
         try:
@@ -40,7 +40,9 @@ class SpotifyRelay:
     def config(self):
         value=self.request('/api/spotify/config')
         if not re.fullmatch(r'[a-fA-F0-9]{32}',value.get('client_id','')) or value.get('redirect_uri')!=REDIRECT:raise SpotifyRelayError('La configuración publicada de Spotify no es válida.')
-        return value
+        mode=value.get('access_mode','unknown')
+        if not isinstance(mode,str) or mode not in {'unknown','development','extended'}:raise SpotifyRelayError('El modo de acceso de Spotify publicado no es válido.')
+        return {**value,'access_mode':mode}
     def start(self,**data):
         value=self.request('/api/spotify/oauth/start',data=data)
         if (not re.fullmatch(r'[A-Za-z0-9_-]{43}\.\d{10}\.[A-Za-z0-9_-]{43}',value.get('state',''))

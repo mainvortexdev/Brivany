@@ -11,12 +11,17 @@ const Cross=()=> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10
 function Media({value}){
  const [url,setURL]=useState(''),[error,setError]=useState(false);
  useEffect(()=>{let objectURL;const abort=new AbortController();
-  fetch(value.media_url,{headers:{'X-Brivany-Result':value.media_ticket},signal:abort.signal,cache:'no-store'}).then(response=>{if(!response.ok)throw Error();return response.blob()}).then(blob=>{if(abort.signal.aborted)return;objectURL=URL.createObjectURL(blob);setURL(objectURL)}).catch(()=>{if(!abort.signal.aborted)setError(true)});
+  fetch(value.media_url,{headers:{'X-Brivany-Result':value.media_ticket},signal:abort.signal,cache:'no-store'}).then(response=>{if(!response.ok)throw Error();return response.blob()}).then(async blob=>{if(abort.signal.aborted)return;if(value.type==='image'){if(blob.type!=='image/png')throw Error();const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(blob)});if(!abort.signal.aborted)setURL(data)}else{objectURL=URL.createObjectURL(blob);setURL(objectURL)}}).catch(()=>{if(!abort.signal.aborted)setError(true)});
   return()=>{abort.abort();if(objectURL)URL.revokeObjectURL(objectURL)};
  },[value]);
  if(error)return <p>No se pudo cargar el archivo.</p>;
  if(!url)return <div className="result-loading" role="status" aria-label="Cargando archivo"/>;
- return value.type==='audio'?<audio src={url} controls/>:<video src={url} controls playsInline preload="metadata"/>;
+ return value.type==='image'?<img src={url} alt={value.title} className="result-image"/>:value.type==='audio'?<audio src={url} controls/>:<video src={url} controls playsInline preload="metadata"/>;
+}
+
+function Gallery({value}){
+ const [selected,select]=useState(0);
+ return <div style={{display:'grid',gridTemplateColumns:'minmax(0,1fr) 54px',gap:10,alignItems:'start'}}><img src={value.items[selected].src} alt={'Imagen '+(selected+1)} className="result-image"/><nav aria-label="Imágenes de la colección" style={{display:'flex',flexDirection:'column',gap:7}}>{value.items.map((item,index)=><button key={index} type="button" aria-label={'Ver imagen '+(index+1)} aria-pressed={selected===index} onClick={()=>select(index)} style={{padding:2,border:'2px solid '+(index===selected?'#4385e8':'transparent'),borderRadius:10,background:'transparent',cursor:'pointer'}}><img src={item.thumbnail||item.src} alt="" style={{width:44,height:44,objectFit:'cover',borderRadius:6,display:'block'}}/></button>)}</nav></div>;
 }
 
 function Viewer(){
@@ -28,8 +33,9 @@ function Viewer(){
  return <Glass className="result-glass" data-theme="dark" role="dialog" aria-modal="false" aria-labelledby="result-heading">
   <header className="result-header"><h2 id="result-heading">{value.title}</h2><Button icon={<Cross/>} onClick={close} aria-label="Cerrar resultado" className="result-close"/></header>
   <div className="result-scroll" ref={scroll} tabIndex={0} aria-label="Contenido del resultado" onPointerDown={()=>api()?.work_island_keyboard?.(true)} onKeyDown={event=>{if(event.key==='Escape')close()}}>
-   {value.type==='image'?<img src={value.src} alt={value.title} className="result-image"/>:
-    ['video','audio'].includes(value.type)?<Media key={value.id+value.media_ticket} value={value}/>:
+   {value.type==='gallery'?<Gallery key={value.id} value={value}/>:
+    value.type==='image'&&value.src?<img src={value.src} alt={value.title} className="result-image"/>:
+    ['image','video','audio'].includes(value.type)?<Media key={value.id+value.media_ticket} value={value}/>:
     value.type==='model'?<iframe src={value.url} title={value.title} sandbox="allow-scripts allow-same-origin" className="result-model"/>:
     value.type==='team'?<div className="result-team">{value.items.map(item=><Button key={item.key} onClick={()=>openChild(item)} disabled={!item.job_id} className="result-team-item"><span>{item.title}</span><i className={item.accepted?'done':'pending'} aria-label={item.accepted?'Revisado':'Pendiente'}/></Button>)}</div>:
     <div className="result-text">{value.text}</div>}

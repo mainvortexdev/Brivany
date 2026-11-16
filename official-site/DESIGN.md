@@ -2,7 +2,8 @@
 
 Dirección: presentación editorial y precisa, inspirada en el cuidado de producto
 de Apple. Fondo marfil claro, superficies neutras, negro suave y punto azul de
-Brivany. Georgia en los titulares; Segoe UI en lectura y controles. Identidad
+Brivany. Brivany Editorial local: Light 300 en titulares, Regular 400 en lectura
+y Medium 500 en controles destacados y marca. Identidad
 `brivany.` completa y `b.` reducida. Sin marcas Apple ni testimonios inventados.
 
 La experiencia central es un estudio 3D con ordenador, móvil y gafas. Selección

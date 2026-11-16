@@ -13,6 +13,8 @@ from desktop.launcher import LocalDesktopServer
 from desktop.experience.launcher import ExperienceBridge,experience_handler,NATIVE_PAGES,MODULE_ROUTES
 from desktop.experience.ui_session import DesktopUISession
 from desktop.experience.island import IslandHost,DockHost
+from desktop.experience.desktop_widgets import DesktopWidgets
+from desktop.experience.workspace_preferences import WorkspacePreferences
 from services.h1.server import Handler
 from services.work.session import WorkSession
 from services.computer.service import ComputerService
@@ -23,11 +25,16 @@ ROOT=Path(__file__).resolve().parents[1]
 
 def main():
     microphone_trial='--microphone-input' in sys.argv
+    runtime_trial='--workspace-runtime' in sys.argv
+    files_trial='--workspace-files' in sys.argv
+    locale_trial='--workspace-locale' in sys.argv
     if microphone_trial:os.environ.setdefault('BRIVANY_META_API_KEY','fixture-not-a-real-key')
     report={'type':'actual_owned_WebView2_windows_with_synthetic_conversation','passed':False,'external_calls':0,'microphone_used':False,'OS_input_sent':False,'appbar_reserved_by_test':False}
     with tempfile.TemporaryDirectory(prefix='brivany-workspace-native-') as temp,LocalDesktopServer(handler=experience_handler(Handler)) as server:
         if microphone_trial:server.http.voice_bridge=SimpleNamespace(port=1)
         session=DesktopUISession(NATIVE_PAGES|MODULE_ROUTES);server.http.desktop_ui_session=session;server.http.computer_lock=threading.RLock();server.http.computer_native=True
+        server.http.workspace_preferences=WorkspacePreferences(Path(temp)/'preferences.json')
+        if locale_trial:server.http.workspace_preferences.update({'interface':{'locale':'fr'}})
         editor=EditorFixture();computer=ComputerService(server.base_url,lambda:None,root=Path(temp)/'computer',runtime=Runtime(),planner=Planner(),native=True,edits_factory=lambda:editor)
         computer.chat_turn=lambda *a,**k:iter([{'type':'delta','text':'Respuesta sintética nativa.'},{'type':'sentence','text':'Respuesta sintética nativa.'},{'type':'done','text':'Respuesta sintética nativa.','await_user':True}])
         real_account=None
@@ -51,7 +58,7 @@ def main():
         bridge.spotify_playback=lambda:{**music_fixture,'playback':None,'devices':[]}
         # Geometry tests drive layout explicitly; the real cursor belongs to the
         # user and must not independently open/close this synthetic test panel.
-        bridge.work_island_pointer=lambda:None
+        if not runtime_trial:bridge.work_island_pointer=lambda:None
         bridge.spotify_lyrics=lambda *args:{'track_id':'a'*22,'lines':[],'instrumental':True}
         class TranslationFixture:
             def __init__(self):self.value={'active':False,'state':'idle'};self.calls=[]
@@ -61,10 +68,21 @@ def main():
             def set_target(self,target):self.value['target']=target;return self.status()
             def close(self):self.value.update(active=False,state='stopped');return self.status()
         translation_fixture=TranslationFixture();bridge._work_translation_factory=lambda:translation_fixture
+        class BrowserSelectionFixture:
+            def __init__(self):self.requests=0
+            def start(self):return self
+            def status(self):return {'available':True,'active_sessions':0,'paired_browsers':1}
+            def request_video(self):self.requests+=1
+            def close(self):pass
+        browser_selection=BrowserSelectionFixture();bridge._sync_translation_factory=lambda:browser_selection
         # No second AppBar registration and no focus changes to the user's apps.
         class TestDock(DockHost):
             def bind(self,window):IslandHost.bind(self,window)
         owned=webview.create_window('Brivany · Prueba local',session.entry(server.base_url,'/brivany-shell'),js_api=bridge,hidden=False,width=800,height=640,focus=False)
+        bridge._desktop_widget_service=DesktopWidgets(Path(temp)/'widgets.json',dispatcher=lambda:owned.native,publish=bridge._publish_desktop_widgets)
+        if runtime_trial:
+            from tools.workspace_native_runtime import count_bridge_calls, measure_workspace
+            bridge_counts=count_bridge_calls(bridge)
         bridge._bind_window(owned)
         session.bind_window(owned,server.base_url)
         def verify_result():
@@ -80,7 +98,7 @@ def main():
             bridge.return_to_chat=lambda:(_ for _ in ()).throw(AssertionError('Result opened the main app'))
             bridge.work_agent_review(identifier);host=bridge._island_host
             assert host.current==(520,340),host.current
-            result_dom=bridge._work_window.evaluate_js("(()=>{const e=document.querySelector('.result-scroll'),g=document.querySelector('.result-glass'),r=g.getBoundingClientRect();return {glisse:!!document.querySelector('#glisse-styles'),height:r.height,width:r.width,vertical:e.scrollHeight>e.clientHeight,horizontal:e.scrollWidth>e.clientWidth,bar:getComputedStyle(e).scrollbarWidth,backdrop:getComputedStyle(g).backdropFilter};})()")
+            result_dom=bridge._work_window.evaluate_js("(()=>{const e=document.querySelector('.result-scroll'),g=document.querySelector('.result-glass');return {glisse:!!document.querySelector('#glisse-styles'),height:g.offsetHeight,width:g.offsetWidth,vertical:e.scrollHeight>e.clientHeight,horizontal:e.scrollWidth>e.clientWidth,bar:getComputedStyle(e).scrollbarWidth,backdrop:getComputedStyle(g).backdropFilter};})()")
             assert result_dom['glisse'] and result_dom['height']==340 and result_dom['width']==520 and result_dom['vertical'] and not result_dom['horizontal'] and result_dom['bar']=='none',result_dom
             from System import Action
             panel=bridge._work_window.native;colors={}
@@ -103,17 +121,26 @@ def main():
                 with patch('desktop.experience.work.DockHost',TestDock):bridge.start_work()
                 until=time.monotonic()+15
                 while time.monotonic()<until:
-                    if getattr(bridge,'_voice_host',None) and bridge._voice_host.window and bridge._voice_host.region and bridge._island_host.window and bridge._island_host.region:break
+                    if bridge._island_host.window and bridge._island_host.region and bridge._bar_window:break
                     time.sleep(.15)
                 else:raise ValueError('No se enlazaron las superficies nativas.')
-                from tools.workspace_metadata import inspect
-                until=time.monotonic()+3
-                while time.monotonic()<until:
-                    voice=next((row for row in inspect(os.getpid())['windows'] if row['title']=='Melodi WorkSpace · Voz'),None)
-                    if voice and not voice['visible']:break
-                    time.sleep(.1)
-                else:raise ValueError('La ventana nativa de la onda sigue visible al iniciar en silencio.')
-                report['voice_window_hidden_on_startup']=True
+                assert getattr(bridge,'_voice_window',None) is None, 'Idle startup allocated the voice WebView.'
+                report['voice_webview_deferred_on_startup']=True
+                if runtime_trial:
+                    report['phase']='workspace_runtime'
+                    measure_workspace(bridge,owned,bridge_counts,report)
+                    report['passed']=True
+                    return
+                if files_trial:
+                    report['phase']='workspace_file_roundtrip'
+                    verify_files(bridge, Path(temp), report)
+                    report['passed']=True
+                    return
+                if locale_trial:
+                    report['phase']='workspace_locale'
+                    verify_locale(bridge, owned, server.http.workspace_preferences, report)
+                    report['passed']=True
+                    return
                 if microphone_trial:
                     report['phase']='native_microphone_input'
                     # Real getUserMedia/AudioContext/analyser, no ASR, network or
@@ -180,7 +207,12 @@ def main():
                 report['phase']='native_auditory_start'
                 bridge._bar_window.evaluate_js("document.querySelector('#workspace-audio').click()")
                 until=time.monotonic()+5
-                while not translation_fixture.calls and time.monotonic()<until:time.sleep(.05)
+                while not browser_selection.requests and time.monotonic()<until:time.sleep(.05)
+                assert browser_selection.requests==1 and not translation_fixture.calls
+                assert bridge._island_host.value['panel']=='auditory'
+                # The substituted browser reports an explicit selection. The
+                # toolbar click itself must only request it.
+                bridge.work_audio_translation_start('en','auto')
                 assert translation_fixture.calls==[('en','auto')],translation_fixture.calls
                 assert '/app' in owned.evaluate_js("document.querySelector('#module-frame').src")
                 until=time.monotonic()+3
@@ -189,7 +221,7 @@ def main():
                 until=time.monotonic()+3
                 while translation_fixture.status()['active'] and time.monotonic()<until:time.sleep(.05)
                 assert not translation_fixture.status()['active']
-                report['auditory_native_one_click_and_stop_without_navigation']=True
+                report['auditory_selection_and_stop_without_navigation']=True
                 report['phase']='translation_native_stress'
                 from desktop.experience.scripts import evaluate_script
                 stress_errors=[]
@@ -237,7 +269,7 @@ def main():
                 bridge._spotify_factory=lambda:SimpleNamespace(status=lambda:connected)
                 first=bridge.work_island_layout(True,'normal','music',True,False,400)
                 assert first['panel']=='music-player' and host.current==(720,232),(first,host.current)
-                first_dom=bridge._work_window.evaluate_js("(()=>{const e=document.querySelector('#island-content'),r=e.getBoundingClientRect();return {width:r.width,height:r.height,playerVisible:!document.querySelector('#spotify-player').hidden,panel:document.body.dataset.panel,surface:document.body.dataset.surface,style:document.documentElement.style.cssText};})()")
+                first_dom=bridge._work_window.evaluate_js("(()=>{const e=document.querySelector('#island-content');return {width:e.offsetWidth,height:e.offsetHeight,playerVisible:!document.querySelector('#spotify-player').hidden,panel:document.body.dataset.panel,surface:document.body.dataset.surface,style:document.documentElement.style.cssText};})()")
                 assert first_dom['width']==720 and first_dom['height']==232 and first_dom['playerVisible'],first_dom
                 bridge.work_island_layout(False,'normal','music-player',False,True,400)
                 library=bridge.work_island_layout(True,'normal','music-library',True,False,400)
@@ -293,6 +325,11 @@ def main():
                     time.sleep(.1)
                 else:raise ValueError('Live no recibió el gesto nativo de inicio.')
                 snapshot=bridge.workspace_chat_state();bridge.workspace_chat_publish({**snapshot,'listening':True});bridge.workspace_live_signal({'level':.08,'samples':[.15]*48})
+                until=time.monotonic()+15
+                while time.monotonic()<until:
+                    if bridge._voice_host.window and bridge._voice_host.region and bridge._voice_window.evaluate_js('Boolean(window.BrivanyWorkspace)'):break
+                    time.sleep(.1)
+                else:raise ValueError('La ventana de voz diferida no se enlazó al primer uso.')
                 assert bridge._island_host.value['y']>=118
                 assert not bridge._voice_host._visible,'The waveform overlay must stay hidden behind the chat.'
                 bridge._workspace_reply_deadline=0
@@ -332,11 +369,107 @@ def main():
             finally:
                 if real_account:report['external_calls']=real_account.http.calls
                 try:
-                    bridge._exit_requested=True;bridge._close_work_translation();work.close();bridge._close_island_windows();computer.close()
+                    bridge._exit_requested=True;bridge._close_work_translation();bridge._close_sync_translation();work.close();bridge._close_island_windows();bridge._close_desktop_widgets();bridge._close_workspace_files();computer.close()
                     if real_account:real_account.close()
                 finally:owned.destroy()
         thread=threading.Thread(target=test,daemon=True);owned.events.loaded+=thread.start
         webview.start(gui='edgechromium',debug=False,private_mode=True,http_server=False)
-    folder=ROOT/'tmp/workspace-chat-ui';folder.mkdir(exist_ok=True);(folder/('microphone-input-native-report.json' if microphone_trial else 'closed-reply-native-report.json' if '--closed-reply' in sys.argv else 'adaptive-query-native-report.json' if '--adaptive' in sys.argv else 'account-query-native-report.json' if '--account-query' in sys.argv else 'result-native-report.json' if '--results-only' in sys.argv else 'native-report.json')).write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8');print(json.dumps(report,ensure_ascii=False));return 0 if report['passed'] else 1
+    variants={'--workspace-files':'workspace-files-native','--workspace-runtime':'workspace-runtime-native',
+              '--workspace-locale':'workspace-locale-native','--microphone-input':'microphone-input-native',
+              '--closed-reply':'closed-reply-native','--adaptive':'adaptive-query-native',
+              '--account-query':'account-query-native','--results-only':'result-native'}
+    name=next((prefix for flag,prefix in variants.items() if flag in sys.argv),'native')
+    folder=ROOT/'tmp/workspace-chat-ui'
+    folder.mkdir(exist_ok=True)
+    (folder/(name+'-report.json')).write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+    print(json.dumps(report,ensure_ascii=False))
+    return 0 if report['passed'] else 1
+
+
+def verify_locale(bridge, root, store, report):
+    from desktop.experience.scripts import evaluate_script, post_script
+    from tools.workspace_native_runtime import wait_for
+
+    panel, bar = bridge._work_window, bridge._bar_window
+    bridge.work_island_layout(True, 'normal', 'widgets', False, False, 400)
+    wait_for(lambda: evaluate_script(panel, """document.documentElement.lang==='fr' &&
+        document.querySelector('#widget-timer-action')?.textContent==='Démarrer'"""))
+    wait_for(lambda: evaluate_script(root, 'Boolean(window.BrivanyDesktopPreferenceStore)'))
+    for code, button, tools in [('pt-BR','Iniciar','Ferramentas'),('en','Start','Tools'),
+                                ('es','Iniciar','Herramientas'),('fr','Démarrer','Outils')]:
+        post_script(root, "BrivanyDesktopPreferenceStore.update('interface',"+json.dumps({'locale':code})+")", 'locale-fixture')
+        expected=json.dumps([code,button,tools])
+        wait_for(lambda: evaluate_script(panel, """(()=>{
+            const expected="""+expected+""";
+            return document.documentElement.lang===expected[0] &&
+             document.querySelector('#widget-timer-action')?.textContent===expected[1];
+        })()"""))
+        wait_for(lambda: evaluate_script(bar, """(()=>{
+            const expected="""+expected+""";
+            return document.documentElement.lang===expected[0] &&
+             document.querySelector('#tools [data-panel=widgets] span')?.textContent===expected[2];
+        })()"""))
+    saved = WorkspacePreferences(store.path).snapshot()
+    assert saved['interface']['locale'] == 'fr' and saved['general']['language'] == 'es-ES'
+    report['type'] = 'owned_webview2_windows_with_real_locale_preference'
+    report['checks'] = ['French boots from a saved catalog; Portuguese, English, Spanish and French switch live in both native windows and persist independently of voice.']
+
+
+def verify_files(bridge, temporary, report):
+    from base64 import b64encode
+    from email import policy
+    from email.parser import BytesParser
+    from io import BytesIO
+    from reportlab.pdfgen.canvas import Canvas
+    from desktop.experience.scripts import evaluate_script
+    from tests.test_workspace_files import word_fixture
+
+    def wait_for(script):
+        deadline = time.monotonic() + 8
+        while time.monotonic() < deadline:
+            if evaluate_script(panel, script):
+                return
+            time.sleep(.06)
+        raise AssertionError('The native file action did not settle')
+
+    report['type'] = 'owned_webview2_and_real_local_office_mime_paths'
+    report['checks'] = []
+    report['limitations'] = 'Owned synthetic file; save dialog and external mail client substituted. No account or send.'
+    panel = bridge._work_window
+    data = word_fixture('<p><r><t>Presupuesto de prueba: 42 unidades.</t></r></p>')
+    bridge.work_island_layout(True,'normal','files',False,False,400)
+    bridge.workspace_files_upload('Presupuesto.docx', b64encode(data).decode('ascii'))
+    wait_for("document.querySelector('.shelf-copy strong')?.textContent==='Presupuesto.docx'")
+    with patch.object(bridge, 'workspace_chat_command', side_effect=AssertionError('Implicit send')) as command:
+        panel.evaluate_js("document.querySelector('.shelf-actions button').click()")
+        wait_for("""document.body.dataset.panel==='chat' &&
+          document.querySelector('#workspace-chat-input').value.includes('Presupuesto de prueba: 42 unidades.') &&
+          document.activeElement.id==='workspace-chat-input'""")
+        command.assert_not_called()
+    report['checks'].append('Clicking Preguntar reads the local DOCX and focuses an editable chat draft without sending.')
+    bridge.work_island_layout(True,'normal','files',False,False,400)
+    path = temporary / 'owned-test-draft.eml'
+    with patch.object(panel, 'create_file_dialog', return_value=str(path)) as picker, \
+            patch('desktop.experience.workspace_files._open_file', side_effect=OSError) as opened:
+        panel.evaluate_js("Array.from(document.querySelectorAll('.shelf-menu button')).find(button=>button.textContent==='Correo').click()")
+        wait_for("document.querySelector('.shelf-status').textContent==='Correo guardado con el adjunto.'")
+        picker.assert_called_once()
+        opened.assert_called_once_with(path)
+    message = BytesParser(policy=policy.default).parsebytes(path.read_bytes())
+    attachment, = message.iter_attachments()
+    assert attachment.get_payload(decode=True) == data and attachment.get_filename() == 'Presupuesto.docx'
+    assert 'To' not in message and message['X-Unsent'] == '1'
+    report['checks'].append('Clicking Correo writes the recipient-less EML and exact DOCX attachment to the selected path.')
+    pdf = BytesIO()
+    canvas = Canvas(pdf)
+    canvas.drawString(30, 80, 'Contenido del PDF de prueba.')
+    canvas.save()
+    bridge.workspace_files_upload('Lectura.pdf', b64encode(pdf.getvalue()).decode('ascii'))
+    wait_for("document.querySelectorAll('.shelf-file').length===2")
+    panel.evaluate_js("""Array.from(document.querySelectorAll('.shelf-file'))
+      .find(row=>row.querySelector('strong').textContent==='Lectura.pdf').querySelector('.shelf-actions button').click()""")
+    wait_for("""document.body.dataset.panel==='chat' &&
+      document.querySelector('#workspace-chat-input').value.includes('Página 1: Contenido del PDF de prueba.')""")
+    report['checks'].append('A PDF click runs the local child parser and opens the extract in the same chat composer.')
 
 if __name__=='__main__':raise SystemExit(main())

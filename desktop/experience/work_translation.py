@@ -1,4 +1,5 @@
 """Native-only one-click translation commands; no microphone or navigation."""
+from packages.runtime_paths import DATA_ROOT, CONFIG_PATH
 import json
 import threading
 import time
@@ -13,7 +14,7 @@ class WorkTranslationBridge:
             if not getattr(self,'_translation_preferences_store',None):
                 from services.activity import ROOT
                 from services.work.translation_preferences import TranslationPreferences
-                self._translation_preferences_store=TranslationPreferences(ROOT/'.local/work/translation-ui.json')
+                self._translation_preferences_store=TranslationPreferences(DATA_ROOT/'.local/work/translation-ui.json')
             return self._translation_preferences_store
     def work_translation_preferences(self,show_transcript=None):
         self._trusted();store=self._translation_preferences()
@@ -27,9 +28,28 @@ class WorkTranslationBridge:
         self._trusted()
         if type(enabled) is not bool or language not in ('es','en','fr') or enabled and consent is not True:raise ValueError('La clonación requiere permiso de los hablantes y el idioma original.')
         translator=getattr(self,'_work_translation',None);relay=getattr(self,'_sync_translation_relay',None)
-        if translator and translator.status()['active'] or relay and relay.status()['active_sessions']:raise ValueError('Detén la traducción antes de cambiar las voces.')
+        if relay and relay.status()['active_sessions']:raise ValueError('Detén la traducción del navegador antes de cambiar las voces.')
+        # A direct translation keeps playing: cloning starts or stops in the
+        # background and the next clause switches voice. No restart.
+        if translator and translator.status()['active'] and hasattr(translator,'set_voice_cloning'):
+            translator.set_voice_cloning(enabled,language)
         self._translation_voice_settings={'enabled':enabled,'language':language}
         return dict(self._translation_voice_settings)
+    def work_voice_keep(self,token,keep):
+        """Keep (True) or delete (False, default) a voice cloned in this session."""
+        self._trusted()
+        from services.work.voice_agents import set_voice_keep
+        return set_voice_keep(token,keep)
+    def work_kept_voices(self):
+        self._trusted()
+        from services.work.kept_voices import KeptVoices
+        return KeptVoices().list()
+    def work_kept_voice_delete(self,identifier):
+        self._trusted()
+        from services.work.kept_voices import delete_kept_voice
+        try:return delete_kept_voice(identifier)
+        except ValueError:raise
+        except Exception:raise ValueError('Cartesia no pudo eliminar esa voz. Sigue guardada; inténtalo de nuevo.') from None
     def _sync_translation(self):
         with _SYNC_CREATION_LOCK:
             if not getattr(self,'_sync_translation_relay',None):
@@ -115,12 +135,14 @@ class WorkTranslationBridge:
         return value
     def work_audio_translation_start(self,target='en',voice='auto'):
         self._trusted()
-        hub=getattr(self,'_selected_video_hub',None)
-        if hub and hub.selected():self._auditory_mode='direct'
+        relay=getattr(self,'_sync_translation_relay',None)
+        if relay and relay.status().get('active_sessions'):
+            raise ValueError('Detén la traducción del navegador antes de iniciar la directa.')
+        self._auditory_mode='direct';self._browser_translation_pending_until=0
         post_script(self._window,"document.querySelector('#module-frame')?.contentWindow?.BrivanyChat?.stopLive?.()",'stop-live')
-        value=self._audio_translation().start(target,voice)
+        value={**self._audio_translation().start(target,voice),'mode':'direct'}
         ducker=getattr(self,'_audio_ducker',None)
-        if ducker:ducker.set_internal('work-translation',True)
+        if ducker:ducker.set_internal('work-translation',value.get('active',False))
         self._publish_audio_translation(value)
         return value
     def work_audio_translation_stop(self):

@@ -93,6 +93,9 @@ class CompanionBridge:
     def _publish_companion(self,state,signal=False):
         panel=getattr(self,'_island_host',None)
         visible=bool(getattr(self,'_workspace_reply_text','') and time.monotonic()<getattr(self,'_workspace_reply_deadline',0) and not (panel and panel.value['expanded']))
+        if visible or state.get('listening') or state.get('starting'):
+            ensure=getattr(self,'_ensure_companion_window',None)
+            if ensure:ensure()
         payload={key:state.get(key) for key in ('listening','speaking','starting','level','samples')} if signal else dict(state)
         payload.update(reply_visible=visible,reply_text=getattr(self,'_workspace_reply_text','') if visible else '')
         script='window.BrivanyWorkspace?.receive('+json.dumps(payload,ensure_ascii=True)+')'
@@ -101,6 +104,7 @@ class CompanionBridge:
                 try:post_script(window,script,'live-signal' if signal else 'chat-state')
                 except Exception:pass
         host=getattr(self,'_voice_host',None)
+        if getattr(self,'_work_factory',None) and not self._work().active:return
         if host and host.window:
             wave_active=(state.get('listening') and not state.get('speaking')
                          and max(state.get('level',0)*9,*state.get('samples',[]),0)>.015

@@ -99,7 +99,7 @@ function playbackHarness(fetch) {
     }
     createGain(){return{gain:{},connect(){},disconnect(){}};}
   }
-  const context=vm.createContext({window:{AudioContext:Audio},setTimeout,clearTimeout,Uint8Array,DataView,AbortController,fetch});
+  const context=vm.createContext({window:{AudioContext:Audio,crypto:{randomUUID:()=> '00000000-0000-4000-8000-000000000112'}},setTimeout,clearTimeout,Uint8Array,DataView,AbortController,fetch});
   vm.runInContext(fs.readFileSync('web/live-voice.js','utf8'),context);
   return{...context.window.BrivanyLive,sources,clock,states,errors};
 }
@@ -107,11 +107,40 @@ function playbackHarness(fetch) {
 function pcmResponse(seconds, onEOF=()=>{}, onCancel=()=>{}) {
   let sent=false;const data=new Uint8Array(Math.round(seconds*48000));
   for(let i=0;i<data.length;i+=2)new DataView(data.buffer).setInt16(i,1000,true);
-  return{ok:true,headers:{get:()=> 'audio/pcm'},body:{getReader:()=>({
+  return{ok:true,headers:{get:()=> 'audio/pcm'},body:{cancel:async()=>onCancel(),getReader:()=>({
     read:async()=>{if(!sent){sent=true;return{value:data,done:false};}onEOF();return{done:true};},
     cancel:async()=>onCancel(),releaseLock(){},
   })}};
 }
+
+test('Live consumes model segments and prepares their speech concurrently, then waits for ordered playback',async()=>{
+ const calls=[];let first;const h=playbackHarness(async(url,options)=>{calls.push(JSON.parse(options.body));if(calls.length===1)return new Promise(resolve=>first=resolve);return pcmResponse(.2);});
+ const output=new h.MelodiOutput(s=>h.states.push(s),e=>h.errors.push(e));let consumed=false,settled=false;
+ async function* text(){yield{text:'Primera frase.'};yield{text:'Segunda frase.'};yield{text:'Última frase.'};consumed=true;}
+ const task=output.speak(text(),{live:true}).then(value=>{settled=true;return value;});await new Promise(setImmediate);
+ assert.equal(consumed,true);assert.equal(calls.length,3);assert.ok(calls.every(body=>body.live_turn===calls[0].live_turn));assert.equal(settled,false);assert.equal(h.sources.length,0);
+ first(pcmResponse(.2));await new Promise(setImmediate);assert.ok(h.sources.length>0);assert.equal(settled,false);
+ for(let i=1;i<h.sources.length;i++)assert.ok(h.sources[i].at>=h.sources[i-1].at+h.sources[i-1].buffer.duration-1e-9);
+ h.clock.time=3;assert.equal(await task,true);assert.equal(settled,true);assert.equal(h.states.at(-1),false);assert.deepEqual(h.errors,[]);output.cancel();
+});
+
+test('interrupting Live aborts every prefetched request and ignores late PCM',async()=>{
+ const pending=[],signals=[];const h=playbackHarness((url,options)=>{signals.push(options.signal);return new Promise(resolve=>pending.push(resolve));});
+ const output=new h.MelodiOutput(s=>h.states.push(s),e=>h.errors.push(e));const task=output.speak([{text:'Una frase.'},{text:'Otra frase.'}],{live:true});await new Promise(setImmediate);
+ output.cancel();assert.ok(signals.every(signal=>signal.aborted));for(const resolve of pending)resolve(pcmResponse(.2));await task;assert.equal(h.sources.length,0);assert.deepEqual(h.errors,[]);
+});
+
+test('playback state waits for PCM and cancellation stops its pulse', async () => {
+  let fulfill;const playback=[];
+  const h=playbackHarness(()=>new Promise(resolve=>fulfill=resolve));
+  const output=new h.MelodiOutput(s=>h.states.push(s),e=>h.errors.push(e),value=>playback.push(value));
+  output.speak([{text:'Voz sintética.'}],{});await new Promise(setImmediate);
+  assert.equal(output.player.playing,false);assert.deepEqual(playback,[]);
+  fulfill(pcmResponse(.2));await new Promise(setImmediate);
+  assert.equal(output.player.playing,true);assert.deepEqual(playback,[true]);
+  output.cancel();assert.equal(output.player.playing,false);assert.deepEqual(playback,[true,false]);
+  h.sources[0].onended();assert.deepEqual(playback,[true,false]);
+});
 
 test('barge-in gate rejects quiet input and isolated noise; sustained input triggers after 240 ms', () => {
   const h=playbackHarness(),gate=new h.BargeInGate();

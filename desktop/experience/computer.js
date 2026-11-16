@@ -122,12 +122,17 @@
    else if(job.kind==='motion'&&job.result?.verified){
     closePreview();mount.classList.add('computer-has-preview');options.open=false;
     const heading=document.createElement('div');heading.className='computer-preview-heading';const title=document.createElement('strong');title.textContent=job.result.title||'Animación';
-    const close=document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','Cerrar video');close.onclick=closePreview;heading.append(title,close);
-    const content=document.createElement('section');content.className='computer-edit-result';const video=document.createElement('video');video.controls=true;video.preload='metadata';video.setAttribute('aria-label','Video creado por Melodi');
-    const response=await fetch('/api/computer/motion/'+encodeURIComponent(job.id),{headers:{'X-Brivany-Control':session.token||''},cache:'no-store'});if(!response.ok)throw Error('No se pudo cargar el video.');
-    motionUrl=URL.createObjectURL(await response.blob());video.src=motionUrl;content.append(video);
-    const details=document.createElement('p');details.textContent=job.result.duration+' s · '+job.result.width+' × '+job.result.height+' · '+job.result.fps+' fps';content.append(details);
-    for(const [kind,label] of [['video','Abrir video'],['project','Abrir proyecto'],['folder','Abrir carpeta']]){const button=document.createElement('button');button.type='button';button.textContent=label;button.onclick=async()=>{try{await owner.pywebview.api.open_motion_result(job.id,kind);}catch{state.textContent='No se pudo abrir el resultado guardado.';}};content.append(button);}
+    const close=document.createElement('button');close.type='button';close.textContent='×';close.onclick=closePreview;heading.append(title,close);
+    const content=document.createElement('section');content.className='computer-edit-result';
+    const response=await fetch('/api/computer/motion/'+encodeURIComponent(job.id),{headers:{'X-Brivany-Control':session.token||''},cache:'no-store'});if(!response.ok)throw Error('No se pudo cargar el resultado creativo.');
+    const blob=await response.blob(),isImage=blob.type==='image/png';if(!isImage&&blob.type!=='video/mp4')throw Error('Formato creativo no admitido.');
+    const media=document.createElement(isImage?'img':'video');close.setAttribute('aria-label',isImage?'Cerrar ilustración':'Cerrar video');
+    if(isImage){media.alt=job.result.title||'Ilustración creada por Melodi';media.style.maxWidth='100%';media.style.borderRadius='16px';}
+    else{media.controls=true;media.preload='metadata';media.setAttribute('aria-label','Video creado por Melodi');}
+    if(isImage)media.src=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(blob);});
+    else{motionUrl=URL.createObjectURL(blob);media.src=motionUrl;}content.append(media);
+    const details=document.createElement('p');details.textContent=isImage?job.result.width+' × '+job.result.height:job.result.duration+' s · '+job.result.width+' × '+job.result.height+' · '+job.result.fps+' fps';content.append(details);
+    for(const [kind,label] of [[isImage?'image':'video',isImage?'Abrir imagen':'Abrir video'],['project','Abrir proyecto'],['folder','Abrir carpeta']]){const button=document.createElement('button');button.type='button';button.textContent=label;button.onclick=async()=>{try{await owner.pywebview.api.open_motion_result(job.id,kind);}catch{state.textContent='No se pudo abrir el resultado guardado.';}};content.append(button);}
     preview.append(heading,content);
    }
    else if(['terminal','media','support'].includes(job.kind)){

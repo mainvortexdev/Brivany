@@ -66,5 +66,22 @@ class PlayerTests(unittest.TestCase):
             start_player(owner);start_player(owner);self.assertEqual(create.call_count,1);self.assertTrue(create.call_args.kwargs['hidden']);self.assertFalse(create.call_args.kwargs['focus'])
             owner._spotify_player_host.close();self.assertEqual(calls,['dispose','destroy']);self.assertEqual(self.service.status()['local_player']['state'],'idle')
 
+    def test_sdk_signals_local_audio_even_before_api_device_discovery(self):
+        self.grant()
+        events=[]
+        def observe():
+            snapshot=self.service.sdk_snapshot
+            events.append((self.service.local_player['state'], bool(snapshot and snapshot['playing'])))
+        bridge=SpotifyPlayerBridge(self.service,'http://127.0.0.1:12345',on_activity=observe)
+        bridge._window=SimpleNamespace(get_current_url=lambda:'http://127.0.0.1:12345/spotify-player',evaluate_js=lambda _:None,destroy=lambda:None)
+        bridge.event('ready','a'*40)
+        playback={'paused':False,'position':1,'duration':1000,'track':{'id':'b'*22,'name':'Synthetic song'}}
+        bridge.playback(playback)
+        bridge.playback({**playback,'paused':True})
+        bridge.playback(playback)
+        bridge.event('not_ready')
+        bridge.close()
+        self.assertEqual(events,[('ready',False),('ready',True),('ready',False),('ready',True),('not_ready',False),('idle',False)])
+
 
 if __name__=='__main__':unittest.main()

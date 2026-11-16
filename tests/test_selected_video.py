@@ -142,7 +142,7 @@ class SelectedVideoTests(unittest.TestCase):
             def send(self,data):
                 super().send(data)
                 if isinstance(data,bytes):
-                    for event in [{'type':'speechStart','turnId':1,'audioProcessedMs':0},{'type':'speaker','label':'B'},{'type':'speechComplete','turnId':1,'transcript':'Owned source phrase.','audioProcessedMs':80}]:self.events.put(json.dumps(event))
+                    for event in [{'type':'speechStart','turnId':1,'audioProcessedMs':0},{'type':'speaker','label':'B'},{'type':'transcript','transcript':'Owned source'},{'type':'speechComplete','turnId':1,'transcript':'Owned source phrase.','audioProcessedMs':80}]:self.events.put(json.dumps(event))
             def recv(self,timeout):
                 try:return self.events.get(timeout=timeout)
                 except queue.Empty:raise TimeoutError()
@@ -151,6 +151,9 @@ class SelectedVideoTests(unittest.TestCase):
             video.accept(bytes(3840));self.wait(lambda:video.status()['transcribed_turns']==1)
         self.assertEqual(upstream.sent[0]['mode'],'DIARIZATION');self.assertEqual(video.snapshot()['turns'][0]['speaker'],'B');self.assertEqual(video.status()['asr_calls'],1)
         self.assertFalse(any(isinstance(m,dict) and 'voice' in m for m in upstream.sent))
+        messages=[m for m in video.socket.sent if m.get('type')=='transcript']
+        self.assertEqual([(m['text'],m['final']) for m in messages],[('Owned source',False),('Owned source phrase.',True)])
+        self.assertTrue(all(m['source']=='original' for m in messages))
 
     def test_simultaneous_mode_buffers_first_audio_and_uses_translation_asr_for_progressive_text(self):
         video=self.selected(False,lambda *_a,**_k:self.fail('must reuse the translation ASR'),translate=True)

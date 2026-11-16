@@ -1,4 +1,5 @@
 """Local settings and OAuth/operation façade. No inference or automatic sending."""
+from packages.runtime_paths import DATA_ROOT, CONFIG_PATH
 import json
 import os
 from pathlib import Path
@@ -111,5 +112,5 @@ def service(handler):
     with LOCK:
         if not hasattr(handler.server,'connections'):
             from services.h1.server import ROOT
-            handler.server.connections=ConnectionsService(ROOT/'.local'/'integrations',base_url='http://127.0.0.1:'+str(handler.server.server_port))
+            handler.server.connections=ConnectionsService(DATA_ROOT/'.local'/'integrations',base_url='http://127.0.0.1:'+str(handler.server.server_port))
         return handler.server.connections

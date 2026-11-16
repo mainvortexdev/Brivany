@@ -1,5 +1,6 @@
 """Servidor local: práctica, Muse en directo y voz Melodi, sin guardar audio."""
 from __future__ import annotations
+from packages.runtime_paths import DATA_ROOT, CONFIG_PATH
 
 import argparse
 import json
@@ -37,6 +38,33 @@ MAX_REJECT_DRAIN_BYTES = 128 * 1024
 REJECT_DRAIN_SECONDS = .2
 META_LOCK = threading.Lock()
 VOICE_LOCK = threading.Lock()
+_VOICE_GROUP_LOCK = threading.Lock()
+_VOICE_GROUP = None
+_VOICE_COUNT = 0
+
+
+def acquire_voice_slot(group=None):
+    """One output owner; its Live turn can prepare up to three phrases."""
+    global _VOICE_GROUP, _VOICE_COUNT
+    with _VOICE_GROUP_LOCK:
+        if _VOICE_COUNT:
+            if group is None or group != _VOICE_GROUP or _VOICE_COUNT >= 3:
+                return False
+        else:
+            if not VOICE_LOCK.acquire(blocking=False):
+                return False
+            _VOICE_GROUP = group
+        _VOICE_COUNT += 1
+        return True
+
+
+def release_voice_slot():
+    global _VOICE_GROUP, _VOICE_COUNT
+    with _VOICE_GROUP_LOCK:
+        _VOICE_COUNT -= 1
+        if not _VOICE_COUNT:
+            _VOICE_GROUP = None
+            VOICE_LOCK.release()
 CONFIG_LOCK = threading.Lock()
 CHAT_LOCK = threading.Lock()
 HUMAN_SERVICE_LOCK = threading.Lock()
@@ -58,7 +86,7 @@ STATIC = {"/": ("index.html", "text/html; charset=utf-8"),
           "/sous": ("sous.html", "text/html; charset=utf-8"),
           "/styles.css": ("styles.css", "text/css; charset=utf-8"),
           "/app.js": ("app.js", "text/javascript; charset=utf-8")}
-for filename in ("studio.js", "context-engine.js", "voice-engine.js", "live-voice.js", "pcm-capture.js", "human-skills.js", "activity.js", "dubbing.js", "dub-capture.js", "dub-timing.js", "sw.js", "spaces.js", "spatial-viewer.js", "capture-review.js", "spatial-camera.js", "spatial-render.js", "spatial-physics.js", "desktop-client.js"):
+for filename in ("studio.js", "context-engine.js", "voice-engine.js", "live-voice.js", "live-turns.js", "pcm-capture.js", "human-skills.js", "activity.js", "dubbing.js", "dub-capture.js", "dub-timing.js", "sw.js", "spaces.js", "spatial-viewer.js", "capture-review.js", "spatial-camera.js", "spatial-render.js", "spatial-physics.js", "desktop-client.js"):
     STATIC["/" + filename] = (filename, "text/javascript; charset=utf-8")
 for filename in ("studio.css", "landing.css", "palette.css", "human-skills.css", "activity.css", "dubbing.css", "spaces.css"):
     STATIC["/" + filename] = (filename, "text/css; charset=utf-8")
@@ -70,7 +98,15 @@ STATIC['/floorplan.js']=('floorplan.js','text/javascript; charset=utf-8')
 STATIC['/connections']=('connections.html','text/html; charset=utf-8')
 STATIC['/connections.js']=('connections.js','text/javascript; charset=utf-8')
 STATIC['/connections.css']=('connections.css','text/css; charset=utf-8')
+STATIC['/meetings']=('meetings.html','text/html; charset=utf-8')
+STATIC['/meetings.js']=('meetings.js','text/javascript; charset=utf-8')
+STATIC['/meetings.css']=('meetings.css','text/css; charset=utf-8')
 STATIC['/typography.css']=('typography.css','text/css; charset=utf-8')
+for font_style in ('Light','Regular','Medium'):
+    for extension,mime in (('woff2','font/woff2'),('ttf','font/ttf')):
+        font_name='BrivanyEditorial-'+font_style+'.'+extension
+        STATIC['/fonts/'+font_name]=('fonts/'+font_name,mime)
+STATIC['/fonts/LICENSE-AND-ATTRIBUTION.txt']=('fonts/LICENSE-AND-ATTRIBUTION.txt','text/plain; charset=utf-8')
 STATIC['/brand-wordmark.svg']=('brand-wordmark.svg','image/svg+xml')
 STATIC['/reminders.js']=('reminders.js','text/javascript; charset=utf-8')
 STATIC['/reconstruction-results.js']=('reconstruction-results.js','text/javascript; charset=utf-8')
@@ -100,7 +136,7 @@ for filename in ("three.module.js", "three.core.js", "addons/controls/OrbitContr
     STATIC['/vendor/three/'+filename]=('vendor/three/'+filename,'text/javascript; charset=utf-8')
 
 
-def load_local_config(path: Path = ROOT / ".env") -> None:
+def load_local_config(path: Path = CONFIG_PATH) -> None:
     """Lee solo claves conocidas; no ejecuta expansión ni reemplaza el entorno."""
     allowed = {"BRIVANY_META_API_KEY", "BRIVANY_META_MODEL", "BRIVANY_META_BASE_URL", "BRIVANY_META_AUDIO_MODEL",
                "BRIVANY_MUSE_API_KEY", "BRIVANY_GROQ_API_KEY", "BRIVANY_CARTESIA_API_KEY", "BRIVANY_CLOUDFLARE_ACCOUNT_ID", "BRIVANY_CLOUDFLARE_API_TOKEN",
@@ -109,7 +145,8 @@ def load_local_config(path: Path = ROOT / ".env") -> None:
                "BRIVANY_GOOGLE_CLIENT_ID", "BRIVANY_GOOGLE_CLIENT_SECRET", "BRIVANY_WHATSAPP_ACCESS_TOKEN",
                "BRIVANY_META_APP_SECRET", "BRIVANY_WHATSAPP_VERIFY_TOKEN",
                "BRIVANY_META_SOCIAL_USER_TOKEN", "BRIVANY_FACEBOOK_PAGE_TOKEN",
-               "BRIVANY_INSTAGRAM_ACCESS_TOKEN", "BRIVANY_META_ADS_ACCESS_TOKEN"}
+               "BRIVANY_INSTAGRAM_ACCESS_TOKEN", "BRIVANY_META_ADS_ACCESS_TOKEN",
+               "BRIVANY_TELNYX_API_KEY"}
     if not path.exists():
         return
     for line in path.read_text(encoding="utf-8-sig").splitlines():
@@ -147,7 +184,7 @@ def save_local_secret(key, variable, path=None):
     """Persist one credential locally without returning, logging, or interpolating it."""
     if not isinstance(key, str) or not re.fullmatch(r"[A-Za-z0-9._~+/=|:\-]{20,2048}", key):
         raise ValueError("invalid_key")
-    path = path or ROOT / ".env"
+    path = path or CONFIG_PATH
     with CONFIG_LOCK:
         text = path.read_text(encoding="utf-8-sig") if path.exists() else ""
         lines = [line for line in text.splitlines() if line.split("=", 1)[0].strip() != variable]
@@ -210,7 +247,9 @@ class Handler(BaseHTTPRequestHandler):
         embedded=" blob:" if spatial_page else ''
         youtube_scripts=' https://www.youtube.com' if youtube_page else ''
         youtube_frames='; frame-src https://www.youtube.com' if youtube_page else "; frame-src 'none'"
-        self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'"+wasm+youtube_scripts+"; style-src 'self'; img-src 'self' data:"+embedded+"; media-src 'self' blob:; connect-src 'self'"+embedded + websocket + youtube_frames+"; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
+        if urlsplit(self.path).path.rstrip('/')=='/work-widget':websocket+=' wss://brivany.vetsa.es'
+        music_images=' https://i.ytimg.com https://i.scdn.co https://mosaic.scdn.co' if urlsplit(self.path).path=='/workspace-music-expansion' else ''
+        self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'"+wasm+youtube_scripts+"; style-src 'self'; img-src 'self' data:"+embedded+music_images+"; media-src 'self' blob:; connect-src 'self'"+embedded + websocket + youtube_frames+"; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
         self.end_headers()
 
     def send_bytes(self, status, payload: bytes, content_type: str):
@@ -284,6 +323,14 @@ class Handler(BaseHTTPRequestHandler):
         if not self.local_request():
             return
         route = urlsplit(self.path).path
+        if route.startswith('/api/voice/cue/'):
+            from services.voice_cues import read_cue
+            try:
+                pieces=route.split('/')
+                if len(pieces)!=6:raise ValueError()
+                self.send_bytes(200,read_cue(pieces[4],pieces[5]),PCM_TYPE)
+            except (OSError,ValueError):self.error(404,'voice_cue_missing','Esta señal de escucha no está preparada.')
+            return
         if route.startswith('/api/personal/'):
             from services.personal_http import get
             get(self,route);return
@@ -459,7 +506,7 @@ class Handler(BaseHTTPRequestHandler):
     def sous_service(self):
         from services.sous import SousService
         with HUMAN_SERVICE_LOCK:
-            if not hasattr(self.server,'sous'):self.server.sous=SousService(ROOT/'.local'/'sous')
+            if not hasattr(self.server,'sous'):self.server.sous=SousService(DATA_ROOT/'.local'/'sous')
             return self.server.sous
 
     def sous_get(self,route):
@@ -523,7 +570,7 @@ class Handler(BaseHTTPRequestHandler):
         sous=self.sous_service()
         with HUMAN_SERVICE_LOCK:
             if not hasattr(self.server,'sous_vision'):
-                self.server.sous_vision=SousVisionService(ROOT/'.local'/'sous-vision',sous)
+                self.server.sous_vision=SousVisionService(DATA_ROOT/'.local'/'sous-vision',sous)
             return self.server.sous_vision
 
     def sous_vision_post(self,route):
@@ -559,7 +606,7 @@ class Handler(BaseHTTPRequestHandler):
         from services.spatial.jobs import SpatialService
         with SPATIAL_SERVICE_LOCK:
             if not hasattr(self.server,'spatial'):
-                self.server.spatial=SpatialService(ROOT/'.local'/'spatial')
+                self.server.spatial=SpatialService(DATA_ROOT/'.local'/'spatial')
             if not hasattr(self.server,'spatial_media_access'):
                 self.server.spatial_media_access=MediaAccess()
             return self.server.spatial
@@ -788,7 +835,7 @@ class Handler(BaseHTTPRequestHandler):
     def human_skill_service(self):
         with HUMAN_SERVICE_LOCK:
             if not hasattr(self.server, "human_skills"):
-                self.server.human_skills = HumanSkillService(ROOT / ".local" / "human-skills")
+                self.server.human_skills = HumanSkillService(DATA_ROOT / ".local" / "human-skills")
             return self.server.human_skills
 
     def human_skill_post(self, route):
@@ -847,18 +894,21 @@ class Handler(BaseHTTPRequestHandler):
             if not isinstance(body, dict) or body.get("consent") is not True:
                 self.error(422, "voice_consent", "Activa Melodi para enviar a Cartesia el texto que se va a leer.")
                 return
-            if set(body) - {"text", "consent", "language", "speed"} or not isinstance(body.get("text"), str) or not 0 < len(body["text"].strip()) <= 1800:
+            if set(body) - {"text", "consent", "language", "speed", "live_turn"} or not isinstance(body.get("text"), str) or not 0 < len(body["text"].strip()) <= 1800:
                 self.error(422, "invalid_speech", "El texto de voz debe tener entre 1 y 1800 caracteres.")
                 return
             from packages.providers.cartesia_melodi import language_code, speech_speed
             language=language_code(body.get('language','es'))
             speed=speech_speed(body.get('speed',1))
+            group=body.get('live_turn')
+            if group is not None and (not isinstance(group,str) or not re.fullmatch(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',group)):
+                raise ValueError('Invalid Live turn')
         except VoiceError as error:
             self.error(422,error.code,str(error));return
         except (ValueError, TypeError):
             self.error(422, "invalid_speech", "Revisa el texto de voz.")
             return
-        if not VOICE_LOCK.acquire(blocking=False):
+        if not acquire_voice_slot(group):
             self.error(409, "voice_busy", "Hay una voz en preparación. Espera un momento.")
             return
         sent_headers, owns_voice_lock = False, True
@@ -894,7 +944,7 @@ class Handler(BaseHTTPRequestHandler):
                     chunk = response.read1(4096)
             # Publish EOF only after the upstream is closed and the next
             # sentence may acquire the single synthesis slot.
-            VOICE_LOCK.release()
+            release_voice_slot()
             owns_voice_lock = False
             self.wfile.write(b"0\r\n\r\n")
             self.wfile.flush()
@@ -908,7 +958,7 @@ class Handler(BaseHTTPRequestHandler):
             monitor_done.set()
             if monitor:monitor.join(timeout=.2)
             if owns_voice_lock:
-                VOICE_LOCK.release()
+                release_voice_slot()
 
     def conversation(self, length):
         try:

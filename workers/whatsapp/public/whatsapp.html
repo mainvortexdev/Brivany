@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vetsa - Whatsapp Simulator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --wa-bg: #0b141a;
+            --wa-panel-bg: #111b21;
+            --wa-header-bg: #202c33;
+            --wa-border: #222d34;
+            --wa-search-bg: #202c33;
+            --wa-active-bg: #2a3942;
+            --wa-text: #e9edef;
+            --wa-text-muted: #8696a0;
+            --wa-msg-in: #202c33;
+            --wa-msg-out: #005c4b;
+            --wa-accent: #00a884;
+            --wa-danger: #ef4444;
+            --wa-bg-chat: #0b141a;
+            /* Background image overlay color */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--wa-bg);
+            color: var(--wa-text);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- Login Overlay --- */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--wa-bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s;
+        }
+
+        .login-box {
+            background: var(--wa-panel-bg);
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-box h2 {
+            margin-bottom: 10px;
+            color: var(--wa-text);
+        }
+
+        .login-box p {
+            color: var(--wa-text-muted);
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--wa-header-bg);
+            border: 1px solid var(--wa-border);
+            color: var(--wa-text);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: var(--wa-accent);
+            color: #111b21;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .login-box button:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Main App Layout --- */
+        #app {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        #app.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 30%;
+            min-width: 300px;
+            max-width: 420px;
+            background-color: var(--wa-panel-bg);
+            border-right: 1px solid var(--wa-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            height: 60px;
+            background-color: var(--wa-header-bg);
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            justify-content: space-between;
+        }
+
+        .header-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #dfe5e7;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .header-icons {
+            color: var(--wa-text-muted);
+            display: flex;
+            gap: 20px;
+            font-size: 20px;
+        }
+
+        .search-bar {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--wa-border);
+        }
+
+        .search-input-container {
+            background-color: var(--wa-search-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            height: 35px;
+        }
+
+        .search-input-container i {
+            color: var(--wa-text-muted);
+            font-size: 14px;
+            margin-right: 12px;
+        }
+
+        .search-input-container input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--wa-text);
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .chat-item {
+            display: flex;
+            padding: 0 12px;
+            height: 72px;
+            align-items: center;
+            cursor: pointer;
+            background: var(--wa-active-bg);
+        }
+
+        .chat-item:hover {
+            background: var(--wa-active-bg);
+        }
+
+        .chat-item-avatar {
+            width: 49px;
+            height: 49px;
+            border-radius: 50%;
+            background: #666;
+            margin-right: 15px;
+            overflow: hidden;
+        }
+
+        .chat-item-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .chat-item-info {
+            flex: 1;
+            border-bottom: 1px solid var(--wa-border);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .chat-item-title {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .chat-item-name {
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        .chat-item-time {
+            font-size: 12px;
+            color: var(--wa-text-muted);
+        }
+
+        .chat-item-last {
+            font-size: 14px;
+            color: var(--wa-text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        /* --- Chat Area --- */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--wa-bg-chat);
+            position: relative;
+        }
+
+        .chat-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://w0.peakpx.com/wallpaper/818/148/HD-wallpaper-whatsapp-background-cool-dark-green-new-theme-whatsapp.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .chat-header {
+            height: 60px;
+            background-color: var(--wa-header-bg);
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--wa-border);
+            z-index: 10;
+        }
+
+        .chat-header-info {
+            margin-left: 15px;
+            flex: 1;
+        }
+
+        .chat-header-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .chat-header-status {
+            font-size: 13px;
+            color: var(--wa-text-muted);
+            margin-top: 2px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px 60px;
+            overflow-y: auto;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .msg {
+            max-width: 65%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            position: relative;
+            font-size: 14.5px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .msg.in {
+            background-color: var(--wa-msg-in);
+            align-self: flex-start;
+            border-top-left-radius: 0;
+        }
+
+        .msg.out {
+            background-color: var(--wa-msg-out);
+            align-self: flex-end;
+            border-top-right-radius: 0;
+        }
+
+        .msg-time {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            float: right;
+            margin-top: 8px;
+            margin-left: 10px;
+        }
+
+        .msg-media {
+            margin-bottom: 5px;
+            border-radius: 6px;
+            overflow: hidden;
+            max-width: 300px;
+            display: block;
+        }
+
+        .msg-media img,
+        .msg-media video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .msg-audio {
+            width: 250px;
+            margin-bottom: 5px;
+        }
+
+        /* --- Input Area --- */
+        .chat-input {
+            min-height: 62px;
+            background-color: var(--wa-header-bg);
+            padding: 5px 16px;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+            gap: 16px;
+        }
+
+        .input-icons {
+            color: var(--wa-text-muted);
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            position: relative;
+        }
+
+        .attachment-menu {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            background: var(--wa-panel-bg);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s;
+        }
+
+        .attachment-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .attach-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--wa-text);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            white-space: nowrap;
+            font-size: 15px;
+        }
+
+        .attach-btn:hover {
+            background: var(--wa-active-bg);
+        }
+
+        .attach-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .input-container {
+            flex: 1;
+            background: var(--wa-active-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 9px 12px;
+        }
+
+        .input-container input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--wa-text);
+            font-size: 15px;
+        }
+
+        #send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--wa-text-muted);
+            transition: color 0.2s;
+        }
+
+        #send-btn:hover {
+            color: var(--wa-accent);
+        }
+
+        /* Media Preview Overlay */
+        #media-preview-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 20, 26, 0.95);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        #media-preview-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .preview-header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .preview-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .preview-content img,
+        .preview-content video {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .preview-footer {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            gap: 20px;
+        }
+
+        .preview-caption {
+            flex: 1;
+            max-width: 600px;
+            background: var(--wa-active-bg);
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .preview-send {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--wa-accent);
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Recording UI */
+        #recording-ui {
+            display: none;
+            flex: 1;
+            align-items: center;
+            gap: 15px;
+            color: var(--wa-text);
+            font-size: 15px;
+        }
+
+        #recording-ui i.fa-microphone {
+            color: var(--wa-danger);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .recording-time {
+            flex: 1;
+        }
+
+        .recording-cancel {
+            color: var(--wa-danger);
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Login -->
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2>Vetsa Simulator</h2>
+            <p>Ingresa un número de teléfono virtual para comenzar las pruebas (ej: SIM_1234)</p>
+            <input type="text" id="phone-input" placeholder="SIM_1234" value="SIM_1234">
+            <button id="connect-btn" onclick="connectSimulator()">Conectar Pruebas</button>
+        </div>
+    </div>
+
+    <!-- App -->
+    <div id="app">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="header">
+                <div class="header-avatar">
+                    <i class="fa-solid fa-user-astronaut" style="color: #666; font-size: 24px;"></i>
+                </div>
+                <div class="header-icons">
+                    <i class="fa-solid fa-users"></i>
+                    <i class="fa-solid fa-circle-notch"></i>
+                    <i class="fa-solid fa-message"></i>
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </div>
+            </div>
+            <div class="search-bar">
+                <div class="search-input-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Buscar un chat o iniciar uno nuevo">
+                </div>
+            </div>
+            <div class="chat-list">
+                <div class="chat-item">
+                    <div class="chat-item-avatar">
+                        <img src="https://app.vetsa.es/logo-dark.png" alt="Vetsa">
+                    </div>
+                    <div class="chat-item-info">
+                        <div class="chat-item-title">
+                            <span class="chat-item-name">Vetsa Assistant</span>
+                            <span class="chat-item-time" id="last-msg-time">ahora</span>
+                        </div>
+                        <div class="chat-item-last" id="last-msg-text">Esperando mensajes...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-area">
+            <div class="chat-header">
+                <div class="header-avatar">
+                    <img src="https://app.vetsa.es/logo-dark.png" alt="Vetsa">
+                </div>
+                <div class="chat-header-info">
+                    <div class="chat-header-name">Vetsa Assistant</div>
+                    <div class="chat-header-status">Simulador activo</div>
+                </div>
+                <div class="header-icons">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <div class="msg in">
+                    <div>¡Hola! Soy el simulador de WhatsApp. Todo lo que envíes aquí pasará por el servidor de Vetsa
+                        como si fuera un webhook real. Puedes enviar texto, imágenes y audio.</div>
+                    <div class="msg-time">Ahora</div>
+                </div>
+            </div>
+
+            <div class="chat-input">
+                <div class="input-icons">
+                    <i class="fa-regular fa-face-smile"></i>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-paperclip" id="attach-toggle" onclick="toggleAttachmentMenu()"></i>
+                        <div class="attachment-menu" id="attachment-menu">
+                            <div class="attach-btn" onclick="triggerFile('image')">
+                                <div class="attach-icon" style="background: #bf59cf;"><i
+                                        class="fa-regular fa-image"></i></div>Fotos y videos
+                            </div>
+                            <div class="attach-btn" onclick="triggerFile('document')">
+                                <div class="attach-icon" style="background: #7f66ff;"><i
+                                        class="fa-regular fa-file-lines"></i></div>Documento
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Normal Input -->
+                <div class="input-container" id="normal-input-ui">
+                    <input type="text" id="message-input" placeholder="Escribe un mensaje"
+                        onkeypress="handleKeyPress(event)">
+                </div>
+
+                <!-- Recording UI -->
+                <div id="recording-ui">
+                    <span class="recording-cancel" onclick="cancelRecording()">Cancelar</span>
+                    <i class="fa-solid fa-microphone"></i>
+                    <span class="recording-time" id="recording-time">0:00</span>
+                </div>
+
+                <div id="send-btn" onclick="handleSendClick()">
+                    <i class="fa-solid fa-microphone" id="send-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media Preview -->
+    <div id="media-preview-overlay">
+        <div class="preview-header" onclick="closeMediaPreview()"><i class="fa-solid fa-xmark"></i></div>
+        <div class="preview-content" id="media-preview-content"></div>
+        <div class="preview-footer">
+            <input type="text" class="preview-caption" id="media-preview-caption" placeholder="Añade un comentario...">
+            <button class="preview-send" onclick="sendMedia()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="file-image" accept="image/*,video/*" style="display:none;" onchange="handleFileSelect(this)">
+    <input type="file" id="file-document" accept="*/*" style="display:none;" onchange="handleFileSelect(this)">
+
+    <script>
+        let myPhone = "SIM_1234";
+        let eventSource = null;
+
+        // UI Elements
+        const chatMessages = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message-input');
+        const sendIcon = document.getElementById('send-icon');
+        const lastMsgText = document.getElementById('last-msg-text');
+
+        let pendingMedia = null; // { file, type, base64 }
+
+        // Audio Recording
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+        let recordingInterval = null;
+        let recordingSecs = 0;
+
+        // Input change listener to toggle Mike/Send icon
+        messageInput.addEventListener('input', () => {
+            if (messageInput.value.trim().length > 0) {
+                sendIcon.className = "fa-solid fa-paper-plane";
+            } else {
+                sendIcon.className = "fa-solid fa-microphone";
+            }
+        });
+
+        function connectSimulator() {
+            const phone = document.getElementById('phone-input').value.trim();
+            if (!phone) return;
+            myPhone = phone;
+            document.getElementById('login-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('app').classList.add('visible');
+                initSSE();
+            }, 500);
+        }
+
+        function initSSE() {
+            if (eventSource) eventSource.close();
+            eventSource = new EventSource(`/api/simulator/stream/${myPhone}`);
+            eventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                appendMessage(data, 'in');
+            };
+            eventSource.onerror = () => {
+                console.error("SSE connection lost. Reconnecting...");
+            };
+        }
+
+        function getTime() {
+            const now = new Date();
+            return now.toLocaleTimeString('es-DO', { timeZone: 'America/Santo_Domingo', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+        }
+
+        function appendMessage(data, dir) {
+            const div = document.createElement('div');
+            div.className = `msg ${dir}`;
+
+            let contentHtml = '';
+
+            if (data.type === 'text') {
+                contentHtml = `<div>${data.text || data.body || ''}</div>`;
+                lastMsgText.innerText = (dir === 'out' ? 'Tú: ' : '') + (data.text || data.body);
+            } else if (data.type === 'image') {
+                contentHtml = `<div class="msg-media"><img src="${data.link || data.base64}"></div>`;
+                if (data.caption) contentHtml += `<div>${data.caption}</div>`;
+                lastMsgText.innerText = (dir === 'out' ? 'Tú: ' : '') + '📷 Imagen';
+            } else if (data.type === 'video') {
+                const src = data.videoBase64 ? `data:video/mp4;base64,${data.videoBase64}` : (data.link || data.base64);
+                contentHtml = `<div class="msg-media"><video src="${src}" controls></video></div>`;
+                if (data.caption) contentHtml += `<div>${data.caption}</div>`;
+                lastMsgText.innerText = (dir === 'out' ? 'Tú: ' : '') + '🎥 Video';
+            } else if (data.type === 'audio') {
+                const src = data.audioBase64 ? `data:audio/ogg;base64,${data.audioBase64}` : (data.link || data.base64);
+                contentHtml = `<audio class="msg-audio" src="${src}" controls></audio>`;
+                lastMsgText.innerText = (dir === 'out' ? 'Tú: ' : '') + '🎤 Audio';
+            } else if (data.type === 'document') {
+                contentHtml = `<div>📄 ${data.filename || 'Documento'}</div>`;
+                lastMsgText.innerText = (dir === 'out' ? 'Tú: ' : '') + '📄 Documento';
+            }
+
+            div.innerHTML = contentHtml + `<div class="msg-time">${getTime()}</div>`;
+            chatMessages.appendChild(div);
+
+            // Auto scroll
+            setTimeout(() => {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 100);
+        }
+
+        async function sendMessage(payloadData) {
+            // Append locally
+            const localData = { ...payloadData, base64: payloadData._localBase64 };
+            if (payloadData.body) localData.body = payloadData.body;
+            appendMessage(localData, 'out');
+
+            const payload = {
+                from: myPhone,
+                type: payloadData.type,
+                body: payloadData.body,
+                mediaId: "sim_media_" + Date.now(), // Fake media ID
+                filename: payloadData.filename,
+                mimeType: payloadData.mimeType,
+                caption: payloadData.caption
+            };
+
+            // Convert Base64 if media needed for the backend
+            // In a real env, webhook only sends mediaId, and Vetsa fetches from Meta API.
+            // But for the simulator, Vetsa might fail to fetch media.
+            // However VetsaS might expect WhatsApp to have the media.
+            // Wait, coreLogic uses getMediaAsBase64 which uses whatsappService! 
+            // We need to intercept getMediaAsBase64 in whatsappService.js to return our simulated media.
+            // For now, let's just send the webhook. We will need to mock getMedia!
+
+            try {
+                await fetch('/api/simulator/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                console.error("Error sending message", err);
+            }
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                handleSendText();
+            }
+        }
+
+        function handleSendText() {
+            const text = messageInput.value.trim();
+            if (!text) return;
+            sendMessage({ type: 'text', body: text });
+            messageInput.value = '';
+            sendIcon.className = "fa-solid fa-microphone";
+        }
+
+        function handleSendClick() {
+            if (messageInput.value.trim().length > 0) {
+                handleSendText();
+            } else {
+                toggleRecording();
+            }
+        }
+
+        // --- Attachments ---
+        function toggleAttachmentMenu() {
+            document.getElementById('attachment-menu').classList.toggle('open');
+        }
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.input-icons')) {
+                document.getElementById('attachment-menu').classList.remove('open');
+            }
+        });
+
+        function triggerFile(type) {
+            document.getElementById(`file-${type}`).click();
+        }
+
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const base64 = e.target.result;
+                    const isVideo = file.type.startsWith('video');
+                    pendingMedia = {
+                        file,
+                        type: isVideo ? 'video' : 'image',
+                        base64
+                    };
+
+                    const contentDiv = document.getElementById('media-preview-content');
+                    if (isVideo) {
+                        contentDiv.innerHTML = `<video src="${base64}" controls></video>`;
+                    } else {
+                        contentDiv.innerHTML = `<img src="${base64}">`;
+                    }
+
+                    document.getElementById('media-preview-overlay').classList.add('open');
+                };
+                reader.readAsDataURL(file);
+            }
+            input.value = '';
+        }
+
+        function closeMediaPreview() {
+            document.getElementById('media-preview-overlay').classList.remove('open');
+            pendingMedia = null;
+            document.getElementById('media-preview-caption').value = '';
+        }
+
+        async function sendMedia() {
+            if (!pendingMedia) return;
+            const caption = document.getElementById('media-preview-caption').value.trim();
+
+            // Send payload. We will hack mediaID so whatsappService knows the base64.
+            // By putting base64 in mediaID, our mocked getMediaAsBase64 can return it!
+            const hackMediaId = pendingMedia.base64;  // Enormous hack, but works for sim!
+
+            await sendMessage({
+                type: pendingMedia.type,
+                mediaId: hackMediaId,
+                caption: caption,
+                _localBase64: pendingMedia.base64
+            });
+
+            closeMediaPreview();
+        }
+
+        // --- Audio Recording ---
+        async function toggleRecording() {
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = e => {
+                        if (e.data.size > 0) audioChunks.push(e.data);
+                    };
+                    mediaRecorder.onstop = async () => {
+                        if (!isRecording) return; // cancelled
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/ogg' });
+                        const reader = new FileReader();
+                        reader.onloadend = async () => {
+                            const base64 = reader.result;
+                            await sendMessage({
+                                type: 'audio',
+                                mediaId: base64, // Hack for getMediaAsBase64
+                                _localBase64: base64
+                            });
+                        };
+                        reader.readAsDataURL(audioBlob);
+                        stopUI();
+                    };
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    startUI();
+                } catch (err) {
+                    alert("No se pudo acceder al micrófono");
+                }
+            } else {
+                mediaRecorder.stop();
+            }
+        }
+
+        function cancelRecording() {
+            if (mediaRecorder) {
+                isRecording = false;
+                mediaRecorder.stop();
+            }
+            stopUI();
+        }
+
+        function startUI() {
+            document.getElementById('normal-input-ui').style.display = 'none';
+            document.getElementById('recording-ui').style.display = 'flex';
+            sendIcon.className = "fa-solid fa-paper-plane";
+            recordingSecs = 0;
+            document.getElementById('recording-time').innerText = "0:00";
+            recordingInterval = setInterval(() => {
+                recordingSecs++;
+                const m = Math.floor(recordingSecs / 60);
+                const s = (recordingSecs % 60).toString().padStart(2, '0');
+                document.getElementById('recording-time').innerText = `${m}:${s}`;
+            }, 1000);
+        }
+
+        function stopUI() {
+            clearInterval(recordingInterval);
+            document.getElementById('normal-input-ui').style.display = 'flex';
+            document.getElementById('recording-ui').style.display = 'none';
+            sendIcon.className = messageInput.value.trim().length > 0 ? "fa-solid fa-paper-plane" : "fa-solid fa-microphone";
+        }
+    </script>
+</body>
+
+</html>

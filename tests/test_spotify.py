@@ -5,10 +5,11 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 import ssl
 from urllib.parse import urlsplit,parse_qs
 from services.spotify import HISTORY_SCOPE,SpotifyService,SpotifyError,SCOPES,PLAYBACK_SCOPES,REGISTER_REDIRECT
-from services.spotify_relay import SpotifyRelayError,BASE
+from services.spotify_relay import SpotifyRelay,SpotifyRelayError,BASE
 
 
 class Protector:
@@ -41,6 +42,7 @@ class SpotifyTests(unittest.TestCase):
             if self.fail:return self.fail
             path=urlsplit(url).path
             if path=='/api/token':return 200,{},dict(access_token='synthetic-access',refresh_token='synthetic-refresh',token_type='Bearer',scope=SCOPES,expires_in=3600)
+            if path=='/v1/me':return 200,{}, {'id':'fixture-user','display_name':'Cuenta de prueba'}
             if path.endswith('/devices'):return 200,{}, {'devices':[self.device,{'id':'restricted','is_restricted':True,'name':'Restricted'}]}
             if method=='GET':return 200,{},dict(item=self.item,device=self.device,is_playing=True,progress_ms=1000,actions={'disallows':{}})
             return 204,{},{}
@@ -53,14 +55,14 @@ class SpotifyTests(unittest.TestCase):
     def test_pkce_https_state_single_use_and_protected_persistence(self):
         query=parse_qs(urlsplit(self.service.begin()).query);verifier=self.service.flow['verifier']
         self.assertEqual(self.service.relay.created[-1]['challenge'],base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b'=').decode())
-        self.assertEqual(self.service.flow['redirect'],REGISTER_REDIRECT);self.assertTrue(REGISTER_REDIRECT.startswith('https://brivany.example/'))
+        self.assertEqual(self.service.flow['redirect'],REGISTER_REDIRECT);self.assertTrue(REGISTER_REDIRECT.startswith('https://brivany.vetsa.es/'))
         self.assertFalse(hasattr(self.service,'listener'))
         self.assertNotIn(self.service.flow['reader'],json.dumps(self.service.status()))
         with self.assertRaises(SpotifyError):self.service.complete('wrong','code')
         self.assertEqual(self.calls,[])
         self.service.complete(query['state'][0],'fixture-code')
         with self.assertRaises(SpotifyError):self.service.complete(query['state'][0],'fixture-code')
-        self.assertEqual(len(self.calls),1);self.assertTrue(self.service.status()['connected']);self.assertEqual(parse_qs(self.calls[0][3].decode())['redirect_uri'],[REGISTER_REDIRECT])
+        self.assertEqual(len(self.calls),2);self.assertTrue(self.service.status()['connected']);self.assertEqual(parse_qs(self.calls[0][3].decode())['redirect_uri'],[REGISTER_REDIRECT]);self.assertEqual(self.service.status()['account']['display_name'],'Cuenta de prueba')
         raw=(Path(self.temp.name)/'authorization.bin').read_bytes();self.assertNotIn(b'synthetic-access',raw);self.assertNotIn('synthetic-access',json.dumps(self.service.status()))
         other=SpotifyService(self.temp.name,http=self.service.http,protector=Protector(),clock=lambda:self.now);self.assertTrue(other.status()['connected']);other.close()
     def test_expired_replaced_cancelled_and_disconnected_flows_cannot_link(self):
@@ -182,12 +184,73 @@ class SpotifyTests(unittest.TestCase):
         url=self.service.begin();self.assertTrue(url.startswith(BASE+'/spotify/connect?'))
         flow=self.service.flow;self.service.relay.result={'status':'ready','code':'fixture-code','error':None}
         self.service._poll_link(flow,ImmediateEvent());self.assertTrue(self.service.status()['connected']);self.assertIsNone(self.service.flow)
-        self.assertEqual(self.service.relay.acknowledged,[flow['state']]);self.assertEqual(len(self.calls),1)
-        self.service._poll_link(flow,ImmediateEvent());self.assertEqual(len(self.calls),1)
+        self.assertEqual(self.service.relay.acknowledged,[flow['state']]);self.assertEqual(len(self.calls),2)
+        self.service._poll_link(flow,ImmediateEvent());self.assertEqual(len(self.calls),2)
     def test_published_config_bootstraps_the_single_button_without_user_client_id(self):
         self.service.client_id='';url=self.service.begin();self.assertEqual(self.service.client_id,'a'*32)
-        self.assertTrue(url.startswith('https://brivany.example/spotify/connect?'));self.assertTrue(self.service.status()['pending'])
+        self.assertTrue(url.startswith('https://brivany.vetsa.es/spotify/connect?'));self.assertTrue(self.service.status()['pending'])
         self.service.cancel_link();self.assertFalse(self.service.status()['pending'])
+    def test_application_access_is_read_from_the_publisher_and_not_assumed_public(self):
+        self.assertEqual(self.service.status()['application_access'],'unknown')
+        self.service.relay.config=lambda:{'client_id':'a'*32,'redirect_uri':REGISTER_REDIRECT,'access_mode':'development'}
+        self.service.begin();self.assertEqual(self.service.status()['application_access'],'development')
+    def test_relay_accepts_legacy_config_but_rejects_unrecognized_access_modes(self):
+        relay=SpotifyRelay()
+        base={'client_id':'a'*32,'redirect_uri':REGISTER_REDIRECT}
+        relay.request=lambda *args,**kwargs:dict(base)
+        self.assertEqual(relay.config()['access_mode'],'unknown')
+        for mode in ('development','extended'):
+            relay.request=lambda *args,**kwargs:{**base,'access_mode':mode}
+            self.assertEqual(relay.config()['access_mode'],mode)
+        for mode in ('public',None,[],{}):
+            relay.request=lambda *args,**kwargs:{**base,'access_mode':mode}
+            with self.assertRaises(SpotifyRelayError):relay.config()
+    def test_another_user_needs_no_developer_id_and_receives_an_independent_grant(self):
+        def other_http(method,url,headers,body):
+            if urlsplit(url).path=='/v1/me':return 200,{}, {'id':'another-fixture-user','display_name':'Otra cuenta'}
+            return self.service.http(method,url,headers,body)
+        with patch.dict('os.environ',{'BRIVANY_SPOTIFY_CLIENT_ID':'b'*32}):
+            other=SpotifyService(Path(self.temp.name)/'another-user',http=other_http,protector=Protector(),clock=lambda:self.now,relay=Relay(),start_polling=False)
+        self.addCleanup(other.close)
+        self.assertEqual(other.client_id,'');self.assertFalse(other.status()['connected']);self.assertNotIn('client_id',other.status())
+        first=self.connect();second=parse_qs(urlsplit(other.begin()).query)
+        self.assertNotEqual(first['state'],second['state']);self.assertEqual(other.client_id,'a'*32)
+        with self.assertRaises(SpotifyError):other.complete(first['state'][0],'wrong-profile-code')
+        self.assertFalse(other.status()['connected']);self.assertTrue(self.service.status()['connected'])
+        other.complete(second['state'][0],'second-user-code');self.assertTrue(other.status()['connected'])
+        self.assertEqual(other.status()['account']['display_name'],'Otra cuenta');self.assertEqual(self.service.status()['account']['display_name'],'Cuenta de prueba')
+        other.disconnect();self.assertTrue(self.service.status()['connected'])
+    def test_oauth_consent_does_not_mark_a_user_connected_when_spotify_denies_app_access(self):
+        original=self.service.http
+        self.service.http=lambda method,url,headers,body:(403,{}, {}) if urlsplit(url).path=='/v1/me' else original(method,url,headers,body)
+        query=parse_qs(urlsplit(self.service.begin()).query)
+        with self.assertRaisesRegex(SpotifyError,'autorizada'):self.service.complete(query['state'][0],'fixture-code')
+        self.assertFalse(self.service.status()['connected']);self.assertFalse((Path(self.temp.name)/'authorization.bin').exists())
+    def test_switching_accounts_clears_previous_playback_and_denial_keeps_old_grant(self):
+        self.connect();self.service.playback();self.assertTrue(self.service.resume.value)
+        original=self.service.http
+        self.service.http=lambda method,url,headers,body:(403,{}, {}) if urlsplit(url).path=='/v1/me' else original(method,url,headers,body)
+        query=parse_qs(urlsplit(self.service.begin()).query)
+        with self.assertRaises(SpotifyError):self.service.complete(query['state'][0],'denied-new-grant')
+        self.assertEqual(self.service.account['id'],'fixture-user');self.assertTrue(self.service.resume.value)
+        self.service.http=lambda method,url,headers,body:(200,{}, {'id':'another-user','display_name':'Otra cuenta'}) if urlsplit(url).path=='/v1/me' else original(method,url,headers,body)
+        query=parse_qs(urlsplit(self.service.begin()).query);self.service.complete(query['state'][0],'new-grant')
+        self.assertEqual(self.service.account['id'],'another-user');self.assertIsNone(self.service.resume.value)
+    def test_new_authorization_never_inherits_another_accounts_refresh_token(self):
+        self.connect();original=self.service.http
+        def no_refresh(method,url,headers,body):
+            status,meta,value=original(method,url,headers,body)
+            if urlsplit(url).path=='/api/token':value={key:item for key,item in value.items() if key!='refresh_token'}
+            return status,meta,value
+        self.service.http=no_refresh
+        query=parse_qs(urlsplit(self.service.begin()).query);self.service.complete(query['state'][0],'fresh-code')
+        self.assertIsNone(self.service.tokens['refresh_token']);self.assertTrue(self.service.status()['connected'])
+    def test_existing_protected_grant_survives_removal_of_a_developer_environment_id(self):
+        self.connect();(Path(self.temp.name)/'client.json').unlink()
+        with patch.dict('os.environ',{'BRIVANY_SPOTIFY_CLIENT_ID':'b'*32}):
+            restored=SpotifyService(self.temp.name,http=self.service.http,protector=Protector(),clock=lambda:self.now,start_polling=False)
+        self.addCleanup(restored.close)
+        self.assertTrue(restored.status()['connected']);self.assertEqual(restored.client_id,'a'*32);self.assertEqual(restored.status()['account']['display_name'],'Cuenta de prueba')
     def test_https_error_cancellation_and_deadline_do_not_exchange_tokens(self):
         self.service.begin();flow=self.service.flow;self.service.relay.result={'status':'ready','code':None,'error':'access_denied'}
         self.service._poll_link(flow,ImmediateEvent());self.assertFalse(self.service.status()['connected']);self.assertIn('cancelada',self.service.status()['message']);self.assertEqual(self.calls,[])

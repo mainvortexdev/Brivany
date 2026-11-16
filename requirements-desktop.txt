@@ -1,4 +1,6 @@
 -r requirements-h1.txt
+# Optional local Telnyx Call Control gateway (HTTP and WebSocket on one port).
+aiohttp==3.14.5
 # BSD-3-Clause wrapper; Windows uses the separately installed Edge WebView2 runtime.
 pywebview==6.2.1
 # Opt-in system-output capture. Capture is never started during import/readiness.
@@ -16,5 +18,10 @@ ai-edge-litert==2.2.0
 onnxruntime==1.23.2
 scipy==1.18.1
 soxr==1.1.0
+# On-demand local file QR and HTTPS identity; no background network service.
+segno==1.6.6
+cryptography==50.0.2
 # Local anonymous speaker embeddings; CPU only, no provider audio upload.
 sherpa-onnx==2.0.1
+# Local PDF text excerpts in an on-demand, resource-limited child process.
+pypdf==6.21.4

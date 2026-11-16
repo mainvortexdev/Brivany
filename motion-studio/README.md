@@ -37,5 +37,9 @@ en Node. Reutiliza el MP4 real ya generado; el planificador y el productor son
 sustituidos. `tools.check_motion_real --run` es una comprobación diferente y
 usa el proveedor real: no debe ejecutarse como test rutinario.
 
+Videos para redes (historia de Instagram, reel/TikTok, YouTube 16:9) con voz,
+música, efectos, portada y subtítulos: `../docs/melodi-videos-redes-20261111.md`
+(`services/motion/social_*`, suite `motion-social`).
+
 Ver `../docs/melodi-bang-motion.md` y `REVIEW.md` para procedencia, medidas,
 revisiones y límites de la primera entrega.

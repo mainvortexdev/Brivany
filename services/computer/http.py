@@ -5,7 +5,7 @@ import select
 import socket
 from urllib.parse import urlsplit
 from packages.providers.conversation import ConversationRequest
-from .service import ComputerService
+from .service import ComputerService, ComputerRequestError
 from .references import ImageTurnRequest
 
 
@@ -71,10 +71,9 @@ def get(handler):
             if str(UUID(identifier))!=identifier:raise ValueError()
             job=current.jobs.get(identifier)
             if not job or job['kind']!='motion' or job['state'] not in {'succeeded','awaiting_user'} or not (job.get('result') or {}).get('verified'):raise ValueError()
-            from services.terminal.policy import scoped
-            path=scoped(current.workspace/'motion'/identifier/'Brivany.mp4',[current.workspace],existing=True)
-            if not path.is_file() or path.stat().st_size>128*1024**2:raise ValueError()
-            handler.send_bytes(200,path.read_bytes(),'video/mp4');return
+            from services.orchestration.motion_result import motion_artifact
+            path=motion_artifact(current.workspace,identifier,job['result'])
+            handler.send_bytes(200,path.read_bytes(),'image/png' if path.suffix=='.png' else 'video/mp4');return
         if route.startswith('/api/computer/drawing/'):
             from uuid import UUID
             from pathlib import Path
@@ -100,6 +99,23 @@ def post(handler):
         if urlsplit(handler.path).path!='/api/computer/provider':
             handler.error(403,'computer_origin','Usa la ventana de Brivany.');return
     try:
+        if urlsplit(handler.path).path=='/api/computer/media-input':
+            from .media_inputs import receive
+            handler.send_json(201,receive(handler,service(handler)));return
+        if urlsplit(handler.path).path in {'/api/computer/media-inputs/clear','/api/computer/media-inputs/remove'}:
+            current=service(handler)
+            if not current.native:raise PermissionError()
+            length=int(handler.headers.get('Content-Length','0'))
+            if not 0<length<=512 or handler.headers.get('Transfer-Encoding') or handler.headers.get_content_type()!='application/json':raise ValueError()
+            body=json.loads(handler.rfile.read(length))
+            if urlsplit(handler.path).path.endswith('/clear'):
+                if body!={}:raise ValueError()
+                with current.lock:current.edits_inputs=[]
+            else:
+                if not isinstance(body,dict) or set(body)!={'ids'} or not isinstance(body['ids'],list) or len(body['ids'])>8 or not all(isinstance(item,str) for item in body['ids']):raise ValueError()
+                from .media_inputs import take_selection
+                take_selection(current,body['ids'])
+            handler.send_json(200,{'selected':[]});return
         length=int(handler.headers.get('Content-Length','0'))
         maximum=2300000 if urlsplit(handler.path).path=='/api/computer/references' else 2000000 if urlsplit(handler.path).path=='/api/computer/provider' else 65536
         if not 0<length<=maximum or handler.headers.get('Transfer-Encoding') or handler.headers.get_content_type()!='application/json':raise ValueError()
@@ -160,6 +176,7 @@ def post(handler):
             finally:monitor_done.set()
             return
         handler.error(404,'computer_missing','Ruta no disponible.')
+    except ComputerRequestError as error:handler.error(error.status,error.code,str(error))
     except PermissionError:handler.error(403,'computer_grant','Activa el control desde la ventana nativa.')
-    except (ValueError,TypeError,KeyError):handler.error(422,'computer_request','Revisa la solicitud y la tarea activa.')
+    except (ValueError,TypeError,KeyError) as error:handler.error(422,'computer_request',str(error)[:400] if urlsplit(handler.path).path=='/api/computer/media-input' else 'Revisa la solicitud y la tarea activa.')
     except OSError:handler.error(503,'computer_runtime','El ejecutor no está disponible.')

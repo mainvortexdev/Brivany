@@ -1,0 +1,34 @@
+{
+  "family": "Brivany Editorial",
+  "source": "Brivany_Editorial_Fuentes.zip",
+  "license": "OFL-1.1",
+  "weights": [
+    {
+      "style": "Light",
+      "weight": 300,
+      "glyphs": 2164,
+      "ttf_bytes": 640544,
+      "woff2_bytes": 209416,
+      "ttf_sha256": "2681f36b109888b7fe7a4887acfeb72f070d8655a7cc7b8a9d2425cd53eceff2",
+      "woff2_sha256": "0984d83753d79a0d8b4e4a8062c82295c7908f01b752e0d02e230749b7c8795a"
+    },
+    {
+      "style": "Regular",
+      "weight": 400,
+      "glyphs": 2164,
+      "ttf_bytes": 653296,
+      "woff2_bytes": 213272,
+      "ttf_sha256": "0281a76cc1dcb77045b98f49281af2bad2b59a16033d215edbf0414bed8909fb",
+      "woff2_sha256": "776d2e4a61c9e5700c79739dcacebab3808bd17de7d736061ba5a0fc4c7f448d"
+    },
+    {
+      "style": "Medium",
+      "weight": 500,
+      "glyphs": 2164,
+      "ttf_bytes": 633100,
+      "woff2_bytes": 208948,
+      "ttf_sha256": "b342322d03ec5b8a5cb341173bd74bd6ab285cc19fe27ebe579b569301d8cbe7",
+      "woff2_sha256": "b771de634b7a75e9b8bbd32340ef92a45fecc33bf7ae73e5c882190864e1cf94"
+    }
+  ]
+}

@@ -3,20 +3,29 @@ import json
 import queue
 import threading
 import time
+from collections import deque
 from packages.providers.river_translation import RiverBridge,river_status
 from packages.providers.native_audio import open_native_audio
 from packages.providers.pcm_pacing import PCMFrameClock
 from .system_translation_audio import SystemAudioRoute
 
 
+# Errors that a reconnect cannot fix (configuration, access, quota, device).
+FATAL_CODES=frozenset({'configuration','access_blocked','options','language','voice_mode','volume','muse_rejected',
+    'cartesia_quota','cartesia_limit','cartesia_rejected','mt_configuration_changed','pcm'})
+RECOVERY_LIMIT=6
+RECOVERY_WINDOW=300
+
+
 class CapturePeer:
-    def __init__(self,owner):self.owner=owner;self.initial=True;self.ready=threading.Event();self.paused=False;self.pacing=PCMFrameClock();self.pending=None;self.flow_lock=threading.RLock();self.input_capacity=lambda:True
+    """One provider session. Ending it (error) never stops the capture owner."""
+    def __init__(self,owner):self.owner=owner;self.initial=True;self.ready=threading.Event();self.paused=False;self.pacing=PCMFrameClock();self.pending=None;self.flow_lock=threading.RLock();self.input_capacity=lambda:True;self.ended=threading.Event();self.error=None;self.done=False
     def set_input_capacity(self,check):self.input_capacity=check
     def recv(self,timeout=8):
         o=self.owner
         if self.initial:
             self.initial=False;return json.dumps({'type':'start','consent':True,'target_language':o.target,'voice_mode':o.voice,'original_gain':0,'continuous_input':True,'diarization':True})
-        if o.stopped.is_set():return json.dumps({'type':'stop'})
+        if o.stopped.is_set() or self.ended.is_set():return json.dumps({'type':'stop'})
         try:return json.dumps(o.controls.get_nowait())
         except queue.Empty:pass
         if not self.ready.is_set() or self.paused:time.sleep(min(timeout,.05));raise TimeoutError()
@@ -27,7 +36,7 @@ class CapturePeer:
             try:self.pending=o.pcm.get(timeout=min(timeout,.1))
             except queue.Empty:raise TimeoutError()
         with self.flow_lock:delay=self.pacing.delay(time.monotonic())
-        if o.stopped.wait(delay):return json.dumps({'type':'stop'})
+        if o.stopped.wait(delay) or self.ended.is_set():return json.dumps({'type':'stop'})
         with self.flow_lock:
             if self.paused:raise TimeoutError()
             self.pacing.sent(time.monotonic())
@@ -36,7 +45,7 @@ class CapturePeer:
         return raw
     def send(self,raw):
         event=json.loads(raw);kind=event.get('type');o=self.owner
-        if o.stopped.is_set():return
+        if o.stopped.is_set() or self.ended.is_set():return
         selected=getattr(o,'source_video',None) or getattr(getattr(o,'route',None),'video',None)
         if selected and kind=='transcript':selected.observe_translation(event)
         if kind=='ready':self.ready.set();o._update(state='listening')
@@ -50,14 +59,21 @@ class CapturePeer:
             else:o._update(state='listening',content=event.get('content'),song_filter_active=True)
         elif kind=='metrics':o._update(first_audio_ms=event.get('first_audio_ms'))
         elif kind=='usage':o._update(segments=event.get('segments',0))
-        elif kind=='error':o._update(state='error',error=str(event.get('message','No se pudo traducir el audio.'))[:300],error_code=str(event.get('code','translation_interrupted'))[:60]);o.stopped.set()
-        elif kind=='done':o._update(state='stopped');o.stopped.set()
-    def close(self):self.owner.stopped.set()
+        elif kind=='error':
+            # The owner decides between reconnecting and a final error.
+            self.error=(str(event.get('code','translation_interrupted'))[:60],str(event.get('message','No se pudo traducir el audio.'))[:300]);self.ended.set()
+        elif kind=='done':self.done=True;self.ended.set();o._update(state='stopped');o.stopped.set()
+    def close(self):self.ended.set()
 
 
 class WorkLiveTranslation:
-    def __init__(self,*,route_factory=SystemAudioRoute,bridge_factory=RiverBridge,output_factory=open_native_audio,configuration=river_status):
+    def __init__(self,*,route_factory=SystemAudioRoute,bridge_factory=RiverBridge,output_factory=open_native_audio,configuration=river_status,voice_agents_factory=None,cloning_settings=None,recovery_delay=.4,timeline_source=None,caption_translator_factory=None,synthesizer_factory=None):
         self.route_factory=route_factory;self.bridge_factory=bridge_factory;self.output_factory=output_factory;self.configuration=configuration
+        # voice_agents_factory(language) -> agents; owned here so clones survive
+        # provider reconnects and cloning can start without a restart.
+        # Caption-scheduled dubbing (silent Brave extension): optional.
+        self.timeline_source=timeline_source;self.caption_translator_factory=caption_translator_factory;self.synthesizer_factory=synthesizer_factory;self.caption_dubbing=None
+        self.voice_agents_factory=voice_agents_factory;self.cloning_settings=cloning_settings;self.voice_agents=None;self.cloning_language=None;self.recovery_delay=recovery_delay;self.recoveries=0
         self.lock=threading.RLock();self.stopped=threading.Event();self.stopped.set();self.worker=None;self.capture=None;self.pcm=queue.Queue(maxsize=1500);self.controls=queue.Queue(maxsize=4);self.target='en';self.voice='auto';self.submitted=0;self.captured=0;self.state={'state':'idle','caption':'','error':'','segments':0};self.bridge=None;self.started=0;self.route_ready=threading.Event();self.route=None;self.output=None;self.control_generation=0;self.restarting=False
     def _update(self,**value):
         with self.lock:
@@ -72,8 +88,11 @@ class WorkLiveTranslation:
         with self.lock:
             if self.worker and self.worker.is_alive() or self.capture and self.capture.is_alive():raise ValueError('La traducción ya está activa o terminando.')
             config=self.configuration()
-            if not config.get('configured') or config.get('access_blocked'):raise ValueError('Revisa Muse, Meta y Cartesia en Ajustes → Servicios.')
-            self.control_generation+=1;self.stopped=threading.Event();self.target=target;self.voice=voice;self.pcm=queue.Queue(maxsize=1500);self.controls=queue.Queue(maxsize=4);self.submitted=0;self.captured=0;self.input_waits=0;self.started=time.monotonic();self.route_ready=threading.Event();self.route=None
+            if not config.get('configured') or config.get('access_blocked'):
+                self.control_generation+=1
+                self._update(state='error',caption='',error='Revisa Muse, Meta y Cartesia en Ajustes → Servicios.')
+                raise ValueError(self.state['error'])
+            self.control_generation+=1;self.stopped=threading.Event();self.recoveries=0;self.target=target;self.voice=voice;self.pcm=queue.Queue(maxsize=1500);self.controls=queue.Queue(maxsize=4);self.submitted=0;self.captured=0;self.input_waits=0;self.started=time.monotonic();self.route_ready=threading.Event();self.route=None
             self.active_route_factory=route_factory or self.route_factory
             self.source_video=getattr(route_factory,'__self__',None) if route_factory else None
             self.state={'state':'starting','caption':'','error':'','segments':0,'voice_category':None,'voice_method':None,'first_audio_ms':None}
@@ -104,15 +123,58 @@ class WorkLiveTranslation:
                 with self.lock:self.output=device
                 if self.stopped.is_set() and hasattr(device,'close'):device.close()
                 return device
-            self.bridge=self.bridge_factory(0,mixer_factory=output)
-            self.bridge.handle(CapturePeer(self))
+            settings=self.cloning_settings() if self.cloning_settings else {}
+            if settings.get('enabled') and self.voice_agents_factory and not self.stopped.is_set():
+                try:
+                    with self.lock:self.voice_agents=self.voice_agents_factory(settings['language']);self.cloning_language=settings['language']
+                except Exception:pass # Cloning is optional; translation continues with catalog voices.
+            # One set of local speaker clusters for the whole translation:
+            # reconnects keep "Hablante N" and its clone bound to the same voice.
+            try:
+                from packages.providers.acoustic_speakers import SessionSpeakers
+                clusters=SessionSpeakers()
+            except Exception:clusters=None
+            dubbing=self._start_caption_dubbing()
+            recent=deque()
+            while not self.stopped.is_set():
+                peer=CapturePeer(self)
+                bridge=self.bridge_factory(0,mixer_factory=output)
+                with self.lock:
+                    self.bridge=bridge
+                    if self.voice_agents:bridge.voice_agents=self.voice_agents
+                    if clusters is not None:bridge.acoustic_session=clusters
+                    if dubbing is not None:bridge.live_voice_suppressed=dubbing.active
+                try:bridge.handle(peer)
+                except Exception:peer.error=peer.error or ('translation_interrupted','La traducción se interrumpió.')
+                finally:
+                    try:bridge.close()
+                    except Exception:pass
+                    with self.lock:
+                        if self.bridge is bridge:self.bridge=None
+                    self.output=None
+                if self.stopped.is_set() or peer.done:break
+                # The provider session ended without a user stop. Capture keeps
+                # running and queued PCM is kept; reconnect unless the cause
+                # cannot be fixed by a new session or keeps repeating.
+                code,message=peer.error or ('translation_interrupted','La traducción se interrumpió.')
+                now=time.monotonic()
+                while recent and now-recent[0]>RECOVERY_WINDOW:recent.popleft()
+                if code in FATAL_CODES or code.startswith('native_audio') or len(recent)>=RECOVERY_LIMIT:
+                    self._update(state='error',error=message,error_code=code);break
+                recent.append(now)
+                with self.lock:self.recoveries+=1
+                self._update(state='reconnecting',error='',last_recovered_code=code)
+                if self.stopped.wait(self.recovery_delay):break
         except Exception:
-            if not self.stopped.is_set():self._update(state='error',error='La traducción se interrumpió. No se reconectó automáticamente.')
+            if not self.stopped.is_set():self._update(state='error',error='La traducción se interrumpió.')
         finally:
             self.stopped.set()
             if self.capture:self.capture.join(timeout=3)
-            if self.bridge:
-                self.bridge.close();self.last_voice_agents=getattr(self.bridge,'voice_agents',None);self.bridge=None
+            with self.lock:dubbing_done=self.caption_dubbing;self.caption_dubbing=None
+            if dubbing_done:dubbing_done.close()
+            with self.lock:agents=self.voice_agents;self.voice_agents=None;self.cloning_language=None;self.last_voice_agents=agents
+            # Session end: unkept clones are deleted, kept ones are saved.
+            if agents:agents.close()
             self.output=None
             while True:
                 try:self.pcm.get_nowait()
@@ -122,8 +184,8 @@ class WorkLiveTranslation:
     def status(self):
         with self.lock:
             running=self.restarting or bool(self.worker and self.worker.is_alive() and not self.stopped.is_set())
-            agents=getattr(self.bridge,'voice_agents',None) if self.bridge else getattr(self,'last_voice_agents',None)
-            return {**self.state,'voice_agents':agents.status() if agents else {},'control_revision':self.control_generation,'active':running,'target':self.target,'voice':self.voice,'elapsed_seconds':round(time.monotonic()-self.started,1) if self.started else 0,'buffered_seconds':round(self.pcm.qsize()*.08,2),'captured_seconds':round(self.captured/48000,2),'submitted_seconds':round(self.submitted/48000,2),'original_gain':.12,'microphone_captured':False,'source':'selected_video' if self.route and self.route.source=='selected-video' else 'system_output','feedback_isolated':bool(self.route and self.route.source!=self.route.output),'audio_persisted':False,'billing_amount':None}
+            agents=self.voice_agents or (getattr(self.bridge,'voice_agents',None) if self.bridge else None) or getattr(self,'last_voice_agents',None)
+            return {**self.state,'voice_agents':agents.status() if agents else {},'control_revision':self.control_generation,'active':running,'target':self.target,'voice':self.voice,'elapsed_seconds':round(time.monotonic()-self.started,1) if self.started else 0,'buffered_seconds':round(self.pcm.qsize()*.08,2),'captured_seconds':round(self.captured/48000,2),'submitted_seconds':round(self.submitted/48000,2),'original_gain':.12,'microphone_captured':False,'source':'selected_video' if self.route and self.route.source=='selected-video' else 'system_output','feedback_isolated':bool(self.route and self.route.source!=self.route.output),'audio_persisted':False,'billing_amount':None,'recoveries':self.recoveries,'voice_cloning_active':bool(self.voice_agents),'caption_dubbing':self.caption_dubbing.status() if self.caption_dubbing else None}
     def audio_diagnostics(self):
         """Counters only, on demand; never PCM, text, device IDs or credentials."""
         with self.lock:output=self.output
@@ -139,6 +201,42 @@ class WorkLiveTranslation:
                 try:self.controls.put_nowait({'type':'voice_mode','mode':mode})
                 except queue.Full:raise ValueError('Espera un momento antes de volver a cambiar la voz.')
             self.voice=mode
+        return self.status()
+    def _start_caption_dubbing(self):
+        def _dub_event(name,**values):
+            from services.work import selected_video
+            selected_video.selection_event(name,**{k:v for k,v in values.items() if k in ('ms','audio_ms','late_ms','reason','speed','start','state')})
+        """Start the scheduler only when a timeline source and its providers exist."""
+        if not (self.timeline_source and self.caption_translator_factory and self.synthesizer_factory):return None
+        try:
+            from packages.providers.caption_dubbing import CaptionDubbing
+            dubbing=CaptionDubbing(self.timeline_source,target=self.target,translator_factory=self.caption_translator_factory,
+                synthesizer=self.synthesizer_factory(),output_getter=lambda:self.output,
+                voice_hint=lambda:getattr(self.bridge,'voice_hint_value',None),on_stage=_dub_event)
+        except Exception as error:
+            _dub_event('caption_dub_unavailable',reason=type(error).__name__);return None  # Optional: Directa continues with live voice.
+        with self.lock:self.caption_dubbing=dubbing
+        _dub_event('caption_dub_started',state='timeline' if self.timeline_source() else 'waiting')
+        return dubbing.start()
+    def set_voice_cloning(self,enabled,language='es'):
+        """Start or stop background cloning without restarting translation.
+
+        Enabling attaches new agents to the running provider session: speech
+        keeps playing with catalog voices until each clone is ready, then the
+        speaker's next clause uses it. Disabling closes the agents (unkept
+        clones are deleted) and the next clause returns to catalog voices.
+        """
+        if type(enabled) is not bool or language not in ('es','en','fr'):raise ValueError('Datos de clonación no válidos.')
+        with self.lock:
+            current=self.voice_agents
+            if enabled and current and self.cloning_language==language:return self.status()
+            created=None
+            if enabled and self.status()['active']:
+                if not self.voice_agents_factory:raise ValueError('La clonación no está disponible en esta traducción.')
+                created=self.voice_agents_factory(language)
+            self.voice_agents=created;self.cloning_language=language if created else None
+            if self.bridge:self.bridge.voice_agents=created
+        if current:current.close()
         return self.status()
     def close(self):
         self.stop()

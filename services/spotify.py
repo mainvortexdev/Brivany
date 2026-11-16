@@ -65,34 +65,43 @@ class SpotifyService:
             from services.google_oauth import WindowsDPAPIProtector
             protector=WindowsDPAPIProtector()
         self.protector=protector;self.http=http;self.clock=clock;self.lock=threading.RLock()
-        self.tokens={};self.flow=None;self.generation=0;self.cache=None;self.cached_at=0;self.devices=[];self.devices_at=0;self.cooldown=0;self.selected_device=None;self.message='';self.library_cache={};self.library_items={};self.lyrics_provider=lyrics_provider or LyricsService(clock=clock)
+        self.tokens={};self.account={};self.flow=None;self.generation=0;self.cache=None;self.cached_at=0;self.devices=[];self.devices_at=0;self.cooldown=0;self.selected_device=None;self.message='';self.library_cache={};self.library_items={};self.lyrics_provider=lyrics_provider or LyricsService(clock=clock)
         self.playback_revision=getattr(self,'playback_revision',0)+1;self.sdk_snapshot=None;self.sdk_seen=0;self.local_player={'state':'idle','id':None,'message':''}
         self.library_sources={};self.queue_plan=None;self.queue_generation=0;self.queue_message='';self.queue_workers=True
         self.artwork_provider=artwork_provider or ArtworkService(clock=clock);self.current_fallback_at=-999
         self.account_checked_at=-999;self.account_device=None;self.account_observed=False;self.playback_interval=8;self.player_gain=None
         self.relay=relay or SpotifyRelay();self.start_polling=start_polling;self.poll_stop=threading.Event()
-        self.client_id=os.environ.get('BRIVANY_SPOTIFY_CLIENT_ID','').strip()
+        # This is Brivany's cached application identity, never a user's Spotify
+        # account or a developer ID supplied through the user's environment.
+        self.client_id='';self.application_access='unknown'
         config=self.root/'client.json'
         if not self.client_id and config.exists():
             try:self.client_id=json.loads(config.read_text())['client_id']
             except (OSError,ValueError,KeyError):pass
         if not re.fullmatch(r'[a-fA-F0-9]{32}',self.client_id):self.client_id=''
         token_file=self.root/'authorization.bin'
-        if self.client_id and protector.available and token_file.exists():
+        if protector.available and token_file.exists():
             try:
                 saved=json.loads(protector.unprotect(token_file.read_bytes()))
-                if saved.get('client_id')==self.client_id:self.tokens=saved['tokens']
+                protected_client=saved.get('client_id','')
+                if not self.client_id and isinstance(protected_client,str) and re.fullmatch(r'[a-fA-F0-9]{32}',protected_client):self.client_id=protected_client
+                if self.client_id and protected_client==self.client_id:
+                    account=self._account(saved.get('account')) if saved.get('account') else {}
+                    if not isinstance(saved.get('tokens'),dict):raise SpotifyError('Autorización protegida no válida.')
+                    self.tokens=saved['tokens'];self.account=account
             except Exception:self.message='Vuelve a vincular Spotify; no se pudo leer la autorización protegida.'
         self.resume=SpotifyResume(self.root,protector,clock);self.resume.load(self.client_id);self.restoring_until=0
     def status(self):
         with self.lock:
             self._load_rate_limit()
-            return {'configured':bool(self.client_id),'client_id':self.client_id,'connected':bool(self.tokens.get('refresh_token') or self.tokens.get('access_token')),
+            return {'configured':bool(self.client_id),'connected':bool(self.tokens.get('refresh_token') or self.tokens.get('access_token')),
+                'application_access':self.application_access,
+                'account':{'display_name':self.account.get('display_name','')} if self.account else None,
                 'retry_after':max(0,math.ceil(self.cooldown-self.clock())),
                 'pending':bool(self.flow and self.flow['until']>self.clock()),'message':self.message,'redirect_uri':REGISTER_REDIRECT,
                 'persistent':bool(self.protector.available),'lyrics_source':'LRCLIB / SyncLRC / Lyrics.ovh','queue_message':self.queue_message,'local_player':dict(self.local_player),'streaming_access':set(STREAMING_SCOPES.split())<=set(self.tokens.get('scope','').split()),'history_access':HISTORY_SCOPE in self.tokens.get('scope','').split(),'library_access':set(LIBRARY_SCOPES.split())<=set(self.tokens.get('scope',PLAYBACK_SCOPES).split())}
     def configure(self,client_id):
-        if not isinstance(client_id,str) or not re.fullmatch(r'[a-fA-F0-9]{32}',client_id.strip()):raise SpotifyError('Pega el Client ID de 32 caracteres de tu aplicación de Spotify.')
+        if not isinstance(client_id,str) or not re.fullmatch(r'[a-fA-F0-9]{32}',client_id.strip()):raise SpotifyError('La configuración de la aplicación Spotify no es válida.')
         with self.lock:
             if self.client_id!=client_id.strip():self.disconnect()
             self.client_id=client_id.strip();(self.root/'client.json').write_text(json.dumps({'client_id':self.client_id}),encoding='utf-8')
@@ -100,7 +109,7 @@ class SpotifyService:
     def _save(self):
         if not self.protector.available:return
         try:
-            raw=json.dumps({'client_id':self.client_id,'tokens':self.tokens}).encode()
+            raw=json.dumps({'client_id':self.client_id,'tokens':self.tokens,'account':self.account}).encode()
             encrypted=self.protector.protect(raw)
             path=self.root/'authorization.bin';temp=path.with_suffix('.tmp');temp.write_bytes(encrypted);temp.replace(path)
         except Exception:raise SpotifyError('No se pudo guardar la autorización en el almacén seguro del sistema.') from None
@@ -110,14 +119,16 @@ class SpotifyService:
             until=value.get('until',0)
             if value.get('client_id')==self.client_id and type(until) in (int,float) and math.isfinite(until):self.cooldown=max(self.cooldown,until)
         except (OSError,ValueError,TypeError):pass
-    def _request(self,method,path,*,form=None,data=None,authorized=True):
+    def _request(self,method,path,*,form=None,data=None,authorized=True,access_token=None):
         self._load_rate_limit()
         if self.clock()<self.cooldown:raise SpotifyError('Spotify pidió esperar. Se reanudará al terminar el plazo.',max(1,math.ceil(self.cooldown-self.clock())))
         headers={'Accept':'application/json','User-Agent':'BrivanyDesktop/0.1 (+https://brivany.example)'};body=None
         if authorized:
-            if not self.tokens:raise SpotifyError('Vincula tu cuenta de Spotify primero.')
-            if self.tokens.get('expires_at',0)<self.clock()+45:self._refresh()
-            headers['Authorization']='Bearer '+self.tokens['access_token']
+            if access_token is None:
+                if not self.tokens:raise SpotifyError('Vincula tu cuenta de Spotify primero.')
+                if self.tokens.get('expires_at',0)<self.clock()+45:self._refresh()
+                access_token=self.tokens['access_token']
+            headers['Authorization']='Bearer '+access_token
         if form is not None:body=urlencode(form).encode();headers['Content-Type']='application/x-www-form-urlencoded'
         elif data is not None:body=json.dumps(data).encode();headers['Content-Type']='application/json'
         code,meta,result=self.http(method,('https://api.spotify.com/v1' if authorized else 'https://accounts.spotify.com')+path,headers,body)
@@ -130,14 +141,25 @@ class SpotifyService:
             except OSError:pass
         if not 200<=code<300:
             messages={401:'La autorización ha caducado. Vuelve a vincular Spotify.',403:'Spotify no permite esta acción. Comprueba Premium y el acceso de tu cuenta a la app.',404:'Abre Spotify y comienza una canción en el dispositivo elegido.',429:'Spotify pidió esperar. Inténtalo de nuevo más tarde.'}
+            if code==403 and path=='/me':raise SpotifyError('Spotify todavía no permite que esta cuenta use Brivany. La cuenta debe estar autorizada para la aplicación en Spotify.')
             raise SpotifyError(messages.get(code,'Spotify no pudo completar la solicitud.'),max(0,math.ceil(self.cooldown-self.clock())))
         return result
-    def _set_tokens(self,value,*,refreshing=False):
+    def _read_tokens(self,value,*,refreshing=False):
         if not isinstance(value,dict) or not isinstance(value.get('access_token'),str) or value.get('token_type','').lower()!='bearer':raise SpotifyError('La autorización recibida no es válida.')
+        if not 1<=len(value['access_token'])<=8192 or any(ord(c)<33 or ord(c)==127 for c in value['access_token']):raise SpotifyError('La autorización recibida no es válida.')
         granted=set(value.get('scope',self.tokens.get('scope',PLAYBACK_SCOPES) if refreshing else SCOPES).split())
         if not set(PLAYBACK_SCOPES.split())<=granted:raise SpotifyError('Faltan permisos de reproducción. Vuelve a vincular Spotify.')
-        refresh=value.get('refresh_token') or self.tokens.get('refresh_token')
-        self.tokens={'access_token':value['access_token'],'refresh_token':refresh,'expires_at':self.clock()+max(60,min(86400,int(value.get('expires_in',3600)))),'scope':' '.join(sorted(granted))}
+        refresh=value.get('refresh_token') or (self.tokens.get('refresh_token') if refreshing else None)
+        if refresh is not None and (not isinstance(refresh,str) or not 1<=len(refresh)<=8192 or any(ord(c)<33 or ord(c)==127 for c in refresh)):raise SpotifyError('La renovación de Spotify no es válida.')
+        return {'access_token':value['access_token'],'refresh_token':refresh,'expires_at':self.clock()+max(60,min(86400,int(value.get('expires_in',3600)))),'scope':' '.join(sorted(granted))}
+    @staticmethod
+    def _account(value):
+        if not isinstance(value,dict) or not isinstance(value.get('id'),str) or not 1<=len(value['id'])<=128 or any(ord(c)<32 for c in value['id']):raise SpotifyError('Spotify no confirmó la cuenta vinculada.')
+        name=value.get('display_name') or value['id']
+        if not isinstance(name,str):raise SpotifyError('Spotify no confirmó la cuenta vinculada.')
+        return {'id':value['id'],'display_name':''.join(c for c in name if ord(c)>=32)[:120]}
+    def _set_tokens(self,value,*,refreshing=False):
+        self.tokens=self._read_tokens(value,refreshing=refreshing)
         if not refreshing:
             self.cache=None;self.devices=[];self.devices_at=0;self.selected_device=None
             self.library_sources.clear();self.queue_plan=None;self.queue_generation+=1;self.queue_message='';self.library_cache.clear();self.library_items.clear();self.lyrics_provider.clear();self.artwork_provider.clear();self.playback_revision=getattr(self,'playback_revision',0)+1;self.sdk_snapshot=None;self.sdk_seen=0;self.local_player={'state':'idle','id':None,'message':''}
@@ -152,6 +174,7 @@ class SpotifyService:
             try:published=self.relay.config()
             except SpotifyRelayError as error:raise SpotifyError(str(error)) from None
             if self.client_id!=published['client_id']:self.configure(published['client_id'])
+            self.application_access=published.get('access_mode','unknown')
             verifier=secrets.token_urlsafe(64);nonce=secrets.token_urlsafe(32);reader=secrets.token_urlsafe(32);launch=secrets.token_urlsafe(32)
             challenge=base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b'=').decode()
             try:created=self.relay.start(nonce=nonce,client_id=self.client_id,challenge=challenge,read_hash=hashlib.sha256(reader.encode()).hexdigest(),launch_hash=hashlib.sha256(launch.encode()).hexdigest())
@@ -198,14 +221,24 @@ class SpotifyService:
             if error:
                 self.message='Vinculación cancelada en Spotify.';raise SpotifyError(self.message)
             if not isinstance(code,str) or not 1<=len(code)<=4096:raise SpotifyError('Código inválido.')
-            try:self._set_tokens(self._request('POST','/api/token',form={'grant_type':'authorization_code','code':code,'redirect_uri':flow['redirect'],'client_id':self.client_id,'code_verifier':flow['verifier']},authorized=False))
+            try:
+                value=self._request('POST','/api/token',form={'grant_type':'authorization_code','code':code,'redirect_uri':flow['redirect'],'client_id':self.client_id,'code_verifier':flow['verifier']},authorized=False)
+                candidate=self._read_tokens(value)
+                # OAuth consent alone does not prove Spotify enabled this user
+                # for the application (notably in Development Mode).
+                account=self._account(self._request('GET','/me',access_token=candidate['access_token']))
+                previous_account,previous_tokens=self.account,self.tokens
+                try:self.account=account;self._set_tokens(value)
+                except Exception:
+                    self.account,self.tokens=previous_account,previous_tokens;raise
+                if account.get('id')!=previous_account.get('id'):self.resume.clear()
             except SpotifyError as exc:self.message=str(exc);raise
             self.message=''
             return self.status()
     def disconnect(self):
         with self.lock:
             self.resume.clear()
-            self.cancel_link();self.generation+=1;self.tokens={};self.cache=None;self.devices=[];self.selected_device=None;self.message='';self.cooldown=0;self.library_sources.clear();self.queue_plan=None;self.queue_generation+=1;self.queue_message='';self.library_cache.clear();self.library_items.clear();self.lyrics_provider.clear();self.artwork_provider.clear();self.playback_revision=getattr(self,'playback_revision',0)+1;self.sdk_snapshot=None;self.sdk_seen=0;self.local_player={'state':'idle','id':None,'message':''}
+            self.cancel_link();self.generation+=1;self.tokens={};self.account={};self.cache=None;self.devices=[];self.selected_device=None;self.message='';self.cooldown=0;self.library_sources.clear();self.queue_plan=None;self.queue_generation+=1;self.queue_message='';self.library_cache.clear();self.library_items.clear();self.lyrics_provider.clear();self.artwork_provider.clear();self.playback_revision=getattr(self,'playback_revision',0)+1;self.sdk_snapshot=None;self.sdk_seen=0;self.local_player={'state':'idle','id':None,'message':''}
             (self.root/'authorization.bin').unlink(missing_ok=True)
             return self.status()
     def playback(self):

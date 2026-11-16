@@ -1,0 +1,42 @@
+/* Blobatar's local motion is gated by visibility, execution and user settings. */
+[data-agent-avatar]{display:inline-block;position:relative;flex:none;line-height:0}
+[data-agent-avatar]>svg{display:block;width:100%;height:100%;overflow:visible;stroke:none;stroke-width:0;fill:initial}
+[data-agent-avatar][data-avatar-motion=paused] .mo-root,
+[data-agent-avatar][data-avatar-motion=paused] .mo-root *{animation-play-state:paused!important;transition:none!important}
+body[data-motion=false] [data-agent-avatar] .mo-root,
+body[data-motion=false] [data-agent-avatar] .mo-root *{animation:none!important;transition:none!important}
+body[data-economy=true] [data-agent-avatar] .mo-bob,
+body[data-economy=true] [data-agent-avatar] .mo-eyes{animation-play-state:paused!important}
+.agent-mini.agent-blobatar{width:24px;height:26px}
+.agent-mini.agent-blobatar>svg{width:24px;height:24px}
+#tools .agent-mini.agent-blobatar>svg{width:24px;height:24px}
+.agent-mini.agent-blobatar .agent-mini-status{bottom:1px;right:1px}
+#agent-detail .agent-detail-heading{display:flex;gap:8px;align-items:center;margin:4px 0 10px}
+#agent-detail .agent-detail-heading h2{margin:0;min-width:0}
+#agent-detail-avatar{width:36px;height:36px}
+.agent-alert-avatar{width:28px;height:28px;font-style:normal}
+.agent-alert-avatar[hidden]{display:none}
+@media(prefers-reduced-motion:reduce){
+ [data-agent-avatar] .mo-root,[data-agent-avatar] .mo-root *{animation:none!important;transition:none!important}
+}
+[data-avatar-style=companion] .companion-root{transform-origin:50% 80%;animation:companion-breathe 2.1s ease-in-out infinite;animation-play-state:paused}
+[data-avatar-style=companion][data-avatar-motion=running] .companion-root{animation-play-state:running}
+[data-avatar-style=companion] .companion-eyes{transform-origin:50% 51%;animation:companion-blink 6.2s ease-in-out infinite;animation-play-state:paused}
+[data-avatar-style=companion][data-avatar-motion=running] .companion-eyes{animation-play-state:running}
+@keyframes companion-breathe{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-2px) rotate(1.2deg)}}
+@keyframes companion-blink{0%,43%,47%,100%{transform:scaleY(1)}45%{transform:scaleY(.12)}}
+
+/* Float the entire character. Eyes retain their seeded pose and only blink. */
+[data-agent-avatar] .mo-root{animation:none;transition:none;translate:none;transform:none}
+[data-agent-avatar] .mo-root:hover{transform:none}
+[data-agent-avatar] .mo-breathe{animation:briva-agent-float var(--briva-float-duration,9s) ease-in-out var(--briva-float-phase,0s) infinite}
+[data-agent-avatar] .mo-bob{animation:none;translate:none;transform:none}
+[data-agent-avatar] .mo-eyes{animation:none;translate:none;rotate:none;scale:none;transform:none}
+[data-agent-avatar] .mo-eye{animation:none}
+[data-agent-avatar] .mo-eye>*{animation:briva-agent-blink var(--briva-blink-duration,6s) linear var(--briva-blink-phase,0s) infinite;scale:none;rotate:none}
+@keyframes briva-agent-float{0%,100%{transform:translate(.4px,.5px) rotate(-1.2deg)}50%{transform:translate(-.6px,-1.6px) rotate(1.2deg)}}
+@keyframes briva-agent-blink{0%,44%,48%,100%{transform:scaleY(1)}46%{transform:scaleY(.08)}}
+body[data-economy=true] [data-agent-avatar] .mo-breathe{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){[data-agent-avatar] .mo-root,[data-agent-avatar] .mo-root *{animation:none!important;transition:none!important}}
+
+[data-agent-state=running]>svg,[data-agent-state=planning]>svg,[data-agent-state=reviewing]>svg{filter:drop-shadow(0 0 3px #0071e348) drop-shadow(0 0 6px #0071e31c)}[data-agent-avatar]>svg{transition:filter .6s ease}@media(prefers-reduced-motion:reduce){[data-agent-avatar]>svg{transition:none}}

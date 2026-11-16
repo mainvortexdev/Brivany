@@ -14,6 +14,6 @@ export async function connectDesktop(endpoint='ws://127.0.0.1:48217/connect'){
   const response=await reply(socket,{type:'connect',protocol:1},'connected');
   const relay=new URL(response.websocket_url);if(relay.origin!==address.origin||relay.pathname!=='/sync'||relay.search||relay.hash||relay.username||relay.password||typeof response.token!=='string'||response.token.length<16||response.token.length>128)throw Error('Autorización local no válida.');
   const prefix=response.prefix_url===address.origin+'/prefix'?response.prefix_url:null;
-  return {...response,prefix_url:prefix,video_url:address.origin+'/video',workspace_url:address.origin+'/workspace'};
+  return {...response,prefix_url:prefix,video_url:address.origin+'/video',workspace_url:address.origin+'/workspace',music_url:address.origin+'/music'};
  }finally{socket.close();}
 }

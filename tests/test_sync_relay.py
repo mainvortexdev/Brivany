@@ -15,7 +15,7 @@ from services.work.sync_relay import SyncRelay
 from services.work.selected_video import SelectedVideoHub
 from services.work.video_prefix import VideoPrefixCache, Entry, MAX_FRAMES, PCM_BYTES
 from packages.providers import river_translation as river
-from packages.providers.prefix_translation import PreparedPrefix, PrefixTurn
+from packages.providers.prefix_translation import PreparedPrefix, PrefixTurn, PREFIX_MS
 from packages.providers.river_translation import RiverBridge,VoiceSamples
 from packages.providers.acoustic_speakers import SessionSpeakers
 from tests import test_river_translation as river_fixture
@@ -403,7 +403,7 @@ class SynchronizedPipelineTests(unittest.TestCase):
         prepared_input=[];live_packets=[]
         def prefix_factory(raw,*,cancelled):
             prepared_input.append(len(raw))
-            return PreparedPrefix(7000,7000,(PrefixTurn('1',0,800,'A','Prepared speech.','speech'),
+            return PreparedPrefix(PREFIX_MS,PREFIX_MS,(PrefixTurn('1',0,800,'A','Prepared speech.','speech'),
                 PrefixTurn('2',900,1600,None,'Omitted song.','singing')),raw)
         def asr(socket):
             socket.recv();socket.send(json.dumps({'sessionId':'synthetic-live'}));live_packets.append(socket.recv())
@@ -434,7 +434,7 @@ class SynchronizedPipelineTests(unittest.TestCase):
             self.assertEqual(json.loads(socket.recv(timeout=2))['type'],'prefix-capture')
             for _ in range(MAX_FRAMES):socket.send(bytes(3840))
             socket.send(json.dumps({'type':'finish'}));ready=json.loads(socket.recv(timeout=2))
-            self.assertEqual((ready['type'],ready['duration_ms'],ready['resume_from_ms']),('prefix-ready',7000,7000))
+            self.assertEqual((ready['type'],ready['duration_ms'],ready['resume_from_ms']),('prefix-ready',PREFIX_MS,PREFIX_MS))
             self.assertEqual(ready['turns'][1]['text'],'')
         with connect(grant['prefix_url'],origin=ORIGIN,proxy=None) as socket:
             socket.send(json.dumps({'type':'authenticate','token':token}));socket.recv(timeout=2)
@@ -446,20 +446,86 @@ class SynchronizedPipelineTests(unittest.TestCase):
         server=serve(asr,'127.0.0.1',0,compression=None);threading.Thread(target=server.serve_forever,daemon=True).start()
         try:
             with patch.object(river,'MUSE_URL',f'ws://127.0.0.1:{server.socket.getsockname()[1]}'),patch.object(river,'PCMRateGate',TestClock),patch.object(river,'SessionSpeakers',return_value=session),self.socket(inline=True,token=token,prefix_options=options) as socket:
-                for _ in range(MAX_FRAMES-1):socket.send(bytes(3840))
-                socket.send(bytes(1920)+b'\x01\x00'*960)
+                # The 10 s prefix ends exactly on a frame boundary (125 x 80 ms):
+                # the first live frame after it must reach Muse whole, once.
+                for _ in range(MAX_FRAMES):socket.send(bytes(3840))
+                socket.send(b'\x01\x00'*1920)
                 socket.send(json.dumps({'type':'finish'}));events=[]
                 while True:
                     event=json.loads(socket.recv(timeout=5));events.append(event)
                     if event['type'] in {'done','error'}:break
                 self.assertEqual(event['type'],'done',event)
         finally:server.shutdown()
-        self.assertEqual(live_packets,[b'\x01\x00'*960])
-        self.assertEqual(next(row['source_start_ms'] for row in events if row['type']=='live-asr-start'),7000)
+        self.assertEqual(live_packets,[b'\x01\x00'*1920])
+        self.assertEqual(next(row['source_start_ms'] for row in events if row['type']=='live-asr-start'),PREFIX_MS)
         self.assertEqual(next(row['reason'] for row in events if row['type']=='source-skipped'),'singing')
         cues=[row for row in events if row['type']=='dub-cue']
         self.assertEqual([(row['cue_id'],row['source_start_ms'],row['speaker_index']) for row in cues],
-                         [('utterance-prefix-1',0,1),('utterance-1',7000,2)])
+                         [('utterance-prefix-1',0,1),('utterance-1',PREFIX_MS,2)])
+
+    def test_prepared_opening_translation_is_spoken_without_a_translation_request(self):
+        translated=[];spoken=[]
+        def prefix_factory(raw,*,cancelled):
+            return PreparedPrefix(PREFIX_MS,PREFIX_MS,(PrefixTurn('1',0,800,'A','Prepared speech.','speech',
+                translations=(('fr','Traduction préparée.'),('en','Prepared translation.'))),),raw)
+        def asr(socket):
+            socket.recv();socket.send(json.dumps({'sessionId':'synthetic-live'}));socket.recv()
+            for event in [{'type':'speechStart','turnId':1,'audioProcessedMs':0},
+                {'type':'speechEnd','turnId':1,'audioProcessedMs':40},
+                {'type':'speechComplete','turnId':1,'audioProcessedMs':40,'transcript':'Live speech.'}]:
+                socket.send(json.dumps(event))
+            socket.recv()
+        class Translator:
+            usage={}
+            def stream(self,text,*args,**kwargs):
+                translated.append(text);yield 'Traduction en direct.'
+            def stream_for_duration(self,text,target,history,*,duration_ms):
+                return self.stream(text,target,history)
+            def close(self):pass
+        class TestClock:
+            def __init__(self,_):pass
+            def accept(self,*_):return True
+        original_tts=river.connect
+        def connect_recording(url,**options):
+            socket=original_tts(url,**options)
+            if url!=river.CARTESIA_URL:return socket
+            send=socket.send
+            def recorded(message):
+                event=json.loads(message)
+                if event.get('transcript'):spoken.append(event['transcript'])
+                return send(message)
+            socket.send=recorded;return socket
+        self.relay.automatic_origin=ORIGIN;self.relay.automatic_enabled=True
+        self.relay.video_prefix=VideoPrefixCache(prefix_factory)
+        self.expressive=False;self.translator_factory=Translator
+        self.content_filter_factory=lambda:type('Classifier',(),{'classify':lambda _,pcm:{'kind':'speech','skip':False,'latency_ms':0.}})()
+        session=SessionSpeakers(extractor=lambda pcm:dict(available=True,embedding=np.eye(192,dtype=np.float32)[0],reason='test_speech',windows=1,latency_ms=0.))
+        grant=self.relay.connect_extension(ORIGIN);token=grant['token'];source='youtube:sr_iLGKNsxU'
+        with connect(grant['prefix_url'],origin=ORIGIN,proxy=None) as socket:
+            socket.send(json.dumps({'type':'authenticate','token':token}));socket.recv(timeout=2)
+            socket.send(json.dumps({'type':'prepare-video','source':source,'position_ms':220,'generation':'first_generation'}))
+            self.assertEqual(json.loads(socket.recv(timeout=2))['type'],'prefix-capture')
+            for _ in range(MAX_FRAMES):socket.send(bytes(3840))
+            socket.send(json.dumps({'type':'finish'}));ready=json.loads(socket.recv(timeout=2))
+        self.assertNotIn('translations',json.dumps(ready),'Prepared translations stay on the desktop')
+        options={'prefix_id':ready['prefix_id'],'prefix_source':source,'prefix_position_ms':220}
+        server=serve(asr,'127.0.0.1',0,compression=None);threading.Thread(target=server.serve_forever,daemon=True).start()
+        try:
+            with patch.object(river,'MUSE_URL',f'ws://127.0.0.1:{server.socket.getsockname()[1]}'),patch.object(river,'PCMRateGate',TestClock),\
+                 patch.object(river,'SessionSpeakers',return_value=session),patch.object(river,'connect',connect_recording),\
+                 self.socket(inline=True,token=token,prefix_options=options) as socket:
+                for _ in range(MAX_FRAMES):socket.send(bytes(3840))
+                socket.send(b'\x01\x00'*1920)
+                socket.send(json.dumps({'type':'finish'}));events=[]
+                while True:
+                    event=json.loads(socket.recv(timeout=5));events.append(event)
+                    if event['type'] in {'done','error'}:break
+                self.assertEqual(event['type'],'done',event)
+        finally:server.shutdown()
+        self.assertEqual(translated,['Live speech.'],'The prepared opening must not be translated again')
+        self.assertIn('Traduction préparée.',''.join(spoken))
+        prefix_usage=[row for row in events if row['type']=='stage-metrics' and row.get('stage')=='caption_cache_hit']
+        self.assertTrue(prefix_usage,'The prepared translation is reported as a cache hit')
 
     def test_inline_capture_starts_with_muse_while_cartesia_is_connecting(self):
         original=river.connect;unblock=threading.Event();entered=threading.Event()

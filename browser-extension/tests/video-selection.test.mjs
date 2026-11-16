@@ -95,8 +95,8 @@ async function prefixLifecycle({tracksInitially=true}={}){
  api.observeVideoPrefix(()=>video);await new Promise(setImmediate);
  return {api,document,video,ports,contexts,emit,tracks:value=>hasTracks=value,
   flush:()=>new Promise(setImmediate),
-  capture:()=>{ports.at(-1).receive({type:'prefix-capture'});for(let i=0;i<88;i++)worklets.at(-1).port.onmessage({data:{buffer:new ArrayBuffer(3840)}});},
-  ready:()=>ports.at(-1).receive({type:'prefix-ready',prefix_id:'p'.repeat(32),position_ms:0,duration_ms:7000,resume_from_ms:7000,turns:[]}),
+  capture:()=>{ports.at(-1).receive({type:'prefix-capture'});for(let i=0;i<125;i++)worklets.at(-1).port.onmessage({data:{buffer:new ArrayBuffer(3840)}});},
+  ready:()=>ports.at(-1).receive({type:'prefix-ready',prefix_id:'p'.repeat(32),position_ms:0,duration_ms:10000,resume_from_ms:10000,turns:[]}),
   cleanup:()=>windowCallbacks.get('pagehide')?.()};
 }
 
@@ -109,7 +109,7 @@ test('an early missing audio track can recover on canplay without repeating a pr
   assert.equal(run.ports.length,2);assert.equal(run.ports[1].sent.filter(row=>row.type==='prefix-start').length,1);
   run.emit('playing');run.emit('canplay');await run.flush();assert.equal(run.ports.length,2);
   run.capture();run.ready();
-  assert.equal(run.ports[1].sent.filter(row=>row.type==='prefix-pcm').length,88);
+  assert.equal(run.ports[1].sent.filter(row=>row.type==='prefix-pcm').length,125);
   assert.equal(run.ports[1].sent.filter(row=>row.type==='prefix-finish').length,1);
   assert.equal(run.document.documentElement.dataset.brivanyPrefixState,'ready');
  }finally{run.cleanup();}
@@ -125,7 +125,7 @@ test('completed prefix analysis survives seeking, rate changes and a hidden tab,
   run.video.playbackRate=1;run.document.visibilityState='visible';run.emit('visibilitychange');run.emit('playing');await run.flush();
   assert.equal(run.ports.length,1,'Reuse must not open a second provider request');
   const prefix=await run.api.takeVideoPrefix(run.video);
-  assert.equal(prefix.prefixId,'p'.repeat(32));assert.equal(prefix.resume,7000);assert.equal(prefix.position,0);
+  assert.equal(prefix.prefixId,'p'.repeat(32));assert.equal(prefix.resume,10000);assert.equal(prefix.position,0);
   assert.equal(await run.api.takeVideoPrefix(run.video),null);
  }finally{run.cleanup();}
 });

@@ -1,6 +1,6 @@
 import {DurableObject} from 'cloudflare:workers';
 
-const BASE = 'https://brivany.example';
+const BASE = 'https://brivany.vetsa.es';
 const REDIRECT = BASE + '/spotify/callback';
 const SCOPES = 'user-read-playback-state user-read-currently-playing user-modify-playback-state playlist-read-private playlist-read-collaborative user-library-read user-read-recently-played streaming user-read-private user-read-email';
 const COOKIE = '__Secure-brivany_spotify';
@@ -38,8 +38,8 @@ async function verify(state, env) {
   return valid?{nonce:match[1],expires}:null;
 }
 function page(message, status=200, cookie=null) {
-  const html='<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Spotify · Melodi WorkSpace</title><script src="/spotify/return.js" defer></script><style>html{color-scheme:dark;background:#080909;color:#eeeae2;font:16px system-ui}body{min-height:90vh;display:grid;place-items:center;margin:0}main{max-width:440px;padding:32px}h1{font-size:25px;font-weight:500}p{color:#a6b1ab;line-height:1.7}a{color:inherit}</style></head><body><main><h1>Melodi WorkSpace</h1><p>'+message+'</p><a href="/">Brivany</a></main></body></html>';
-  const result=new Headers({...headers,'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"});
+  const html='<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Spotify · Melodi WorkSpace</title><script src="/spotify/return.js" defer></script><style>@font-face{font-family:"Brivany Editorial";src:url("/assets/fonts/BrivanyEditorial-Light.woff2") format("woff2");font-style:normal;font-weight:300;font-display:swap}@font-face{font-family:"Brivany Editorial";src:url("/assets/fonts/BrivanyEditorial-Regular.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}@font-face{font-family:"Brivany Editorial";src:url("/assets/fonts/BrivanyEditorial-Medium.woff2") format("woff2");font-style:normal;font-weight:500 900;font-display:swap}html{color-scheme:dark;background:#080909;color:#eeeae2;font:16px "Brivany Editorial",sans-serif}body{min-height:90vh;display:grid;place-items:center;margin:0}main{max-width:440px;padding:32px}h1{font-size:25px;font-weight:500}p{color:#a6b1ab;line-height:1.7}a{color:inherit}</style></head><body><main><h1>Melodi WorkSpace</h1><p>'+message+'</p><a href="/">Brivany</a></main></body></html>';
+  const result=new Headers({...headers,'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; script-src 'self'; font-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"});
   if(cookie)result.set('Set-Cookie',cookie);
   return new Response(html,{status,headers:result});
 }
@@ -99,7 +99,10 @@ export async function handleSpotifyOAuth(request,env){
     if(path==='/spotify/return.js'&&request.method==='GET')return new Response("history.replaceState(null,'','/spotify/callback');",{headers:{...headers,'Content-Type':'text/javascript; charset=utf-8','Content-Security-Policy':"default-src 'none'"}});
     const clientId=env.SPOTIFY_CLIENT_ID;
     if(!/^[a-fA-F0-9]{32}$/.test(clientId||'')||!env.SPOTIFY_OAUTH_SESSIONS||!env.SPOTIFY_RELAY_SIGNING_KEY)return json({error:'unavailable'},503);
-    if(path==='/api/spotify/config'&&request.method==='GET')return json({client_id:clientId,redirect_uri:REDIRECT,expires_in:TTL});
+    const accessMode=env.SPOTIFY_ACCESS_MODE||'development';
+    if(!['development','extended'].includes(accessMode))return json({error:'invalid_application_configuration'},503);
+    // Declared by the publisher after Spotify approval, never a client setting.
+    if(path==='/api/spotify/config'&&request.method==='GET')return json({client_id:clientId,redirect_uri:REDIRECT,expires_in:TTL,access_mode:accessMode,application_name:'Brivany',premium_for_playback:true});
     if(path==='/api/spotify/oauth/start'&&request.method==='POST'){
       const data=await body(request);
       if(Object.keys(data).some(k=>!['nonce','client_id','challenge','read_hash','launch_hash'].includes(k))||data.client_id!==clientId||!token(data.nonce)||!token(data.challenge)||!digest(data.read_hash)||!digest(data.launch_hash))return json({error:'invalid_request'},400);
@@ -117,7 +120,7 @@ export async function handleSpotifyOAuth(request,env){
       const result=await env.SPOTIFY_OAUTH_SESSIONS.getByName(valid.nonce).launch(await sha256(launch),await sha256(browser));
       if(result.status!==200)return page('Esta vinculación ya no está disponible. Comienza de nuevo desde Melodi.',result.status);
       const target=new URL('https://accounts.spotify.com/authorize');
-      target.search=new URLSearchParams({response_type:'code',client_id:clientId,redirect_uri:REDIRECT,scope:SCOPES,state,code_challenge_method:'S256',code_challenge:result.challenge}).toString();
+      target.search=new URLSearchParams({response_type:'code',client_id:clientId,redirect_uri:REDIRECT,scope:SCOPES,state,code_challenge_method:'S256',code_challenge:result.challenge,show_dialog:'true'}).toString();
       return new Response(null,{status:303,headers:{...headers,Location:target.toString(),'Set-Cookie':COOKIE+'='+browser+'; Path=/spotify/; Secure; HttpOnly; SameSite=Lax; Max-Age='+TTL}});
     }
     if(path==='/spotify/callback'&&request.method==='GET'){

@@ -1,5 +1,263 @@
 # 17. Bitácora local y evidencias
 
+16 de noviembre, preparación de la vista previa pública 0.2.0 con instalador
+Windows y README de prueba. Contacto cambiado a daniel@vetsa.es y publicado en
+la web oficial; se conservan los servicios OAuth de Google para las cuentas del
+equipo. Instalación, arranque WebView2 y desinstalación reales en perfil aislado,
+con preferencias conservadas; auditoría del paquete sin rutas privadas ni
+credenciales configuradas. Pasan contratos, historial, vinculación y dependencias.
+Limpieza de cachés identificadas y archivo original de fuentes preservado fuera
+de Git. No se acredita aprobación de Google ni prueba completa de proveedores.
+[Cambios, comprobaciones y límites](publicacion-20261116.md).
+
+14 de noviembre, sonido de los videos de Melodi más suave. El usuario encontró
+molestos los efectos y notó que la música empezaba fuerte y bajaba de golpe. La
+mezcla ahora hace un fundido de entrada, baja la música de forma gradual y
+anticipada a la voz, y usa menos efectos, más blandos y ~6 dB más bajos. Video de
+Casa Selva Azul regenerado sin llamadas externas; revisor sin bloqueos.
+
+14 de noviembre, Melodi hace un video para un cliente: «How to book» de Casa
+Selva Azul, 9:16, voz de Melodi en inglés, con la tipografía, los colores y el
+logo de casaselvaazul.com. La capacidad suma kits de marca de cliente (fuera
+del repositorio), idioma inglés, formato corto de 12–22 s y siete
+ilustraciones de reserva. Se leyó la web (5 páginas) y se descargaron el logo y
+las fuentes Cormorant Garamond y Montserrat (OFL, con licencia). El guion sigue
+la numeración y los botones reales de la web, no da precios porque la web no
+los publica y deja claro que es una solicitud. Resultado: 18,2 s en lugar de
+15 (seis pasos legibles), 0 bloqueos del revisor, 97 % de acierto de una
+transcripción independiente. Consumo: 27 llamadas a Meta (20 rechazadas por el
+contrato), 8 voces de Cartesia y 3 transcripciones de Deepgram; importe no
+consultado. Sin audición humana ni publicación.
+[Entrega](../Exports/Casa-Selva-Azul-Como-Reservar-20261114/LEEME.md).
+
+13 de noviembre, transferencia por el borde PC ↔ móvil. El usuario confirmó
+ambos sentidos: receptor OLE y aura por píxel en Windows tras conectar por QR,
+selección táctil dentro de la página del teléfono, botón alternativo y cola
+acotada. Pasan 19 pruebas locales y recorridos de interfaz, arrastre real entre
+procesos propios y contenido bidireccional con Worker local y archivos
+sintéticos. Se conservan los fallos intermedios del banco y sus correcciones.
+Sin inferencia ni proveedor real; GPU sin medir. No se acredita aún un móvil
+físico, publicación ni actualización de la instalación.
+[Entrega, pruebas y límites](transferencia-borde-20261113.md).
+
+Comprobación posterior del mismo hito: también pasan WebKit, la sala Worker,
+el almacenamiento de Safari y las 22 regresiones de QR/HTTPS. Se corrigió la
+puntuación de tres catálogos de idiomas y la sincronización de un ensayo HTTPS;
+OpenCV 4.13 se preparó solo en desarrollo (descarga de 40,1 MB). Los fallos
+intermedios permanecen registrados. Publicación y reinicio siguen pendientes.
+
+12 de noviembre, tercera revisión de los videos de Melodi. Los subtítulos
+copiaban la forma hablada («Más en vetsa punto es») y el plano «Mantengo su voz
+al traducir» de la historia dejaba la mitad inferior vacía hasta que terminaba
+la clonación; el revisor sólo medía la ocupación con el plano montado. Se
+añadió a la capacidad la conversión hablada→escrita para subtítulos y SRT
+(«vetsa.es», «@», «%») con bloqueo de formas habladas en pantalla, la
+ocupación se mide también al inicio de cada plano y el kit de clonación es una
+tarjeta que llena el alto desde el principio. Mismos guiones; 0 llamadas a Meta
+y Cartesia, 3 transcripciones de Deepgram (importe no consultado). 43 pruebas
+de `motion-social`. Sin audición humana ni publicación.
+
+12 de noviembre, segunda revisión de los videos de Melodi (independiente).
+Señaló verticales con el 40 % inferior vacío e ilustraciones de ~40 % del
+ancho, un gancho de reel estático, antetítulos redundantes y pleonasmos, una
+tarjeta «Lukas · Deutsch» con frase en inglés, llamadas a la acción sin destino
+y etiquetas sin tilde. Se corrigió la capacidad: plantillas verticales a toda
+la altura con ilustración a todo el ancho seguro, gancho obligatorio con
+ilustración en movimiento ya visible en el fotograma 0, revisor que bloquea
+franjas vacías, ilustraciones estrechas y ganchos estáticos, y reglas de texto
+(`social_copy.py`) para redundancia, pleonasmos, idioma de los ejemplos,
+destino real («Más en vetsa.es», «enlace en la bio») y tildes. El revisor
+bloqueó dos renders intermedios (reel y YouTube) hasta corregir las
+plantillas. Versión regenerada: 0 bloqueos; acierto de una transcripción
+independiente 100/97,2/98,9 %. Consumo: 24 llamadas a Meta (14 en intentos
+rechazados), 21 voces de Cartesia, 6 transcripciones de Deepgram; importe no
+consultado. 41 pruebas de `motion-social`. Sin audición humana.
+[Detalle](melodi-videos-redes-20261111.md#composición-gancho-y-textos-revisión-del-12-de-noviembre).
+
+11 de noviembre, revisión de los tres videos de Melodi y corrección de la
+capacidad. La revisión encontró: la voz solo 9,5–12 dB sobre la música (1–2 dB
+en pasajes suaves), absolutos que prometían de más («Entiende cada palabra»,
+«para no perderte nada», «sin esfuerzo»), la duración citada en el texto de
+YouTube, un error de concordancia y etiquetas de kits pequeñas en el reel. Se
+corrigió la capacidad, no solo los videos: mezcla con más atenuación y hueco
+en la banda de la voz (16–19 dB), reglas nuevas del contrato, zona segura de
+TikTok en el reel y un revisor automático (`social_review.py`) que bloquea la
+entrega por textos fuera de zona, recortados, pequeños o tapados, voz fuera de
+su plano o voz poco clara. Versión regenerada: 0 bloqueos; una transcripción
+independiente de las mezclas (Deepgram) acierta 94,7/98,9/98,9 % y los
+subtítulos quedan a ≤ 180 ms (p95) de la voz oída. Consumo: 3 llamadas a
+Meta, 3 voces de Cartesia y 8 transcripciones de Deepgram; importe no
+consultado. Pasan 36 pruebas de `motion-social`. Sin audición humana.
+[Detalle](melodi-videos-redes-20261111.md#revisión-automática-antes-de-entregar).
+
+11 de noviembre, Melodi crea videos para redes (edición 4). Nueva ruta en
+`services/motion`: Melodi (planificador Meta) elige tema, escribe guion,
+titulares y texto de publicación y elige entre 15 kits de ilustración animada;
+el código local valida el plan con reglas de honestidad (nada de «al
+instante», latencias, cifras de usuarios ni clonación inmediata), cronometra
+cada plano con su voz real de Cartesia, sintetiza música y efectos en los
+instantes visuales, renderiza con Edge sin red y entrega MP4, portada,
+subtítulos, texto, capítulos y miniatura de YouTube. Formatos: historia de
+Instagram, reel Instagram/TikTok y YouTube 16:9. Pasan `motion-social` (33
+pruebas locales, voz sustituida), `motion` y las suites del router.
+Prueba real: tres videos en `Exports/Melodi-Redes-20261111/` (16,8 s, 38,0 s
+y 1:46; −14 LUFS). Consumo: 21 llamadas de planificación a Meta (6 en intentos
+fallidos) y 25 solicitudes de voz a Cartesia; importe no consultado. Fotogramas
+y portadas revisados; audio medido, no escuchado. Sin publicación. Hallazgo:
+devolver el Timeline de GSAP desde `page.evaluate` hacía caer el renderizador.
+[Capacidad, pruebas y límites](melodi-videos-redes-20261111.md).
+
+11 de noviembre, voz live sin respuesta (WorkSpace y chat). Diagnóstico local:
+Muse acepta la sesión y transcribe, y Meta responde en 3,2 s. Abriendo la
+ventana con depuración WebView2 local, `getUserMedia` falla con
+«Requested device not found»: Windows no tiene ningún micrófono activo (los
+auriculares Bluetooth G300, G-7000 y siindoo-H6 y la entrada Realtek están
+desconectados). No es un fallo de Brivany. El chat ahora explica en español que
+no hay micrófono conectado en lugar del error del navegador; comprobado en la
+ventana real. Brivany reiniciado sin el puerto de depuración.
+
+11 de noviembre, prueba con video real (95 s de YouTube, descargados con
+permiso a `tmp/`). Solo reconocimiento: Deepgram Flux confirma cada cláusula
+0,73–0,88 s (mediana) después de decirse, frente a 1,70 s de Ink-2. Se adopta
+Flux. Se corrigieron dos fallos que solo aparecieron con habla real: el
+separador de cláusulas se atascaba cuando Flux reescribía la puntuación de un
+turno largo (ahora cuenta palabras), y el ping de websockets cerraba la conexión
+con Deepgram. Hallazgo: la cuota gratuita de Groq (200.000 tokens al día) se
+agotó hoy con las pruebas. Con el prompt anterior equivale a ~10–20 min de
+Directa diarios; se compactó el prompt del intérprete. La cadena completa en
+video real queda pendiente de cuota.
+[Detalle](directa-latencia-20261111.md#prueba-con-video-real).
+
+11 de noviembre, Deepgram Flux en la Directa. Con la clave aportada por el
+usuario (solo en `.env`) se midieron Nova-3 y Flux en el mismo banco. Flux
+confirma cada cláusula en ~1,2 s frente a ~2,3 s de Ink-2. Al empezar a hablar
+o tras una pausa, la traducción suena 1,7–2,5 s después frente a 2,8–3,2 s; con
+habla continua, la ganancia baja a ~0,2 s porque domina la cola de voz. Nova-3
+no mejoró a Ink-2. La Directa usa Flux cuando el destino es español o francés e
+Ink-2 cuando es inglés (Flux solo entiende inglés). Pasan 5 pruebas nuevas
+del adaptador y las suites de traducción.
+[Mediciones](directa-latencia-20261111.md#deepgram-misma-tarde).
+
+11 de noviembre, Directa más rápida. Un banco con narración local y la cadena
+real (Ink-2, Groq, Cartesia) mostró que el retraso crecía con habla rápida,
+porque el español dura más que el original, y que confirmar cada cláusula costaba
+unos 3 s. Cambios: traducción de intérprete con presupuesto de tiempo, velocidad
+de voz hasta 1,5×, descarte de cláusulas que llevan más de 3 s esperando y
+confirmación con 6 palabras desde el último parcial de Ink. Retraso medio al
+final de cláusula: de 7,85 a ~5,5 s con habla rápida y de 4,56 a ~3,9 s con
+habla natural. El límite restante es Ink-2, con parciales ~1,5 s por detrás.
+Pasan river-translation 123 y el resto de suites de traducción.
+[Medición y límites](directa-latencia-20261111.md).
+
+11 de noviembre, primera prueba real correcta del doblaje programado en el Brave
+del usuario (extensión 0.6.2, pestaña nueva). La extensión recibió 3.068.993
+bytes de subtítulos de YouTube: 3.260 frases con el tiempo de cada palabra. Las
+envió a Brivany y la selección quedó como `timeline_only`, con el reloj del
+video. La Directa tradujo con Groq en 234–657 ms, con un caso de 3,2 s, y
+sintetizó con Cartesia en 0,5–1,2 s. Cada frase se reprodujo en su momento.
+Solo la primera, a 7,48 s, llegó 2 s tarde porque la traducción se inició con
+el video ya avanzado. El usuario confirma que funciona. La causa del fallo
+anterior es probablemente la pestaña con el código de la versión previa, ya
+que una recarga de la extensión no lo renueva en las pestañas abiertas. No está
+demostrado.
+
+11 de noviembre, extensión 0.6.2 y registro de selecciones. La prueba con 0.6.1
+no dejó diagnóstico en el Brave del usuario: la extensión estaba cargada y con
+permiso en YouTube, pero la página nunca habló con ella. Se añaden un registro
+`worker_started` en la extensión y, en Brivany,
+`.local/translation/timeline-events.jsonl`, con selección, subtítulos, reloj,
+cierre y etapas del doblaje programado, sin texto. Pasan selected-video 16,
+sync-relay 108, river-translation 120, workspace-translation 16,
+translation-voices 28 y la extensión 97. Brivany reiniciado; franja de AppBar
+limpiada. Pendiente la prueba del usuario.
+
+11 de noviembre, extensión 0.6.1: diagnóstico del corte. En la prueba del
+usuario Brave no abrió ninguna conexión con Brivany. Brivany sí acepta la línea
+de tiempo: una simulación local de la extensión quedó seleccionada con sus
+subtítulos. En Brave aislado, YouTube contestó 200 con 0 bytes a la petición de
+subtítulos de su propio reproductor, así que la extensión nunca tuvo
+transcripción que enviar. Se añaden un registro local de diagnóstico, sin texto
+ni audio, en `chrome.storage.local` y la petición de la pista original cuando
+la que llega es una traducción automática de YouTube (`tlang`). Pasan 97 pruebas
+de la extensión. Pendiente: leer el diagnóstico del Brave real. Si YouTube
+también entrega vacío allí, valorar una API externa de transcripción (p. ej.
+Supadata) como respaldo.
+
+11 de noviembre, extensión 0.6.0 silenciosa y doblaje programado. Sin clic
+ni textos, la extensión envía a Brivany los subtítulos completos de YouTube, con
+el tiempo de cada palabra, y el reloj del video. La Directa traduce y sintetiza
+por adelantado y entrega cada frase al inicio de su primera palabra. En la
+medición real llegó 9–39 ms tras ese inicio y comprimió sin cambiar el tono.
+Falta la prueba en el Brave del usuario.
+[Diseño, pruebas y límites](extension-silenciosa-doblaje-programado-20261111.md).
+
+11 de noviembre, extensión 0.5.0: vuelve el modo de traducción en Brave. Se
+corrigieron el arranque forzado en «solo transcripción» y un módulo no accesible
+que impedía preparar el inicio. Brave aislado aprobado: inicio de 10 s preparado
+antes de activar, traspaso exacto y 3 voces. Pendiente la prueba con un video
+real y vigilar el bloqueo del PC del 4 de noviembre.
+[Reactivación y pruebas](brave-prefijo-10s-groq-20261111.md#reactivación-del-modo-de-traducción--extensión-050).
+
+11 de noviembre, modo video de Brave: inicio preparado de 10 s, traducción
+anticipada a español e inglés, Groq para traducir y clonación desde el inicio.
+Pasan 108 pruebas de sync-relay, 109 de River y 90 de la extensión. La prueba en
+Brave aislado mostró que la extensión activa es la 0.4.11, solo de
+transcripción, así que estos cambios no actúan hasta reactivar el modo de
+traducción. [Cambios y hallazgo](brave-prefijo-10s-groq-20261111.md).
+
+11 de noviembre, la voz clonada ya no vuelve a una de catálogo. Los grupos de
+hablantes se mantienen durante las reconexiones y los trozos cortos o dudosos
+siguen al hablante más probable, solo para elegir la voz. 5 pruebas nuevas.
+[Causas y corrección](clonacion-automatica-voces-20261111.md#corrección-la-voz-clonada-volvía-a-una-de-catálogo).
+
+11 de noviembre, Groq (Qwen 3.8 27B) traduce la Directa. En la sesión real
+Ink-2 → Groq → Sonic, cada cláusula sonó entre 0,46 y 0,57 s después de estar
+lista; con Meta se acumulaban hasta 5,1 s. Meta sigue en los modos sincronizados.
+[Medición e implementación](groq-traduccion-rapida-20261111.md).
+
+11 de noviembre, Ink-2 sustituye a Muse en la traducción Directa. Cartesia
+escucha y habla y Meta traduce. Los hablantes se distinguen por agrupación
+acústica local. Prueba real de River: 6 cláusulas completas, primera voz antes
+de acabar la frase; Meta sigue siendo el cuello de botella. 8 pruebas nuevas.
+[Implementación y medición](ink2-cadena-prueba-20261111.md#implementación-ink-2-sustituye-a-muse-en-la-traducción-directa).
+
+11 de noviembre, cadena Ink-2 → Meta → Sonic (estilo Pocket Interpreter).
+Ink-2 cerró cada frase en unos 0,3 s y Sonic habló a los 0,3 s, pero Meta tardó
+1,2–1,75 s: de 1,78 a 2,37 s del fin de voz a la traducción audible. No es voz
+a voz nativa. Gemini Live (953 ms en octubre) sigue siendo la referencia.
+[Resultados](ink2-cadena-prueba-20261111.md).
+
+11 de noviembre, prueba de Soniox. Ofrece transcripción con traducción en un
+solo WebSocket, voz en tiempo real y clonación persistente; no tiene voz a voz
+en una sola API. La prueba real no se completó: la cuenta respondió 402 por
+saldo agotado. Sin voces creadas.
+[Documentación y resultado](soniox-prueba-20261111.md).
+
+11 de noviembre, ritmo de la traducción Directa. La voz iba palabra a palabra
+con pausas porque se enviaba cada palabra a Cartesia; ahora se envían frases y
+la velocidad sube con el retraso (1,1–1,35). La casilla de clonación reinicia la
+traducción en vez de quedar bloqueada. Pruebas simuladas correctas; falta escucha real.
+[Causa y cambios](clonacion-automatica-voces-20261111.md#corrección-tras-la-primera-prueba-real-del-usuario).
+
+11 de noviembre, clonación automática de voces en YouTube. Cada hablante
+agrupado por audio se clona en Cartesia en segundo plano tras 10 s de voz
+limpia y su traducción pasa a esa voz. Se elimina al terminar salvo que se
+marque Mantener; las guardadas se listan y se pueden borrar. 12 pruebas nuevas
+y las suites River y sync-relay correctas, todo simulado; falta prueba real.
+[Cambio, pruebas y límites](clonacion-automatica-voces-20261111.md).
+
+11 de noviembre, Cartesia clonó una voz sintética en 4,3 s y habló español con
+primer audio entre 0,18 y 0,65 s por WebSocket (coseno local 0,755–0,817);
+SiliconFlow no bajó de 1,7 s ni sin clonar. Voz temporal borrada.
+[Latencias y límites](siliconflow-clonacion-prueba-20261111.md).
+
+11 de noviembre, prueba real de clonación en SiliconFlow. Cuatro llamadas con
+referencias sintéticas en línea, sin subir voces. fish-speech-1.5 clonó al
+español en 2,8 s (coseno local 0,793); CosyVoice2 tardó 7,3 s (0,936), devolvió
+MP3 pese a pedir PCM y no ofrece streaming efectivo. Un 500 se debe a un
+defecto del script. Consumo estimado inferior a 0,01 USD, no verificado.
+[Resultados y límites](siliconflow-clonacion-prueba-20261111.md).
+
 4 de noviembre, ensayo real 073. Muse Spark 1.2 completó quince voces hasta
 31,700 s con un máximo de 7,745 s. El crecimiento de 3,452 s mantuvo el
 resultado fallido. Se compararon seis solicitudes de frases propias antes
@@ -1168,3 +1426,1388 @@ bandeja comparten la secuencia de salida. Se libera la reserva antes del cierre
 de WebView. Una ventana propia comprobó el ciclo real de y=0 a y=40 y regreso a
 y=0 en Windows. La suite work pasó 40 pruebas. La entrega conserva la bitácora
 depurada y los informes, con los originales históricos guardados por separado.
+
+
+7 de noviembre, nuevas funciones y ahorro de WorkSpace. El histórico original
+se trasladó fuera de GitHub. Se incorporaron bandeja, herramientas locales,
+portapapeles manual, paneles con movimiento breve y partículas finitas. Se
+difieren Electron, modelos y la tercera WebView de voz; el medidor de audio
+descansa sin música local. Pasaron 44 casos de Work y los recorridos de Edge
+registrados. La suite completa translation-voices y el recorrido nativo amplio
+conservaron timeout180s; no equivalen a capacidades certificadas. Comparación
+local de8,5s:101→59 llamadas en reposo y676→0RAF de voz, con límites de CPU/RAM.
+[Implementación y evidencias](workspace-diseno-y-recursos-20261107.md).
+
+7 de noviembre, continuación de Agenda, Clima y Webs. Calendario local con
+eventos y exportación ICS, hasta doce webs y clima por ciudad elegida sin
+geolocalización ni sondeo. Pasaron seis casos de calendario/URLs, seis de
+protocolo de clima y Edge con HTML real y transportes sustituidos. El primer
+fixture HTTP no seguro carecía de randomUUID; se corrigió a loopback, sin
+cambiar el producto para ocultar el fallo. No se consultó clima real ni una
+cuenta de calendario. [Informe](../tmp/verification/workspace-daily-milestone-20261107.json).
+
+El usuario solicita además una promoción similar a un MP4 de50s. El video se
+produce en HyperFrames con materiales propios reutilizados, y por petición
+expresa omite el rótulo de demostración visual; el usuario añadirá el contexto
+en la descripción. El objetivo de funciones permanece activo.
+
+7 de noviembre, entrega de Brivany · Melodi, contigo. MP4 de 50,000 s a
+1920×1080/30, 1.500 fotogramas, H.264/AAC y color BT.709. Diseño minimalista sin
+rótulo de demostración visual, por indicación expresa del usuario. Se reutilizan
+voz de Melodi y música propias; cero solicitudes nuevas de voz o generación de
+medios de pago. El tiempo local de GPU y el importe histórico no se midieron.
+HyperFrames 0.9.20 pasó check sin errores, con avisos estilísticos y una
+observación informativa de 3 px durante una transición. La decodificación
+completa, duración, sonoridad y sincronía en ocho puntos pasaron; se revisaron
+ocho fotogramas del MP4. Son comprobaciones reales del archivo local, no de la
+ejecución en vivo de la app. Se entregan video, portada y composición editable;
+no se publica externamente ni se cierra el objetivo de funcionalidades.
+Solo metadata en la [evidencia de entrega](../tmp/brivany-promo-delivery-20261107.json).
+
+7 de noviembre, grabación local de WorkSpace. Se implementó captura explícita
+de pantalla o ventana con FFmpeg, 15/30 fps, hasta 1080p, sin audio ni subida.
+Inicio/parada, nombre único, recuperación del MKV y cierre del proceso propio.
+Pasaron 14 casos sustituidos y una captura GDI real de ventana sintética propia:
+52 fotogramas a 640×360, 3,466 s, decodificación completa y proceso cerrado.
+La primera comprobación nativa falló por exigir FPS medios exactos tras remux;
+se conserva, junto al primer fallo de nombre accesible en la prueba de interfaz.
+No se capturó el escritorio personal ni se llamó a proveedores. GPU desconocida.
+
+7 de noviembre, corrección visual solicitada con Foto 1. Herramientas reemplaza
+las pestañas por un selector y deja el reloj como herramienta opcional. La
+apariencia, fluidez, cursor y datos de destino quedan en Ajustes → Melodi
+WorkSpace. Grabar muestra fuente, contador y acción principal; se retiran textos
+auxiliares y controles inactivos. El panel normal se reduce de 360 a 280 px.
+Pasaron 45 casos de Work y Edge para ajustes entre ventanas, grabación, widgets,
+diseño y agenda/clima/webs con puentes sustituidos. Se comprobó que cambiar
+ajustes conserva notas y el deadline del temporizador; se revisaron las imágenes
+a 340 px. No equivale a cargar el código en una instancia personal ya abierta.
+El objetivo general permanece activo. [Cambios y evidencia](workspace-grabacion-panel-limpio-20261107.md).
+
+Corrección de contabilización del mismo hito: tools.verify registra GPU
+desconocida en suites de interfaz. Los ceros históricos de diseño/agenda no
+acreditan GPU nula; se conserva el histórico y se añade esta aclaración.
+
+7 de noviembre, envío local de archivo al teléfono. La bandeja incorpora una
+tarjeta QR de un archivo y agrupa acciones secundarias en «⋯», conservando el
+panel limpio. Red y huella del certificado quedan en Ajustes. HTTPS aislado,
+canje de un uso, cookie restringida, vencimiento a cinco minutos y revocación
+al cancelar/quitar/cerrar. La clave local se protege con DPAPI. No se instala
+confianza ni se cambia el firewall; tampoco se concede control del ordenador.
+
+Pasaron 17 casos con TLS loopback y DPAPI reales, 13 de archivos, 45 de Work y
+Edge para teléfono/archivos/ajustes/diseño. Un navegador con viewport móvil
+descargó exactamente el archivo propio de 2.120 bytes. El QR renderizado a
+340 px se decodificó correctamente. Esto no es prueba en teléfono físico ni de
+Wi-Fi/firewall; el navegador de pruebas omite el aviso del certificado. No se
+hicieron peticiones a proveedores durante las pruebas; se preparó Segno 1.6.6
+y se reutilizó Cryptography 50.0.2. GPU/CPU/RAM totales no medidos. El objetivo
+sigue activo. Solo metadata, sin tokens, QR, cookies o claves en la evidencia.
+[Implementación, comprobaciones y pendientes](workspace-telefono-qr-20261107.md).
+
+Corrección del mismo hito: la retirada concurrente de un archivo durante la
+generación del QR podía dejar activo el envío recién creado. Se reprodujo en
+loopback con un archivo propio. Se coordinaron lectura, asignación y retirada;
+los informes fallidos se conservan. La prueba se afinó para comprobar el
+resultado de revocación, sin exigir una estrategia de bloqueo concreta.
+
+La revisión posterior conserva 20 casos aprobados: incluye caducidad automática
+con un temporizador real de plazo reducido y retirada tardía del archivo anterior
+sin cancelar el envío de otro. Se conserva la evidencia anterior y se añade
+el [informe de corrección](../tmp/verification/workspace-phone-correction-20261107.json).
+
+7 de noviembre, Lienzo solicitado por el usuario. Herramientas abre una ventana
+blanca independiente con lápiz, marcador, borrador, línea, rectángulo y elipse,
+color/grosor/relleno, deshacer/rehacer, copiar imagen PNG y exportar. Barra de
+iconos sin textos decorativos. Crear/cerrar protege dibujos sin salida elegida.
+Creación diferida, buffers reutilizados e historial vectorial limitado, sin
+bucle de fotogramas en reposo ni llamadas a modelos.
+
+Pasaron 15 casos de salida/puente/propiedad de memoria, 2 de historial, Edge con
+comprobación de píxeles y PNG, y WebView2 real propio con exportación de dibujo
+sintético. En el ensayo nativo se sustituyó solo la selección del destino por
+una ruta propia. Regresión de widgets aprobada. Se conservan dos fallos de UI
+y dos intentos fallidos de crear una estación privada para probar el portapapeles
+(acceso denegado 5); ninguno abrió el portapapeles personal. La copia usa Win32
+con PNG/image/png/CF_DIB y se verificó con HGLOBAL real y consumidor sustituido;
+el pegado físico entre aplicaciones queda pendiente. Sin proveedores ni audio;
+GPU/CPU/RAM totales no medidos. El objetivo general continúa activo.
+[Implementación, pruebas y límites](workspace-lienzo-20261107.md).
+
+7 de noviembre, widgets de escritorio. Reloj, Enfoque y Notas se abren desde un
+icono contextual en Herramientas. Ventanas WinForms sobre el dispatcher existente,
+sin otro WebView por widget; posiciones, tamaño/acento y mantener encima en
+Ajustes. Un modelo local sincroniza barra/panel/ventana, con una sola alarma del
+temporizador y un aviso de finalización. La nota conserva borradores ante
+ediciones simultáneas y se recupera una entrega pendiente sin sobrescribir otra
+versión. Se mantiene la revisión del texto mostrado durante respuestas tardías.
+Se retiran etiqueta visual y contador innecesarios de Notas; se preservan sus
+nombres accesibles y el límite de texto.
+
+Pasaron 25 casos de estado/servicio/puente, Edge con dos vistas y Python real,
+WinForms propio y un recorrido completo WebView2→puente→widgets→WebView2.
+Regresiones: 45 de Work, 2 de arranque, widgets y Ajustes. El recorrido completo
+conservó un solo WebView del banco al abrir las tres ventanas. Se comprobó que
+cerrarlas retira repintados y que el cierre general guarda la nota. Notas y
+trayectos sintéticos propios, sin datos personales ni proveedores.
+
+Medición separada del proceso Python/CLR del banco: aproximadamente 78 MiB;
+intervalos de unos 3 s con 0/3/0 repintados en reposo/temporizador/cerrado y CPU
+observada 0,000/0,000/0,016 s. Los ceros redondeados no demuestran CPU nula ni
+esos valores representan todo Brivany o un porcentaje de ahorro. GPU desconocida.
+La medición integral y las demás familias pendientes siguen abiertas.
+[Implementación y límites](workspace-widgets-escritorio-20261107.md).
+
+7 de noviembre, corrección de concurrencia de widgets. Un acuse tardío solo
+retira la recuperación si coinciden texto y revisión. El cierre concurrente
+con la alarma evita un error tardío cuando el modelo ya está cerrado. Pasaron
+26 casos de estado/servicio y la regresión de dos vistas Edge con Python real.
+Informes `desktop-widgets-20261107T204433-97dd1e77.json` y
+`desktop-widgets-ui-20261107T204433-c59ded43.json`.
+
+7 de noviembre, micrófono junto a Enfoque y monitor de Spotify en espera.
+El icono de Enfoque consulta Core Audio al abrir la herramienta y permite
+silenciar o reactivar la entrada predeterminada de comunicaciones de Windows.
+La operación verifica el dispositivo y el estado antes de cambiarlo y lee el
+resultado después. Un cambio externo observado pide volver a pulsar. Mantiene
+el plazo del temporizador y no abre un flujo de audio.
+
+Pasaron ocho casos, incluidos lectura de estado Core Audio real y verificación
+ABI de SetMute/GetMute con un dispositivo simulado. Edge comprobó estado,
+recuperación de un estado obsoleto y panel de 340 px. El ensayo no cambió el
+micrófono físico. El estado se refresca al abrir Enfoque o recuperar el foco.
+Las aplicaciones con otro micrófono y los cambios externos mientras el panel
+conserva el foco tienen límites distintos de los cambios hechos en Brivany.
+[API de Windows](https://learn.microsoft.com/en-us/windows/win32/coreaudio/using-a-communication-device).
+
+El monitor de reducción de música ya no arranca con Desktop. La primera
+reproducción local confirmada por el SDK lo activa. Una pausa o pérdida del
+reproductor libera las sesiones de audio y deja el worker en espera de un
+evento. La prueba del worker real sustituyó el medidor y confirmó que no
+volvía a consultar el estado al pasar el antiguo intervalo de 500 ms. Pasaron
+14 casos de reducción, 39 de Spotify, 3 del fundido de volumen, 2 de arranque
+y 45 de Work. Sin reproducción ni peticiones a proveedores en estas pruebas.
+GPU total desconocida en Edge. Sigue pendiente la medición de todo WorkSpace.
+[Informes del hito](../tmp/verification/workspace-call-and-audio-idle-20261107.json).
+
+7 de noviembre, telefonía y buzón de Melodi. Se implementó el panel Llamadas,
+preparación por orden escrita, revisión antes de marcar y pasarela separada
+con verificación de webhooks, recibo persistente y control de cancelación.
+La conversación por turnos usa la voz existente de Melodi. El buzón avisa y
+pide aceptar antes de grabar. Pasaron 11 casos con HTTP de loopback, Twilio,
+voz y modelo sustituidos y el recorrido Edge a 340 px con audio sintético.
+El primer ensayo de UI falló al interpretar un número entre paréntesis y se
+conserva. Se comprobó que el ajuste corrige el recorrido desde el chat.
+
+La prueba oficial de Twilio admite República Dominicana y ofrece un número
+compartido con 75 minutos por 30 días. La consola requiere verificar el
+destino y la modalidad de prueba bloquea grabación con `<Record>`. No había
+configuración de telefonía en el entorno y la consola no se pudo abrir con el
+control de navegador. La llamada personal queda pendiente de esa verificación.
+No se iniciaron llamadas, consumos de proveedor de voz/modelo, compras ni
+publicación de la pasarela. GPU total desconocida en Edge. Evidencias sin
+números reales, credenciales, clips ni conversaciones.
+[Implementación, prueba y límites](melodi-telefonia-20261107.md).
+
+7 de noviembre, Control móvil. Herramientas vincula un teléfono por QR de un
+uso, código y permisos por separado para entrada, pantalla, música,
+diapositivas y energía. La vista de pantalla se pide al activarla y la
+decisión de energía queda en el PC. La desconexión retira los permisos antes
+de cerrar el servidor. El envío de archivos conserva su servicio independiente.
+
+Pasaron 12 casos con HTTPS de loopback y efectos Windows sustituidos. Edge
+recorrió el enlace a 340/390 px, incluidos control de pantalla propia, texto
+Unicode y confirmación de bloqueo sustituido. Se conservó el primer fallo de
+un selector de pruebas. Pasaron las regresiones de envío de archivos, Ajustes,
+diseño, Work y arranque. No se cambió el estado de energía ni se capturó el
+escritorio personal. Pendientes teléfono físico, red y controles reales.
+[Comprobaciones y límites](workspace-control-movil-20261107.md).
+
+7 de noviembre, primera llamada real de Twilio. El usuario completó el registro
+con Google y verificó el teléfono por SMS. Se seleccionó el plan limitado y se
+marcó una vez desde el número de prueba de Twilio a un destino verificado de
+República Dominicana. La plantilla de audio de muestra validó transporte.
+El registro indicó `Completed` y 15 s; el contador pasó de 75 a 74 minutos
+gratuitos. La pasarela, la voz de Melodi y el buzón no participaron en esta
+llamada. Sin compras ni tarjeta. Se guarda solo el resultado, sin datos de
+contacto, identificadores de Twilio, códigos ni audio.
+[Primera prueba real](melodi-telefonia-20261107.md#primera-llamada-real-de-prueba).
+
+7 de noviembre, modo de conversación de prueba de Twilio. Se confirmó el
+campo Custom TwiML URL y los 74 minutos de voz disponibles. La pasarela limita
+la llamada de consola a un emisor, un destino, dos turnos y un modelo local.
+Las únicas rutas públicas son los webhooks firmados y el WAV de esa sesión.
+Pasaron 12 casos de telefonía y Edge con efectos sustituidos. La consulta de
+catálogo de la voz española de Cartesia confirmó que está activa. La consulta
+administrativa devolvió 401 y el saldo queda sin verificar. Los conectores
+Cloudflare sintéticos se registraron y se cerraron; el nombre no resolvió
+desde el equipo durante la prueba HTTPS. La consulta de DNS pública tampoco
+devolvió resultado. Sin segunda llamada, grabación, síntesis ni inferencia.
+[Preparación y pendientes](melodi-telefonia-20261107.md#conversación-breve-desde-la-consola-de-prueba).
+
+7 de noviembre, franja de Juego. Se añadieron CPU, GPU y RAM con contadores de
+Windows y FPS de la ventana elegida mediante PresentMon. Edge verificó el
+panel a 340 px y detención de consultas al ocultarlo. WinForms propio mostró
+lecturas reales y cerró el sampler. La variante inicial tomó el foco; se
+corrigieron los estilos en la creación de la ventana y se conserva el fallo.
+PresentMon oficial reprodujo 53 filas de un ETL público, separadas por proceso.
+El ensayo en vivo con un proceso propio devolvió acceso denegado. Pendientes
+FPS durante un juego real, temperatura y chat conjunto Twitch/YouTube. Se
+usaron medios propios o públicos en las comprobaciones; el consumo total de
+Brivany queda sin medir.
+[Implementación y verificaciones](workspace-juego-20261107.md).
+
+7 de noviembre, corrección de la prueba de conversación. El usuario indicó
+usar Meta y canceló la descarga del modelo local propuesto. Se detuvieron
+las transferencias y se retiraron ambos archivos parciales de `.local`.
+La pasarela vuelve a usar Meta y la voz de Melodi por Cartesia. El usuario
+confirmó cuota de voz suficiente. Una petición real de cada proveedor, con
+texto sintético, produjo 84 caracteres y 4,64 s de voz. Meta tardó 4,157 s y
+Cartesia 2,406 s. El coste facturado es desconocido. Se ajustó la espera de los
+webhooks a esos tiempos, con el trabajo de voz fuera del bloqueo de estado.
+
+Pasaron 14 casos, incluidos formulario local con rechazo de otro origen,
+DPAPI real y carga del registro cifrado. Una prueba HTTPS sintética del túnel
+devolvió 200. El control del navegador quedó desactivado o sin respuesta.
+Se preparó un formulario temporal para la credencial existente de Twilio y
+una única solicitud REST con duración limitada. Continúan pendientes la
+credencial y la segunda llamada. Sin audio, conversación, enlaces privados
+ni datos de contacto en las evidencias.
+[Comprobación real de APIs](../tmp/verification/melodi-meta-cartesia-preflight-20261107.json),
+[telefonía local](../tmp/verification/telephony-20261107T232541-fb8ee3c2.json).
+
+7 de noviembre, corrección posterior de telefonía, con pruebas del 8 UTC.
+El navegador integrado volvió a estar disponible y la credencial existente
+se guardó con DPAPI desde loopback. Se corrigió la política de referencia
+del formulario; Edge verificó el POST nativo con credenciales ficticias.
+La consola limitada envió webhooks sin firma: su modo explícito comprueba
+la llamada activa por REST autenticada antes de aceptar esa sesión temporal.
+El servidor normal conserva la firma obligatoria.
+
+Cuatro llamadas reales duraron 5, 5, 24 y 40 segundos; el contador gratuito
+bajó de 74 a 70 minutos. La experiencia siguió fallando: el usuario oyó el
+saludo y después una respuesta sin continuidad. No se interpreta `Completed`
+como conversación lograda. La solicitud REST acotada fue rechazada. Se
+conservan el fallo local de cierre de socket en Windows, su corrección y
+el fallo posterior de contrato al añadir el indicador de tiempo real.
+
+Ante el requisito de responder como Live, se implementó un adaptador continuo
+con Muse, Meta y la voz Cartesia existente, PCM progresivo, interrupción y
+acuses de reproducción. Se activa solo por configuración explícita. Pasaron
+17 pruebas de telefonía, seis del adaptador con WebSockets reales y proveedores
+sustituidos, y Edge para el formulario y panel. No se descargaron modelos.
+
+Dos muestras sintéticas de APIs reales midieron primer PCM a 4,329 s en el
+nuevo flujo y 3,078 s en el Live actual. No incluyen ASR, salida física ni red
+telefónica y no demuestran igualdad de latencia. Cada una usó una petición
+Meta y una Cartesia, con 74 y 104 caracteres de voz. En las llamadas y su
+preparación hubo tres respuestas Meta y ocho síntesis Cartesia: 894 caracteres
+conocidos más una respuesta de longitud no registrada. Importe y tokens
+facturados desconocidos. No hubo compras; se cerraron los túneles temporales.
+
+La cuenta gratuita bloquea Media Streams y ConversationRelay. La activación
+de telefonía continua y su comprobación física quedan pendientes de una cuenta
+compatible y de la decisión del usuario sobre ampliación y número. Se
+registran alcance, tarifas de referencia y promociones sin activar pago.
+[Implementación y límites](melodi-llamadas-live-20261107.md),
+[fallo real](../tmp/verification/melodi-phone-live-gap-20261107.json),
+[telefonía](../tmp/verification/telephony-20261108T000835-2be79fa8.json),
+[puente continuo](../tmp/verification/telephony-realtime-20261108T001016-b4084f2d.json).
+
+8 de noviembre UTC, comprobación posterior de activación. El navegador
+integrado mostró que ampliar esta cuenta de Twilio requiere añadir fondos.
+No se continuó la ampliación ni se facilitaron datos de facturación. El
+importe y el número propio siguen sin comprar; se mantiene pendiente la
+prueba telefónica del puente continuo.
+
+7 de noviembre, continuación SIP con informes del 8 UTC. Se priorizaron las
+llamadas sobre las otras funciones y se preparó un trabajador PJSUA2 aislado,
+sin descargar modelos de IA ni usar dispositivos físicos de audio. El registro
+real de Línea SIP Netelip obtuvo estado 200 sin llamadas telefónicas ni
+solicitudes de IA; su importe facturado se desconoce. La conexión del trabajador
+con el panel y la conversación Live sigue pendiente.
+
+Pasó `tools.verify telephony-sip-native` con SIP/RTP entre dos procesos locales
+y señal sintética en ambos sentidos. La primera señal fue 31 ms y el envío
+completo 156 ms por sentido; no miden latencia pública ni de Melodi. Se registran
+retrospectivamente dos fallos previos sin medios y la corrección del objeto
+SWIG, cuenta de prueba y puertos RTP. Los informes iniciales se sobrescribieron;
+el banco ahora usa nombres únicos y separa primera señal de envío completo.
+Un marcador local de RTP no acredita escucha remota.
+
+Se verificaron alternativas para evitar alquilar numeración: identificador
+propio sujeto a aprobación de Netelip, o llamadas con número oculto. El móvil
+dominicano aún no está validado. Se contrastó la tarifa pública de Zadarma y
+se distinguieron identificador, recepción SIP y portabilidad. No se enviaron
+documentos, compraron números, recargó saldo ni inició portabilidad.
+[Implementación, fallos, pruebas y fuentes](melodi-sip-netelip-20261107.md).
+
+7 de noviembre, integración posterior de telefonía con informes del 8 UTC.
+El usuario mantendrá las entrantes en su móvil prepago y pospuso su validación
+como identificador. Exige aviso y autorización antes de una llamada real que
+muestre ese número. No se pidió código, inició llamada pública, contrató
+numeración ni envió documentación en esta continuación.
+
+Se conectó el panel al motor SIP con revisión de un uso, recibos que evitan
+remarcado, cancelación y cierre al salir. El flujo Live admite PCM de 24 kHz
+con Muse, Meta y Cartesia; los acuses SIP significan envío local, no escucha.
+Se preparó un formulario local de conexión con DPAPI y se ocultó el buzón de
+Melodi cuando las entrantes siguen en el móvil. No se guardó una credencial
+SIP real; los perfiles de prueba fueron ficticios y temporales.
+
+Pasaron 9 pruebas SIP, incluidas dos llamadas nativas de loopback con dos
+turnos y proveedores de IA sustituidos, 6 del flujo continuo y 17 de telefonía.
+Edge aprobó los controles y el formulario SIP con rechazo de otro origen.
+Se conserva un fallo inicial por dependencia Playwright no localizada,
+resuelto usando la copia ya instalada. Sin operador ni IA real en estos
+ensayos. El navegador agotó su espera: activación de cuenta, saldo vigente y
+conversación pública siguen pendientes; no se acredita latencia igual a Live.
+[Implementación posterior y evidencias](melodi-sip-netelip-20261107.md#integración-posterior-panel-y-voz-live).
+
+Corrección de consumo del mismo hito: el registro de implementación consignó
+GPU 0, pero el tiempo de GPU de Edge no se midió y es desconocido. Se conserva
+el registro anterior y se añade esta corrección; siguen siendo cero las
+llamadas al operador y a las APIs de IA de los ensayos locales descritos.
+
+7 de noviembre, preparación posterior de conexión, con informe del 8 UTC.
+El navegador integrado volvió a responder y el usuario restableció la sesión
+de Netelip. La conexión local quedó preparada sin guardado de credencial ni
+llamada; se pidió autorización para el guardado cifrado. Se separó registro
+de marcación en `NativeSIP.connect()` y se preparó una herramienta de registro
+real sin destinos, aún sin ejecutar. Volvieron a pasar las 9 pruebas SIP
+locales. La voz existente está disponible en el respaldo, pero no cargada en
+el entorno activo; no se extrajeron claves ni se invocaron APIs de IA.
+[Preparación y alcance](melodi-sip-netelip-20261107.md#preparación-posterior-de-conexión-sin-llamada).
+
+7 de noviembre, guardado autorizado de SIP, con informes del 8 UTC. El usuario
+autorizó guardar la credencial de Netelip cifrada con Windows en este PC. El
+formulario confirmó el guardado sin marcar. Una comprobación real del perfil
+mediante `NativeSIP.connect()` obtuvo registro SIP 200, con destinos vacíos;
+se cerró el trabajador al terminar. Cero llamadas PSTN y solicitudes de IA en
+esta comprobación; importe del registro desconocido.
+
+Se restauró del respaldo la configuración de voz Meta/Cartesia que admite la
+aplicación, fuera de Git y sin publicar claves ni archivos de configuración.
+El puente de escritorio real cargó el perfil y devolvió salida habilitada y
+entrantes en el móvil. El banco sustituyó la comprobación de origen de ventana;
+no acredita una ventana física ni conversación pública. Registro automático
+por llamada y destinos persistentes no requieren repetir un trámite manual.
+Identificador propio y prueba telefónica autorizada siguen pendientes.
+[Guardado, registro y preparación](melodi-sip-netelip-20261107.md#guardado-autorizado-y-registro-real-del-perfil).
+
+7 de noviembre, destinos sin registro e intentos reales con informes del 8 UTC.
+El usuario rechazó una lista de teléfonos permitidos. Se retiró del perfil,
+entorno SIP y formulario; un número nuevo pasa directamente a revisión. Se
+migró el perfil existente sin pedir de nuevo credenciales. El trabajador recibe
+solo el destino confirmado de esa llamada, automáticamente y sin alta manual.
+
+Dos intentos reales autorizados con identificador oculto recibieron progreso
+183 y rechazo 603 a 6,73 y 6,50 s, sin respuesta confirmada. El usuario indicó
+que el primero no sonó. No se logró conversación. El primer intento procesó
+indebidamente medios tempranos: una sesión ASR, un intento Meta y una síntesis
+Cartesia de 63 caracteres. Se corrigió la espera de llamada contestada y la
+presentación de 183 como marcando. El segundo no inició respuesta ni síntesis;
+otra sesión ASR analizó transitoriamente el aviso previo y detectó referencia
+a saldo. No se guardó audio ni conversación. Facturación y tokens desconocidos.
+
+El panel mostró US$0,02 de saldo, US$0,0959/min para el móvil y recarga mínima
+de US$5 con impuestos mostrados de cero. El saldo equivale aproximadamente a
+12,5 s; no acredita por sí solo la causa del rechazo. El historial estaba vacío.
+Se pidió autorización para recargar, sin pagar, comprar número ni contratar
+suscripción. Pasaron 11 pruebas SIP locales y Edge, con nuevo destino sin alta,
+perfil anterior, espera de respuesta y proveedores de IA sustituidos. Pendiente
+saldo suficiente para la prueba y conversación pública correcta.
+[Implementación, consumo, fallos y evidencias](melodi-sip-netelip-20261107.md#destinos-sin-registro-previo-y-primeros-intentos-reales).
+
+7 de noviembre, estado de la recarga con informe del 8 UTC. El usuario informó
+que recargó. Transacciones de Netelip mostró PayPal pendiente de revisión, con
+US$5 de crédito y US$0,52 de gestión, total US$5,52. Tras actualizar, el saldo
+disponible seguía en US$0,02. La ayuda del proveedor señala revisión manual de
+PayPal y una espera publicada de hasta ocho horas. No se conservan datos del
+pedido o facturación. No se hizo otro pago ni llamada ni petición a los
+proveedores de voz. La prueba queda pendiente de la aprobación de Netelip.
+[Estado de pago y alcance](melodi-sip-netelip-20261107.md#recarga-del-usuario-pendiente-de-revisión).
+
+7 de noviembre, continuación de WorkSpace con informes del 8 UTC. El usuario
+reactivó el objetivo mientras se revisaba el saldo y pidió persistencia de
+ajustes. Se guardan en disco General, voz, WorkSpace, grabación, traducción y
+ciudad. Las carpetas elegidas se recuperan tras reiniciar y se pueden revocar
+desde Ajustes. El permiso de control y el consentimiento de clonación siguen
+limitados a la sesión. El selector anima solo la herramienta visible durante
+160 ms, cancela cambios interrumpidos y respeta movimiento reducido.
+
+Pasaron Edge con dos servidores y perfiles nuevos, diseño a 340 px, seis
+casos de sesión de escritorio y 34 de control. Pasaron también 45 casos de
+WorkSpace, 14 de reducción de música, 20 de teléfono y 26 de widgets. Se
+conservan dos fallos de selectores o sincronización de prueba y un sustituto
+de control desactualizado, corregidos antes del resultado final. Sin llamadas
+externas en estos ensayos. El consumo completo y la instancia personal de
+WebView2 siguen pendientes de medición y comprobación.
+
+La copia activa es la de GitHub y el histórico se comprobó fuera de GitHub.
+Están presentes el respaldo y los tres videos en la ubicación indicada.
+[Cambios, alcance y evidencias](workspace-diseno-y-recursos-20261107.md#persistencia-de-ajustes-y-cambio-de-herramienta).
+
+7 de noviembre, paneles compactos. Herramientas y Archivos se estrechan y
+ajustan su altura al contenido. Enfoque mide 167 px de alto en Edge, frente
+a 280 px antes del cambio, y los botones pasan de 34 a 26 px. Grabación
+reduce espacios y Archivos permite desplazar la lista al superar el tope.
+Pasaron la prueba visual con datos sintéticos y 46 casos de WorkSpace.
+No se invocaron proveedores externos. [Medidas, pruebas y alcance](workspace-diseno-y-recursos-20261107.md#paneles-compactos).
+
+7 de noviembre, restauración del original. La verificación distinguió
+el código del ZIP de los datos privados y videos ya trasladados. Se
+restauraron las 128.601 entradas del ZIP en `Documentos\Brivany-original-20261104`
+con comprobación de CRC y tamaño, sin sobrescribir otros proyectos.
+Se confirmó el repositorio activo dentro de GitHub y los tres videos fuera.
+[Rutas y evidencia](workspace-diseno-y-recursos-20261107.md#restauración-del-árbol-original).
+
+7 de noviembre, recursos y regresión nativa. WebView2 propio confirmó la
+geometría de Enfoque y el temporizador al ocultar el panel. El sondeo de
+puntero en reposo baja de 39 a cero en ocho segundos. La traducción auditiva
+solo mantiene su temporizador de consulta al estar visible. Se separaron
+las medidas de Python y WebView2. El consumo de CPU varió entre escenarios
+y las muestras no acreditan ahorro global de memoria. Se corrigió el borde
+del tema que reducía el panel Glisse y pasó el recorrido nativo de regresión.
+Sin proveedores, micrófono ni entrada física. [Mediciones y alcance](workspace-arranque-recursos-20261107.md#medición-nativa-de-la-barra-y-el-panel).
+
+7 de noviembre, Archivos con extractos y adjunto. Preguntar lee DOCX, XLSX,
+PPTX y PDF textual bajo demanda y abre el extracto editable. El lector PDF
+ejecuta hasta ocho páginas en un proceso con tiempo y memoria acotados.
+Correo genera MIME con el adjunto y sin destinatario, en la ruta que el
+usuario elige. Pasaron 21 casos de backend, Edge y WebView2 propio con datos
+sintéticos. En WebView2 se sustituyeron el selector y el cliente de correo.
+Sin proveedores ni envío. [Formatos, límites y pruebas](workspace-bandeja-archivos-20261107.md#extractos-de-office-y-pdf-y-correo-con-adjunto).
+
+7 de noviembre, idioma independiente de WorkSpace. Se añadió español e
+inglés para la interfaz principal. La preferencia persistente cambia la
+barra y el panel de WebView2 propio durante la sesión. Edge comprobó
+reapertura, formato numérico y conservación de nota, nombre de archivo y
+plazo del temporizador. Pasó la regresión nativa general con servicios
+sustituidos. Sin solicitudes a proveedores. Quedan idiomas, estados y
+ventanas auxiliares por localizar. [Alcance y pruebas](workspace-diseno-y-recursos-20261107.md#idioma-de-workspace).
+
+8 de noviembre, cuatro idiomas de WorkSpace. Se añadieron francés y
+portugués de Brasil con 408 mensajes por catálogo. Solo se carga el elegido
+y los cambios rápidos descartan respuestas antiguas. WebView2 propio
+comprobó arranque en francés y cambios en barra y panel. Edge verificó
+persistencia, temporizador, notas, archivos y permisos móviles a 340 px.
+Pasaron llamadas y control móvil con acciones sustituidas. Sin proveedores
+ni llamadas públicas. Otros idiomas y la revisión lingüística nativa quedan
+pendientes. [Catálogos y evidencia](workspace-diseno-y-recursos-20261107.md#francés-y-portugués-de-brasil).
+
+8 de noviembre, pantalla de descarga móvil. El QR conserva el idioma de
+WorkSpace y el nombre original del archivo. Pasaron 22 casos de protocolo
+y Edge móvil con HTTPS de loopback en cuatro idiomas, incluyendo descarga
+exacta, reapertura y errores de conexión o sesión. Teléfono físico pendiente.
+[Cambios y pruebas](workspace-telefono-qr-20261107.md#idioma-de-la-pantalla-móvil).
+
+8 de noviembre, cierre por aceptación. El usuario pidió crear el catálogo
+de todas las funciones entregadas y marcar las que necesitan revisión.
+Se creó [CATALOGO_FUNCIONES.md](../CATALOGO_FUNCIONES.md) con rutas, alcance,
+evidencias y pendientes explícitos. Se cierra el objetivo de esta entrega
+por su indicación, conservando como revisión prioritaria la conversación
+telefónica estable. El siguiente encargo es comprobar agenda durante llamadas
+simuladas y estudiar la integración de llamadas de WhatsApp.
+
+8 de noviembre, auditoría de agenda y vías de llamada. Se añadió el recorrido
+local `phone-calendar-audit`: doce turnos en PCM y mu-law llegaron a la
+conversación sin despachar propuestas ni acciones de calendario. Se conserva
+el resultado no preparado con salida 1; no se marca implementada la agenda
+telefónica. Pasaron 79 pruebas de telefonía, SIP, OAuth, proveedores y chat,
+además de Conexiones en Edge. Se corrigió la secuencia de acuses del banco y
+se repitió Conexiones con Playwright ya instalado tras dos fallos del entorno
+de pruebas, conservando los informes anteriores. Sin llamadas públicas,
+solicitudes a IA o cambios de calendario. El usuario confirmó número de
+WhatsApp Business directo a Meta y pidió evitar permisos técnicos por destino
+y minimizar coste. Se investigaron fuentes oficiales: WhatsApp saliente
+requiere permiso, potencialmente permanente; SIP/Netelip admite salida oculta
+sin comprar DID. Número registrado y habilitación de voz quedan diferenciados.
+La conexión WhatsApp local está pendiente y no se consultó la cuenta remota.
+[Auditoría y evidencias](melodi-agenda-whatsapp-auditoria-20261108.md).
+
+8 de noviembre, investigación ampliada de salida WhatsApp. El usuario definió
+Meta/WhatsApp Business para WhatsApp y Netelip para telefonía directa y pidió
+coste mínimo sin solicitud técnica previa al destinatario. Se documentó una
+alternativa candidata: llamadas normales del cliente oficial y puente de audio
+con Melodi. La gratuidad de esas llamadas está documentada por WhatsApp; la
+automatización, el audio y la compatibilidad del número API son hipótesis sin
+validar. Se leyeron metadatos de dispositivos de audio sin capturar sonido; no
+se observó endpoint VB-CABLE y el inventario Appx no pudo ejecutarse por el módulo.
+No se instaló software ni se alteró cuenta, número o proveedor. Sin llamadas,
+mensajes o consumo de APIs de IA. Se mantiene pendiente el candidato y se
+registran las condiciones de una futura prueba local antes de llamar.
+[Fuentes, arquitectura y límites](melodi-whatsapp-cliente-alternativa-20261108.md).
+
+8 de noviembre, canal del cliente WhatsApp implementado y probado localmente.
+El usuario autorizó implementación con ensayos simulados y dejó la llamada
+real y Meta real para después. Se añadieron pasarela por canal, revisión con
+modo ligado al encargo, recibos sin remarcado, persistencia atómica, dos buses
+de audio virtual y UI Automation con comprobación de destinatario y controles.
+Se reutiliza la voz Live con acuse de envío virtual, sin afirmar escucha remota.
+El panel compacto ofrece Vía WhatsApp y Simulación, y el comando explícito
+por WhatsApp prepara su revisión. Se conservaron las rutas SIP/Twilio.
+Pasaron 26 pruebas nuevas, 17 de telefonía, 6 de streaming y 11 de SIP; además,
+Edge recorrió panel-puente-pasarela, dos turnos sintéticos, reapertura sin
+almacenamiento del navegador, cancelación e idiomas. UI Automation invocó
+controles de una ventana WPF propia y rechazó otra llamada activa.
+Dos fallos iniciales del banco nativo se corrigieron: carga de WPF desde el
+runtime local y validación por ventana/token/PID real en lugar del lanzador.
+Los informes anteriores se conservan. La GPU de las ventanas quedó sin medir.
+No hubo llamadas públicas, acceso a WhatsApp real, APIs de IA/voz, captura
+personal, instalación de drivers ni descarga de modelos. El modo real queda
+bloqueado y pendiente de calibración, cuenta y audio; la API entrante de Meta
+y la agenda telefónica conservan su estado pendiente.
+[Implementación, límites y pruebas](melodi-whatsapp-cliente-implementacion-20261108.md).
+
+8 de noviembre, Blobatar instalado por petición del usuario. Se fijó 2.7.0
+con licencia MIT y esbuild 0.28.2 para desarrollo. El adaptador DOM local usa
+identidad del agente para silueta, color y ritmo, mantiene la cara entre
+reintentos y cambia expresión según estado. Se integró en barra, detalle y
+avisos con limpieza y pausa fuera de vista, documento oculto o movimiento
+reducido. Ahorro limita las capas animadas. El bundle no incorpora otro
+framework ni bucles por fotograma. Se conservaron revisión y controles.
+La revisión visual detectó ojos desplazados por atributos de estilo bloqueados
+por CSP; se corrigió mediante CSSOM sin cambiar la política y se aisló el SVG
+de las reglas de iconos. La prueba nueva comprueba contención de los ojos y
+cero violaciones de estilos. Pasaron seis pruebas y dos recorridos de Edge
+con seis trabajos simulados, varios anchos, reintentos, retirada y preferencias.
+Los assets suman 24.468 bytes sin comprimir; GPU y consumo físico sin medir.
+La instalación consultó npm con scripts deshabilitados. Los ensayos no usaron
+proveedores de IA/voz ni encargos reales. Versión, licencia, tamaños y pruebas
+quedan registrados; un hash no se usa como prueba de calidad visual.
+[Implementación, capturas y evidencias](blobatar-agentes-20261108.md).
+
+8 de noviembre, promoción por escenas a partir del video aportado por el
+usuario. Se reconstruyen nueve escenas con identidad de Brivany y contenido
+de Melodi, agentes, enfoque y archivos. Se conserva audio AAC sin recodificar
+y no se añade locución. HyperFrames0.9.23 valida la composición en Chrome;
+una auditoría local verifica ocho condiciones y enumera122 animaciones.
+La primera revisión fallida y el primer render se conservan: se corrigieron
+entradas, geometría, colisiones, el titular tapado y un botón duplicado.
+La comparación visual y la conservación de audio se documentan por separado;
+no se afirma identidad píxel a píxel ni funcionalidad real por una simulación.
+Se reinició además Brivany con WorkSpace activo por petición paralela.
+No se usaron proveedores de IA/voz, modelos descargados ni llamadas reales.
+Npm/telemetría tuvieron tráfico; total externo y tiempo efectivo GPU sin medir.
+[Producción y límites de comprobación](promo-brivany-referencia-20261108.md).
+
+8 de noviembre, segunda referencia promocional. Se preparó una composición
+de dos paneles y se reemplazaron las formas básicas rechazadas por el usuario
+mediante una visualización arquitectónica generada con ImageGen. Después el
+usuario eligió únicamente el lado de Melodi. Se entrega en1080×1080, con seis
+escenas,719 cuadros y audio AAC original sin locución añadida. Se conserva el
+proyecto doble y el arte generado, que queda fuera de la selección final.
+Pasan validación de Chrome y nueve comprobaciones locales; el render tarda
+59,5 s. Ante el bloque rojo visto por el usuario en el editor, se revisan el
+PNG fuente, capturas y cuadros decodificados a6,4/6,65 s: el MP4 es normal.
+No se declara arreglado el editor ni demostrada su causa. Una generación de
+imagen tuvo consumo no informado; tráfico total y tiempo GPU sin medir.
+No hubo llamadas, publicaciones ni cambios en código de la aplicación.
+[Entrega, selección, evidencia y límites](promo-melodi-version-unica-20261108.md).
+
+8 de noviembre, primera pieza profesional de traducción auditiva. Se
+reconstruyó el panel blanco animado con el video aportado como referencia.
+El guion cita W3Techs y PLOS One, con locución de Melodi y fragmentos de
+Blender acreditados. El ensayo retrospectivo generó una primera voz en
+español. Tras la revisión del usuario se cotejó el diálogo, se sintetizó
+una toma masculina madura con subtítulo y se rotuló como doblaje editado.
+Una solicitud de voz para esta corrección, importe sin medir. Se compuso
+música original local, se quitó el distintivo y se concentraron los créditos
+en el cierre. HyperFrames pasó sin errores y el archivo decodificó 1.620
+cuadros, 54 s y audio estéreo de −16,1 LUFS. Se inspeccionaron ocho cuadros.
+Clonar la voz de Proog queda pendiente de consentimiento expreso del actor.
+[Producción, pruebas y alcance](promo-brivany-traduccion-auditiva-20261108.md).
+
+12 de noviembre, Melodi centrada al activar voz en el chat, con tres ondas
+escalonadas detrás durante la reproducción PCM. Se conserva el personaje de
+WorkSpace, Muse/Meta/Cartesia, el historial y el borrador. Se corrigen el estado
+de configuración antiguo, el límite de 12 s inferior al del servidor, el inicio
+fallido sin explicación y la activación tardía tras cancelar. Pasan 51 pruebas
+JavaScript, nueve del puente, interfaz en Edge e historial/recuperación. Una
+prueba nativa previa abrió y liberó el micrófono sin ASR; una conexión real de
+control a Muse respondió en 0,750 s sin audio. Importe de esa conexión desconocido.
+El primer fallo del banco AudioWorklet se conserva y se documenta su corrección.
+Se aplica el cambio con respaldo a la instalación local y reinicio normal; no
+se publica un instalador nuevo. La conversación y escucha física completas
+siguen sin comprobarse. [Implementación, pruebas y límites](melodi-voz-central-20261112.md).
+
+12 de noviembre, corrección posterior de Live a partir del código de Vetsa App.
+Se trasladan sus reglas de cierre por pausa, agrupación de fragmentos, generación
+y síntesis concurrentes e interrupción. Se corrige el retorno prematuro de voz
+que retiraba respuestas y perdía su controlador. Las conversaciones ordinarias
+evitan otra inferencia previa; acciones y human-skills conservan sus recorridos.
+Se preparan dieciséis señales de Melodi, variadas sin repetición y reutilizadas
+desde disco, además de la guía contextual abierta para las respuestas.
+El ejecutor instalado no encontraba un backend verificado: se instala un paquete
+local permitido de 104 archivos y pasa el sondeo nativo. La app reinicia con
+backend activo y dieciséis señales disponibles, sin repetir la orden del usuario.
+Pasan las suites y el recorrido de interfaz; se conservan los fallos de los bancos.
+Tres mediciones reales confirmaron nueve solicitudes de proveedor y variación
+de primera señal de audio; el banco costó dieciséis síntesis nuevas. Importe y
+GPU desconocidos. Un ensayo real inicial perdió sus métricas al cerrar el doble;
+su consumo se registra como desconocido, separado de esas cifras confirmadas.
+[Cambios, evidencias y límites](melodi-live-vetsa-20261112.md).
+
+
+12 de noviembre, preparación real de Telnyx para la primera llamada de Melodi.
+La clave existente fue aceptada y se crearon el perfil de salida y la conexión
+SIP «Brivany Melodi», con emisor verificado, destinos DO/US, una llamada
+simultánea, límite diario US$5 y tarifa máxima US$0,30/min. Se comprobaron esos
+valores por lectura de API y se guardó el perfil cifrado con DPAPI. El primer
+registro falló antes de contactar con Telnyx: una variable de la prueba entre
+pares ocultaba el constructor de URI. Se corrigió y añadió registro nativo de
+loopback sin marcar; check-sip también devuelve ahora fallo real por JSON y
+código de salida. Pasaron 14 pruebas de telefonía, 7 de SIP y 7 de conversación
+con proveedores sustituidos. El segundo registro real recibió SIP 200. Se
+conservan el fallo y la corrección; 16 solicitudes REST Telnyx conocidas, dos
+intentos de inicio SIP y ningún número marcado ni proveedor de IA utilizado.
+Saldo visible US$14,79 antes y después del aprovisionamiento; facturación y GPU
+sin medir. El control del portal terminó por no poder verificar la URL. La
+configuración se comprobó por API/SIP, sin certificar la pantalla final ni
+actualizar la instalación activa. La llamada PSTN y la conversación siguen
+pendientes. [Configuración, pruebas y límites](melodi-telnyx-configuracion-20261112.md).
+
+
+12 de noviembre, primer intento real de Telnyx para conversar con el usuario.
+Un solo marcado autorizado a su línea personal, emisor verificado y registro
+SIP 200. La terminación devolvió 404 / Q.850 1 antes de respuesta confirmada;
+no se abrió la conversación ni se usaron Muse, Meta o Cartesia. El CDR posterior
+coincide con destino, conexión y perfil y declara UNALLOCATED_NUMBER, ruta Intra,
+segundos facturados 0 y coste US$0. El usuario confirma que la línea recibe
+llamadas normales; el mensaje genérico inicial no demuestra número incorrecto.
+La primera consulta de detalle estaba vacía y otra lectura falló por comunicación.
+Se conocen seis intentos REST en total, uno fallido; paquetes SIP y GPU sin medir.
+No hubo segundo marcado, audio ni transcripciones guardados, compra ni envío a
+soporte. La conversación y la causa de rechazo del operador siguen pendientes.
+[Intento, diagnóstico, evidencia y límites](melodi-telnyx-primera-prueba-20261112.md).
+
+13 de noviembre, corrección de arranque y Spotify. Se confirma el documento
+nativo abierto sin inicializar scripts ni iframe; un reinicio normal recuperó
+el historial. Se añadió recuperación nativa de un único intento antes de que
+inicie el chat, con prueba WebView2 de scripts 503 y conservación del control
+de la página una vez inicializada. Se corrigió el dominio de vinculación de
+Spotify, se retiró el ID personal de entorno y el configurador de la interfaz,
+se comprueba la cuenta antes de aceptar el nuevo acceso y se separan renovación
+y recuperación de música entre cuentas. Pasan 43 pruebas Spotify, 26 de estado,
+26 de recuperación, dos de recursos y recorridos locales nativos y visuales.
+Se conservan los fallos intermedios y un timeout del banco antiguo de cuenta.
+La instalación queda actualizada y el nuevo arranque confirma chat/compositor,
+dos conversaciones y 17 mensajes en la conversación abierta. Cinco consultas
+HTTPS explícitas conocidas, cuatro de ellas en un flujo retirado sin cuenta,
+tokens ni audio. Tráfico de fondo, importe agregado y GPU sin medir; ninguna
+inferencia solicitada por los ensayos. Acceso universal pendiente de aprobación
+de Spotify; no se certifica aún consentimiento ni reproducción de una cuenta
+real. [Cambios y evidencias](arranque-spotify-20261113.md).
+
+Registro posterior de Expansión musical: casilla a 60 segundos de inactividad,
+Spotify/YouTube, vista previa y dos estilos, Luna y órbita y Tipografía ámbar.
+Se corrigieron el estado de la vista previa tras pausa y el margen de las bandas
+inclinadas. Instalación musical actualizada con respaldo y casilla activada;
+los acompañantes del equipo permanecen preparados en código y ensayos sintéticos,
+sin activar su nueva interfaz nativa. Las pruebas de temporizador, composición,
+protocolo, extensión y Edge están registradas; YouTube personal, audio físico,
+recarga de extensión y minuto real siguen pendientes tras la interrupción del
+control visual. Sin originales adjuntos ni inferencia; descargas y GPU sin
+contabilizar. [Implementación y límites](expansion-musical-20261113.md).
+
+Corrección posterior al registro de transferencia del mismo día: se publicó
+la versión 10d51217-cbe4-4594-88ab-a5c22caabe01 del Worker y se actualizaron
+nueve archivos de la instalación cerrada con respaldo. Tres assets públicos
+coinciden con los bytes locales. No se usaron QR, sala ni archivos personales en
+esa comprobación; móvil físico pendiente. Esta actualización no reescribe los
+registros previos que dejaban publicación e instalación pendientes. El importe
+público no se midió. [Evidencia ampliada](transferencia-borde-20261113.md).
+
+Corrección adicional del mismo hito de arranque/Spotify: se conserva el acceso
+DPAPI anterior si falta el caché de identidad al retirar la configuración de
+entorno. Pasan 44 pruebas Spotify. Se aplicó un respaldo e instalación adicional
+del servicio y se confirmó otro arranque con chat/compositor y los mismos
+contadores de historial. La observación nativa encontró el chat; el control de
+ventana no obtuvo geometría/captura para navegar a Conexiones. Se mantiene pendiente
+consentimiento, audio real y acceso público aprobado por Spotify. Evidencias
+ampliadas en [el documento del hito](arranque-spotify-20261113.md).
+
+13 de noviembre, Spotify para uso inmediato en Development. El usuario autorizó
+la aplicación de su captura y confirmó daniel@vetsa.es como contacto; indicó que
+no existe empresa registrada. Se comprobó que el servicio publicado ya coincide
+con esa aplicación y callback, sin rotación de claves. Se prepararon origen,
+contacto, modo de acceso explícito y consentimiento renovado en el servidor;
+metadatos y aviso de prueba en el cliente conservan compatibilidad con el servicio
+anterior. Pasan 46 pruebas Spotify, 37 de Worker y el recorrido visual aislado.
+Siete consultas reales verifican el relay con autorización/cuenta sintéticas,
+retirada y cero peticiones a Spotify; dos consultas iniciales adicionales al
+sitio. Documentación, tráfico de fondo, GPU e importe agregado sin medir.
+No se publicó el sitio: el índice activo difiere del local y no debe sustituirse
+contenido ajeno a Spotify. El ID ya activo permite el uso actual; metadatos y
+consentimiento nuevos del Worker quedan preparados. Se respetó la transferencia
+y solo tras la autorización posterior de reinicio se guardó/cerró normalmente
+Brivany, aplicaron tres archivos con respaldo y confirmó chat/compositor e
+historial. Acceso público pendiente de empresa, elegibilidad y aprobación de
+Spotify; no se presentó formulario ni usó una cuenta real en los ensayos.
+[Configuración, instalación y límites](spotify-development-20261113.md).
+
+13 de noviembre, migración real de WhatsApp a Melodi. El código canónico y los
+adaptadores se trasladan de Vetsa-Asistant a Brivany con respaldo protegido de
+los cambios locales previos, configuración remota y tablas pertinentes. El bot
+y sus antiguas personalidades se retiran del servicio activo. Se conservan el
+número, Worker, colas, D1 y R2; la cola se pausa y reanuda sin purgar mensajes.
+Se publican el runtime de una Melodi y el proxy del sitio oficial conservando
+los assets existentes. Copia idempotente de 26 tablas y 50 elementos de esquema,
+con recuentos comprobados y cero infracciones de claves foráneas en la consulta
+real. Se instalan siete archivos con respaldo, cierre y arranque normales.
+Hay 39 skills y 39 herramientas estructuradas, con aislamiento de usuarios,
+permisos de un uso y métricas empresariales reservadas al operador. Pasan 339
+pruebas de publicación, 34 del puente/cuenta/HTTP, cinco del sitio y 37 de
+regresión Spotify. La suite histórica de múltiples personalidades conserva
+fallos y fixtures pendientes; no se presenta como aprobada. La inspección
+visual nativa de Conexiones no pudo completarse por el control de ventana.
+Importe agregado, tráfico de fondo y GPU sin medir; no se solicitó inferencia
+como ensayo. [Implementación, pruebas y límites](melodi-whatsapp-migracion-20261113.md).
+
+Corrección del mismo hito: los primeros enlaces Google fallaron en el POST
+porque los constructores OAuth todavía exigían el correo fijo que se había
+retirado. Se corrigió y se añadió el recorrido completo, incluidos tres ensayos
+HTTP reales con enlaces de prueba separados de los distribuidos. Se mantienen
+los resultados anteriores y los recibos de entrega/lectura. El titular conectó
+Calendar. El aviso posterior de Drive/Gmail es la verificación externa de
+Google; no se confunde con un fallo del servidor. Se limitan los permisos nuevos
+a lectura de archivos existentes, documentos propios, lectura de correo y
+borradores/envíos solicitados. Se guardan en Cloud Console nueve permisos y
+justificaciones de Desktop y WhatsApp. La solicitud final no se envió: falta
+demostración actualizada del cliente web y no hay evaluación CASA completada.
+Se avisó por WhatsApp y se solicita consentimiento para preparar una prueba con
+archivo y borrador ficticios. No se contrataron evaluaciones ni se adjuntan
+credenciales, conversaciones o videos originales al registro.
+[Preparación y requisito pendiente](google-whatsapp-verificacion-20261113.md).
+
+Corrección posterior del retorno OAuth, 13 de noviembre: la autorización real
+detectó otra comparación de Drive contra el correo fijo vacío y que Gmail no
+persistía los scopes concedidos. Ambas corregidas y publicadas en la versión
+9cb30c5513c3411c9918b710b0ac6492, con 341 pruebas locales aprobadas. El usuario
+detuvo el control visual antes de repetir el consentimiento; no se declaró
+la conexión completa. El 14 de noviembre informa que envió personalmente la
+solicitud de verificación de Google y aporta su progreso en revisión.
+
+14 de noviembre, continuación: puente nativo saliente de Brivany para el
+ordenador, diario de una ejecución por orden, resultados privados y respuestas
+de aprobación por WhatsApp. Se implementa programación por canal, conservando
+Telnyx y añadiendo medios WebRTC de Calling API. Pasan inicialmente 355 pruebas
+de servicio y doce del host, incluido DTLS/Opus en loopback con PCM sintético.
+Sin marcar teléfonos en esos ensayos; publicación, instalación y habilitación
+real de Meta se comprobarán aparte. aiortc 1.16.0 y dependencias de PyPI se
+instalan en desarrollo; descargas e importe agregado no contabilizados.
+[Alcance, pruebas y límites](melodi-whatsapp-escritorio-llamadas-20261114.md).
+
+14 de noviembre, comprobación y publicación del mismo hito. Puente del ordenador
+y programación por canal publicados e instalados en la ruta real `app/`, con
+respaldo y conservación de datos. Se corrige expresamente la afirmación anterior
+de instalación de siete archivos: la copia previa no apuntaba al cliente activo.
+Se añaden adjuntos privados, devolución de resultados, cancelación en cola,
+recuperación idempotente de despachos, expiración y delegación acotada al equipo
+de Melodi. Pasan 360 pruebas del servicio, 17 del host, 34 de cuenta/HTTP, cinco
+del sitio, 29 de Call Control, 30 de coordinación y 34 de ordenador. Telnyx real
+confirma disponibilidad; no se marcó. Meta rechaza activar llamadas con 138015
+(límite de mensajería mínimo 2.000); avisos de bloqueo y requisitos leídos por el
+titular en WhatsApp. El primer diagnóstico real remoto falló; se conserva el
+resultado y no se afirma causa resuelta. Un diagnóstico aislado y un segundo
+recorrido remoto tras reinicio normal pasaron (284 y 268 procesos), sin inferencia.
+Computer Use no pudo capturar la ventana ni tras recuperar; no se certifica
+control gráfico visible. Se creó el avatar blanco solicitado con image_gen,
+guardado en Exports/Melodi-WhatsApp, sin modificar el perfil público. Importe,
+tráfico de fondo y GPU agregados sin medir; Google continúa en revisión externa.
+[Implementación y límites](melodi-whatsapp-escritorio-llamadas-20261114.md),
+[requisitos oficiales de Meta](meta-llamadas-requisitos-20261114.md).
+
+14 de noviembre, corrección posterior del mismo hito. Se aísla el cambio de
+cuenta del host retirando tareas y referencias anteriores; se corrige cancelar
+una llamada cuando el despacho reservó su orden pero aún no guardó el vínculo.
+Pasan 361 pruebas del servicio y 18 del puente, sin marcar teléfonos. Corrección
+publicada en `3c6ae90be84a4d5a8bc832cb4207d1b8` e instalada con cierre y arranque
+normales; los 24 archivos del cliente activo coinciden con el origen. Ocho
+comprobaciones públicas pasan, con latido real y disponibilidad Telnyx. Meta
+confirma lectura de los tres avisos, incluido el de funciones operativas. El
+bloqueo 138015 continúa; sin llamada pública, aprobación de Google ni certificación
+visual nueva. Se preserva el primer fallo remoto y su causa sin certificar.
+Infraestructura y consumo agregado no contabilizados.
+[Corrección y evidencia](melodi-whatsapp-escritorio-llamadas-20261114.md).
+
+14 de noviembre, solicitud del titular: se añade `LICENSE` en la raíz con el
+texto estándar MIT y copyright 2026 Daniel Luna. README enlaza la licencia del
+código original y conserva el alcance de los avisos de terceros. Se comprueba
+contra el texto de Open Source Initiative; no requiere pruebas de ejecución.
+La creación es local y no declara que GitHub ya haya incorporado la licencia
+ni que Anthropic haya aceptado la solicitud.
+
+14 de noviembre, dirección posterior del titular: se retira WhatsApp Calling y
+se publica el servicio de llamadas telefónicas `brivany-calls` en Brivany.
+Horarios en alarmas SQL persistentes, Telnyx sin dependencia del PC y voz exacta
+de Melodi exclusivamente en Cartesia. El chat conserva los pedidos y las
+aprobaciones. Se incorpora control por voz del PC vinculado mediante RPC privado,
+sin ampliar el propietario ni la instrucción pronunciada. El PC debe seguir
+encendido para ejecutar sus tareas. Un resultado incierto no vuelve a marcar.
+
+Pasan los recorridos locales de alarmas, persistencia, firma, interrupción,
+WebSocket y voz, con proveedores sustituidos. Comprobaciones reales de solo
+lectura confirman Telnyx, acceso a la voz Cartesia, SQL y ordenador; las rutas
+públicas exigen firma y sesión. Se recupera un vínculo del operador hallado con
+502 bytes a cero, conservándolo y retirando exclusivamente su dispositivo previo.
+El vínculo nuevo pasa lectura DPAPI, latido y diagnóstico remoto de solo lectura.
+La causa de la corrupción no se ha establecido.
+
+La prueba funcional real con frase sintética pasa Cartesia, Muse, transcripción
+y diagnóstico del ordenador. Se corrigen la respuesta del modelo y un parámetro
+de razonamiento rechazado. La comprobación aislada posterior del modelo pasa:
+una herramienta elegida, 902 tokens de entrada y 303 de salida según el proveedor,
+sin ejecutar una acción desde ese modelo de prueba. Se reutilizan los resultados
+anteriores de audio y escritorio. El titular condiciona la llamada real a terminar
+las comprobaciones; hasta este registro no se ha marcado. Coste agregado de
+infraestructura, lecturas, síntesis e inferencia sin medir. El aviso de servicio
+en nube tiene recibo de entrega por WhatsApp. Se conserva Google en su revisión
+externa. [Implementación, correcciones y límites](melodi-llamadas-cloud-20261114.md).
+
+14 de noviembre, preparación de la solicitud de Claude for Open Source: se
+guardan los tres textos en inglés sobre alcance, uso de la suscripción y datos
+adicionales, describiendo la adopción temprana sin inventar métricas. El formulario
+no se envía desde esta tarea. [Borrador](claude-oss-solicitud-20261114.md).
+
+14 de noviembre, prueba telefónica posterior. Después de pasar las verificaciones
+previas se hizo un único intento autorizado al titular, a las 16:18 UTC. Telnyx
+registra quince segundos de espera, causa `timeout` y SIP 487, sin respuesta.
+Voz, transcripción y pedidos al PC: cero. Se conserva el recibo interno inicial
+`media_disconnected` junto a la corrección basada en el proveedor; no se declara
+superada la conversación ni el control desde el teléfono.
+
+Se publica espera de 45 segundos, temporizadores de voz desde la respuesta y
+estado «sin respuesta». Pasan 27 pruebas de llamadas y 361 de WhatsApp; once
+comprobaciones públicas confirman cuatro bundles y la configuración. No se
+remarca. Brivany había quedado cerrada tras el fallo de memoria de Windows; se
+inició de nuevo con vínculo cifrado íntegro y volvió a verificarse disponible.
+Causa del cierre y coste agregado sin certificar. Aviso actualizado entregado por
+WhatsApp a las 16:31:53 UTC. Queda pendiente atender una llamada para completar
+la prueba. [Resultado y evidencia](melodi-llamadas-cloud-20261114.md).
+
+15 de noviembre, servidor e interfaz de desarrollo iniciados desde el código.
+Se comprueba el estado privado `ready=true`, sin tareas ocupadas, y se habilitan
+en el entorno del proceso los binarios de video ya instalados. Comprobación local:
+motor de escenas disponible, ruta de referencia seleccionada y encargo de 931
+caracteres válido para el contrato del chat. La ruta de la interfaz nativa no se
+reabre externamente: su sesión protege la navegación. No se genera todavía MP4.
+
+Se revisan seis muestras de la referencia privada, de 98,1 segundos y 720×1280 a
+30 fps: fondo negro y dos esferas de neón. Se prepara el encargo para el chat con
+Melodi como asistente personal de Daniel Luna y una recreación de llamada a una
+clínica dental para limpieza bucal. No se ejecuta una llamada ni reserva real.
+El original y las muestras no se adjuntan a la bitácora. La separación futura por
+usuario de nombre y número queda registrada como decisión pendiente, sin compra
+de números ni cambio de producción. Sin generación de proveedor iniciada desde
+esta tarea; tráfico de fondo no medido. [Decisión](identidad-asistentes-20261115.md),
+[encargo](../Exports/Melodi-Daniel-Luna-Dentista/ENCARGO_CHAT.md).
+
+15 de noviembre, correcciones del chat reportadas por el usuario. Se alinean
+los plazos del cliente y del servidor, se entrega historial acotado al resumen y
+a sus agentes, se evita duplicar la respuesta en la actividad y se muestran
+resultados concretos. Las preguntas explicativas no abren tareas de instalación.
+Videos y audios se adjuntan por selector o arrastre, con transferencia local,
+validación y errores visibles que conservan la selección anterior.
+
+Pasan 37 pruebas de ordenador, 30 de coordinación, 10 de conversación y 63 de
+JavaScript, además de los recorridos locales de adjuntos, indicador de espera y
+voz con proveedores sintéticos. El ejecutor nativo confirma su arranque sin
+entrada al ordenador; no se repiten los pedidos de Paint/YouTube. El cierre de
+desarrollo conserva el chat y no fuerza procesos. Sin inferencia real iniciada
+por estas pruebas; GPU y tráfico de fondo sin medir. La interacción completa y
+la calidad de una nueva generación quedan para la prueba del usuario.
+[Cambios, evidencias y límites](chat-adjuntos-resumen-20261115.md).
+
+15 de noviembre, revisión de adjuntos y fallo de creación de video. Tarjetas
+compactas arriba del texto, con miniatura local y sin peso, según la corrección
+del usuario. La barra del textarea se oculta conservando el desplazamiento.
+Al enviar, el adjunto pasa al mensaje y sale del borrador; la selección propia
+del mensaje conserva el archivo para la tarea e impide heredarlo al siguiente.
+
+El análisis de referencia había terminado, pero el JSON del plan de escenas
+falló antes de entrar al bloque de corrección. Ese bloque ahora incluye la
+generación del borrador, con hasta tres intentos y errores legibles. Voz y
+exportación esperan un plan válido. Pasan las pruebas locales de selección,
+miniaturas, recuperación, chat y voz; la suite de video pasa 46 casos y omite dos
+por falta de FFmpeg en su PATH. Reinicio normal confirmado con el nuevo asset.
+Sin inferencia iniciada por estas pruebas, sin repetir la generación privada;
+GPU y tráfico de fondo sin medir. [Evidencias y límites](chat-miniaturas-plan-video-20261115.md).
+
+15 de noviembre, reintento contextual del video y controles de ventana. Se
+confirma retrospectivamente un reintento de 30 segundos sin referencia, frente
+al encargo original de 98. Ahora se identifica el pedido desde el chat y se
+conserva su contexto cifrado por conversación; los recibos no guardan el texto.
+Se recuperó el pedido antiguo y su adjunto idéntico sin generar otro video.
+
+Por petición expresa, minimizar y cerrar mantienen la ventana en la barra de
+tareas, sin activar WorkSpace. La X propia de WorkSpace permite cerrarlo y volver
+al chat. La salida completa sigue en la bandeja. Pasan seis pruebas de reintento,
+37 de ordenador, 47 de WorkSpace, dos de arranque y once comprobaciones de UI
+simulada. Desarrollo reiniciado normalmente y disponible. No se inicia inferencia
+para estas verificaciones; generación final y minimización física pendientes de
+prueba del usuario, GPU y tráfico de fondo sin medir.
+[Cambios, correcciones del banco y evidencias](reintento-video-ventanas-20261115.md).
+
+15 de noviembre, corrección de la llamada visual rechazada. Nuevo modo finito
+con esferas huecas y actividad del PCM, geometría medida en la referencia y sólo
+nombres breves. Se separan los interlocutores de Cartesia conservando el ID de
+Melodi. El usuario eligió 98 segundos con diálogo ampliado, sin música y con
+efecto suave de llamada: revisión exportada con 22 turnos y pausas de 0,227 s.
+Original conservado, MP4 y ZIP editable nuevos y resultado añadido al chat cifrado.
+
+El chat muestra una vista negra animada durante la creación. Las preguntas
+ordinarias escritas omiten la clasificación adicional; una prueba real dio el
+primer texto en 2,109 s, sin garantizar latencia constante. Pasan regresiones de
+contrato, voces, mezcla finita, conversación, ordenador y UI. Se corrigió una
+mezcla temporal sin límite reutilizando sus voces y suprimiendo sólo ese WAV.
+Consumo conocido: dos borradores Meta, 22 síntesis Cartesia, una consulta de
+catálogo y una pregunta sintética; importe y GPU sin medir. No se iniciaron llamadas
+telefónicas. Revisión visual de muestras realizada; audición humana y fidelidad
+exacta sin certificar. [Entrega, pruebas y límites](video-llamada-voces-carga-20261115.md).
+
+15 de noviembre, nueva referencia y guion de Melodi con Dr. Esteban. A petición
+del usuario se reemplazan los 98 segundos anteriores por los 88,142948 segundos
+exactos de la referencia. Se conserva el diálogo transcrito, adaptando nombres;
+se retiran las menciones de demostración y datos ficticios. Voz masculina
+Cartesia distinta, voz exacta de Melodi, tono inicial local y efecto telefónico
+suave, sin música. Giro continuo en reposo y al hablar, con fase global y sin
+reinicio entre turnos. Se incorpora el soporte al contrato y al renderizador.
+
+Pasan 30 pruebas de llamada y 32 de Cartesia; regresión audiovisual: 49 casos,
+dos omitidos. Comprobación real de las 18 escenas y comparación textual del
+guion; MP4 de 17 turnos y ZIP nuevos, resultado añadido al chat cifrado y
+desarrollo reabierto normalmente. Se conservan fallos del banco y un render
+propio cancelado para corregir un salto de giro. Consumo conocido: una
+transcripción Deepgram completada tras un intento 401 (envío autorizado por el
+usuario), 22 síntesis Cartesia y 1.175 caracteres, con reutilización de fragmentos.
+Importe y GPU desconocidos; sin nuevas llamadas telefónicas. La escucha humana
+y la fidelidad visual exacta siguen sin certificar.
+[Cambios, entrega y evidencias](video-referencia-dr-esteban-20261115.md).
+
+15 de noviembre, cadencia nativa y risitas del diálogo. El usuario detectó
+vocales alargadas y pausas excesivas. Se elimina el estiramiento por `atempo`:
+los 19 fragmentos hablados conservan su PCM y velocidad, y se calcula el montaje
+alrededor de ellos. Se añaden seis risitas suaves con las mismas voces Cartesia,
+sin alterar el guion ni los 88,142948 s. La separación añadida es 353 ms tras cada
+fragmento; la mayor pausa interna medida, incluyendo los bordes de voz, es 750 ms.
+
+Pasan 31 pruebas de llamada y 47 de 49 casos audiovisuales, con dos omitidos;
+comprobación de movimiento y MP4 correctas. Dos muestras con el modelo de audio
+actual no muestran vocales estiradas ni artefactos; una consulta anterior al
+modelo 1.2 no pudo evaluar el audio y se conserva como tal. Son comprobaciones
+automáticas, sin audición humana. Nuevos MP4 y ZIP, resultado añadido al chat
+cifrado y desarrollo reabierto. Consumo nuevo: dos síntesis Cartesia, 20 caracteres,
+tres consultas de evaluación Meta y tres de catálogo; importe y GPU desconocidos.
+Los originales y las entregas previas se conservan.
+[Corrección, mediciones y límites](video-voces-nativas-20261115.md).
+
+15 de noviembre, identidad personal y presentación del chat. Perfil local
+cifrado y aislado por cuenta para reconocer al propietario de Melodi, con una
+consulta real de reconocimiento correcta. Se abrió una simulación nativa de
+agentes sin ejecutar encargos, se incorporaron puntos junto a Pensando y
+escritura progresiva con fundido para mensajes nuevos. Miniaturas negras de
+imagen/video con cuatro círculos y porcentaje estimado por etapas, sin leyendas
+interiores. Propuesta visual de briva sans creada como imagen, sin fuente
+compilada ni sustitución en la interfaz. Consumo conocido: una consulta de chat
+y una generación de imagen; importe y GPU desconocidos, sin TTS ni llamadas.
+[Implementación, pruebas y alcance](chat-identidad-agentes-20261115.md).
+
+Corrección posterior del mismo hito: la miniatura conserva tarjeta, nodo,
+dimensiones y animación de cinco segundos sin escalado ni reinicios. Las caras
+Blobatar quedan fijas por función; mirada estable, parpadeo y flotación suave.
+La barra del chat muestra hasta cuatro agentes, con modal para todos, detalles
+por hover/foco y modo oculto persistente que no detiene las tareas. Pasan las
+pruebas de barra/modal, movimiento y CSP, 30 muestras de geometría durante
+escritura/progreso, proporciones a 320 px y regresión de WorkSpace. Se conserva
+el fallo del banco por estado de teléfono ausente y su nueva ejecución correcta.
+La carga nativa final sigue pendiente de reinicio. El cierre de la demostración
+no se ejecutó por fallo de revisión automática de permisos debido a límite de
+uso; no se eludió ese control. Sin proveedores externos en estas correcciones;
+GPU sin medir. [Evidencias y límites](chat-identidad-agentes-20261115.md).
+
+Comprobación posterior: recuperada la revisión de permisos, Brivany se reinició
+por su control privado normal y confirmó listo, sin operaciones ocupadas. Su
+servidor entrega los nuevos assets de barra/modal, flotación y miniaturas.
+No quedan procesos de la demostración. El acceso sin sesión a la pantalla
+continúa rechazado, como está previsto. Se resuelve la carga pendiente del
+registro anterior; no hubo nueva interacción de control de pantalla ni una
+inspección visual nativa final. Sin llamadas a proveedores para esta comprobación.
+[Estado y evidencias](chat-identidad-agentes-20261115.md).
+
+15 de noviembre, Brivany Editorial adoptada como tipografía oficial por elección
+del usuario. TTF suministradas intactas y WOFF2 con glifos y métricas conservados,
+licencia y atribución de Lato/OFL preservadas. Aplicadas a programa, módulos,
+widgets, expansión musical, web, QR y motores de nuevas promociones/videos.
+Familia instalada para el usuario de Windows y nueva guía visual, conservando
+las exportaciones anteriores. App de desarrollo reiniciada normalmente.
+
+Publicado el sitio y el Worker de transferencia, tras comparar su código remoto
+y conservar sus variables. Verificados los tres archivos públicos y su uso real
+en portada, privacidad y las dos páginas QR. Pasan integridad, GDI+, UI, motores
+de medios, agentes, adjuntos y regresiones móviles. La inspección de fotogramas
+detectó que el wordmark sólo aclaraba su primera letra: se corrigió con tinta
+heredada para todas las letras y se revisó otra muestra final. Se conservan los
+fallos intermedios del banco y sus ejecuciones correctas. Sin nueva inferencia,
+TTS ni generación de imágenes; dos publicaciones reales, importe y GPU sin medir.
+No se declara un instalador firmado nuevo ni revisión visual nativa final.
+[Implementación, pruebas y límites](brivany-editorial-20261115.md).
+
+15 de noviembre, portal privado de correo publicado en software.vetsa.es/correo.
+Dos bandejas corporativas sobre el Gmail ya autorizado; Reply conserva el hilo,
+permite texto propio y adjuntos de hasta 5 MiB, y evita retransmitir resultados
+inciertos. Remitentes comprobados en el servicio de correo existente, sin ampliar
+permisos Google. Pasan 40 pruebas Gmail/portal y tres del bundle exacto; revisión
+visual de escritorio/móvil y PNG sintético. Ambas bandejas y configuración de envío
+comprobadas en producción. No se creó borrador ni se envió correo real. Publicación
+acotada preservando recursos y ajustes del Worker. Consultas reales: coste no
+medido. [Entrega y límites](vetsa-correo-20261115.md).
+
+16 de noviembre, encargo de informes de entrega de correo en WhatsApp. Melodi
+localiza el correo del proveedor sobre el Gmail ya autorizado, abre su adjunto
+comprimido reconociendo el envoltorio por su contenido —gzip, zip o JSON suelto—,
+comprueba la forma del informe agregado y traduce cada causa a una frase
+corriente con su recuento y el servidor afectado, sin siglas ni direcciones de
+los servidores emisores. El tick programado avisa por su cuenta, una sola vez
+por informe, reservando antes de enviar; un envío fallido lo devuelve a la cola
+y un buzón sin conectar no avanza la marca de revisión. Un adjunto que no abre
+se declara en lugar de resumirse. La herramienta de conversación reutiliza la
+intención y el permiso de lectura de correo existentes, sin ampliar permisos de
+Google. Se añade la nota de voz con la voz exacta ya seleccionada de Melodi,
+enviada sólo a petición y confirmada sólo con el recibo real; sale como audio
+mp3, no como burbuja nativa. Su registro pasa a contar consecuencias en vez de
+mecanismos internos. La cota del catálogo del planificador sube de 40 a 48, que
+estaba exactamente en su límite y rompió 24 pruebas antes de corregirse. Pasan
+384 pruebas locales de publicación y 35 de whatsapp-cloud, con proveedores
+simulados, y el bundle se construye sin publicar. Sin cuentas reales de Google,
+sin mensajes de WhatsApp, sin síntesis real de voz y sin consumo medido ni
+conocido. Queda comprobarlo con un informe real del buzón.
+[Implementación, pruebas y límites](informes-entrega-correo-20261116.md).
+
+16 de noviembre, comprobación con el buzón real. Nueve informes de Google sobre
+vetsa.es, uno por día; se abrieron tres adjuntos reales (5, 8 y 12 de noviembre,
+311 bytes cada uno) y el lector los reconoció, descomprimió y explicó sin
+cambios. Tres detalles del formato real que no se conocían: el adjunto llega con
+el tipo propio application/tlsrpt+gzip, que la detección por contenido ya cubría;
+el identificador del asunto usa puntos en vez de dos puntos y se lee bien; y la
+norma declarada de vetsa.es está en modo de prueba, de modo que un informe sin
+fallos no demuestra que el correo viaje exigiendo protección. Lo último se
+incorporó al análisis y se dice en una línea aparte. El contenido exacto del
+informe del 12 queda fijado como prueba de regresión. Pasan 386 pruebas locales.
+Sólo lectura y descarga de adjuntos: no se envió correo ni se modificó ningún
+mensaje o etiqueta; tres descargas y cuatro consultas de Gmail, coste no medido.
+Un informe real con fallos sigue sin verse: esa rama se prueba con datos
+construidos. [Implementación, pruebas y límites](informes-entrega-correo-20261116.md).
+
+16 de noviembre, nota de voz nativa y publicación. La burbuja de WhatsApp exige
+Ogg con Opus en un solo canal y la marca voice en el envío; el proveedor de voz
+sólo entrega raw, wav y mp3, así que la codificación se hace en el Worker con
+libopus compilado a WebAssembly y un contenedor Ogg escrito a mano. Síntesis real
+comprobada: 13,52 s y 40.794 bytes, que ffprobe lee como ogg/opus mono a 48 kHz,
+ffmpeg decodifica sin errores y volumedetect confirma voz y no silencio.
+
+El titular observó que Melodi le respondía «Hola, Brivany». La causa era que su
+camino de respuesta autónoma no recibe ningún nombre verificado y su voz sólo
+tenía la prohibición de no suponer nombres: tomó el único nombre propio a la
+vista, el de la aplicación. Ahora el nombre del titular se resuelve desde la
+configuración, nunca desde el mensaje, y su voz le pide usarlo cuando suene
+natural y prohíbe de forma expresa usar Brivany, Melodi o Vetsa como su nombre.
+
+Antes de publicar se detectó que el publicador del repositorio adjuntaba un solo
+archivo: con dos módulos en el bundle, el Worker se habría caído al arrancar. Se
+corrigió para adjuntar todos los módulos que el bundle nombra. Respaldo previo
+tomado; publicado con 56 bindings heredados en modo estricto, assets conservados
+y los dos módulos subidos. Ambas rutas responden después de publicar. La clave de
+voz no existía en el Worker y se añadió como secreto. Pasan 394 pruebas locales.
+Queda comprobar en real que Melodi envíe la nota de voz por WhatsApp.
+[Implementación, pruebas y límites](informes-entrega-correo-20261116.md).
+
+
+15 de noviembre, navegación del chat, revisiones de imágenes y presencia de agentes.
+El chat abre abajo, conserva la lectura al subir y ofrece flecha de regreso.
+Títulos locales y renombrado manual, Mostrar más/menos, barras sin flechas y
+Conexiones/Bitácora dentro de Ajustes. Brillo azul, espera y fundido al terminar,
+sin aviso de éxito dentro de la app; notificación nativa solo en segundo plano.
+El tooltip ya no se reinserta en cada actualización. Los contadores de imagen y
+video arrancan en 1 y avanzan como estimación acotada, sin atribuir al proveedor
+un porcentaje que no proporciona. Escritura más suave, edición de la imagen
+verificada del mismo chat y conservación del original. Icono de Brivany desde
+la creación de la ventana y bloqueo de reinicio durante tareas activas.
+Pruebas locales, Edge aislado y lectura del icono nativo; sin generación real
+de la imagen del usuario, proveedores ni captura del escritorio. GPU sin medir.
+Las notificaciones se probaron con componentes sustituidos.
+[Implementación, verificación y límites](chat-navegacion-ediciones-20261115.md).
+
+Comprobación final del mismo hito: versión de desarrollo reiniciada por el
+canal privado, chat guardado y disponibilidad confirmada. Recursos servidos
+coincidentes con la revisión y título/icono nativos de Brivany comprobados sin
+captura ni entrada de sistema. Los ensayos nuevos cubren el tooltip estable
+en ambos lugares, el avance estimado sin contador del proveedor y notificación
+única en segundo plano con apertura del chat. Entrega de alertas de Windows
+simulada, no se emitió una notificación ficticia al usuario.
+
+16 de noviembre, dos correcciones vistas en producción. La nota de voz llegó al
+teléfono del titular como burbuja nativa y se escucha bien, pero el turno dijo
+que no pudo confirmar si había llegado: el ejecutor firma su recibo con estado
+«sent» y el verificador exigía «completed» a toda herramienta no declarada, así
+que descartaba un recibo válido. No falló el envío ni Meta; la comprobación de
+honestidad funcionaba sobre un recibo con forma no reconocida. Se declara la
+herramienta junto a gmail.send y se añade un guardián que recorre las que
+confirman con recibo propio y exige que ninguna responda que no pudo confirmar.
+
+Segundo: a «cuál sería el sector en la provincia Monseñor Nouel de RD» respondió
+sobre ramas de la economía. Los datos eran correctos, el sentido no: allí un
+sector referido a un lugar es un barrio. Su voz incorpora el uso dominicano de
+las palabras corrientes y la regla de quedarse con la lectura que el contexto ya
+indica. Es una corrección de lenguaje, no de conocimiento.
+
+Pasan 419 pruebas locales. Respaldo previo tomado y republicado con 57 bindings
+heredados en modo estricto, assets conservados y los dos módulos subidos; ambas
+rutas responden después de publicar.
+[Implementación, pruebas y límites](informes-entrega-correo-20261116.md).
+
+16 de noviembre, modo de voz y memoria del hilo. El titular pidió que, si le
+pide respuestas habladas, Melodi siga así hasta que pida texto. La preferencia
+se guarda por número y envuelve la entrega del turno. Tres salvaguardas: una
+respuesta con enlace o muy larga llega además escrita, una entrega marcada como
+escrita conserva su formato, y si la síntesis falla la respuesta sale escrita,
+para que una preferencia de formato nunca cueste una respuesta. Se separan la
+herramienta que fija la preferencia y la que envía una nota suelta, porque el
+planificador las confundía: a «dímelo con tu voz» respondió por escrito.
+
+Sobre el hilo, ya existían el historial cifrado, un índice ciego por HMAC que
+permite buscar sin descifrar y una memoria compactada que el tick de cada minuto
+refresca. Fallaban las medidas: ventana de 8 turnos de 700 caracteres, memoria de
+2400 y recálculo sólo tras 16 turnos nuevos. Y la búsqueda tomaba los cinco
+PRIMEROS términos del mensaje, que suelen ser palabras corrientes. Ahora la
+ventana es de 24 turnos de 1000 caracteres, la memoria de 6000, se recuperan 6
+recuerdos y se compacta a partir de 10 turnos. La selección de términos descarta
+las palabras corrientes y ordena por longitud; sólo cambia la consulta, así que
+el índice existente sigue valiendo y no hay que reindexar.
+
+Pasan 455 pruebas locales. El respaldo previo quedó tomado con revisión
+20261116-voz-c y el bundle construido, pero la publicación no se realizó: el
+clasificador de permisos la rechazó y no se intentó eludir. Lo publicado sigue
+siendo la revisión anterior.
+[Implementación, pruebas y límites](informes-entrega-correo-20261116.md).
+
+
+15 de noviembre, selección estable y orden de conversaciones por envío.
+Abrir un chat solo sombrea la fila; el guardado de borradores, respuestas, tareas
+o nombres conserva la posición. Enviar un mensaje lo coloca inmediatamente
+primero y el almacenamiento conserva ese orden al reabrir. Los guardados
+anteriores pendientes no deshacen el envío. Mostrar menos permanece oculto
+hasta ampliar la lista y desaparece al reducirla a cinco chats. Pasan diez
+pruebas de historial y recorridos de navegación, historial y adjuntos con datos
+sintéticos. Sin proveedores ni captura del escritorio personal; GPU sin medir.
+[Implementación y comprobaciones](chat-orden-seleccion-20261115.md).
+
+16 de noviembre, hilo de la conversación. Tres encargos del titular tras probar
+en producción. Sólo se guardaban los mensajes de Melodi, así que citar uno suyo
+no resolvía texto: ahora su mensaje queda registrado al llegar y la cita admite
+los dos autores, que viajan explícitos al planificador para que no se confunda
+quién dijo qué. Tras una nota de voz se enviaba además «Te la mandé en nota de
+voz», que repite lo ya entregado; ese texto desaparece y el turno no manda nada
+cuando la voz resolvió la respuesta, aunque lo dicho sí se guarda en el hilo. Si
+hay otro resultado, o un fallo, ese texto sigue saliendo. Y una imagen generada
+se enviaba sin guardarse, de modo que pedir un cambio obligaba a reenviarla:
+ahora queda en el almacén privado y como imagen en curso, y la petición de
+cambio trabaja sobre ella. Sin ninguna imagen, sigue pidiéndola.
+
+Pasan 464 pruebas locales. Respaldo previo tomado y publicado con 57 bindings
+heredados en modo estricto, assets conservados y los dos módulos subidos; ambas
+rutas responden después de publicar. Entra también lo que quedó sin publicar en
+la ronda anterior: modo de voz persistente, ventana de 24 turnos, memoria
+compactada de 6000 caracteres y recuperación por términos distintivos.
+[Implementación, pruebas y límites](informes-entrega-correo-20261116.md).
+
+16 de noviembre, encargos a medias y sentidos de Melodi. El titular dictó dos
+grabaciones en un mensaje y la segunda quedó cortada: Melodi preguntó por ella y
+no dijo nada de la primera, que estaba completa. La causa era estructural, no de
+comprensión: la ruta de aclaración del planificador prohíbe acciones, así que
+preguntar y ejecutar eran excluyentes. Ahora la ruta de ejecución admite una
+pregunta por lo que falta, que se añade después de los recibos; debe ser sólo la
+pregunta, porque una prueba descubrió que un prefijo como «Ya agendé las dos.»
+pasaba los controles existentes.
+
+Verificados los otros dos sentidos, con brecha en ambos. Una nota de voz sin
+texto no llegaba a ninguna parte, porque la transcripción dependía de clasificar
+el intent sobre un texto que no existe; ahora el audio se escucha antes de
+decidir el turno y lo dicho entra como mensaje del titular. Si no se puede
+escuchar, se dice, y no se inventa contenido. La lectura visual existía pero su
+instrucción sólo transcribía texto legible: se añade la descripción de lo que se
+ve, y la herramienta acepta una pregunta sobre la imagen. Editar imágenes ya
+funcionaba con una enviada y, desde el cambio anterior, también sobre las que
+ella genera.
+
+Pasan 470 pruebas locales. Respaldo previo tomado con revisión 20261116-sentidos
+y bundle construido, pero la publicación no se realizó: el clasificador de
+permisos la rechazó y no se intentó eludir. Lo publicado sigue siendo la revisión
+anterior. [Implementación, pruebas y límites](informes-entrega-correo-20261116.md).
+
+16 de noviembre, publicación de lo anterior. El titular autorizó publicar lo que
+el clasificador de permisos había rechazado. Publicado con 57 bindings heredados
+en modo estricto, assets conservados y los dos módulos subidos; ambas rutas
+responden después. Entra en producción: un encargo con una parte completa y otra
+a medias ejecuta la completa y pregunta sólo por lo que falta; las notas de voz
+recibidas se escuchan antes de decidir el turno; y la lectura visual describe lo
+que hay en la imagen cuando se le pregunta, no sólo su texto. No se midió el
+consumo de transcripción ni de visión, que ahora pueden ejecutarse en más turnos
+que antes. Queda comprobarlo en real usándolo.
+
+16 de noviembre, prueba del titular con dos fallos. La imagen prometida nunca
+llegó y tampoco hubo aviso. La causa raíz no se pudo determinar: la consulta a
+la base remota quedó rechazada por el clasificador de permisos. Lo que sí se
+comprobó leyendo el código es un defecto cierto e independiente: sólo el trabajo
+de historia avisaba al titular cuando moría; generación y edición de imagen,
+documento y transcripción marcaban el fallo, dejaban un aviso privado y
+lanzaban, sin decir nada a quien esperaba. Esos cuatro avisan ahora. No arregla
+la generación: si el proveedor sigue fallando seguirá fallando, pero dejará de
+hacerlo en silencio.
+
+El segundo: al aclarar con quién era la grabación, Melodi volvió a preguntar en
+vez de agendar. El runtime nunca guardaba una sesión pendiente al preguntar, así
+que la respuesta llegaba sin el encargo original detrás. Ahora una pregunta
+conserva la petición viva, la aclaración se suma al encargo en vez de
+reemplazarlo, y un turno que ejecuta sin preguntas pendientes deja de esperar.
+El planificador tiene prohibido volver a pedir permiso con el dato en la mano.
+
+Pasan 475 pruebas locales. Respaldo previo tomado con revisión
+20261116-pendiente y bundle construido; la publicación quedó rechazada por el
+clasificador de permisos y no se intentó eludir. Lo publicado sigue siendo la
+revisión anterior.
+
+16 de noviembre, publicación de lo anterior. Autorizada por el titular tras el
+rechazo del clasificador. Publicado con 57 bindings heredados en modo estricto,
+assets conservados y los dos módulos subidos; ambas rutas responden después.
+Entra en producción: una pregunta de Melodi conserva el encargo original, la
+aclaración se suma a la petición, un turno que ejecuta deja de esperar, y los
+trabajos de imagen, edición, documento y transcripción avisan cuando mueren.
+Sigue sin determinarse por qué no llegó la imagen: el cambio evita el silencio,
+no arregla la generación.
+
+16 de noviembre, causa de la imagen que no llegó. El titular ejecutó la
+consulta que a mí me rechazaron y el registro lo dice: generate_image, failed,
+«Vetsa Intelligence returned 502», a las 13:16:14Z, la hora de su prueba. Es un
+fallo de la pasarela del servicio de modelos, no del worker ni de la petición;
+su endpoint de salud responde 200 ahora, así que fue pasajero. El defecto propio
+era tratarlo como definitivo: el único reintento de generate_image cubría el
+estado «procesando», y el de códigos 5xx estaba escrito sólo para historias y
+con otro formato de mensaje.
+
+Ahora se distingue un mal momento del servicio —408, 425, 429, 500, 502, 503 y
+504— de un rechazo de la petición, que se repetiría igual. El trabajo pasa a
+espera con reintento al minuto durante sus primeros quince, y la recuperación
+por cron que ya existía lo recoge; una prueba fija el formato de la marca para
+que no se desalinee de la consulta que la lee. Pasado el plazo cae en el aviso
+de fallo añadido antes. Del registro consta también que la última generación
+completada fue el 1 de octubre y que los dos edit_image previos quedaron
+rechazados por contenido, no por servicio.
+
+Pasan 478 pruebas locales. Respaldo tomado con revisión 20261116-reintento y
+bundle construido; la publicación quedó rechazada por el clasificador de
+permisos y no se intentó eludir.
+
+16 de noviembre, publicación del reintento. Autorizada por el titular.
+Publicado con 57 bindings heredados en modo estricto, assets conservados y los
+dos módulos subidos. Comprobado después: las dos rutas del worker responden y
+el servicio de modelos responde 200 en su endpoint de salud. La generación de
+imagen distingue ya un fallo pasajero de la pasarela de un rechazo de la
+petición y lo reintenta. No se generó ninguna imagen real en esta tarea para no
+consumir créditos, así que falta comprobarlo de extremo a extremo. Queda abierto
+revisar los dos edit_image rechazados por contenido con código EDIT_PLAN.
+
+16 de noviembre, el aviso de fallo y el proveedor de imágenes. Nueva prueba del
+titular: el aviso funcionó, pero el trabajo murió en un minuto, así que esta vez
+no fue el 502 pasajero y el reintento nuevo no llegó a activarse. El código del
+error no se pudo leer: la consulta a la base remota volvió a quedar rechazada.
+
+Defecto propio corregido: el aviso preguntaba si reintentarlo, el titular dijo
+que sí y no pasó nada, porque ninguna ruta recogía ese sí. Ahora la petición
+queda viva como encargo pendiente reconstruido desde el prompt del trabajo, de
+modo que un sí llegue como continuación y vuelva a encargarlo entero. Sin prompt
+no se guarda nada: no se ofrece lo que no se puede cumplir.
+
+Sobre el proveedor: la generación usa `spaik-image`, que expone el Worker
+`vetsa-intelligence-api`, fuera de este repositorio; su clave de proveedor es un
+secreto suyo y el modelo base no se nombra en las respuestas, por diseño. Sus
+secretos declaran proveedores de imagen posibles —Gemini, KIE, MUAPI y
+Pollinations— y ninguna clave de Meta, de modo que hoy las imágenes no salen de
+la API de Meta que el titular mencionó al principio. Cuál de ellos atiende cada
+petición no consta aquí.
+
+Pasan 478 pruebas locales. Respaldo tomado con revisión 20261116-reoferta y
+bundle construido; la publicación quedó rechazada por el clasificador y no se
+intentó eludir.
+
+
+16 de noviembre, investigación de Melodi en Zoom/Google Meet desde un enlace.
+Se recomienda prototipar Cloudflare como coordinador y una API de participantes
+como Recall para el ingreso y audio bidireccional, conservando la voz exacta
+de Cartesia. Browser Run queda por validar para micrófono virtual/WebRTC;
+Browser Isolation es otro producto y no admite micrófono. Google anunció el
+cierre de Meet Media API para el 15 de enero de 2027. Se revisaron requisitos
+de admisión, Zoom OBF, programación, costes publicados y reutilización de voz
+existente. Propuesta pendiente de prototipo: sin conector desplegado, alta,
+reuniones reales, audio enviado ni pruebas de compatibilidad. Solo código y
+documentación pública; consumo de consultas y GPU sin medir.
+[Investigación, fuentes y criterio de aceptación](melodi-reuniones-enlaces-20261116.md).
+
+
+16 de noviembre, Spaik Image utiliza Meta en Vetsa Intelligence. Credencial
+existente trasladada a secreto cifrado, creación y edición Muse Image, análisis
+Muse Spark. Publicación limitada sobre el código remoto, nueve módulos y 34
+bindings originales conservados. Pasaron tres pruebas reales autorizadas con
+contenido sintético: círculo rojo, edición azul y descripción correcta. Dos
+peticiones de imagen y un análisis; importe no consultado, GPU sin medir.
+Estado público HTTP 200; ruta pública autenticada no ensayada. Sin reiniciar
+Brivany ni tocar el trabajo del otro chat.
+[Implementación, pruebas y límites](vetsa-spaik-meta-20261116.md).
+
+
+16 de noviembre, corrección posterior de Spaik Image desde WhatsApp. La prueba
+anterior en Node no cubría el runtime de Workers: la opción redirect:error
+impedía contactar con Meta y dejaba el identificador marcado como fallido.
+Se cambió a manual y se verificó en workerd real con D1/R2 y proveedor simulado;
+el ensayo reprodujo primero el 502 y pasa después. También pasan 16 regresiones.
+Publicación limitada a un módulo del servicio de imágenes, con 36 bindings
+conservados. Se recuperó una sola vez el último pedido afectado: imagen
+completada y trabajo de WhatsApp completo, con envío aceptado. Los demás
+fallos no se reintentaron. Una recuperación real; importe y GPU no consultados.
+Sin conversaciones o imágenes del usuario en las evidencias de desarrollo.
+[Corrección, pruebas y recuperación](whatsapp-imagen-meta-correccion-20261116.md).
+
+16 de noviembre, integración de reuniones de Melodi con Recall v1.11 en Vetsa AI
+(Frankfurt), tras leer su onboarding y confirmar el workspace por MCP. Vista de
+Reuniones, Cuenta Vetsa existente, D1/colas/cron y Google Calendar de Brivany;
+solo eventos marcados expresamente. Intención antes de crear, deduplicación,
+firmas antes de almacenar y transcripción/resumen cifrados. Se desplegó una
+ampliación que conserva el código y bindings actuales de WhatsApp. Pasan pruebas
+locales, HTTP, WebSockets, workerd y navegador con proveedores simulados, además
+de 478 regresiones. Prueba real inicial: entrada y grabación, retirada solicitada
+y transcripción/resumen terminados. Calendar real conectado y 94 eventos leídos,
+sin crear bots para ellos. La primera prueba sintética de voz real no completó
+el reconocimiento/respuesta; se diagnostica sin mantener bots dentro. Voz
+Cartesia exacta, avatar proporcionado, pizarra compartida y solicitud visual de
+palabra pasan simulaciones; no se declara mano nativa de Zoom ni conversación
+real verificada. Se añaden límites y retirada entre pruebas. Coste real y GPU no
+consultados; sin enlaces privados, conversaciones ni medios originales en las
+evidencias. [Entrega, decisiones, pruebas y límites](recall-reuniones-20261116.md).
+
+16 de noviembre, cierre posterior de Recall. Se corrigen el turno numérico cero
+de Muse, el presupuesto de respuesta vacío y el timeout de handshake que cortaba
+la escucha a los cinco segundos. La última prueba sintética con Muse, Workers AI
+y la voz exacta de Cartesia completa reconocimiento y audio, sin entrada a Zoom
+ni audio guardado. Se conserva contexto reciente acotado al escuchar en silencio.
+El avatar también se configura para reuniones sin voz. Pasan 13 pruebas de
+reuniones, 10 de voz/contexto/resumen/pizarra/límites, 28 del cliente nativo,
+interfaz HTTP, workerd/navegador y 478 regresiones. Se publica y comprueba el
+artefacto final conservando el programa previo de WhatsApp y sus módulos.
+Un único intento adicional de Zoom dura 24 segundos y termina meeting_not_found;
+no llega a entrar y no se repite. MCP confirma todos los bots fuera. Quedan sin
+acreditar avatar/pizarra y conversación humana dentro de una reunión activa;
+la mano y pizarra nativas de Zoom no se presentan como soportadas. Se preservan
+los seis fallos sintéticos previos y los contadores de consumo conocido; coste
+total y GPU desconocidos. No se adjuntan conversaciones, claves ni medios
+originales. [Correcciones, evidencia y límites](recall-reuniones-20261116.md).

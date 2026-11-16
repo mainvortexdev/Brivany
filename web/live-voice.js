@@ -2,7 +2,8 @@
 window.BrivanyLive = (() => {
   let sessionSequence = 0;
   class PCMPlayer {
-    constructor() { this.sources = new Set(); this.generation = 0; }
+    constructor(onPlayback = () => {}) { this.sources = new Set(); this.generation = 0; this.playing = false; this.onPlayback = onPlayback; }
+    playback(value) { if (this.playing !== value) { this.playing = value; this.onPlayback(value); } }
     async prepare({ rate = 1, quiet = false } = {}) {
       const Audio = window.AudioContext || window.webkitAudioContext;
       if (!Audio) throw Error("La reproducción de audio no está disponible.");
@@ -55,9 +56,9 @@ window.BrivanyLive = (() => {
             const source = this.audio.createBufferSource(), gain = this.audio.createGain();
             source.buffer = buffer; source.playbackRate.value = this.rate;
             gain.gain.value = this.quiet ? 0.18 : 0.85; source.connect(gain); gain.connect(this.audio.destination);
-            source.onended = () => { this.sources.delete(source); source.disconnect(); gain.disconnect(); };
+            source.onended = () => { this.sources.delete(source); source.disconnect(); gain.disconnect(); if (!this.sources.size) this.playback(false); };
             this.sources.add(source); this.next = Math.max(this.next, this.audio.currentTime + 0.015);
-            source.start(this.next); this.next += buffer.duration / this.rate;
+            source.start(this.next); this.playback(true); this.next += buffer.duration / this.rate;
           }
         }
         if (signal.aborted || generation !== this.generation) return;
@@ -68,11 +69,13 @@ window.BrivanyLive = (() => {
     }
     async drain(signal, generation = this.generation) {
       while (this.audio.currentTime < this.next && !signal.aborted && generation === this.generation) await wait(30, signal);
+      if (generation === this.generation) this.playback(false);
     }
     cancel() {
       this.generation++; this.carry = null;
       for (const source of this.sources) { try { source.stop(); } catch {} }
       this.sources.clear(); if (this.audio) this.next = this.audio.currentTime;
+      this.playback(false);
     }
   }
   function wait(ms, signal) {
@@ -83,9 +86,9 @@ window.BrivanyLive = (() => {
     });
   }
   class MelodiOutput {
-    constructor(onState, onError) { this.onState = onState; this.onError = onError; this.player = new PCMPlayer(); this.generation = 0; }
+    constructor(onState, onError, onPlayback) { this.onState = onState; this.onError = onError; this.player = new PCMPlayer(onPlayback); this.generation = 0; }
     cancel() { this.generation++; this.controller?.abort(); this.player.cancel(); this.onState(false); }
-    speak(segments, options) {
+    speak(segments, options = {}) {
       this.cancel(); const generation = this.generation; this.controller = new AbortController();
       const signal = this.controller.signal;
       const stop = () => this.cancel();
@@ -95,25 +98,49 @@ window.BrivanyLive = (() => {
       // Let Cartesia generate the requested pace. Keep PCM playback at its
       // native rate, avoiding a second speed adjustment on the same speech.
       const ready = this.player.prepare({ ...options, rate: 1 });
-      (async () => {
+      const jobs=[];
+      const liveTurn=options.live?window.crypto.randomUUID():null;
+      const requestSpeech=async segment=>{
+        const response=await fetch("/api/voice/speech",{method:"POST",signal,
+          headers:{"Content-Type":"application/json"},body:JSON.stringify({text:segment.text,consent:true,language:options.language||'es',speed:options.rate??1,...(liveTurn?{live_turn:liveTurn}:{})})});
+        if(!response.ok){const data=await response.json().catch(()=>({}));throw Error(data.error?.message||"No se pudo preparar la voz de Melodi.");}
+        if(!response.headers.get("Content-Type")?.startsWith("audio/pcm")){await response.body?.cancel().catch(()=>{});throw Error("El formato de voz recibido no es válido.");}
+        return response;
+      };
+      return (async () => {
         try {
           await ready;
+          if(options.live){
+            // Vetsa's bounded pipeline: continue consuming text while the next
+            // phrases synthesize; play the three speech segments in order.
+            let queue=Promise.resolve(),fail;const failure=new Promise((_,reject)=>fail=reject);
+            const produce=(async()=>{
+              for await(const segment of segments){
+                if(signal.aborted||generation!==this.generation)return;
+                if(jobs.length>=3)throw Error('La respuesta excedió los tres fragmentos de voz.');
+                const job=requestSpeech(segment).then(value=>({value}),error=>({error}));jobs.push(job);
+                queue=queue.then(async()=>{const {value,error}=await job;if(error)throw error;if(signal.aborted||generation!==this.generation){await value.body.cancel().catch(()=>{});return;}await this.player.stream(value,signal,{drain:false,pauseAfter:0});});
+                queue.catch(fail);
+              }
+              await queue;
+            })();
+            await Promise.race([produce,failure]);
+          }else{
           for await (const segment of segments) {
             if (signal.aborted || generation !== this.generation) return;
-            const response = await fetch("/api/voice/speech", { method: "POST", signal,
-              headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: segment.text, consent: true, language: options.language || 'es', speed: options.rate ?? 1 }) });
-            if (!response.ok) { const data = await response.json().catch(() => ({})); throw Error(data.error?.message || "No se pudo preparar la voz de Melodi."); }
-            if (!response.headers.get("Content-Type")?.startsWith("audio/pcm")) throw Error("El formato de voz recibido no es válido.");
+            const response = await requestSpeech(segment);
             // EOF releases the server's synthesis slot. Fetch the next sentence
             // while queued audio is still playing, with no parallel TTS requests.
             await this.player.stream(response, signal, { drain: false, pauseAfter: segment.pauseAfter });
           }
+          }
           await this.player.drain(signal);
+          return !signal.aborted;
         } catch (error) {
-          if (!signal.aborted && generation === this.generation) { this.player.cancel(); this.onError(error.message); }
-        } finally { options.signal?.removeEventListener("abort", stop); if (generation === this.generation) this.onState(false); }
+          if (!signal.aborted && generation === this.generation) { this.controller.abort(); this.player.cancel(); this.onError(error.message); }
+          return false;
+        } finally { options.signal?.removeEventListener("abort", stop);for(const job of jobs)job.then(({value})=>{if(signal.aborted)value?.body?.cancel().catch(()=>{});});if (generation === this.generation) this.onState(false); }
       })();
-      return true;
     }
   }
   class BargeInGate {
@@ -144,7 +171,8 @@ window.BrivanyLive = (() => {
       this.ending = false; this.activeTurn = null; this.ignored.clear(); this.muted = false; this.bargeInEnabled = options.bargeIn === true;
       await new Promise((resolve, reject) => {
         let ready = false;
-        const timer = setTimeout(() => reject(Error("Muse tardó demasiado en conectar.")), 20000);
+        // The relay permits up to 15 s to open upstream and 15 s for its ACK.
+        const timer = setTimeout(() => reject(Error("Muse tardó demasiado en conectar.")), 32000);
         this.rejectStart = reject;
         socket.onopen = () => socket.send(JSON.stringify({ type: "start", consent: true,
           mode: options.mode, language: options.language, meetingConsent: options.meetingConsent, bargeIn: this.bargeInEnabled }));
@@ -229,13 +257,13 @@ window.BrivanyLive = (() => {
   }
   /** A request budget bounds UI waiting; it is not a provider latency promise. */
   class TurnBudget {
-    constructor(controller,{onSlow=()=>{},onExpire=()=>{},now=()=>Date.now(),schedule=setTimeout,unschedule=clearTimeout}={}){
+    constructor(controller,{onSlow=()=>{},onExpire=()=>{},now=()=>Date.now(),schedule=setTimeout,unschedule=clearTimeout,firstTextMs=10000,completionMs=20000}={}){
       this.controller=controller;this.started=now();this.now=now;this.unschedule=id=>unschedule(id);this.closed=false;this.first=null;
       this.timers=[];this.abortListener=()=>this.finish();controller.signal.addEventListener('abort',this.abortListener,{once:true});
       const later=(ms,callback)=>{const timer=schedule(()=>{if(!this.closed && !controller.signal.aborted)callback();},ms);this.timers.push(timer);return timer;};
       this.slowTimer=later(4000,()=>{if(this.first===null)onSlow();});
-      this.firstTimer=later(10000,()=>this.expire('first_text',onExpire));
-      later(20000,()=>this.expire('completion',onExpire));
+      this.firstTimer=later(firstTextMs,()=>this.expire('first_text',onExpire));
+      later(completionMs,()=>this.expire('completion',onExpire));
       if(controller.signal.aborted)this.finish();
     }
     firstText(){if(this.first===null && !this.closed){this.first=Math.max(0,this.now()-this.started);this.unschedule(this.firstTimer);this.unschedule(this.slowTimer);}return this.first;}

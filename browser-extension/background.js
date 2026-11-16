@@ -1,7 +1,18 @@
 /* Active translation requires user intent. Prefix capture uses only prior site grants. */
 import {readVideoCaptions,upcomingCaptions} from './caption-probe.js';
+import {listenForMusic} from './music-relay.js';
+if(typeof listenForMusic==='function')listenForMusic();
+// 0.5.0: translation mode reactivated (0.4.11 was a transcription-only test).
+const TRANSCRIPTION_ONLY=false;
+// 0.6.0: silent YouTube timeline. No click, no page UI; the extension only
+// feeds captions + playback clock to Brivany's Directa translation.
+const SILENT_TIMELINE=true;
+if(SILENT_TIMELINE&&typeof listenForTimelines==='function')listenForTimelines();
+// Opening prepared before translation starts: 10 s = 125 frames of 80 ms.
+const PREFIX_MS=10000,PREFIX_FRAMES=125;
 import {connectDesktop,reply} from './desktop-connect.js';
 import {WorkspaceControl} from './workspace-control.js';
+import {listenForTimelines} from './timeline-relay.js';
 const players=new Map();
 const selectedTabs=new Set();
 const translatingPorts=new Set();
@@ -18,7 +29,7 @@ function preparedMetadata(value){
  const turns=[];
  for(const row of input){
   if(!row||!['speech','unknown'].includes(row.content)||!Number.isInteger(row.start_ms)||!Number.isInteger(row.end_ms)||
-    row.start_ms<0||row.end_ms<=row.start_ms||row.end_ms>7000||typeof row.text!=='string'||!row.text.trim())continue;
+    row.start_ms<0||row.end_ms<=row.start_ms||row.end_ms>PREFIX_MS||typeof row.text!=='string'||!row.text.trim())continue;
   turns.push({start_ms:row.start_ms,end_ms:row.end_ms,text:row.text.trim().slice(0,400),
    speaker:typeof row.speaker==='string'&&/^[\w-]{1,48}$/.test(row.speaker)?row.speaker:null,
    emotion:emotions.has(row.emotion)&&Number.isFinite(row.confidence)&&row.confidence>=.7&&row.confidence<=1?row.emotion:null,
@@ -26,11 +37,12 @@ function preparedMetadata(value){
    timbre:['masculine','feminine'].includes(row.voice_timbre)&&Number.isFinite(row.timbre_confidence)&&row.timbre_confidence>=.8&&row.timbre_confidence<=1?row.voice_timbre:null});
  }
  return {type:'prefix-ready',prefix_id:value.prefix_id,duration_ms:value.duration_ms,position_ms:value.position_ms,
-  resume_from_ms:Number.isInteger(value.resume_from_ms)&&value.resume_from_ms>=0&&value.resume_from_ms<=7000?value.resume_from_ms:null,
+  resume_from_ms:Number.isInteger(value.resume_from_ms)&&value.resume_from_ms>=0&&value.resume_from_ms<=PREFIX_MS?value.resume_from_ms:null,
   turns,omitted_music:input.some(row=>row&&['singing','music'].includes(row.content))};
 }
 
 export async function prepareSource(source,{retry=false}={}){
+ if(TRANSCRIPTION_ONLY)return false;
  if(!source?.active||!Number.isInteger(source.id)||!/^https?:/.test(source.url||'')||!chrome.permissions?.contains)return false;
  try{
   if(!await chrome.permissions.contains({origins:[sitePattern(source.url)]}))return false;
@@ -53,6 +65,7 @@ export async function prepareSource(source,{retry=false}={}){
 }
 
 function refreshPreparationRegistration(){
+ if(TRANSCRIPTION_ONLY||SILENT_TIMELINE){chrome.scripting.unregisterContentScripts?.({ids:[prefixScriptId]}).catch(()=>{});return;}
  if(!chrome.scripting.registerContentScripts||!chrome.permissions?.getAll)return;
  registration=registration.then(async()=>{
   const {origins=[]}=await chrome.permissions.getAll();
@@ -66,12 +79,12 @@ function refreshPreparationRegistration(){
 }
 
 refreshPreparationRegistration();
-chrome.tabs.query?.({active:true,lastFocusedWindow:true}).then(([tab])=>prepareSource(tab)).catch(()=>{});
+if(!SILENT_TIMELINE)chrome.tabs.query?.({active:true,lastFocusedWindow:true}).then(([tab])=>prepareSource(tab)).catch(()=>{});
 chrome.permissions?.onAdded?.addListener(refreshPreparationRegistration);
 chrome.permissions?.onRemoved?.addListener(()=>{preparationInjections.clear();prefixOwner?.close();refreshPreparationRegistration();});
 chrome.runtime.onInstalled?.addListener(refreshPreparationRegistration);
 chrome.tabs.onActivated?.addListener(({tabId})=>chrome.tabs.get(tabId).then(prepareSource).catch(()=>{}));
-export async function activateSource(source){
+export async function activateSource(source,{transcribeOnly=false}={}){
   if(!Number.isInteger(source?.id)||!/^https?:/.test(source.url||''))return false;
   try{
     selectedTabs.add(source.id);
@@ -81,24 +94,27 @@ export async function activateSource(source){
     // Waiting for the user to play a paused video is valid selection state;
     // this acknowledges the module/UI, not ASR or audible translation.
     const results=await chrome.scripting.executeScript({target:{tabId:source.id},
-      func:async moduleURL=>{
+      func:async (moduleURL,transcribeOnly)=>{
         try{
           const module=await import(moduleURL);
-          await module.activateVideoSelection();
+          await module.activateVideoSelection({transcribeOnly});
           return true;
         }catch{return false;}
-      },args:[chrome.runtime.getURL('video-selection.js')]});
+      },args:[chrome.runtime.getURL('video-selection.js'),transcribeOnly]});
     if(!results.some(result=>result.frameId===0&&result.result===true))throw Error('selection_failed');
     return true;
   }catch(error){selectedTabs.delete(source.id);console.warn('Brivany no pudo seleccionar un video de esta página.');return false;}
 }
 const workspaceControl=typeof WorkspaceControl==='undefined'?null:new WorkspaceControl({activate:activateSource});
 chrome.action.onClicked.addListener(async source=>{
+ if(SILENT_TIMELINE)return false; // works on its own: nothing to show
+ if(TRANSCRIPTION_ONLY)return activateSource(source,{transcribeOnly:true});
  let permission;try{if(chrome.permissions?.request&&/^https?:/.test(source.url||''))permission=chrome.permissions.request({origins:[new URL(source.url).origin+'/*']});}catch{}
- await permission?.catch(()=>false);workspaceControl?.start();return activateSource(source);
+ await permission?.catch(()=>false);workspaceControl?.start();refreshPreparationRegistration();return activateSource(source);
 });
-if(workspaceControl){workspaceControl.start();chrome.runtime.onStartup?.addListener(()=>workspaceControl.start());chrome.runtime.onInstalled?.addListener(()=>workspaceControl.start());chrome.alarms?.create('brivany-workspace',{periodInMinutes:1});chrome.alarms?.onAlarm.addListener(alarm=>{if(alarm.name==='brivany-workspace')workspaceControl.start();});}
+if(!TRANSCRIPTION_ONLY&&!SILENT_TIMELINE&&workspaceControl){workspaceControl.start();chrome.runtime.onStartup?.addListener(()=>workspaceControl.start());chrome.runtime.onInstalled?.addListener(()=>workspaceControl.start());chrome.alarms?.create('brivany-workspace',{periodInMinutes:1});chrome.alarms?.onAlarm.addListener(alarm=>{if(alarm.name==='brivany-workspace')workspaceControl.start();});}
 chrome.runtime.onConnect.addListener(port=>{
+ if(TRANSCRIPTION_ONLY&&port.name==='brivany-prepare')return;
  if(port.name!=='brivany-prepare'||port.sender?.id!==chrome.runtime.id||port.sender.frameId!==0)return;
  const tab=port.sender.tab;
  let socket=null,closed=false,connecting=false,capture=false,delivered=false,frames=0;
@@ -127,7 +143,7 @@ chrome.runtime.onConnect.addListener(port=>{
     socket.addEventListener('message',event=>{
      let value;try{value=JSON.parse(event.data);}catch{return close();}
      if(closed)return;
-     if(value.type==='prefix-capture'&&!capture&&value.sample_rate===24000&&value.input_frame_ms===80&&value.duration_ms===7000){
+     if(value.type==='prefix-capture'&&!capture&&value.sample_rate===24000&&value.input_frame_ms===80&&value.duration_ms===PREFIX_MS){
       capture=true;port.postMessage({type:'prefix-capture'});return;
      }
      if(value.type==='prefix-ready'){delivered=true;port.postMessage(preparedMetadata(value));return;}
@@ -140,11 +156,11 @@ chrome.runtime.onConnect.addListener(port=>{
   if(!capture||socket?.readyState!==1)return;
   try{
    if(message?.type==='prefix-pcm'){
-    if(frames>=88||typeof message.data!=='string'||message.data.length!==5120||socket.bufferedAmount>352000)return close();
+    if(frames>=PREFIX_FRAMES||typeof message.data!=='string'||message.data.length!==5120||socket.bufferedAmount>352000)return close();
     const bytes=Uint8Array.from(atob(message.data),char=>char.charCodeAt(0));if(bytes.length!==3840)return close();
     frames++;socket.send(bytes);
    }else if(message?.type==='prefix-finish'){
-    if(frames!==88)return close();
+    if(frames!==PREFIX_FRAMES)return close();
     capture=false;socket.send(JSON.stringify({type:'finish'}));
    }
   }catch{close();}
@@ -159,11 +175,11 @@ chrome.runtime.onConnect.addListener(port=>{
   if(message?.type==='connect-video'&&!connecting&&!socket){
    connecting=true;translatingPorts.add(port);
    prefixOwner?.close();
-   try{const grant=await connectDesktop();if(closed)return;
-    if(grant.selected_video_protocol!==2||grant.progressive_translation_available!==true)throw Error('desktop_version');
+   try{const transcribeOnly=message.transcribe_only===true;const grant=await connectDesktop(transcribeOnly?'ws://127.0.0.1:48218/connect':undefined);if(closed)return;
+    if(grant.selected_video_protocol!==2||!transcribeOnly&&grant.progressive_translation_available!==true)throw Error('desktop_version');
     if(typeof message.selection!=='string'||! /^[\w-]{8,80}$/.test(message.selection))throw Error();
-    inline=Boolean(grant.inline_video_sync);
-    const captions=chrome.scripting.executeScript({target:{tabId:port.sender.tab.id},world:'MAIN',func:readVideoCaptions,args:[null,message.selection]}).then(results=>results[0]?.result||null).catch(()=>null);
+    inline=!transcribeOnly&&Boolean(grant.inline_video_sync);
+    const captions=transcribeOnly?Promise.resolve(null):chrome.scripting.executeScript({target:{tabId:port.sender.tab.id},world:'MAIN',func:readVideoCaptions,args:[null,message.selection]}).then(results=>results[0]?.result||null).catch(()=>null);
     socket=new WebSocket(inline?grant.websocket_url:grant.video_url);await reply(socket,{type:'authenticate',token:grant.token},'authenticated');if(closed){socket.close();return;}
     socket.addEventListener('message',event=>{let value;try{value=JSON.parse(event.data);}catch{return;}if(closed)return;
      if(value.type==='error')return fail(value.message||'No se pudo traducir este video.');
@@ -177,7 +193,7 @@ chrome.runtime.onConnect.addListener(port=>{
     socket.addEventListener('close',event=>{if(!closed){if(inline)port.postMessage({type:event.code===1000&&event.reason==='workspace-stop'?'workspace-stop':'sync-ended'});else fail('Se perdió la conexión con Brivany.');}});
     port.postMessage({type:'video-ready',snapshot:inline?null:await captions,sync:grant.inline_video_sync||null});
     if(inline)captions.then(snapshot=>{if(!closed&&snapshot)port.postMessage({type:'sync-captions',snapshot});});
-   }catch(error){fail(error.message==='desktop_version'?'Reinicia Brivany para aplicar la actualización de traducción y vuelve a pulsar la extensión.':'Abre Brivany y vuelve a pulsar la extensión.');}finally{connecting=false;}return;
+   }catch(error){fail(message.transcribe_only===true?'La conexión de transcripción no está disponible. Vuelve a intentarlo.':error.message==='desktop_version'?'Reinicia Brivany para aplicar la actualización de traducción y vuelve a pulsar la extensión.':'Abre Brivany y vuelve a pulsar la extensión.');}finally{connecting=false;}return;
   }
   if(message?.type==='stop'){closed=true;translatingPorts.delete(port);socket?.close();return;}
   if(!socket||socket.readyState!==1)return;

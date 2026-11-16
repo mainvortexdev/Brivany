@@ -1,0 +1,124 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vetsa-whatsapp-assistant",
+  "main": "worker-main.js",
+  "compatibility_date": "2026-09-16",
+  "workers_dev": false,
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "routes": [
+    {
+      "pattern": "ia.vetsa.es/*",
+      "zone_name": "vetsa.es"
+    },
+    {
+      "pattern": "software.vetsa.es/*",
+      "zone_name": "vetsa.es"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "VETSA_CLOUD",
+      "database_name": "vetsa-cloud-prod",
+      "database_id": "f104d1d0-aae3-4e50-a0a6-723f7f5e7f0e"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "VETSA_MEDIA",
+      "bucket_name": "vetsa-media-prod"
+    }
+  ],
+  "ai": { "binding": "AI" },
+  "services": [
+    {"binding":"MELODI_CALLS","service":"brivany-calls"},
+    {"binding":"VETSA_IDENTITY","service":"cognira-auth"},
+    {
+      "binding": "VETSA_INTELLIGENCE",
+      "service": "vetsa-intelligence-api"
+    },
+    {
+      "binding": "VETSA_INSTAGRAM_OPERATIONS",
+      "service": "vetsa-instagram-operations"
+    },
+    {
+      "binding": "VETSA_PUBLIC_MEDIA",
+      "service": "vetsa-public-media",
+      "entrypoint": "MediaBackend"
+    }
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "MELODI_JOBS",
+        "queue": "vetsa-dona-jobs"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "vetsa-dona-jobs",
+        "max_batch_size": 1,
+        "max_batch_timeout": 0,
+        "max_retries": 2,
+        "dead_letter_queue": "vetsa-dona-jobs-dlq"
+      }
+    ]
+  },
+  "triggers": {
+    "crons": ["* * * * *"]
+  },
+  "rules": [{"type":"Data","globs":["**/*.png","**/*.jpg"],"fallthrough":true}],
+  "vars": {
+    "RECALL_REGION": "eu-central-1",
+    "RECALL_WORKSPACE_ID": "1501389b-6c5d-4194-bbf8-90b2abd6a895",
+    "PUBLIC_API_BASE_URL": "https://ia.vetsa.es",
+    "MELODI_OWNER_NAME": "Daniel",
+    "VETSA_INTELLIGENCE_URL": "https://api.vetsa.es",
+    "SPAIK_MODEL": "spaik-flash",
+    "ASSISTANT_NATIVE_AI_ENABLED": "true",
+    "ASSISTANT_FLASH_MODEL": "@cf/deepseek-ai/deepseek-v4.1-flash-1017",
+    "OWNER_TURN_RUNTIME_ENABLED": "true",
+    "OWNER_INLINE_TURNS_ENABLED": "true",
+    "OWNER_TURN_MODEL": "spaik-flash",
+    "OWNER_DATE_ONLY_REMINDER_HOUR": "09:00",
+    "REQUESTED_GOOGLE_CONNECTIONS_INVITE_REV": "2026-10-26.3-resend-1",
+    "ASSISTANT_SEMANTIC_CALENDAR_ENABLED": "true",
+    "REQUESTED_SEMANTIC_SCHEDULE_REPAIR_REV": "2026-10-26.2",
+    "WHATSAPP_FAST_RECEIPTS_ENABLED": "false",
+    "ASSISTANT_WHATSAPP_NUMBER": "18294249873",
+    "OWNER_WHATSAPP_NUMBER": "18495205246",
+    "WHATSAPP_BUSINESS_ACCOUNT_ID": "4213508838966048",
+    "WHATSAPP_PHONE_NUMBER_ID": "898193176705272",
+    "INSTAGRAM_ACCOUNT_ID": "17841434500233870",
+    "OWNER_EMAIL_FORWARD_TO": "felixdanielluna40@gmail.com",
+    "TIME_ZONE": "America/Santo_Domingo",
+    "GOOGLE_CALENDAR_OWNER_EMAIL": "felixdanielluna40@gmail.com",
+    "GOOGLE_CALENDAR_INVITE_REV": "2026-10-08.4",
+    "TEAM_AUTONOMY_ENABLED": "true",
+    "TEAM_CONVERSATION_LEADER": "melodi",
+    "PERSONAL_ROUTINES_SETUP_REV": "2026-10-21.1",
+    "REQUESTED_AGENDA_REPAIR_REV": "2026-10-21.1",
+    "REQUESTED_GMAIL_INVITE_REV": "2026-10-21.1",
+    "OWNER_CONTACT_POLICY_BOOTSTRAP_TOPICS": "instagram",
+    "REQUESTED_MOTIVATION_RESTORE_REV": "",
+    "TEAM_AUTONOMY_BOOTSTRAP": "",
+    "TEAM_AGENT_EMAIL_SETUP": "2026-10-08.2",
+    "PUBLIC_MEDIA_ANALYSIS_ENABLED": "false",
+    "PUBLIC_MEDIA_RESUME_EVENT_ID": "8e004a41-e765-4510-a827-ecbf65c72600",
+    "REQUESTED_DOCUMENT_REPAIR_REV": "2026-10-08.1",
+    "REQUESTED_SUBSCRIPTION_REPAIR_REV": "2026-10-08.1",
+    "REQUESTED_WORKSPACE_SUMMARY_REPAIR_REV": "2026-10-09.1",
+    "REQUESTED_PROJECT_DOCUMENT_REPAIR_REV": "2026-10-09.1"
+  },
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    },
+    "traces": { "enabled": true, "head_sampling_rate": 1 }
+  }
+}

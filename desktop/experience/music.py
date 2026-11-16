@@ -5,6 +5,45 @@ from .scripts import post_script
 
 
 class MusicBridge:
+    def _configure_music_expansion(self,enabled):
+        from .music_expansion import IdleMusicController,ExpansionWindow
+        if not hasattr(self,'_music_idle'):
+            if not enabled:return
+            host=ExpansionWindow(self._base,getattr(self,'_desktop_ui_session',None),self._expansion_lyrics)
+            def suppressed():
+                # Do not cover a call, microphone session, recording or a transfer.
+                phone=getattr(self,'_workspace_file_transfer',None);recording=getattr(self,'_workspace_recorder',None)
+                return bool(getattr(self,'_exit_requested',False) or getattr(self,'_workspace_voice_active',False) or phone and phone.snapshot().get('state') in {'sending','receiving'} or recording and recording.snapshot().get('active'))
+            idle=IdleMusicController(self._expansion_song,host.show,host.hide,suppressed=suppressed);host.controller=idle
+            self._music_idle=idle;self._music_expansion_window=host
+        self._music_idle.configure(enabled)
+    def _expansion_song(self):
+        import time
+        presence=getattr(self,'_youtube_music_presence',None);youtube=presence.current() if presence else None
+        if youtube:return youtube
+        music=self._spotify_factory()
+        if not music.status().get('connected'):return None
+        value=music.playback();track=value.get('playback')
+        if not track or not track.get('playing'):return None
+        track=dict(track);track['source']='spotify'
+        if isinstance(value.get('observed_at'),(int,float)):track['progress_ms']=min(track.get('duration_ms',0),track.get('progress_ms',0)+max(0,round((time.time()-value['observed_at'])*1000)))
+        return track
+    def _expansion_lyrics(self,track):
+        result=self._spotify_factory().lyrics_provider.lookup_synced(track)
+        if track.get('source')=='youtube' and result.get('status')!='ready':
+            hub=getattr(self,'_selected_video_hub',None);selected=hub.selected() if hub else None;read_timeline=getattr(selected,'timeline',None);timeline=read_timeline() if read_timeline else None
+            if timeline and timeline.get('source')==track.get('id') and timeline.get('cues'):
+                return {'track_id':track['id'],'status':'ready','synced':True,'provider':'Subtítulos de YouTube','lines':[{'ms':round(cue['start']*1000),'text':cue['text']} for cue in timeline['cues'][:800]]}
+        return result
+    def workspace_music_expansion_preview(self):
+        self._trusted()
+        idle=getattr(self,'_music_idle',None)
+        if idle is None:raise ValueError('Marca primero Expansión musical en Ajustes.')
+        return idle.preview()
+    def _close_music_expansion(self):
+        idle=getattr(self,'_music_idle',None);host=getattr(self,'_music_expansion_window',None)
+        if idle:idle.close()
+        if host:host.close()
     def _music_ui_diagnostics(self):
         result={}
         for name in ('bar','work','voice'):
@@ -39,13 +78,14 @@ class MusicBridge:
         return self.music_ducking_status()
     def _music(self):self._trusted();return self._spotify_factory()
     def spotify_status(self):return self._music().status()
-    def spotify_configure(self,client_id):return self._music().configure(client_id)
     def spotify_connect(self):
         self._trusted();self._close_spotify_player()
         url=self._music().begin()
         if not webbrowser.open(url):
             self._music().cancel_link();raise SpotifyError('No se pudo abrir el navegador para vincular Spotify.')
         return {'ok':True}
+    def spotify_cancel_link(self):
+        music=self._music();music.cancel_link();return music.status()
     def _close_spotify_player(self):
         host=getattr(self,'_spotify_player_host',None)
         if host:host.close()

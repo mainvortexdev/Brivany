@@ -1,0 +1,11 @@
+{
+  "name": "brivany-melodi-chat",
+  "main": "src/index.mjs",
+  "account_id": "62a87427406c2ed15f92d4da29116214",
+  "compatibility_date": "2026-11-09",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {"CHAT_MODEL":"deepseek-ai/DeepSeek-V4-Flash"},
+  "observability": {"enabled":true,"logs":{"enabled":true,"head_sampling_rate":0.01,"invocation_logs":false},"traces":{"enabled":true,"head_sampling_rate":0.01}}
+}

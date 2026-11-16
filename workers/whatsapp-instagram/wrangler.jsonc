@@ -1,0 +1,55 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vetsa-instagram-operations",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-20",
+  "workers_dev": true,
+  "d1_databases": [
+    {
+      "binding": "VETSA_CLOUD",
+      "database_name": "vetsa-cloud-prod",
+      "database_id": "f104d1d0-aae3-4e50-a0a6-723f7f5e7f0e"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "VETSA_MEDIA",
+      "bucket_name": "vetsa-media-prod"
+    }
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "INSTAGRAM_JOBS",
+        "queue": "vetsa-instagram-jobs"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "vetsa-instagram-jobs",
+        "max_batch_size": 5,
+        "max_batch_timeout": 2,
+        "max_retries": 32,
+        "dead_letter_queue": "vetsa-instagram-jobs-dlq"
+      }
+    ]
+  },
+  "vars": {
+    "TIME_ZONE": "America/Santo_Domingo",
+    "META_GRAPH_VERSION": "v24.0",
+    "OWNER_WHATSAPP_NUMBER": "18495205246",
+    "INSTAGRAM_ACCOUNT_ID": "17841434500233870",
+    "INSTAGRAM_PUBLIC_ORIGIN": "https://vetsa-instagram-operations.danihacks1900.workers.dev"
+  },
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    }
+  }
+}

@@ -27,10 +27,43 @@ class ContinuousTests(unittest.TestCase):
         clauses=river.LiveClauses();text='one two three four five six seven eight nine ten eleven twelve'
         self.assertEqual(clauses.accept({'id':'a','text':text,'final':False}),[])
         segments=clauses.accept({'id':'a','text':text+' thirteen','final':False})
-        self.assertEqual([s.text for s in segments],['one two three four five six seven eight'])
+        self.assertEqual([s.text for s in segments],['one two three four five six'])
         rest=clauses.accept({'id':'a','text':text+' thirteen','final':True})
-        self.assertEqual([s.text for s in rest],['nine ten eleven twelve thirteen'])
+        self.assertEqual([s.text for s in rest],['seven eight nine ten eleven twelve thirteen'])
         self.assertEqual(clauses.accept({'id':'a','text':text+' thirteen','final':True}),[])
+
+    def test_eager_live_clauses_commit_from_one_partial_holding_the_last_word(self):
+        clauses=river.LiveClauses();clauses.eager=True
+        self.assertEqual(clauses.accept({'id':'a','text':'one two three four five','final':False}),[])
+        segments=clauses.accept({'id':'a','text':'one two three four five six seven','final':False})
+        self.assertEqual([s.text for s in segments],['one two three four five six'])
+        rest=clauses.accept({'id':'a','text':'one two three four five six seven eight','final':True})
+        self.assertEqual([s.text for s in rest],['seven eight'])
+
+    def test_eager_clauses_survive_repunctuation_inside_one_long_turn(self):
+        clauses=river.LiveClauses();clauses.eager=True
+        first=clauses.accept({'id':'1','text':'I am good at only one thing, business','final':False})
+        self.assertEqual([s.text for s in first],['I am good at only one'])
+        # Flux re-punctuates and re-cases words already committed.
+        later=clauses.accept({'id':'1','text':'i am good at only one thing. Business. For the last thirty years I have','final':False})
+        self.assertEqual([s.text for s in later],['thing. Business. For the last thirty'])
+        end=clauses.accept({'id':'1','text':'I am good at only one thing. Business. For the last thirty years I have built it.','final':True})
+        self.assertEqual([s.text for s in end],['years I have built it.'])
+
+    def test_direct_pace_reaches_one_and_a_half(self):
+        self.assertEqual(river.DIRECT_MAX_SPEED,1.5)
+        self.assertEqual(river.direct_delivery_speed(0),river.DIRECT_BASE_SPEED)
+        self.assertEqual(river.direct_delivery_speed(2),round(min(1.5,river.DIRECT_BASE_SPEED+.2),3))
+        self.assertEqual(river.direct_delivery_speed(9),1.5)
+
+    def test_live_interpretation_prompt_is_concise_and_timed(self):
+        body=json.loads(mt._payload('um so I I built a tool','auto','es',[],'m',live=True,duration_ms=1800))
+        system,user=body['messages'][0]['content'],json.loads(body['messages'][1]['content'])
+        self.assertIn('Live interpreter',system)
+        self.assertNotIn('preserve filler words',system)
+        self.assertEqual(user['duration_budget_ms'],1800)
+        plain=json.loads(mt._payload('um so','auto','es',[],'m'))['messages'][0]['content']
+        self.assertIn('preserve filler words',plain);self.assertNotIn('Live interpreter',plain)
 
     def test_known_access_failure_matches_current_key_only(self):
         with tempfile.TemporaryDirectory() as tmp,patch.object(river,'ACCESS_PATH',Path(tmp)/'access.json'):

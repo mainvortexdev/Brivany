@@ -1,0 +1,25 @@
+services:
+  public-media-processor:
+    build:
+      context: ./processor
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      MEDIA_PROCESSOR_TOKEN: ${MEDIA_PROCESSOR_TOKEN:?Configure a private processor token in the server environment}
+    ports:
+      - "127.0.0.1:8087:8080"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=2g,mode=1777
+    mem_limit: 6g
+    cpus: 1.0
+    pids_limit: 128
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"

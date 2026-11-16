@@ -1,4 +1,5 @@
 """Private reminder/note endpoints; opening never starts a delivery worker."""
+from packages.runtime_paths import DATA_ROOT, CONFIG_PATH
 import json
 import re
 import sqlite3
@@ -17,7 +18,7 @@ def service(handler):
             from services.connections import service as connections
             def config():
                 current=connections(handler);current.refresh_settings();return current.integration.config
-            handler.server.personal_notes=PersonalNotesService(ROOT/'.local'/'personal',config_provider=config)
+            handler.server.personal_notes=PersonalNotesService(DATA_ROOT/'.local'/'personal',config_provider=config)
         return handler.server.personal_notes
 
 

@@ -1,0 +1,38 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vetsa-public-media",
+  "account_id": "62a87427406c2ed15f92d4da29116214",
+  "main": "worker.js",
+  "compatibility_date": "2026-10-08",
+  "workers_dev": false,
+  "preview_urls": false,
+  "d1_databases": [{
+    "binding": "MEDIA_DB",
+    "database_name": "vetsa-cloud-prod",
+    "database_id": "f104d1d0-aae3-4e50-a0a6-723f7f5e7f0e"
+  }],
+  "r2_buckets": [{ "binding": "VETSA_MEDIA", "bucket_name": "vetsa-media-prod" }],
+  "ai": { "binding": "AI" },
+  "services": [{
+    "binding": "VETSA_INTELLIGENCE",
+    "service": "vetsa-whatsapp-assistant",
+    "entrypoint": "MediaModels"
+  }],
+  "queues": {
+    "producers": [{ "binding": "MEDIA_JOBS", "queue": "vetsa-public-media-jobs" }],
+    "consumers": [{
+      "queue": "vetsa-public-media-jobs",
+      "max_batch_size": 1,
+      "max_batch_timeout": 2,
+      "max_concurrency": 1,
+      "max_retries": 2,
+      "dead_letter_queue": "vetsa-public-media-jobs-dlq"
+    }]
+  },
+  "vars": { "OWNER_WHATSAPP_NUMBER": "18495205246" },
+  "observability": {
+    "enabled": true,
+    "logs": { "enabled": true, "head_sampling_rate": 1 },
+    "traces": { "enabled": true, "head_sampling_rate": 1 }
+  }
+}

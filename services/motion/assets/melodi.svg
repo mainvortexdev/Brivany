@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 188 132"><defs>
+ <linearGradient id="identity-art-paper" x2=".25" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#e6eef6"/></linearGradient>
+ <linearGradient id="identity-art-blue" x2=".18" y2="1"><stop stop-color="#3a99f3"/><stop offset="1" stop-color="#0060c9"/></linearGradient>
+ <linearGradient id="identity-art-fold" x2=".7" y2="1"><stop stop-color="#d5e9fd"/><stop offset="1" stop-color="#8bbdf0"/></linearGradient>
+ <linearGradient id="identity-art-body" x1=".1" x2=".8" y2="1"><stop stop-color="#fff"/><stop offset=".55" stop-color="#f7fcf9"/><stop offset="1" stop-color="#d2e4dd"/></linearGradient>
+ <radialGradient id="identity-art-ground"><stop stop-color="#8fb4d0" stop-opacity=".3"/><stop offset="1" stop-color="#bdd8ed" stop-opacity="0"/></radialGradient>
+ <filter id="identity-art-shadow" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="0" dy="15" stdDeviation="14" flood-color="#254a69" flood-opacity=".16"/></filter>
+ <filter id="identity-art-soft" x="-60%" y="-60%" width="220%" height="240%"><feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#294c67" flood-opacity=".14"/></filter>
+ </defs><g transform="translate(0 0)" class="art-melodi"><g class="melodi-float" filter="url(#identity-art-soft)"><ellipse cx="25" cy="64" rx="11" ry="17" fill="#e4f1ed"/><ellipse cx="162" cy="64" rx="11" ry="17" fill="#d8e7e0"/><path d="M39 39Q43 13 73 10Q100 7 125 16Q149 24 150 53L147 86Q143 107 117 111Q86 115 61 107Q37 101 35 79Z" fill="url(#identity-art-body)" stroke="#dde9e4"/><path d="M51 34Q74 18 99 24" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".85"/><ellipse cx="71" cy="57" rx="4.8" ry="6.8" fill="#26382e"/><ellipse cx="115" cy="57" rx="4.8" ry="6.8" fill="#26382e"/><ellipse cx="59" cy="75" rx="9" ry="4.4" fill="#f3d7d0"/><ellipse cx="127" cy="75" rx="9" ry="4.4" fill="#f3d7d0"/><path d="M87 77Q93 82 99 77" fill="none" stroke="#afc0b6" stroke-width="2" stroke-linecap="round"/></g></g>
+ </svg>

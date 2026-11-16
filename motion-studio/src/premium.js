@@ -4,13 +4,13 @@ const W=1920,H=1080,PI=Math.PI,clamp=v=>Math.max(0,Math.min(1,v));
 const ease=v=>{v=clamp(v);return v*v*v*(v*(v*6-15)+10);};
 const at=(t,a,b)=>ease((t-a)/(b-a)),mix=(a,b,p)=>a+(b-a)*p;
 const rgba=(hex,a)=>hex+Math.round(clamp(a)*255).toString(16).padStart(2,'0');
-function text(c,s,x,y,size=80,color='#fff',align='left',font='Georgia'){
- c.fillStyle=color;c.font=`${font==='Georgia'?400:500} ${size}px ${font}`;c.textAlign=align;c.textBaseline='alphabetic';c.fillText(s,x,y);
+function text(c,s,x,y,size=80,color='#fff',align='left',font='heading'){
+ c.fillStyle=color;c.font=`${font==='heading'?300:500} ${size}px "Brivany Editorial"`;c.textAlign=align;c.textBaseline='alphabetic';c.fillText(s,x,y);
 }
 function alpha(c,a,fn){c.save();c.globalAlpha*=clamp(a);fn();c.restore();}
 function pill(c,x,y,w,h,r,fill){c.fillStyle=fill;c.beginPath();c.roundRect(x,y,w,h,r);c.fill();}
 function split(c,s,x,y,size,progress,color='#f4f7fa'){
- const words=s.split(' '),gap=size*.26;c.font=`400 ${size}px Georgia`;let cursor=x;
+ const words=s.split(' '),gap=size*.26;c.font=`400 ${size}px "Brivany Editorial"`;let cursor=x;
  for(let i=0;i<words.length;i++){
   const p=clamp(progress*1.5-i*.1);c.save();c.beginPath();c.rect(cursor-4,y-size*1.2,size*words[i].length,y*0+size*1.5);c.clip();
   text(c,words[i],cursor,y+(1-ease(p))*size*1.1,size,color);c.restore();cursor+=c.measureText(words[i]).width+gap;
@@ -39,7 +39,7 @@ function endCard(c,u,spec,logo,light){const p=at(u,22.4,23.65);if(!p)return;
  alpha(c,at(u,23,24.5),()=>{
   const slide=(1-at(u,23,24.5))*170;c.save();c.beginPath();c.rect(570,360,800,220);c.clip();c.drawImage(logo,620,400+slide,680,680*62/200);c.restore();
   text(c,spec.closing,960,688,57,light?'#454a48':'#b7c8dc','center');
-  text(c,'brivany.example',960,794,33,light?'#65716b':'#93a7c0','center','Segoe UI');
+  text(c,'brivany.vetsa.es',960,794,33,light?'#65716b':'#93a7c0','center','body');
  });
 }
 function level(spec,t){const a=spec.audio;if(!a?.levels)return 0;const n=Math.floor(t*a.levels_hz);let sum=0;for(let i=-2;i<=2;i++)sum+=a.levels[Math.min(a.levels.length-1,Math.max(0,n+i))];return sum/5;}
@@ -97,11 +97,11 @@ function drawRibbons(world,u,energy){
 function voiceFilm(c,t,spec,world,logo){
  const u=t/spec.duration*30,energy=level(spec,t);drawRibbons(world,u,energy);c.clearRect(0,0,W,H);gradient(c,true);
  const a=1-at(u,5.5,6.3);alpha(c,a,()=>{
-  split(c,'Tu voz.',135,325,150,at(u,-.7,.8));text(c,'El principio de todo.',144,417,38,'#a9b8ce','left','Segoe UI');
+  split(c,'Tu voz.',135,325,150,at(u,-.7,.8));text(c,'El principio de todo.',144,417,38,'#a9b8ce','left','body');
  });
  alpha(c,at(u,6.1,6.6)*(1-at(u,11.4,12)),()=>{
   split(c,'En movimiento.',135,286,112,at(u,6.2,7.5));
-  text(c,'Forma. Ritmo. Color.',142,380,38,'#a9b8ce','left','Segoe UI');
+  text(c,'Forma. Ritmo. Color.',142,380,38,'#a9b8ce','left','body');
  });
  // An authored strip becomes a result; lettering stays stationary after arrival.
  alpha(c,at(u,13.5,14.3)*(1-at(u,18.8,19.4)),()=>{
@@ -112,7 +112,7 @@ function voiceFilm(c,t,spec,world,logo){
  const bar=at(u,19.3,20.3)*(1-at(u,22.3,23));alpha(c,bar,()=>{
   const y=mix(790,310,at(u,19.3,20.5));pill(c,144,y,1632,94,35,'#020306');
   c.drawImage(logo,180,y+20,185,57.35);
-  for(const [label,x] of [['Traducción auditiva',525],['Selección de área',855],['Música',1265],['Abrir app',1520]])text(c,label,x,y+57,28,'#d5dfec','center','Segoe UI');
+  for(const [label,x] of [['Traducción auditiva',525],['Selección de área',855],['Música',1265],['Abrir app',1520]])text(c,label,x,y+57,28,'#d5dfec','center','body');
   text(c,'Tú sigues. Melodi crea.',960,640,84,'#f4f7fa','center');
  });
  endCard(c,u,spec,logo,false);
@@ -174,10 +174,10 @@ function drawArchitecture(world,u){
 }
 function architectureFilm(c,t,spec,world,logo){
  const u=t/spec.duration*30;drawArchitecture(world,u);c.clearRect(0,0,W,H);gradient(c,false);
- alpha(c,(1-at(u,5.9,6.6)),()=>{split(c,'Una idea.',130,270,132,at(u,-.7,.8),'#262d2b');text(c,'Un trazo.',138,366,42,'#636d69','left','Segoe UI');});
+ alpha(c,(1-at(u,5.9,6.6)),()=>{split(c,'Una idea.',130,270,132,at(u,-.7,.8),'#262d2b');text(c,'Un trazo.',138,366,42,'#636d69','left','body');});
  alpha(c,at(u,6.2,6.8)*(1-at(u,12,12.7)),()=>{split(c,'Toma forma.',130,220,108,at(u,6.3,7.6),'#262d2b');});
  alpha(c,at(u,13,13.7)*(1-at(u,16,16.7)),()=>{text(c,'Luz. Material. Volumen.',960,190,76,'#262d2b','center');});
- alpha(c,at(u,17.2,18)*(1-at(u,22.2,22.8)),()=>{text(c,spec.payoff,135,205,82,'#262d2b');text(c,'Diseño conceptual 3D',141,278,32,'#636d69','left','Segoe UI');});
+ alpha(c,at(u,17.2,18)*(1-at(u,22.2,22.8)),()=>{text(c,spec.payoff,135,205,82,'#262d2b');text(c,'Diseño conceptual 3D',141,278,32,'#636d69','left','body');});
  endCard(c,u,spec,logo,true);
 }
 export function createPremium(canvas,spec,logos){

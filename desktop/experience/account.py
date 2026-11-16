@@ -5,3 +5,7 @@ class AccountBridge:
     def account_logout(self):self._trusted();return self._account_factory().logout()
     def account_devices(self):self._trusted();return self._account_factory().devices()
     def account_command_status(self,identifier):self._trusted();return self._account_factory().command_status(identifier)
+    def account_begin_login(self):self._trusted();return self._account_factory().begin()
+    def account_cancel_login(self):self._trusted();return self._account_factory().cancel()
+    def account_refresh(self):self._trusted();return self._account_factory().refresh()
+    def account_manage(self,section='profile'):self._trusted();return self._account_factory().manage(section)

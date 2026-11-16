@@ -14,7 +14,6 @@ from services.integrations import IntegrationError,IntegrationResult,GRAPH_API_V
 MAX_RESPONSE=1024*1024
 SCOPES={
     'calendar.list':'https://www.googleapis.com/auth/calendar.events.readonly',
-    'calendar.create':'https://www.googleapis.com/auth/calendar.events',
     'gmail.search':'https://www.googleapis.com/auth/gmail.readonly',
     'gmail.draft':'https://www.googleapis.com/auth/gmail.compose',
     'drive.search':'https://www.googleapis.com/auth/drive.metadata.readonly'}
@@ -59,6 +58,7 @@ class GoogleTransport:
     def __init__(self,oauth,connector,*,http=request_json):
         if connector not in {'calendar','gmail','drive'}:raise ValueError('Unsupported connector')
         self.oauth=oauth;self.connector=connector;self.http=http
+        self.available_operations=frozenset(op for op in SCOPES if op.split('.')[0]==connector)
         self.simulation=bool(getattr(http,'simulation',False))
 
     def readiness(self):return self.oauth.status(self.connector)
@@ -78,13 +78,6 @@ class GoogleTransport:
             if not isinstance(items,list):raise IntegrationError('provider_response','La lista de agenda no es válida.',502)
             payload={'items':[{key:item[key] for key in ('id','summary','start','end') if key in item} for item in items[:20]],'more_available':bool(value.get('nextPageToken'))}
             receipt='calendar-list'
-        elif operation=='calendar.create':
-            # A client-defined Calendar ID prevents an automatic retry from
-            # creating another event; it never authorizes attendees or email.
-            event_id='b'+idempotency_key.replace('-','')
-            value=self.http('POST','https://www.googleapis.com/calendar/v3/calendars/primary/events?sendUpdates=none',token,
-                {'id':event_id,'summary':parameters['title'],'start':{'dateTime':parameters['start']},'end':{'dateTime':parameters['end']}})
-            receipt=_identifier(value.get('id'));payload={'id':receipt,'title':value.get('summary',parameters['title']),'attendees_notified':False}
         elif operation=='gmail.search':
             value=self.http('GET','https://gmail.googleapis.com/gmail/v1/users/me/messages?'+parse.urlencode({'q':parameters['query'],'maxResults':20}),token)
             messages=value.get('messages',[])

@@ -29,3 +29,11 @@ workers/mobile-gateway/dist/
 /videos/
 /dist/
 /dist-quick-apps/
+
+**/.wrangler-melodi-build/
+**/.wrangler-dryrun*/
+
+# Original supplied archive; canonical fonts and licenses live in web/fonts.
+/Brivany_Editorial_Fuentes.zip
+# Raw OAuth test evidence stays local; public docs contain only its summary.
+/docs/google-oauth-web-20261115.json

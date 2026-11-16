@@ -1,3 +1,5 @@
+> Tipografía vigente desde el 15 de noviembre de 2026: Brivany Editorial 300/400/500. Ver `brand/typography/README.md`. Las referencias antiguas de este documento son históricas.
+
 # Segunda edición · dirección vigente
 
 30 s, 900 fotogramas, 1920×1080/30. Georgia 76–150 px, Segoe UI 28–42.

@@ -1,0 +1,1 @@
+{"name":"brivany-melodi-calls","private":true,"type":"module","scripts":{"test":"node --test --import ./test/register.mjs test/phone.test.mjs test/voice.test.mjs test/runtime.test.mjs"}}

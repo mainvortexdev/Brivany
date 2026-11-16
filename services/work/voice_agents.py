@@ -8,25 +8,53 @@ import queue
 import threading
 import time
 import math
+import re
+import weakref
 from uuid import uuid4
 from packages.providers.audio_content import SingingFilter
 from packages.providers.voice_clone import CartesiaVoiceCloner
 
+SPEAKER_KEY=re.compile(r'[A-Z]|acoustic:[1-8]')
+# Live pools, so the UI can mark a voice to keep by its random token.
+_POOLS=weakref.WeakSet();_POOLS_LOCK=threading.Lock()
+
+
+def set_voice_keep(token,keep):
+    """Mark one voice of an active session to keep (True) or delete (False)."""
+    if type(keep) is not bool or not isinstance(token,str) or not re.fullmatch(r'[0-9a-f]{32}',token):raise ValueError('Voz no válida.')
+    with _POOLS_LOCK:pools=list(_POOLS)
+    for pool in pools:
+        if pool.set_keep(token,keep):return pool.status()
+    raise ValueError('Esa voz ya no está en una traducción activa.')
+
 
 class TranslationVoiceAgents:
-    def __init__(self,*,language='es',authorized=False,cloner_factory=CartesiaVoiceCloner,classifier_factory=SingingFilter):
+    def __init__(self,*,language='es',authorized=False,cloner_factory=CartesiaVoiceCloner,classifier_factory=SingingFilter,library_factory=None):
         if authorized is not True:raise ValueError('Confirma el permiso de las voces antes de activar la clonación.')
         if language not in ('es','en','fr'):raise ValueError('Idioma original no válido.')
         self.language=language;self.cloner_factory=cloner_factory;self.classifier_factory=classifier_factory
+        if library_factory is None:
+            from services.work.kept_voices import KeptVoices as library_factory
+        self.library_factory=library_factory;self.kept=[]
         self.lock=threading.RLock();self.stopped=threading.Event();self.observations=queue.Queue(8);self.tasks=queue.Queue(4)
         self.speakers={};self.seen=set();self.intervals=deque(maxlen=128);self.created=set();self.cleanup_failed=[];self.cloner=None
         self.jobs=[{'id':str(uuid4()),'kind':'voice-association','title':'Hablantes','state':'running','phase':'Reconociendo voces','source':'translation_voices'},
                    {'id':str(uuid4()),'kind':'voice-cloning','title':'Clonación de voz','state':'queued','phase':'Reuniendo muestras limpias','source':'translation_voices'}]
         self.threads=[threading.Thread(target=self._associate,daemon=True,name='melodi-speaker-agent'),threading.Thread(target=self._clone,daemon=True,name='melodi-voice-clone-agent')]
+        with _POOLS_LOCK:_POOLS.add(self)
         for thread in self.threads:thread.start()
 
+    def set_keep(self,token,keep):
+        with self.lock:
+            row=next((row for row in self.speakers.values() if row['token']==token),None)
+            if row is None:return False
+            if self.stopped.is_set() and row.get('voice_final'):raise ValueError('La sesión ya terminó; esa voz ya se resolvió.')
+            row['keep']=keep;return True
+
     def observe(self,turn,label,pcm,start,end):
-        if self.stopped.is_set() or not isinstance(label,str) or len(label)!=1 or not 'A'<=label<='Z':return
+        # ASR letters (A-Z) or a session-local acoustic cluster ("acoustic:3")
+        # from inline video. Both are anonymous keys, never an identity.
+        if self.stopped.is_set() or not isinstance(label,str) or not SPEAKER_KEY.fullmatch(label):return
         if not isinstance(pcm,bytes) or not 46800<=len(pcm)<=384000 or len(pcm)%2:return
         if any(type(v) not in (int,float) or not math.isfinite(v) for v in (start,end)) or start<0 or end<=start:return
         if abs((end-start)*48000-len(pcm))>96:return
@@ -47,7 +75,8 @@ class TranslationVoiceAgents:
                 if len(self.seen)>256:self.seen={turn}
                 if label not in self.speakers:
                     if len(self.speakers)>=4:continue
-                    self.speakers[label]={'index':len(self.speakers)+1,'parts':[],'seconds':0.,'attempted':False,'voice':None,'state':'collecting','turns':0,'tainted':False}
+                    self.speakers[label]={'index':len(self.speakers)+1,'parts':[],'seconds':0.,'attempted':False,'voice':None,'state':'collecting','turns':0,'tainted':False,
+                        'token':uuid4().hex,'keep':False,'remote':None}
                 row=self.speakers[label]
                 conflicts=[item for item in self.intervals if item[0]!=label and max(start,item[1])<min(end,item[2])]
                 if conflicts:
@@ -102,7 +131,7 @@ class TranslationVoiceAgents:
                 with self.lock:
                     self.created.add(result['id'])
                     usable=not self.stopped.is_set() and not row['tainted']
-                    if usable:row.update(voice=result['id'],state='ready')
+                    if usable:row.update(voice=result['id'],remote=result['id'],state='ready')
                     if usable:self.jobs[1].update(state='succeeded',phase=f"Voz de Hablante {row['index']} lista")
                 if not usable:self._remove(result['id'])
             except Exception:
@@ -111,9 +140,23 @@ class TranslationVoiceAgents:
                     if not self.stopped.is_set():self.jobs[1].update(state='failed',phase='No se pudo preparar esta voz; continúa la traducción normal')
             finally:pcm=b''
         # Delete only IDs created by this agent session. No arbitrary voice ID
-        # or user library is accepted by this cleanup path.
+        # or user library is accepted by this cleanup path. A voice the user
+        # explicitly marked to keep leaves the temporary journal instead.
         if self.cloner:
-            for identifier in list(self.created):self._remove(identifier)
+            with self.lock:keep={row['remote']:row for row in self.speakers.values() if row['keep'] and row['remote'] and not row['tainted']}
+            for identifier in list(self.created):
+                row=keep.get(identifier)
+                if row is None:self._remove(identifier);continue
+                try:
+                    self.library_factory().add(identifier,name=f"Hablante {row['index']} · {time.strftime('%Y-%m-%d %H:%M')}",language=self.language)
+                    if hasattr(self.cloner,'persist'):self.cloner.persist(identifier)
+                    with self.lock:self.created.discard(identifier);self.kept.append(identifier);row['voice_final']='kept'
+                except Exception:
+                    # Never leave an untracked remote voice: fall back to delete.
+                    self._remove(identifier)
+            with self.lock:
+                for row in self.speakers.values():
+                    if row['remote'] and not row.get('voice_final'):row['voice_final']='deleted'
 
     def voice_for(self,label):
         with self.lock:
@@ -123,7 +166,8 @@ class TranslationVoiceAgents:
     def status(self):
         with self.lock:
             return {'active':not self.stopped.is_set(),'agents':[dict(job) for job in self.jobs],
-                    'speakers':[{'label':f"Hablante {row['index']}",'state':row['state'],'sample_seconds':round(row['seconds'],1),'ready':bool(row['voice'])} for row in self.speakers.values()],
+                    'speakers':[{'label':f"Hablante {row['index']}",'state':row['state'],'sample_seconds':round(row['seconds'],1),'ready':bool(row['voice']),
+                        'token':row['token'],'keep':row['keep'],'cloned':bool(row['remote']),'outcome':row.get('voice_final')} for row in self.speakers.values()],
                     'cache_scope':'translation_session','audio_persisted':False,'cleanup_pending':bool(self.cleanup_failed)}
 
     def close(self):

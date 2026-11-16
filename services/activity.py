@@ -1,4 +1,5 @@
 """Local development ledger with evidence snapshots; never records voice sessions."""
+from packages.runtime_paths import DATA_ROOT, CONFIG_PATH
 from contextlib import contextmanager
 from datetime import datetime, timezone
 import hashlib
@@ -47,7 +48,7 @@ def canonical(value):
 class ActivityStore:
     def __init__(self, directory=None, *, root=ROOT):
         self.root = Path(root).resolve()
-        self.directory = Path(directory or self.root / ".local" / "activity").resolve()
+        self.directory = Path(directory or (DATA_ROOT if self.root == ROOT else self.root) / ".local" / "activity").resolve()
         self.directory.mkdir(parents=True, exist_ok=True)
         self.artifacts = self.directory / "artifacts"
         self.artifacts.mkdir(exist_ok=True)

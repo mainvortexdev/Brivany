@@ -2,13 +2,13 @@
 const {chromium}=require(process.env.BRIVANY_PLAYWRIGHT_PATH||'playwright'),assert=require('node:assert/strict'),fs=require('node:fs');
 (async()=>{
  const base=process.env.BRIVANY_TEST_URL,dir='tmp/workspace-translation-ui';fs.mkdirSync(dir,{recursive:true});
- const browser=await chromium.launch({channel:'msedge',headless:true});let state={active:false,state:'idle',caption:'',error:'',target:'en',voice:'auto',mode:'direct'},syncState={available:false,active_sessions:0,paired_browsers:0},cloning={enabled:false,language:'es'},revision=0;const calls=[],errors=[];let popup,bar;let browserStarts=0,showTranscript=true;
+ const browser=await chromium.launch({channel:'msedge',headless:true});let state={active:false,state:'idle',caption:'',error:'',target:'en',voice:'auto',mode:'direct'},syncState={available:false,active_sessions:0,paired_browsers:0},cloning={enabled:false,language:'es'},revision=0;const calls=[],errors=[];let popup,bar;let browserStarts=0,showTranscript=true,failNextStart=false;
  try{
   const context=await browser.newContext({viewport:{width:1280,height:800}});await context.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
   const deliver=async()=>{for(const p of [bar,popup].filter(Boolean))await p.evaluate(s=>window.BrivanyTranslation?.receive(s),state);};
   await context.exposeBinding('__status',()=>({active:true,jobs:[],schedules:[],live:{},audio_translation:state,voice_cloning:cloning}));
   await context.exposeBinding('__clones',(_s,enabled,language,consent)=>{assert(!state.active);assert.equal(consent,enabled);cloning={enabled,language};calls.push(['clones',enabled,language]);return cloning;});
-  await context.exposeBinding('__start',async(_s,target,voice)=>{calls.push(['start',target,voice]);state={...state,active:true,state:'listening',target,voice};await deliver();return state;});
+  await context.exposeBinding('__start',async(_s,target,voice)=>{calls.push(['start',target,voice]);if(failNextStart){failNextStart=false;throw Error('No se pudo iniciar la captura de audio.');}state={...state,active:true,state:'listening',target,voice,mode:'direct',error:''};await deliver();return state;});
   await context.exposeBinding('__browserStart',async(_s,target,voice)=>{browserStarts++;calls.push(['start',target,voice]);state={...state,active:true,state:'listening',target,voice};await deliver();return state;});
   await context.exposeBinding('__transcriptPreference',(_s,value)=>{if(typeof value==='boolean')showTranscript=value;return {show_transcript:showTranscript};});
   await context.exposeBinding('__stop',async()=>{calls.push(['stop']);state={...state,active:false,state:'stopped'};await deliver();return state;});
@@ -38,16 +38,33 @@ const {chromium}=require(process.env.BRIVANY_PLAYWRIGHT_PATH||'playwright'),asse
   await popup.getByRole('button',{name:'Detener',exact:true}).click();assert(calls.some(c=>c[0]==='stop'));await popup.getByRole('button',{name:'Español',exact:true}).click();
   await bar.getByRole('button',{name:'Traducción auditiva',exact:true}).click();assert.deepEqual(calls.filter(c=>c[0]==='start').at(-1),['start','es','feminine']);
   await popup.getByRole('button',{name:'Detener',exact:true}).click();
-  await popup.getByLabel('Clonar voces autorizadas',{exact:true}).check();await popup.getByRole('button',{name:'EN',exact:true}).click();assert.deepEqual(cloning,{enabled:true,language:'en'});
+  await popup.getByLabel('Clonar voces mientras traduce',{exact:true}).check();await popup.getByRole('button',{name:'EN',exact:true}).click();assert.deepEqual(cloning,{enabled:true,language:'en'});
   for(const width of [780,390,320,280]){
    await popup.setViewportSize({width,height:404});await popup.evaluate(()=>window.BrivanyIsland.receiveLayout({expanded:true,panel:'auditory',width:Math.min(400,innerWidth-16),height:Math.min(400,innerWidth-16)<350?360:320,clip_left:8,revision:1000}));
    const stop=await popup.locator('#auditory-toggle').boundingBox(),panel=await popup.locator('#island-content').boundingBox(),source=await popup.locator('#auditory-clone-language').boundingBox();assert(stop.y+stop.height<=panel.y+panel.height);assert(source.x+source.width<=panel.x+panel.width);assert(await popup.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   }
-  state={...state,active:true,voice:'auto',voice_agents:{speakers:[{ready:true}]}};await deliver();assert(await popup.getByLabel('Clonar voces autorizadas',{exact:true}).isDisabled());await popup.getByText(/1 voz preparada/).waitFor();await popup.getByRole('button',{name:'Detener',exact:true}).click();
+  state={...state,active:true,voice:'auto',voice_agents:{speakers:[{ready:true}]}};await deliver();assert(!(await popup.getByLabel('Clonar voces mientras traduce',{exact:true}).isDisabled()));await popup.getByText(/1 voz preparada/).waitFor();await popup.getByRole('button',{name:'Detener',exact:true}).click();
   await popup.getByRole('button',{name:'Preproducción',exact:true}).click();await bar.waitForFunction(()=>document.querySelector('[data-auditory-mode=preproduction]').getAttribute('aria-pressed')==='true');await popup.getByRole('button',{name:'Vincular navegador',exact:true}).click();assert(calls.some(c=>c[0]==='sync_prepare'&&c[1]==='preproduction'));assert(!calls.some(c=>c[0]==='navigate'),'preparing a video must not open the main app');
   await popup.getByRole('button',{name:'Navegador',exact:true}).click();await bar.waitForFunction(()=>document.querySelector('[data-auditory-mode=synchronized]').getAttribute('aria-pressed')==='true');
   syncState={...syncState,selected_video:{selected:true,state:'ready'}};state={...state,mode:'direct'};await bar.getByRole('button',{name:'Traducción auditiva',exact:true}).click();await popup.getByRole('button',{name:'Detener',exact:true}).waitFor();assert(calls.filter(c=>c[0]==='start').length>=3);assert(!calls.some(c=>c[0]==='navigate'));await popup.getByRole('button',{name:'Detener',exact:true}).click();
-  assert(browserStarts>0);const settings=await context.newPage();settings.on('pageerror',e=>errors.push(e.message));await settings.goto(base+'/settings#work');const transcript=settings.getByLabel('Mostrar transcripción en el navegador',{exact:true});await transcript.waitFor();assert(await transcript.isChecked());await transcript.uncheck();assert.equal(showTranscript,false);await settings.reload();await transcript.waitFor();assert(!(await transcript.isChecked()));await transcript.check();assert.equal(showTranscript,true);for(const width of [1024,640,390]){await settings.setViewportSize({width,height:800});assert(await settings.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));}await settings.close();
-  assert.deepEqual(errors,[]);fs.writeFileSync(dir+'/report.json',JSON.stringify({passed:true,native_bridge:'substituted',external_calls:0,one_click_starts_english_auto:true,workspace_triggers_browser:true,transcript_preference_default_and_reload:true,no_app_navigation:true,repeated_click_does_not_duplicate:true,stop_and_voice_controls:true,widths:[780,460,390,320,280],errors},null,2));console.log('Workspace auditory: one click, no navigation, caption, voice/stop, five widths passed.');
+  syncState={available:false,active_sessions:0,paired_browsers:0};
+  await popup.getByRole('button',{name:'Navegador',exact:true}).click();
+  const preparedBefore=calls.filter(c=>c[0]==='sync_prepare').length;
+  await bar.getByRole('button',{name:'Traducción auditiva',exact:true}).click();
+  await popup.getByRole('button',{name:'Detener',exact:true}).waitFor();
+  assert.equal(state.mode,'direct');assert.equal(calls.filter(c=>c[0]==='sync_prepare').length,preparedBefore);
+  await popup.getByRole('button',{name:'Detener',exact:true}).click();
+  failNextStart=true;
+  await popup.getByRole('button',{name:'Iniciar',exact:true}).click();
+  await popup.getByText('No se pudo iniciar la captura de audio.',{exact:true}).waitFor();
+  await deliver();
+  await popup.waitForTimeout(1800);
+  assert.equal(await popup.locator('#auditory-status').textContent(),'No se pudo iniciar la captura de audio.');
+  await popup.getByRole('button',{name:'Iniciar',exact:true}).click();
+  await popup.getByRole('button',{name:'Detener',exact:true}).waitFor();
+  assert(!(await popup.locator('#auditory-status').textContent()).includes('No se pudo iniciar'));
+  await popup.getByRole('button',{name:'Detener',exact:true}).click();
+  assert.equal(browserStarts,0);const settings=await context.newPage();settings.on('pageerror',e=>errors.push(e.message));await settings.goto(base+'/settings#work');const transcript=settings.getByLabel('Mostrar transcripción en el navegador',{exact:true});await transcript.waitFor();assert(await transcript.isChecked());await transcript.uncheck();assert.equal(showTranscript,false);await settings.reload();await transcript.waitFor();assert(!(await transcript.isChecked()));await transcript.check();assert.equal(showTranscript,true);for(const width of [1024,640,390]){await settings.setViewportSize({width,height:800});assert(await settings.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));}await settings.close();
+  assert.deepEqual(errors,[]);fs.writeFileSync(dir+'/report.json',JSON.stringify({passed:true,native_bridge:'substituted',external_calls:0,one_click_starts_english_auto:true,direct_start_without_extension:true,browser_mode_optional:true,start_error_survives_idle_poll:true,retry_clears_start_error:true,transcript_preference_default_and_reload:true,no_app_navigation:true,repeated_click_does_not_duplicate:true,stop_and_voice_controls:true,widths:[780,460,390,320,280],errors},null,2));console.log('Workspace auditory: direct capture without extension, persistent errors, retry, voice/stop, five widths passed.');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

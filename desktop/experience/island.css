@@ -72,3 +72,5 @@ body[data-translation-busy=true] .translation-actions{display:none}#work-coverag
 @container(max-width:340px){.translation-actions button{font-size:12px}.translation-actions+.setting-row{font-size:11px}}
 
 body[data-translation-focus=true]:not([data-translation-busy=true]) .translation-actions{grid-template-columns:1fr 1fr;gap:4px}body[data-translation-focus=true]:not([data-translation-busy=true]) .translation-actions button{padding:7px 4px;font-size:11px}
+
+#tools #workspace-close{flex:none;display:grid;place-items:center;width:28px;min-width:28px;height:28px;padding:6px;border-radius:7px}#workspace-close svg{display:block;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}#tools #workspace-close:hover{background:#ffffff18;color:#fff}#workspace-close:focus-visible{outline:2px solid #c1d4ff;outline-offset:2px}

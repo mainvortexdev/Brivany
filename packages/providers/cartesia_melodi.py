@@ -17,6 +17,8 @@ from packages.providers.live_voice import VoiceError
 MODEL='sonic-3.6-2026-08-27'
 URL='wss://api.cartesia.ai/tts/websocket?cartesia_version=2026-08-14'
 VOICES={'en':'db6b0ed5-d5d3-463d-ae85-518a07d3c2b4','es':'3597a26f-80ef-4bd5-8101-9699bc764917'}
+COUNTERPART_VOICE='b4b8e2af-6139-466e-a93a-30c20d2e1fc5' # Fernanda, Spanish customer care; catalog checked 2026-11-15.
+COUNTERPART_MALE_VOICE='3c1c7da2-8f3f-4966-a76d-1f5e484865b5' # Gonzalo, Spanish service desk; same verified catalogue.
 SAMPLE_RATE=24000
 
 
@@ -40,8 +42,8 @@ def speech_status():
 
 
 class CartesiaPCMStream:
-    def __init__(self,text,language,speed=1):
-        self.language=language_code(language);self.voice_id=VOICES[self.language]
+    def __init__(self,text,language,speed=1,*,_voice_id=None):
+        self.language=language_code(language);self.voice_id=_voice_id or VOICES[self.language]
         self.speed=speech_speed(speed)
         self.context_id=uuid4().hex;self.pending=bytearray();self.done=False;self.closed=threading.Event()
         self.socket=None;self.output_bytes=0;self.started=time.monotonic()
@@ -105,3 +107,20 @@ def open_cartesia_speech(text,language='es',speed=1):
     if not isinstance(text,str) or not text.strip() or len(text)>1800:
         raise VoiceError('invalid_speech','Escribe entre 1 y 1800 caracteres para escuchar a Melodi.')
     return CartesiaPCMStream(text.strip(),language,speed)
+
+
+def character_voice_id(role,language='es',*,gender=None):
+    language=language_code(language)
+    if gender not in {None,'female','male'}:raise VoiceError('tts_character','Voz de personaje no válida.')
+    if role=='melodi':
+        if gender=='male':raise VoiceError('tts_character','La voz seleccionada de Melodi debe conservarse.')
+        return VOICES[language]
+    if role=='counterpart':return COUNTERPART_MALE_VOICE if gender=='male' else COUNTERPART_VOICE
+    raise VoiceError('tts_character','Personaje de diálogo no válido.')
+
+
+def open_character_speech(text,role,language='es',speed=1,*,gender=None):
+    voice=character_voice_id(role,language,gender=gender)
+    if role=='melodi':return open_cartesia_speech(text,language,speed)
+    if not isinstance(text,str) or not text.strip() or len(text)>1800:raise VoiceError('invalid_speech','Texto de diálogo no válido.')
+    return CartesiaPCMStream(text.strip(),language,speed,_voice_id=voice)

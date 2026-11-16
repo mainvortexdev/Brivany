@@ -17,7 +17,7 @@ Devuelve sólo JSON con los campos obligatorios: style, title, headline, request
 style: workspace o spatial. workspace muestra Melodi WorkSpace y un video creado;
 spatial muestra un plano que se convierte en una habitación conceptual 3D.
 Respeta requested_style si está indicado. No es una presentación: mundo persistente,
-movimientos suaves con causa, un protagonista y resultado; Georgia y Segoe UI.
+movimientos suaves con causa, un protagonista y resultado; Brivany Editorial (Light 300, Regular 400, Medium 500).
 title: nombre del video, hasta 70 caracteres. headline/payoff/closing: frases
 españolas de hasta 36 caracteres cada una, sin afirmaciones no construidas.
 request: petición breve mostrada en el chat, hasta 40 caracteres.
@@ -55,6 +55,13 @@ def export_standalone(folder,spec):
     folder=Path(folder);assets=folder/'assets';standalone=(folder/'index.html').read_text(encoding='utf-8')
     for name in ('runtime.js','vendor.min.js'):
         standalone=standalone.replace('<script src="assets/'+name+'"></script>','<script>'+(assets/name).read_text(encoding='utf-8').replace('</script','<\\/script')+'</script>')
+    import base64
+    for style in ('Light','Regular','Medium'):
+        filename='BrivanyEditorial-'+style+'.woff2'
+        standalone=standalone.replace('assets/fonts/'+filename,'data:font/woff2;base64,'+base64.b64encode((assets/'fonts'/filename).read_bytes()).decode('ascii'))
+    from services.brand import FONT_ROOT
+    font_notice=(FONT_ROOT/'LICENSE-AND-ATTRIBUTION.txt').read_text(encoding='utf-8').replace('--','—')
+    standalone=standalone.replace('</head>','<!-- '+font_notice+' -->'+ '</head>')
     standalone=re.sub(r' data-(?:composition-id|start|duration|width|height|fps)="[^"]*"','',standalone)
     if spec.get('audio'):
         import base64
@@ -86,6 +93,8 @@ def write_project(folder,plan,*,narrator=None,cancelled=None,require=lambda:None
     plan=validate(plan);folder=Path(folder);assets=folder/'assets';assets.mkdir()
     runtime=STUDIO/'dist/runtime.js'
     if not runtime.is_file():raise ValueError('Falta compilar el motor de animación.')
+    from services.brand import copy_fonts,font_css
+    copy_fonts(assets/'fonts')
     shutil.copyfile(runtime,assets/'runtime.js')
     shutil.copyfile(STUDIO/'dist/vendor.min.js',assets/'vendor.min.js')
     logo=(ROOT/'web/brand-wordmark.svg').read_text(encoding='utf-8')
@@ -104,11 +113,14 @@ def write_project(folder,plan,*,narrator=None,cancelled=None,require=lambda:None
 window.__timelines=window.__timelines||{};window.__timelines['main']=film.tl;window.OPENER=film;
 window.addEventListener('hf-seek',event=>film.seek(event.detail?.time??0));
 })();</script></body></html>'''
+    body=body.replace('<style>','<style>'+font_css('assets/fonts/',display='block'))
+    body=body.replace('await document.fonts.ready;', 'await Promise.all([300,400,500].map(w=>document.fonts.load(w+\' 40px \"Brivany Editorial\"\')));await document.fonts.ready;')
     if spec.get('audio'):
         body=body.replace('</body>','<audio id="melodi-narration" class="clip" data-start="0" data-duration="'+str(plan['duration'])+'" data-track-index="2" src="assets/melodi.wav"></audio></body>')
     (folder/'index.html').write_text(body,encoding='utf-8')
     exports=folder/'exports';exports.mkdir();export_standalone(folder,spec)
-    notices=(ROOT/'integrations/bang-motion/LICENSE').read_text(encoding='utf-8')
+    from services.brand import FONT_ROOT
+    notices=(FONT_ROOT/'LICENSE-AND-ATTRIBUTION.txt').read_text(encoding='utf-8')+'\n\n'+(ROOT/'integrations/bang-motion/LICENSE').read_text(encoding='utf-8')
     for name in ('gsap','three','playwright-core'):
         package=STUDIO/'node_modules'/name
         file=next((p for p in (package/'LICENSE',package/'LICENSE.md',package/'LICENSE.txt') if p.is_file()),None)
@@ -125,8 +137,23 @@ class MotionService:
     def availability():
         source=source_status();ready=source['installed'] and (STUDIO/'dist/runtime.js').is_file() and (STUDIO/'node_modules/playwright-core/package.json').is_file()
         from packages.providers.cartesia_melodi import speech_status
-        return {**source,'available':bool(ready and shutil.which('ffmpeg') and shutil.which('ffprobe') and shutil.which('node')),'scene_families':['workspace','spatial'],'edition':2,'narration_available':speech_status()['configured'],'narration':'Melodi · Cartesia, sólo cuando se solicita','arbitrary_code':False}
-    def run(self,goal,*,identifier,decide,cancelled,progress=lambda text:None,require=lambda:None,render=True,user_request=None):
+        from .story_service import StoryService
+        story=StoryService.availability()
+        legacy=bool(ready and shutil.which('ffmpeg') and shutil.which('ffprobe') and shutil.which('node'))
+        return {**source,**story,'available':story['available'] or legacy,'scene_families':['story','illustration','workspace','spatial'],
+                'legacy_available':legacy,'narration_available':speech_status()['configured'],
+                'narration':'Melodi · Cartesia, sólo cuando se solicita','arbitrary_code':False}
+    def run(self,goal,*,identifier,decide,cancelled,progress=lambda text:None,require=lambda:None,render=True,user_request=None,selected=(),roots=()):
+        from .story_service import StoryService,needs_story
+        from .social_service import SocialService,is_social_request
+        if is_social_request(user_request or goal) and not selected:
+            social=SocialService(self.root)
+            try:return social.run(goal,identifier=identifier,decide=decide,cancelled=cancelled,progress=progress,require=require,render=render,user_request=user_request)
+            finally:social.close()
+        if needs_story(user_request or goal,selected):
+            story=StoryService(self.root)
+            try:return story.run(goal,identifier=identifier,decide=decide,cancelled=cancelled,progress=progress,require=require,render=render,user_request=user_request,selected=selected,roots=roots)
+            finally:story.close()
         if cancelled.is_set():raise ValueError('Animación cancelada antes de planificar.')
         if not self.availability()['available']:raise ValueError('Bang Motion o el render local necesitan completar su instalación.')
         if str(UUID(identifier))!=identifier:raise ValueError('Trabajo de animación inválido.')
@@ -135,7 +162,7 @@ class MotionService:
         original=goal if user_request is None else user_request
         if not isinstance(original,str) or not 0<len(original)<=2000:raise ValueError('Petición de animación inválida.')
         requested='spatial' if 'spatial' in original.lower() else 'workspace' if 'workspace' in original.lower() else None
-        plan=validate(decide(PROMPT,{'request':original,'requested_style':requested,'skill':source_status(),'identity':'brivany. · Georgia + Segoe UI · azul #0071e3','restrictions':'No cambios de registro, UAC ni claims de funciones no disponibles.'}))
+        plan=validate(decide(PROMPT,{'request':original,'requested_style':requested,'skill':source_status(),'identity':'brivany. · Brivany Editorial 300/400/500 · azul #0071e3','restrictions':'No cambios de registro, UAC ni claims de funciones no disponibles.'}))
         if cancelled.is_set():raise ValueError('Animación cancelada antes de crear archivos.')
         if requested and plan['style']!=requested:raise ValueError('La familia visual no coincide con la solicitada.')
         seconds=re.search(r'\b(\d+)\s*segundos?\b',original,re.I);fps=re.search(r'\b(\d+)\s*fps\b',original,re.I)

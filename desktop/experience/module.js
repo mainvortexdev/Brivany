@@ -28,7 +28,7 @@
       window.addEventListener('pagehide',()=>clearInterval(timer),{once:true});
     }
     const output = window.BrivanyLive?.MelodiOutput?.prototype;
-    if (output && !output.desktopSpeechAdapted) {
+    if (output && !output.desktopSpeechAdapted && !document.body.classList.contains('chat-clean')) {
       const speak = output.speak;
       output.speak = function (segments, options) {
         const onState = this.onState;

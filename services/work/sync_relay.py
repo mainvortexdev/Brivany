@@ -81,7 +81,7 @@ class SyncRelay:
     def check_request(self,connection,request):
         try:origin=request.headers.get('Origin');host=request.headers.get('Host')
         except Exception:return connection.respond(403,'Origen no autorizado.')
-        private_paths={'/connect','/video','/workspace'}
+        private_paths={'/connect','/video','/workspace','/music'}
         if self.video_prefix:private_paths.add('/prefix')
         valid_path=request.path in {'/pair','/sync'} or request.path in private_paths and origin==self.automatic_origin and self.automatic_enabled
         if not valid_path or host not in {f'127.0.0.1:{self.port}',f'localhost:{self.port}'} or not self.origin_allowed(origin):
@@ -207,6 +207,10 @@ class SyncRelay:
                 stage='selected-video'
                 if self.video_hub is None:raise ValueError('La selección de video no está disponible.')
                 self._send(socket,{'type':'authenticated'});self.video_hub.handle(socket);return
+            if path=='/music':
+                presence=getattr(self,'music_presence',None)
+                if presence is None or origin!=self.automatic_origin:raise PermissionError('Música del navegador no autorizada.')
+                self._send(socket,{'type':'authenticated','enabled':bool(presence.enabled())});presence.handle(socket);return
             if path=='/workspace':
                 authenticated = {'type': 'authenticated'}
                 if origin == self.automatic_origin:

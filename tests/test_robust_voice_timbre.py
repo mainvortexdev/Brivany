@@ -1,6 +1,9 @@
 """Bounded optional CPU inference and uncertainty for acoustic catalog style."""
 from hashlib import sha256
+from pathlib import Path
 import math
+import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -88,6 +91,31 @@ class RobustVoiceTimbreTests(unittest.TestCase):
         if timbre.MODEL_PATH.is_file():
             self.assertEqual(timbre.MODEL_PATH.stat().st_size, MODEL_BYTES)
             self.assertEqual(sha256(timbre.MODEL_PATH.read_bytes()).hexdigest(), MODEL_SHA256)
+
+    def test_first_inference_loads_once_and_streams_integrity_check_without_full_file_copy(self):
+        payload=b'owned model fixture' * 100
+        with tempfile.TemporaryDirectory() as folder:
+            path=Path(folder)/'model.onnx';path.write_bytes(payload)
+            session=object()
+            from unittest.mock import Mock
+            constructor=Mock(return_value=session)
+            runtime=SimpleNamespace(SessionOptions=lambda:SimpleNamespace(),
+                ExecutionMode=SimpleNamespace(ORT_SEQUENTIAL=0), InferenceSession=constructor)
+            with patch.dict('sys.modules',{'onnxruntime':runtime}),patch.object(timbre,'_SESSION',None),patch.object(timbre,'MODEL_PATH',path),patch.object(timbre,'MODEL_BYTES',len(payload)),patch.object(timbre,'MODEL_SHA256',sha256(payload).hexdigest()),patch.object(Path,'read_bytes',side_effect=AssertionError('Must stream model hash')),patch.object(timbre,'_features',return_value=np.zeros((1,16000),dtype=np.float32)),patch.object(timbre,'_infer',return_value=np.array([.99,.01])):
+                constructor.assert_not_called()
+                first=timbre.analyze_robust_timbre(speech_like(1))
+                second=timbre.analyze_robust_timbre(speech_like(1))
+                self.assertTrue(first['available']);self.assertTrue(second['available'])
+                constructor.assert_called_once()
+
+    def test_streamed_hash_still_rejects_changed_model_before_runtime_initialization(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path=Path(folder)/'model.onnx';path.write_bytes(b'corrupted fixture')
+            from unittest.mock import Mock
+            constructor=Mock()
+            with patch.dict('sys.modules',{'onnxruntime':SimpleNamespace(InferenceSession=constructor)}),patch.object(timbre,'_SESSION',None),patch.object(timbre,'MODEL_PATH',path),patch.object(timbre,'MODEL_BYTES',path.stat().st_size),patch.object(timbre,'MODEL_SHA256','0'*64):
+                result=timbre.analyze_robust_timbre(speech_like(1))
+                self.assertFalse(result['available']);constructor.assert_not_called()
 
 
 if __name__ == '__main__':

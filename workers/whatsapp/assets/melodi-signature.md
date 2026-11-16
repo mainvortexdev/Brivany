@@ -1,0 +1,7 @@
+Firma de Melodi para los documentos que requieran identificar a su redactora.
+
+Archivo final: `melodi-signature.png`. Fondo transparente, 1774 × 887 píxeles. El texto es «Secretaria Ejecutiva». Se utilizó la herramienta integrada de generación de imágenes en modo edición, con la imagen proporcionada por el propietario como objetivo. La firma se incorpora como imagen en DOCX y como una copia equivalente sobre blanco en PDF.
+
+Prompt final:
+
+> Edit this provided Melodi signature into a clean professional transparent PNG suitable for insertion in business documents. Preserve the original black handwritten Melodi lettering and both long flourishes faithfully: same letter shapes, proportions and distinctive long descending y stroke. Remove the small placeholder words YOUR SLOGAN completely. Replace those placeholder words beneath the handwritten signature with the exact Spanish text «Secretaria Ejecutiva», using an elegant, crisp, modest black sans serif typeface with comfortable letter spacing. Ensure this label remains fully legible and does not overlap the descending signature stroke: place the label centered below the complete handwritten mark, with a small natural gap. Only the original signature and this exact label should remain; no additional graphics, text or branding. Crop away the huge blank margins with a modest safe margin around the complete mark and label. Pure black ink, transparent background, crisp edges, high resolution.

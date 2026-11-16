@@ -1,0 +1,17 @@
+.game-tool .game-metrics {
+ display: grid;
+ grid-template-columns: repeat(4, minmax(0, 1fr));
+ margin: 0 0 8px;
+ padding: 7px 0;
+ border-radius: 10px;
+ background: #ffffff06;
+}
+.game-metrics > div { padding: 0 8px; min-width: 0; }
+.game-metrics > div + div { border-left: 1px solid #ffffff13; }
+.game-metrics dt { color: #a8adba; font-size: 9px; letter-spacing: .07em; }
+.game-metrics dd { margin: 2px 0 0; font-size: 17px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.game-metrics div:first-child dd { color: var(--workspace-accent, #9cc8ff); }
+.game-source { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px; }
+.game-source select { min-width: 0; }
+.game-actions { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.game-tool [hidden] { display: none !important; }

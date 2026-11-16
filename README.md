@@ -1,102 +1,99 @@
-# Brivany
+# Brivany · Melodi
 
-Brivany reúne a Melodi, un asistente de voz y trabajo, con traducción auditiva, coordinación de agentes, herramientas de ordenador y human-skills. Sous ayuda a organizar ingredientes y seguir recetas. La extensión de Brave conecta el audio de un video con Melodi WorkSpace. El visor espacial ofrece escenas 3D editables. Meta Glasses y la reconstrucción avanzada se describen en el [plan de plataforma](PLAN_PLATAFORMA.md).
+Una aplicación de escritorio para conversar con Melodi, trabajar con agentes y usar herramientas de voz, imágenes, video y traducción.
 
-## Arranque rápido
+[Web](https://brivany.vetsa.es/) · [Demostración](https://youtu.be/iVE8Vx5Wseg) · [Descargar para Windows](https://github.com/mainvortexdev/Brivany/releases/tag/v0.2.0) · [Contacto: daniel@vetsa.es](mailto:daniel@vetsa.es)
 
-Necesitas **Python 3.12**. Para Desktop en Windows, instala **Edge WebView2 Runtime** y **.NET Framework 4.8**. Instala **FFmpeg y ffprobe** y añádelos al `PATH` si vas a procesar video o audio local. **Node.js 22 o superior** se usa para las pruebas JavaScript y las herramientas de desarrollo. El navegador recomendado para la extensión es **Brave o Chromium 116 o posterior**.
+**Vista previa 0.2.0.** Algunas integraciones necesitan cuentas, permisos y servicios adicionales. La descarga no incluye claves de API ni acceso de pago a los proveedores.
 
-Clona el repositorio y abre la carpeta en PowerShell:
+## Probar Melodi en Windows
+
+1. Descarga **Brivany-Setup-0.2.0-x64.exe** desde [Releases](https://github.com/mainvortexdev/Brivany/releases/tag/v0.2.0). Instálalo y abre **Brivany** desde el menú Inicio. El instalador incluye Python; no necesitas instalarlo por separado.
+2. Necesitas Windows 10/11 de 64 bits, .NET Framework 4.8 y Microsoft Edge WebView2. El instalador comprueba .NET y prepara WebView2 si falta (requiere Internet). El ejecutable aún no tiene firma Authenticode de editor.
+3. Cierra Brivany completamente desde su icono de la bandeja antes de configurar las claves. El botón **×** deja la aplicación en segundo plano.
+4. En PowerShell, crea o abre su configuración personal:
+
+```powershell
+$brivanyData = Join-Path $env:LOCALAPPDATA 'Brivany\User Data'
+New-Item -ItemType Directory -Force $brivanyData | Out-Null
+notepad (Join-Path $brivanyData '.env')
+```
+
+Guarda este contenido con **tus propias claves** (sin los textos de ejemplo):
+
+```dotenv
+BRIVANY_META_API_KEY=TU_CLAVE_META
+BRIVANY_META_MODEL=muse-spark-1.3
+BRIVANY_CARTESIA_API_KEY=TU_CLAVE_CARTESIA
+```
+
+5. Abre Brivany de nuevo, entra al chat de **Melodi** y escribe: **«Preséntate y dime en qué puedes ayudarme»**. Para probar la voz, conecta un micrófono, habilita su permiso y pulsa el botón de voz. No necesitas vincular Google, Spotify ni WhatsApp para conversar por texto.
+
+Tus ajustes y cuentas se guardan en `%LOCALAPPDATA%\Brivany\User Data`, separados del programa. El registro de arranque está en `.local\logs\desktop.log` dentro de esa carpeta. Revisa claves, cuota y permisos del proveedor si falla una función. Para una prueba guiada: **[daniel@vetsa.es](mailto:daniel@vetsa.es)**.
+
+## Qué claves necesitas
+
+| Uso | Configuración |
+| --- | --- |
+| **Chat de Melodi** | `BRIVANY_META_API_KEY` y `BRIVANY_META_MODEL=muse-spark-1.3`. |
+| **Conversación con voz** | Lo anterior más `BRIVANY_CARTESIA_API_KEY`. El reconocimiento de Muse usa la clave de Meta; puedes separar su acceso con `BRIVANY_MUSE_API_KEY`. |
+| **Generar y editar imágenes** | Clave Meta con acceso a Muse Image. Las funciones habilitadas dependen de tu cuenta. |
+| **Crear videos con voz** | Meta y Cartesia, además de Node.js 22+ y FFmpeg/ffprobe en el `PATH`. |
+| **Google Calendar, Drive y Gmail en el servicio oficial** | Vincula tu Cuenta Vetsa y tu WhatsApp desde Ajustes → Conexiones y autoriza tu propia cuenta de Google. Se conserva el cliente OAuth de Brivany y sus dominios oficiales; no necesitas crear un proyecto Google propio para usar ese servicio. La revisión pública de Google sigue pendiente y pueden aparecer advertencias o restricciones de acceso. |
+| **WhatsApp y reuniones** | Cuenta Vetsa vinculada y backend desplegado. Un despliegue propio necesita WhatsApp Cloud API, Cloudflare y, para Meet/Zoom, Recall. Las claves del servidor no van en el cliente. |
+| **Llamadas telefónicas** | Telnyx, número autorizado y servicio de llamadas configurado. La voz se genera con Cartesia. No se ofrecen llamadas de WhatsApp. |
+
+Crea tus credenciales en [Meta Model API](https://dev.meta.ai/docs/overview) y [Cartesia](https://play.cartesia.ai/). Comprueba que tu cuenta permite los modelos y las voces seleccionados; cada proveedor aplica su propia facturación y cuota. La voz de Melodi conserva su configuración de Cartesia. La plantilla completa está en [`.env.example`](.env.example); no hace falta rellenarla entera para empezar.
+
+Para alojar **tu propia instancia** de los conectores Google, configura `BRIVANY_GOOGLE_CLIENT_ID` y `BRIVANY_GOOGLE_CLIENT_SECRET`, las APIs y los callbacks de ese despliegue. El servicio oficial mantiene las credenciales de su cliente web en el servidor y la autorización de cada usuario por separado. [Guía de Google y WhatsApp](docs/melodi-whatsapp-migracion-20261113.md).
+
+## Qué puedes probar y qué requiere preparación
+
+- **Chat, adjuntos y agentes:** conversación y encargos con los proveedores configurados; miniaturas para archivos y progreso para creaciones.
+- **Imágenes, videos y human-skills:** requieren modelos habilitados; los procesos multimedia necesitan las herramientas indicadas arriba.
+- **Traducción y WorkSpace:** la extensión conecta videos compatibles con el escritorio. Abre `brave://extensions` o `chrome://extensions`, activa Modo de desarrollador y carga la carpeta [`browser-extension/`](browser-extension). [Guía de la extensión](browser-extension/README.md).
+- **Control del ordenador:** el backend Cognira autorizado se prepara por separado; no se redistribuye dentro del instalador. [Preparación y límites](docs/control-ordenador-melodi.md).
+- **Spotify:** se vincula desde Ajustes → Conexiones; la aplicación está en Development Mode y solo admite las cuentas autorizadas por Spotify. No equivale a acceso público para cualquier usuario.
+- **WhatsApp, reuniones y llamadas:** necesitan servicios remotos y vinculación; instalar el ejecutable por sí solo no los activa. [WhatsApp](docs/melodi-whatsapp-migracion-20261113.md), [reuniones](docs/recall-reuniones-20261116.md), [llamadas](workers/calls/README.md).
+- **Funciones espaciales:** consulta el [plan de plataforma](PLAN_PLATAFORMA.md); la reconstrucción avanzada tiene requisitos adicionales.
+
+## Ejecutar desde el código
+
+Instala Git, **Python 3.12** y, para herramientas de desarrollo y video, **Node.js 22+**. En Windows también necesitas .NET 4.8 y WebView2.
 
 ```powershell
 git clone https://github.com/mainvortexdev/Brivany.git
 cd Brivany
 py -3.12 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-h1.txt
-Copy-Item .env.example .env
-.\start-h1.ps1
-```
-
-La web queda en [127.0.0.1:8765](http://127.0.0.1:8765/). Para iniciar sin PowerShell, usa el Python del entorno virtual:
-
-```sh
-python -X utf8 -B -m services.h1.server --port 8765
-```
-
-La portada, la bitácora y las funciones locales se pueden abrir con las credenciales vacías. Para cambiar el puerto en PowerShell usa `./start-h1.ps1 -Port 8766`. Detén el servidor con `Ctrl+C`.
-
-| Ruta | Uso |
-| --- | --- |
-| `/app` | Melodi y conversación con voz |
-| `/dubbing` | Traducción auditiva de videos compatibles |
-| `/human-skills` | Crear y practicar una habilidad a partir de un video |
-| `/sous` | Inventario, recetas y pasos de cocina |
-| `/spaces` | Biblioteca y visor espacial |
-| `/activity` | Bitácora, resultados de pruebas y evidencias |
-
-## Configuración y APIs
-
-Edita `.env` en la raíz. La plantilla [`.env.example`](.env.example) muestra todas las variables que carga el servidor desde ese archivo. Pon el valor a la derecha de `=` y reinicia Brivany. Las variables definidas en el entorno del proceso tienen prioridad. Mantén `.env` fuera del código compartido y de la extensión.
-
-| Variable | Cuándo se usa |
-| --- | --- |
-| `BRIVANY_META_API_KEY` | Meta para Melodi, traducción, agentes, investigación e imágenes. La cuenta debe tener acceso a las funciones que se activen. |
-| `BRIVANY_META_MODEL` | Identificador de Muse Spark habilitado para tu cuenta. La plantilla incluye `muse-spark-1.3` como ejemplo. |
-| `BRIVANY_MUSE_API_KEY` | Muse Voice Transcribe. Si se deja vacía, el código usa `BRIVANY_META_API_KEY`. |
-| `BRIVANY_CARTESIA_API_KEY` | Voz de Melodi y voz de traducción, mediante Cartesia Sonic. |
-| `BRIVANY_HUMAN_SKILLS_MODEL`, `BRIVANY_SOUS_MODEL` | Ajustes opcionales de los modelos Meta para análisis de video y observación visual. |
-| `BRIVANY_GOOGLE_CLIENT_ID`, `BRIVANY_GOOGLE_CLIENT_SECRET` | OAuth para Google, si se habilita el conector. |
-| `BRIVANY_WHATSAPP_ACCESS_TOKEN`, `BRIVANY_META_APP_SECRET`, `BRIVANY_WHATSAPP_VERIFY_TOKEN` | WhatsApp Cloud API y webhook opcional. |
-| `BRIVANY_META_SOCIAL_USER_TOKEN`, `BRIVANY_FACEBOOK_PAGE_TOKEN`, `BRIVANY_INSTAGRAM_ACCESS_TOKEN`, `BRIVANY_META_ADS_ACCESS_TOKEN` | Conectores opcionales de Meta Graph, con permisos específicos por cuenta. |
-
-El flujo de traducción usa **Muse Voice Transcribe → Muse Spark → Cartesia Sonic**. La extensión se comunica con Desktop por loopback. OpenAI, Palabra, ElevenLabs, Gemini, Groq y Cloudflare aparecen agrupados en la plantilla para adaptadores históricos o experimentales.
-
-El gateway móvil tiene su propia plantilla en [`workers/mobile-gateway/.dev.vars.example`](workers/mobile-gateway/.dev.vars.example). Cópiala a `.dev.vars` en esa carpeta si vas a probar el Worker con Wrangler. Configura los secretos de producción en Wrangler. Las funciones espaciales remotas requieren los accesos y modelos descritos en [infra/modal](infra/modal/README.md). La [configuración de conectores](config/integrations.example.json) y el [inventario de accesos](docs/30-accesos-pendientes.md) detallan las integraciones opcionales.
-
-## Cuentas para una instalación propia
-
-- **Meta y Cartesia.** Crea tus propias credenciales en [Meta for Developers](https://dev.meta.ai/) y [Cartesia](https://play.cartesia.ai/). Habilita los modelos que usarás y comprueba los créditos o la cuota de cada cuenta antes de activar voz, traducción o agentes.
-- **Google.** Crea un proyecto en [Google Cloud Console](https://console.cloud.google.com/). Habilita Calendar, Gmail o Drive según el conector, configura el consentimiento OAuth y crea un cliente de tipo *Desktop app*. Añade usuarios de prueba si el proyecto está en modo de pruebas. Copia el ID y el secreto del cliente a `.env`, reinicia y concede los permisos desde Conexiones. [Guía de Google OAuth](https://developers.google.com/identity/protocols/oauth2/native-app).
-- **Spotify.** Crea tu propia aplicación en [Spotify for Developers](https://developer.spotify.com/dashboard), configura su Client ID y registra la URL HTTPS `/spotify/callback` de tu instancia. El sitio y el relay OAuth se encuentran en `official-site/`. Usa el mismo dominio en la configuración de Brivany, del Worker y de la aplicación Spotify. Para reproducción mediante el SDK, verifica los requisitos de Spotify Premium. [Guía del SDK](https://developer.spotify.com/documentation/web-playback-sdk).
-- **Alojamiento opcional.** Define tus propios dominios y bindings en los archivos Wrangler de `official-site/` y `workers/mobile-gateway/`. Busca `brivany.example` y `mobile.brivany.example` en el proyecto y sustituye esos valores en los consumidores del servicio que publiques. Para Spotify, configura también `SPOTIFY_CLIENT_ID` y `SPOTIFY_RELAY_SIGNING_KEY` en el Worker del sitio. Si distribuyes el cliente iOS, configura su URL del gateway y su identificador de aplicación antes de compilar. Los dominios `brivany.example` y `mobile.brivany.example` son ejemplos reservados. Las funciones locales arrancan independientemente. Las funciones conectadas requieren una instancia propia y los permisos de su proveedor.
-
-## Desktop y extensión de Brave
-
-En Windows, con el entorno virtual del arranque rápido:
-
-```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements-desktop.txt
+Copy-Item .env.example .env
+notepad .env
 .\.venv\Scripts\python.exe -X utf8 -B -m desktop.launcher --check
 .\.venv\Scripts\python.exe -X utf8 -B -m desktop.experience.launcher
 ```
 
-En Brave abre `brave://extensions`, activa **Modo de desarrollador** y usa **Cargar descomprimida** para elegir `browser-extension/`. Con Desktop abierto, reproduce un video compatible y pulsa el botón de la extensión. Para usarla desde WorkSpace, concede el acceso al sitio cuando Brave lo solicite. Consulta [Desktop](desktop/README.md), [WorkSpace](docs/melodi-workspace.md) y la [guía de la extensión](browser-extension/README.md).
+Rellena las claves antes de la primera ejecución. Para el servidor web local, usa `./start-h1.ps1` y abre [127.0.0.1:8765](http://127.0.0.1:8765/). Detén ese servidor con `Ctrl+C`.
 
-El control de ordenador requiere una copia autorizada del backend Cognira y las dependencias fijadas en los locks. Con esa copia disponible, usa `python -m tools.bundle_computer_backend --source RUTA --activate`. Consulta la [documentación del control nativo](docs/control-ordenador-melodi.md).
+Para preparar la generación de video desde el código:
 
-## Pruebas y bitácora
+```powershell
+npm --prefix motion-studio ci
+npm --prefix motion-studio run build
+```
 
-Las suites seleccionadas se ejecutan sin credenciales de proveedor. Usa Node.js para las pruebas de extensión y el Python del entorno virtual para el resto.
+Instala FFmpeg y ffprobe en el `PATH`. El instalador de esta versión tampoco incluye Node.js ni FFmpeg. La extensión y los servicios Cloudflare tienen sus propias instrucciones y dependencias. Para generar un instalador propio, consulta [la guía de distribución](docs/distribucion-windows.md).
+
+## Desarrollo y documentación
 
 ```powershell
 .\.venv\Scripts\python.exe -X utf8 -B -m tools.verify contracts
-.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify sync-relay
-.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify workspace-sync-extension
+.\.venv\Scripts\python.exe -X utf8 -B -m tools.verify chat-history
 ```
 
-`tools.verify` añade los resultados nuevos a la bitácora local y a `tmp/verification/`. Los escenarios con cuentas, dispositivos físicos y proveedores reales tienen requisitos propios en [VALIDACION.md](VALIDACION.md). El historial de construcción está en [docs/17-bitacora.md](docs/17-bitacora.md) y los informes en [docs/verification-history](docs/verification-history).
+`tools.verify` registra el resultado local y las evidencias en `tmp/verification/`. Las pruebas con proveedores reales son independientes. Consulta [VALIDACION.md](VALIDACION.md), la [bitácora](docs/17-bitacora.md), el [catálogo de funciones](CATALOGO_FUNCIONES.md) y el [plan vigente](PLAN_PLATAFORMA.md).
 
-La [copia pública de la bitácora](docs/activity-history) conserva las entradas y la evidencia textual depurada. Las capturas privadas se representan con una nota. Para abrir el histórico en `/activity`, copia la carpeta antes del primer arranque:
+`desktop/`: aplicación Windows · `services/` y `packages/`: servidor y proveedores · `web/`: interfaces · `workers/`: servicios remotos · `official-site/`: web de Brivany · `tests/` y `tools/`: verificación y utilidades.
 
-```powershell
-New-Item -ItemType Directory -Path .local -Force | Out-Null
-Copy-Item -Recurse docs/activity-history .local/activity
-```
+## Licencia
 
-## Estructura
-
-- `web/` contiene las interfaces y `services/` el servidor local, los relays y la coordinación.
-- `packages/providers/` contiene los adaptadores de servicios externos.
-- `desktop/` y `browser-extension/` conectan WorkSpace con Windows y Brave.
-- `workers/`, `infra/` e `ios/` contienen los componentes remotos y móviles.
-- `contracts/`, `tests/` y `tools/` contienen los contratos, pruebas y utilidades.
+El código original de Brivany se publica bajo la [licencia MIT](LICENSE). Las dependencias, tipografías y recursos de terceros conservan sus licencias y atribuciones. No publiques `.env`, tokens, perfiles personales ni grabaciones al compartir tu instalación.
