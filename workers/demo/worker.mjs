@@ -258,6 +258,15 @@ export class DemoAccount extends DurableObject {
    if(path==='/v1/activate'&&request.method==='POST')return answer(await this.activate(JSON.parse(await bodyText(request))));
    const session=await this.authorize(request);
    if(path==='/v1/account'&&request.method==='GET')return answer(await this.status());
+   if(path==='/v1/transfers'&&request.method==='POST'){
+    if(!this.env.DEMO_TRANSFERS)throw Error('route_unavailable');
+    const value=JSON.parse(await bodyText(request,1024));
+    const permitted=await this.ctx.storage.transaction(async storage=>{
+     const key='transfer-created:'+session.device,last=await storage.get(key),now=Date.now();if(last&&now-last<5000)return false;
+     await storage.put(key,now);return true;
+    });if(!permitted)throw Error('request_limit');
+    return answer(await this.env.DEMO_TRANSFERS.create(value));
+   }
    if(path==='/v1/telnyx/status'&&request.method==='GET')return answer(await this.phone(session.device).info());
    if(path==='/v1/telnyx/connect'&&request.method==='POST'){
     const value=JSON.parse(await bodyText(request));return answer(await this.phone(session.device).configurePhone({apiKey:value.api_key,fromNumber:value.from_number,deviceId:session.device}));

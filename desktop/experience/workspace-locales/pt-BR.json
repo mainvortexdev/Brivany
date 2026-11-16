@@ -470,5 +470,13 @@
   "Preparando recepción…": "Preparando recepção…",
   "Enviar": "Enviar",
   "{count} archivos en cola": "{count} arquivos na fila",
-  "Seleccionar {name}": "Selecionar {name}"
+  "Seleccionar {name}": "Selecionar {name}",
+  "Hasta 20 GB": "Até 20 GB",
+  "Transferencia cifrada · Hasta 1.000 archivos · 20 GB por envío": "Transferência criptografada · Até 1.000 arquivos · 20 GB por envio",
+  "Elige un archivo válido de hasta 20 GB.": "Escolha um arquivo válido de até 20 GB.",
+  "El archivo admite hasta 20 GB.": "O arquivo aceita até 20 GB.",
+  "Elige hasta 1.000 archivos; 20 GB en total.": "Escolha até 1.000 arquivos; 20 GB no total.",
+  "La bandeja admite 1.000 archivos.": "A bandeja aceita 1.000 arquivos.",
+  "{name}: supera 20 GB.": "{name}: excede 20 GB.",
+  "Recibir {count} archivos": "Receber {count} arquivos"
 }

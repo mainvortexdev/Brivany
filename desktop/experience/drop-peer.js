@@ -1,12 +1,13 @@
 /* Shared desktop/phone engine. Bounded encrypted packets; never whole-file buffers. */
 (() => {
  'use strict';
- const BLOCK=256*1024,FRAME=16*1024-12,WINDOW=8,MAX=1024**3,encoder=new TextEncoder(),decoder=new TextDecoder();
+ const BLOCK=256*1024,FRAME=16*1024-12,WINDOW=8,MAX=20_000_000_000,MAX_FILES=1000,MAX_TOTAL=MAX,encoder=new TextEncoder(),decoder=new TextDecoder();
  const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
  const unbase=value=>Uint8Array.from(atob(value.replaceAll('-','+').replaceAll('_','/')+'='.repeat((4-value.length%4)%4)),c=>c.charCodeAt(0));
  const hex=bytes=>Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join('');
  const nameOK=name=>typeof name==='string'&&name.length>0&&name.length<=180&&!name.startsWith('.')&&!/[\\/\x00-\x1f<>:"|?*]/.test(name)&&!/[. ]$/.test(name)&&!/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\.|$)/i.test(name);
- const metaOK=m=>m&&/^[a-f0-9]{32}$/.test(m.id)&&nameOK(m.name)&&Number.isSafeInteger(m.size)&&m.size>=0&&m.size<=MAX;
+ const batchOK=b=>b&&/^[a-f0-9]{32}$/.test(b.id)&&Number.isSafeInteger(b.count)&&b.count>=1&&b.count<=MAX_FILES&&Number.isSafeInteger(b.total)&&b.total>=0&&b.total<=MAX_TOTAL&&Number.isSafeInteger(b.index)&&b.index>=1&&b.index<=b.count;
+ const metaOK=m=>m&&/^[a-f0-9]{32}$/.test(m.id)&&nameOK(m.name)&&Number.isSafeInteger(m.size)&&m.size>=0&&m.size<=MAX&&(m.batch===undefined||batchOK(m.batch)&&m.size<=m.batch.total);
  const failures={storage_unavailable:'Abre el enlace en Safari para recibir archivos grandes.',storage_full:'No hay espacio suficiente en el teléfono.',storage_timeout:'El almacenamiento no respondió. Inténtalo de nuevo.',storage_failed:'No se pudo guardar el archivo. Inténtalo de nuevo.',receiver_failed:'No se pudo preparar la recepción. Inténtalo de nuevo.'};
  const failureCode=error=>Object.hasOwn(failures,error?.code)?error.code:'receiver_failed';
  class DropPeer {
@@ -14,8 +15,14 @@
    this.options=options;this.id=options.id;this.role=options.role;this.closed=false;this.peerPresent=false;this.ws=null;this.pc=null;this.channel=null;this.tx=null;this.rx=null;this.pending=null;this.completed=new Map();this.seen=new Set();this.queue=Promise.resolve();this.encryptQueue=Promise.resolve();this.frame=null;this.frameSequence=0;this.retry=0;this.rtcSerial=0;this.ice=[];this.key=crypto.subtle.importKey('raw',unbase(options.key),'AES-GCM',false,['encrypt','decrypt']);this.metrics={maxRead:0,maxPacket:0,maxInFlight:0,received:0,sent:0,resumes:0,directBytes:0,relayBytes:0};this.started=false;
   }
   state(state,detail={}){if(!this.closed)this.options.onstate?.({state,...detail,transport:this.channel?.readyState==='open'?'direct':'relay'})}
+  checkBatch(meta){
+   const b=meta.batch;if(!b){if(this.incomingBatch)throw Error('El lote cambió.');return}
+   if(!this.incomingBatch){if(b.index!==1)throw Error('El lote perdió su posición.');this.incomingBatch={id:b.id,count:b.count,total:b.total,index:0,bytes:0}}
+   const current=this.incomingBatch;
+   if(b.id!==current.id||b.count!==current.count||b.total!==current.total||b.index!==current.index+1||current.bytes+meta.size>current.total||(b.index===b.count&&current.bytes+meta.size!==current.total))throw Error('El lote supera sus límites o cambió.');
+  }
   preview(active,count=0,edge='right'){
-   if(this.closed||!this.peerPresent||typeof active!=='boolean'||!Number.isInteger(count)||count<0||count>8||!['left','right','top','bottom'].includes(edge))return;
+   if(this.closed||!this.peerPresent||typeof active!=='boolean'||!Number.isInteger(count)||count<0||count>MAX_FILES||!['left','right','top','bottom'].includes(edge))return;
    const signature=JSON.stringify([active,count,edge]),now=performance.now();
    if(this.lastPreview===signature&&now-this.previewAt<900)return;
    this.lastPreview=signature;this.previewAt=now;this.send({type:'edge',active,count:active?count:0,edge},null,'relay').catch(()=>{});
@@ -106,7 +113,7 @@
   async handle(value,data,route){
    if(!value||typeof value.type!=='string')throw Error('Mensaje no válido.');
    if(value.type==='edge'){
-    if(data.length||typeof value.active!=='boolean'||!Number.isInteger(value.count)||value.count<0||value.count>8||!['left','right','top','bottom'].includes(value.edge))return;
+    if(data.length||typeof value.active!=='boolean'||!Number.isInteger(value.count)||value.count<0||value.count>MAX_FILES||!['left','right','top','bottom'].includes(value.edge))return;
     this.options.onedge?.({active:value.active,count:value.active?value.count:0,edge:value.edge});return;
    }
    if(value.type==='sdp'){
@@ -123,7 +130,7 @@
     if(this.completed.has(meta.id)){await this.send({type:'done',id:meta.id});return}
     if(this.rx?.meta.id===meta.id){if(this.rx.meta.size!==meta.size||this.rx.meta.name!==meta.name)throw Error('Cambió el archivo.');await this.send({type:'accept',id:meta.id,offset:this.rx.offset});return}
     if(this.pending?.id===meta.id)return;if(this.rx||this.pending||this.tx){await this.send({type:'decline',id:meta.id});return}
-    this.pending=meta;this.requestAcceptance(meta);return;
+    this.checkBatch(meta);this.pending=meta;this.requestAcceptance(meta);return;
    }
    if(value.type==='accept'){
     const tx=this.tx;if(!tx||value.id!==tx.meta.id||!Number.isSafeInteger(value.offset)||value.offset<0||value.offset>tx.meta.size)return;
@@ -141,13 +148,16 @@
    }
    if(value.type==='finish'){
     if(this.completed.has(value.id)){await this.send({type:'done',id:value.id});return}const rx=this.rx;if(!rx||value.id!==rx.meta.id||rx.offset!==rx.meta.size)return;
-    let result;try{result=await rx.sink.finish()}catch(error){error.storageFailure=true;throw error}this.completed.set(rx.meta.id,true);if(this.completed.size>16)this.completed.delete(this.completed.keys().next().value);this.rx=null;this.options.onreceived?.(rx.meta,result);this.state('received');await this.send({type:'done',id:value.id});return;
+    let result;try{result=await rx.sink.finish()}catch(error){error.storageFailure=true;throw error}this.completed.set(rx.meta.id,true);if(this.completed.size>MAX_FILES)this.completed.delete(this.completed.keys().next().value);this.rx=null;
+    if(rx.meta.batch){this.incomingBatch.index++;this.incomingBatch.bytes+=rx.meta.size;if(this.incomingBatch.index===this.incomingBatch.count)this.incomingBatch=null}
+    this.options.onreceived?.(rx.meta,result);this.state('received');await this.send({type:'done',id:value.id});return;
    }
    if(value.type==='done'){
     const tx=this.tx;if(!tx||value.id!==tx.meta.id)return;tx.version++;this.wake(tx);this.tx=null;this.options.onsent?.(tx.meta);this.state('sent');return;
    }
    if(value.type==='decline'||value.type==='cancel'){
     if(this.tx?.meta.id!==value.id&&this.rx?.meta.id!==value.id&&this.pending?.id!==value.id)return;
+    this.incomingBatch=null;
     if(this.tx?.meta.id===value.id){const tx=this.tx;tx.version++;this.wake(tx);this.tx=null;this.options.oncancel?.(tx.meta,'sending')}
     if(this.rx?.meta.id===value.id){const rx=this.rx;this.rx=null;await rx.sink.abort();this.options.oncancel?.(rx.meta,'receiving')}
     if(this.pending?.id===value.id){this.options.ondismiss?.(this.pending);this.pending=null}const reason=Object.hasOwn(failures,value.reason)?value.reason:null;this.state(reason?'failed':'declined',reason?{failure:reason}:{});if(reason)this.options.onerror?.(failures[reason]);return;
@@ -156,14 +166,14 @@
   async requestAcceptance(meta){
    let sink;
    try{sink=await this.options.accept(meta);if(this.closed||this.pending!==meta){await sink?.abort();return}if(!sink)throw Object.assign(Error('Rechazado.'),{declined:true})}
-   catch(error){if(this.pending===meta){this.pending=null;this.options.ondismiss?.(meta);const reason=error.declined?null:failureCode(error);this.send({type:'decline',id:meta.id,...(reason?{reason}:{})}).catch(()=>{});this.state(reason?'failed':'declined',reason?{failure:reason}:{});if(reason){this.options.onfailure?.({name:error.name||'Error',code:reason});this.options.onerror?.(failures[reason])}}return}
+   catch(error){if(this.pending===meta){this.pending=null;this.incomingBatch=null;this.options.ondismiss?.(meta);const reason=error.declined?null:failureCode(error);this.send({type:'decline',id:meta.id,...(reason?{reason}:{})}).catch(()=>{});this.state(reason?'failed':'declined',reason?{failure:reason}:{});if(reason){this.options.onfailure?.({name:error.name||'Error',code:reason});this.options.onerror?.(failures[reason])}}return}
    this.pending=null;this.rx={meta,sink,offset:Number(sink.offset)||0,started:performance.now(),lastProgress:0};
    // Keep the accepted sink if the network drops before this reply. The next
    // file announcement resumes it instead of opening or truncating it again.
    try{await this.send({type:'accept',id:meta.id,offset:this.rx.offset});if(this.rx?.meta===meta)this.progress(this.rx,'receiving',true)}catch{this.state('reconnecting')}
   }
   offer(meta,read){
-   if(!metaOK(meta)||typeof read!=='function')throw Error('El archivo admite hasta 1 GB.');if(this.tx||this.rx||this.pending)throw Error('Termina o cancela el archivo actual.');
+   if(!metaOK(meta)||typeof read!=='function')throw Error('El archivo admite hasta 20 GB.');if(this.tx||this.rx||this.pending)throw Error('Termina o cancela el archivo actual.');
    this.tx={meta,read,acked:0,next:0,blocks:[],version:0,started:performance.now(),lastProgress:0,wakers:[]};this.announce();return meta.id;
   }
   announce(){if(this.tx&&this.peerPresent&&this.ws?.readyState===1)this.send({type:'file',file:this.tx.meta},null,'relay').catch(()=>{})}
@@ -172,7 +182,7 @@
   wait(tx){return new Promise(resolve=>{const timer=setTimeout(()=>{const i=tx.wakers.indexOf(done);if(i>=0)tx.wakers.splice(i,1);resolve()},1500);const done=()=>{clearTimeout(timer);resolve()};tx.wakers.push(done)})}
   async pump(tx,version){
    // Give direct ICE a short opportunity to connect before using the HTTPS relay.
-   const until=Date.now()+1200;while(!this.options.forceRelay&&this.channel?.readyState!=='open'&&Date.now()<until&&this.tx===tx&&!this.closed)await sleep(30);
+   const until=this.directWaitUntil??(this.directWaitUntil=Date.now()+1200);while(!this.options.forceRelay&&this.channel?.readyState!=='open'&&Date.now()<until&&this.tx===tx&&!this.closed)await sleep(30);
    let route=this.channel?.readyState==='open'&&!this.options.forceRelay?'direct':'relay';this.progress(tx,'sending',true);
    while(this.tx===tx&&tx.version===version&&!this.closed){
     if(tx.acked===tx.meta.size){await this.send({type:'finish',id:tx.meta.id},null,route);await this.wait(tx);continue}
@@ -192,13 +202,15 @@
   }
   progress(file,direction,force=false){const now=performance.now();if(!force&&now-file.lastProgress<200&&((direction==='sending'?file.acked:file.offset)!==file.meta.size))return;file.lastProgress=now;const done=direction==='sending'?file.acked:file.offset;this.options.onprogress?.({id:file.meta.id,name:file.meta.name,size:file.meta.size,done,direction,bytesPerSecond:done/Math.max(.1,(now-file.started)/1000)});this.state(direction,{progress:{name:file.meta.name,size:file.meta.size,done,direction}})}
   async cancelCurrent(reason=null){
+   this.incomingBatch=null;
    const file=this.tx||this.rx||this.pending;if(!file)return;const meta=file.meta||file,rx=this.rx,pending=this.pending;
    if(this.tx){this.tx.version++;this.wake(this.tx)}this.tx=null;this.rx=null;this.pending=null;
    if(pending)this.options.ondismiss?.(pending);if(rx)await rx.sink.abort().catch(()=>{});this.options.oncancel?.(meta);this.state('connected');await this.send({type:'cancel',id:meta.id,...(Object.hasOwn(failures,reason)?{reason}:{})}).catch(()=>{});
   }
   close(){
+   this.incomingBatch=null;
    if(this.closed)return;this.closed=true;clearInterval(this.ping);clearTimeout(this.retryTimer);if(this.tx){this.tx.version++;this.wake(this.tx)}this.tx=null;if(this.rx)this.rx.sink.abort().catch(()=>{});this.rx=null;if(this.pending)this.options.ondismiss?.(this.pending);this.pending=null;this.rtcSerial++;try{this.channel?.close();this.pc?.close();this.ws?.close()}catch{}this.options.key=this.options.owner=null;this.key=null;this.frame=null;this.seen.clear();
   }
  }
- window.BrivanyDropPeer={DropPeer,MAX,BLOCK,nameOK,metaOK,hex,unbase,failures};
+ window.BrivanyDropPeer={DropPeer,MAX,MAX_FILES,MAX_TOTAL,BLOCK,nameOK,metaOK,hex,unbase,failures};
 })();

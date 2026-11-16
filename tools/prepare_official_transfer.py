@@ -58,7 +58,7 @@ def main():
         drop_health=json.loads(public('/transfer/drop/health'))
         exact=all(public(route)==(ROOT/'workers/file-transfer/client'/name).read_bytes() for route,name in assets.items())
         exact=exact and public('/transfer/drop/peer.js')==(ROOT/'desktop/experience/drop-peer.js').read_bytes()
-        if health.get('ready') and health.get('protocol')==1 and drop_health.get('ready') and drop_health.get('protocol')==2 and drop_health.get('max_file_bytes')==1073741824 and exact:break
+        if health.get('ready') and health.get('protocol')==1 and drop_health.get('ready') and drop_health.get('protocol')==2 and drop_health.get('max_file_bytes')==20_000_000_000 and exact:break
         if attempt==7:raise ValueError('La configuración aún no se ha propagado. La clave cifrada se conserva para reintentar.')
         time.sleep(3)
     new_routes={(r['pattern'],r['script']) for r in api('zones/'+ZONE+'/workers/routes')}
@@ -67,7 +67,7 @@ def main():
     unchanged=before==hashlib.sha256(public('/')).hexdigest()
     if not unchanged:raise ValueError('La huella de la página principal cambió; revisar antes de activar el cliente.')
     value.update(origin=ORIGIN,protocol=2,ready=True);vault.write(value)
-    report={'ready':True,'origin':ORIGIN,'worker':NAME,'routes':sorted(PATTERNS),'homepage_unchanged':unchanged,'other_routes_preserved':True,'public_assets_match_source':exact,'key_storage':'Windows DPAPI and Cloudflare Workers secret','protocol':2,'bidirectional':True,'invite_seconds':600,'session_seconds':21600,'max_file_bytes':1073741824,'legacy_v1_preserved':True,'billing_plan_changed':False}
+    report={'ready':True,'origin':ORIGIN,'worker':NAME,'routes':sorted(PATTERNS),'homepage_unchanged':unchanged,'other_routes_preserved':True,'public_assets_match_source':exact,'key_storage':'Windows DPAPI and Cloudflare Workers secret','protocol':2,'bidirectional':True,'invite_seconds':600,'session_seconds':86400,'max_file_bytes':20_000_000_000,'max_files':1000,'max_total_bytes':20_000_000_000,'legacy_v1_preserved':True,'billing_plan_changed':False}
     destination=ROOT/'tmp/official-transfer-deployment.json';destination.parent.mkdir(exist_ok=True);destination.write_text(json.dumps(report,indent=2),encoding='utf-8');print(json.dumps(report))
 
 if __name__=='__main__':main()

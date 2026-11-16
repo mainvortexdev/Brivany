@@ -1,5 +1,13 @@
 # Brivany · Plan de la plataforma espacial
 
+16 de noviembre, transferencia ampliada a 1.000 archivos y 20 GB por lote,
+con selección móvil acumulada, una confirmación por lote, límites coherentes
+y lectura por bloques. QR de la demo autorizado por cuenta en servidor, sin
+credencial global en el instalador privado 0.2.2. Pasan el lote sintético de
+150 archivos, límites de 64 bits y aceptación del instalador en perfil separado.
+No se acredita un iPhone físico ni el envío completo de 20 GB.
+[Implementación, pruebas y consumo](docs/transferencias-20gb-20261116.md).
+
 16 de noviembre, evaluación privada de Brivany 0.2.1 para el equipo de Jon.
 Traducción auditiva prioritaria; Meta, Cartesia y Deepgram mediante cuenta demo
 limitada a 5 USD compartidos en servidor, claves separadas y revocables.

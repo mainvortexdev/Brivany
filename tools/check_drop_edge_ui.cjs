@@ -16,7 +16,7 @@ const root=path.resolve(__dirname,'..'),out=path.join(root,'tmp/drop-edge-ui'+(s
     return file?route.fulfill({contentType:file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html',body:fs.readFileSync(file)}):route.abort();
    });
    const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
-   await page.goto('http://edge.test/transfer/drop/');
+   await page.goto('https://edge.test/transfer/drop/');
    await page.evaluate(()=>{
     window.offers=[];window.previews=[];window.failures=[];
     document.getElementById('heading').textContent='Conectado a tu PC.';document.getElementById('status').textContent='Listo para enviar o recibir.';
@@ -46,14 +46,24 @@ const root=path.resolve(__dirname,'..'),out=path.join(root,'tmp/drop-edge-ui'+(s
    await page.evaluate(()=>selection.stage([new File(['x'],'Accesible.txt')]));await page.locator('#send-selected').click();
    assert.equal(await page.evaluate(()=>offers.at(-1)),'Accesible.txt');await page.evaluate(()=>selection.next());
    await page.evaluate(()=>{
-    try{selection.stage(Array.from({length:9},(_,i)=>new File(['x'],`${i}.txt`)))}catch(e){failures.push(e.message)}
+    try{selection.stage(Array.from({length:1001},(_,i)=>new File(['x'],`${i}.txt`)))}catch(e){failures.push(e.message)}
     selection.stage([new File(['x'],'Seguro & literal.txt')]);
    });
+   assert.equal(await page.evaluate(()=>failures.length),1);
    assert.equal(await page.locator('#edge-files img').count(),0);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
    await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await page.locator('#edge-aura').evaluate(node=>getComputedStyle(node).transitionDuration),'0s');
+   const mass=await page.evaluate(async()=>{
+    selection.stage(Array.from({length:1000},(_,i)=>new File(['x'],`Foto-${i}.txt`)));const selected=selection.selected.length;await selection.send();while(selection.running)await selection.next();
+    let oversized=false,tooMany=false;
+    try{selection.stage([{name:'big.bin',size:20_000_000_001}])}catch{oversized=true}
+    try{selection.stage(Array.from({length:1001},(_,i)=>new File(['x'],`${i}.txt`)))}catch{tooMany=true}
+    selection.stage([{name:'limit.bin',size:20_000_000_000}]);const exact=selection.selected[0].size;
+    return {selected,sent:offers.filter(name=>name.startsWith('Foto-')).length,oversized,tooMany,exact};
+   });assert.deepEqual(mass,{selected:1000,sent:1000,oversized:true,tooMany:true,exact:20_000_000_000});
    await page.evaluate(()=>{selection.remote({active:true,count:2,edge:'left'});selection.dispose()});
    assert.equal(await page.locator('#edge-aura').getAttribute('data-active'),'false');assert.deepEqual(errors,[]);
    report.checks.push(`${width}px: staging, ${safari?'real pointer edge release and Escape cancellation':'real touch edge release and pointer cancellation'}, two sequential files, Send button, limits, safe text, no overflow, reduced motion and cleanup`);
+   if(width===390){await page.goto('https://edge.test/transfer/drop/?lang=en');assert((await page.locator('.privacy').textContent()).includes('20 GB per batch'));}
    await context.close();
   }
   report.passed=true;

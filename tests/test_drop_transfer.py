@@ -5,7 +5,8 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
-from desktop.experience.workspace_files import FileShelf,MAX_FILE_BYTES,BLOCK_BYTES
+from unittest.mock import patch
+from desktop.experience.workspace_files import FileShelf,MAX_FILE_BYTES,MAX_FILES,BLOCK_BYTES
 from desktop.experience.drop_transfer import OfficialDrop,FileSource,FileReceiver
 
 class Vault:
@@ -16,13 +17,13 @@ class DropTests(unittest.TestCase):
   self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup);self.root=Path(self.temp.name);self.calls=[]
   def network(method,identifier,**kwargs):self.calls.append((method,identifier,kwargs));return {'protocol':2} if method=='POST' else {'state':'cancelled'}
   self.drop=OfficialDrop(self.root/'private',vault=Vault(),request=network,receive_folder=self.root/'received');self.addCleanup(self.drop.close)
- def source(self,size=MAX_FILE_BYTES):
+ def source(self,size=1024**3):
   path=self.root/'Archivo 1 GB.bin'
   with path.open('wb') as stream:stream.truncate(size);stream.seek(max(0,size-4));stream.write(b'END!')
   shelf=FileShelf();self.addCleanup(shelf.close);identifier=shelf.add_path(path);return shelf,shelf.get(identifier)
  def test_accepts_real_one_gib_sparse_file_without_reading_it_into_ram(self):
   shelf,item=self.source();value=self.drop.share_path(item);self.assertEqual(value['size'],1024**3);self.assertEqual(value['transport'],'drop-v2');self.assertIn('https://brivany.vetsa.es/transfer/drop/',value['link']);self.assertNotIn('path',value['session']['source']);self.assertEqual(set(self.calls[0][2]['data']),{'owner_hash','claim_hash'});self.assertNotIn(item['name'],str(self.calls))
-  block=self.drop.read(value['session']['id'],value['session']['source']['id'],MAX_FILE_BYTES-4,4);self.assertEqual(base64.b64decode(block['data']),b'END!')
+  block=self.drop.read(value['session']['id'],value['session']['source']['id'],item['size']-4,4);self.assertEqual(base64.b64decode(block['data']),b'END!')
   with self.assertRaises(ValueError):shelf.share_payload(item['id'])
   with self.assertRaises(ValueError):self.drop.read(value['session']['id'],value['session']['source']['id'],0,BLOCK_BYTES+1)
  def test_source_mutation_is_rejected_and_original_is_preserved_on_stop(self):
@@ -62,18 +63,18 @@ class DropTests(unittest.TestCase):
   self.assertEqual(value['queued'],2)
   with self.assertRaises(ValueError):self.drop.enqueue(session,[other])
   with self.assertRaises(ValueError):self.drop.share_path(other)
-  value=self.drop.next_source(session,first);self.assertTrue(handle.stream.closed);self.assertEqual(value['queued'],1);self.assertEqual(value['session']['source']['name'],'Segundo.txt')
+  value=self.drop.next_source(session,first);self.assertTrue(handle.stream is None or handle.stream.closed);self.assertEqual(value['queued'],1);self.assertEqual(value['session']['source']['name'],'Segundo.txt')
   self.assertEqual(self.drop.next_source(session,first)['queued'],1)
-  handle=self.drop.source;value=self.drop.next_source(session,value['session']['source']['id']);self.assertTrue(handle.stream.closed);self.assertEqual(value['queued'],0);self.assertIsNone(value['session']['source']);self.assertEqual(value['state'],'sent');self.assertEqual(len([c for c in self.calls if c[0]=='POST']),1)
+  handle=self.drop.source;value=self.drop.next_source(session,value['session']['source']['id']);self.assertTrue(handle.stream is None or handle.stream.closed);self.assertEqual(value['queued'],0);self.assertIsNone(value['session']['source']);self.assertEqual(value['state'],'sent');self.assertEqual(len([c for c in self.calls if c[0]=='POST']),1)
  def test_invalid_batch_is_atomic_and_cancel_closes_pending_descriptors(self):
   _,item=self.source(1024);session=self.drop.share_path()['session']['id'];self.drop.update(session,{'state':'connected'})
-  with self.assertRaises(ValueError):self.drop.enqueue(session,[item]*9)
+  with self.assertRaises(ValueError):self.drop.enqueue(session,[item]*(MAX_FILES+1))
   with self.assertRaises(ValueError):self.drop.enqueue('stale',[item])
   with self.assertRaises(ValueError):self.drop.enqueue(session,[item,{**item,'name':'../bad.bin'}])
   self.assertIsNone(self.drop.source);self.assertEqual(self.drop.outbox,[])
   self.drop.enqueue(session,[item,item]);sources=[self.drop.source,*self.drop.outbox];self.drop.clear_outbox(session)
-  self.assertTrue(all(source.stream.closed for source in sources));self.assertEqual(self.drop.snapshot()['queued'],0);self.assertTrue(item['path'].exists())
-  self.drop.enqueue(session,[item,item]);sources=[self.drop.source,*self.drop.outbox];self.drop.stop();self.assertTrue(all(source.stream.closed for source in sources))
+  self.assertTrue(all(source.stream is None or source.stream.closed for source in sources));self.assertEqual(self.drop.snapshot()['queued'],0);self.assertTrue(item['path'].exists())
+  self.drop.enqueue(session,[item,item]);sources=[self.drop.source,*self.drop.outbox];self.drop.stop();self.assertTrue(all(source.stream is None or source.stream.closed for source in sources))
  def test_incoming_offer_reserves_edge_until_accepted_or_declined(self):
   _,item=self.source(1024);session=self.drop.share_path()['session']['id'];self.drop.update(session,{'state':'connected','offer_pending':True})
   self.assertTrue(self.drop.snapshot()['offer_pending'])
@@ -84,5 +85,51 @@ class DropTests(unittest.TestCase):
   self.drop.update(identifier,{'state':'failed','failure':'private arbitrary error'});self.assertIsNone(self.drop.snapshot()['failure'])
   self.drop.update(identifier,{'state':'failed','failure':{}});self.assertIsNone(self.drop.snapshot()['failure'])
   self.drop.update(identifier,{'state':'connected','failure':'storage_full'});self.assertIsNone(self.drop.snapshot()['failure'])
+
+ def test_thousand_file_queue_holds_only_one_open_source(self):
+  _,item=self.source(64);session=self.drop.share_path()['session']['id'];self.drop.update(session,{'state':'connected'})
+  self.drop.enqueue(session,[item]*MAX_FILES)
+  self.assertEqual(self.drop.snapshot()['queued'],1000)
+  self.assertEqual(sum(source.stream is not None for source in [self.drop.source,*self.drop.outbox]),1)
+  first=self.drop.source;self.drop.next_source(session,first.identifier);self.assertTrue(first.stream.closed)
+  current=self.drop.source;self.assertIsNone(current.stream)
+  self.assertEqual(self.drop.read_raw(session,current.identifier,60,4),b'END!')
+  self.assertEqual(sum(source.stream is not None for source in [current,*self.drop.outbox]),1)
+
+ def test_private_demo_pairs_without_copying_the_global_issuer_to_the_pc(self):
+  class EmptyVault:
+   def read(self):return {}
+  class Demo:
+   def status(self):return {'demo':True}
+   def call(self,path,body):
+    self.request=(path,body);return {'protocol':2}
+  demo=Demo();self.drop.vault=EmptyVault()
+  with patch('services.demo_account.current',return_value=demo):
+   self.assertTrue(self.drop.configuration()['configured']);value=self.drop.share_path()
+  self.assertEqual(demo.request[0],'/v1/transfers');self.assertEqual(set(demo.request[1]),{'id','owner_hash','claim_hash'})
+  self.assertEqual(value['state'],'waiting');self.assertEqual(self.calls,[])
+
+ def test_twenty_gb_sparse_boundary_uses_64_bit_offsets_and_rejects_larger_batch(self):
+  path=self.root/'Limite 20 GB.bin'
+  with path.open('w+b') as stream:
+   if os.name=='nt':
+    import ctypes,msvcrt
+    from ctypes import wintypes
+    kernel=ctypes.WinDLL('kernel32',use_last_error=True);kernel.DeviceIoControl.argtypes=[wintypes.HANDLE,wintypes.DWORD,ctypes.c_void_p,wintypes.DWORD,ctypes.c_void_p,wintypes.DWORD,ctypes.POINTER(wintypes.DWORD),ctypes.c_void_p]
+    returned=wintypes.DWORD()
+    if not kernel.DeviceIoControl(msvcrt.get_osfhandle(stream.fileno()),0x900C4,None,0,None,0,ctypes.byref(returned),None):raise ctypes.WinError(ctypes.get_last_error())
+    # The CRT truncate path may write zeroes when extending on Windows. Extend
+    # the sparse test file directly so the 20 GB boundary allocates no payload.
+    kernel.SetFilePointerEx.argtypes=[wintypes.HANDLE,ctypes.c_longlong,ctypes.c_void_p,wintypes.DWORD];kernel.SetEndOfFile.argtypes=[wintypes.HANDLE]
+    handle=msvcrt.get_osfhandle(stream.fileno())
+    if not kernel.SetFilePointerEx(handle,MAX_FILE_BYTES,None,0) or not kernel.SetEndOfFile(handle):raise ctypes.WinError(ctypes.get_last_error())
+   else:stream.truncate(MAX_FILE_BYTES)
+   stream.seek(MAX_FILE_BYTES-4);stream.write(b'END!')
+  shelf=FileShelf();self.addCleanup(shelf.close);item=shelf.get(shelf.add_path(path))
+  value=self.drop.share_path(item);session=value['session']['id'];source=value['session']['source']['id']
+  self.assertEqual(value['size'],20_000_000_000);self.assertEqual(self.drop.read_raw(session,source,MAX_FILE_BYTES-4,4),b'END!')
+  self.drop.next_source(session,source);self.drop.update(session,{'state':'connected'})
+  with self.assertRaisesRegex(ValueError,'20 GB'):self.drop.enqueue(session,[item,item])
+  self.assertIsNone(self.drop.source)
 
 if __name__=='__main__':unittest.main()

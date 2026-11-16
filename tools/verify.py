@@ -55,6 +55,9 @@ SUITES = {
     "drop-edge-webkit-ui": ["node","tools/check_drop_edge_ui.cjs","--webkit"],
     "drop-edge-native": [sys.executable,"-X","utf8","-B","-m","tools.check_drop_edge_native"],
     "drop-e2e": ["node","tools/check_drop_e2e.cjs","--shelf-ready"],
+    "drop-e2e-mass": ["node","tools/check_drop_e2e.cjs","--shelf-ready","--mass"],
+    "drop-e2e-webkit-mass": ["node","tools/check_drop_e2e.cjs","--shelf-ready","--mass","--webkit"],
+    "demo-transfer": ["node","--test","--test-timeout=45000","workers/demo/test/transfer.test.mjs"],
     "installed-backend-native": [sys.executable, "-X", "utf8", "-B", "-m", "tools.check_installed_backend"],
     "live-conversation": [sys.executable, "-X", "utf8", "-B", "-m", "unittest", "tests.test_live_conversation"],
     "chat-voice-ui": ["node", "tools/check_chat_voice_ui.cjs"],
@@ -270,7 +273,7 @@ def main():
     start = datetime.now(timezone.utc)
     try:
         environment = {**os.environ, 'BRIVANY_TEST_PYTHON': os.environ.get('BRIVANY_TEST_PYTHON', sys.executable)}
-        result = subprocess.run(command, cwd=ROOT, env=environment, capture_output=True, timeout=180, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+        result = subprocess.run(command, cwd=ROOT, env=environment, capture_output=True, timeout=480 if args.suite in {'drop-e2e-mass','drop-e2e-webkit-mass'} else 180, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         returncode, output = result.returncode, (result.stdout + result.stderr).decode("utf-8", errors="replace")
     except (subprocess.TimeoutExpired, OSError):
         returncode, output = 1, "No se completó la suite: proceso no disponible o límite de 180 segundos."

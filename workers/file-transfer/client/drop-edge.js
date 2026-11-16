@@ -17,13 +17,14 @@
    this.render();
   }
   setEnabled(value){this.enabled=!!value;if(!value)this.reset();this.render()}
-  stage(files){
-   const {MAX,nameOK}=window.BrivanyDropPeer;
+  stage(files,{append=false}={}){
+   const {MAX,MAX_FILES,MAX_TOTAL,nameOK}=window.BrivanyDropPeer;
    if(!this.enabled||this.running||!this.canSend())throw Error(t('Termina o cancela el archivo actual.'));
    if(!files.length)return;
-   if(files.length>8||files.reduce((sum,file)=>sum+file.size,0)>4*MAX)throw Error(t('Elige hasta ocho archivos; 4 GB en total.'));
-   if(files.some(file=>file.size>MAX||!nameOK(file.name)))throw Error(t('Elige un archivo válido de hasta 1 GB.'));
-   this.reset();this.selected=[...files];this.render();
+   const next=append?[...this.selected,...files]:[...files];
+   if(next.length>MAX_FILES||next.reduce((sum,file)=>sum+file.size,0)>MAX_TOTAL)throw Error(t('Elige hasta 1.000 archivos; 20 GB en total.'));
+   if(next.some(file=>!Number.isSafeInteger(file.size)||file.size<0||file.size>MAX||!nameOK(file.name)))throw Error(t('Elige un archivo válido de hasta 20 GB.'));
+   this.reset();this.selected=next;this.render();
   }
   render(){
    this.panel.hidden=!this.selected.length;this.stack.disabled=!this.enabled||this.running||!this.canSend();
@@ -77,15 +78,16 @@
   }
   async send(){
    if(!this.selected.length||this.running||!this.enabled||!this.canSend())return;
+   this.batch={id:crypto.randomUUID().replaceAll('-',''),count:this.selected.length,total:this.selected.reduce((sum,file)=>sum+file.size,0),index:0};
    this.queue=this.selected;this.selected=[];this.reset();await this.next();
   }
   async next(){
    this.running=false;
-   if(!this.queue.length){this.render();return}
+   if(!this.queue.length){this.batch=null;this.render();return}
    const file=this.queue.shift();this.running=true;this.render();
-   try{await this.sendFile(file)}catch(error){this.stop();this.error(error.message)}
+   try{await this.sendFile(file,{...this.batch,index:++this.batch.index})}catch(error){this.stop();this.error(error.message)}
   }
-  stop(){this.queue=[];this.running=false;this.reset();this.render()}
+  stop(){this.queue=[];this.batch=null;this.running=false;this.reset();this.render()}
   dispose(){this.stop();clearTimeout(this.remoteTimer);for(const remove of this.listeners)remove();this.listeners=[]}
  }
  window.BrivanyEdgeSelection=EdgeSelection;

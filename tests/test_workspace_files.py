@@ -12,7 +12,7 @@ import unittest
 from unittest.mock import patch
 from zipfile import ZIP_DEFLATED, ZipFile
 
-from desktop.experience.workspace_files import FileShelf, WorkspaceFilesBridge, MAX_FILE_BYTES, MAX_TOTAL_BYTES
+from desktop.experience.workspace_files import FileShelf, WorkspaceFilesBridge, MAX_FILE_BYTES, MAX_TOTAL_BYTES, MAX_FILES
 
 SCHEMA = 'http://schemas.openxmlformats.org/'
 REL = SCHEMA + 'officeDocument/2006/relationships'
@@ -91,17 +91,16 @@ class ShelfTests(unittest.TestCase):
         self.assertEqual(len(self.shelf.items), 0)
 
     def test_file_count_size_and_total_limits(self):
-        for i in range(8):
-            self.upload(str(i) + '.txt')
-        with self.assertRaisesRegex(ValueError, 'ocho'):
+        self.shelf.items = {str(i): {'size': 1} for i in range(MAX_FILES)}
+        with self.assertRaisesRegex(ValueError, '1.000'):
             self.upload('extra.txt')
         self.shelf.close()
-        with self.assertRaisesRegex(ValueError, '1 GiB'):
+        with self.assertRaisesRegex(ValueError, '20 GB'):
             self.shelf._validate('big.txt', MAX_FILE_BYTES + 1)
         with self.assertRaises(ValueError):
             self.shelf._validate('bad.txt', True)
         self.shelf.items = {str(i): {'size': MAX_TOTAL_BYTES // 4} for i in range(4)}
-        with self.assertRaisesRegex(ValueError, '4 GiB'):
+        with self.assertRaisesRegex(ValueError, '20 GB'):
             self.shelf._validate('overflow.txt', 1)
         self.shelf.items.clear()
 

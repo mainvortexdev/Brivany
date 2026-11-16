@@ -1,6 +1,6 @@
 (() => {
  'use strict';const t=window.BrivanyDropText||(value=>value),$=id=>document.getElementById(id),{DropPeer,MAX,nameOK}=window.BrivanyDropPeer;let peer,worker,sequence=0,pendingAccept=null,wake=null,urls=[];const pending=new Map(),parts=location.hash.slice(1).split('.');let [id,claim,key]=parts;parts.fill('');history.replaceState(null,'',location.pathname+location.search);
- const size=bytes=>bytes>=1024**3?(bytes/1024**3).toFixed(1)+' GB':bytes>=1024**2?(bytes/1024**2).toFixed(1)+' MB':bytes>=1024?(bytes/1024).toFixed(1)+' KB':bytes+' B';
+ const size=bytes=>bytes>=1000**3?(bytes/1000**3).toFixed(1)+' GB':bytes>=1000**2?(bytes/1000**2).toFixed(1)+' MB':bytes>=1000?(bytes/1000).toFixed(1)+' KB':bytes+' B';
  const error=message=>{$('status').dataset.error='true';$('status').textContent=t(message)};
  const storageError=(code='storage_failed')=>Object.assign(Error(window.BrivanyDropPeer.failures[code]||window.BrivanyDropPeer.failures.storage_failed),{code,storageFailure:true});
  function resetDisk(error){worker?.terminate();worker=null;for(const item of pending.values()){clearTimeout(item.timer);item.reject(error)}pending.clear()}
@@ -19,10 +19,10 @@
  const selection=new window.BrivanyEdgeSelection({
   canSend:()=>!!peer?.peerPresent&&!peer.closed&&!peer.tx&&!peer.rx&&!peer.pending,
   preview:(active,count,edge)=>peer?.preview(active,count,edge),error,
-  send:async file=>{
+  send:async(file,batch)=>{
    wake=await navigator.wakeLock?.request('screen').catch(()=>null);
    if(!peer?.peerPresent||peer.closed)throw Error(t('La conexión se interrumpió.'));
-   peer.offer({id:crypto.randomUUID().replaceAll('-',''),name:file.name,size:file.size},async(offset,length)=>new Uint8Array(await file.slice(offset,offset+length).arrayBuffer()));
+   peer.offer({id:crypto.randomUUID().replaceAll('-',''),name:file.name,size:file.size,batch},async(offset,length)=>new Uint8Array(await file.slice(offset,offset+length).arrayBuffer()));
   }
  });
  function connected(){delete $('status').dataset.error;$('heading').textContent=t('Conectado a tu PC.');$('send-label').hidden=false;$('disconnect').hidden=false;$('hint').hidden=false;selection.setEnabled(true)}
@@ -54,7 +54,7 @@
  }catch(value){error(value.message||'No se pudo conectar con Brivany.')}})();
  $('accept').onclick=async()=>{if(!pendingAccept)return;const item=pendingAccept;pendingAccept=null;$('offer').hidden=true;$('status').textContent=t('Preparando recepción…');try{wake=await navigator.wakeLock?.request('screen').catch(()=>null);item.resolve(await sink(item.meta))}catch(value){item.reject(value)}};
  $('decline').onclick=dismiss;
- $('send-file').onchange=()=>{const files=[...$('send-file').files];$('send-file').value='';try{selection.stage(files)}catch(value){error(value.message)}};
+ $('send-file').onchange=()=>{const files=[...$('send-file').files];$('send-file').value='';try{selection.stage(files,{append:true})}catch(value){error(value.message)}};
  $('cancel-file').onclick=()=>{selection.stop();peer?.cancelCurrent()};
  $('disconnect').onclick=async()=>{selection.stop();selection.setEnabled(false);peer?.close();dismiss();releaseWake();await fetch('/transfer/drop/api/'+id,{method:'DELETE',credentials:'same-origin',cache:'no-store',keepalive:true}).catch(()=>{});$('heading').textContent=t('Transferencia terminada.');$('status').textContent=t('Puedes cerrar esta pantalla.');$('disconnect').hidden=true;$('send-label').hidden=true;$('hint').hidden=true};
  window.addEventListener('pagehide',()=>{selection.dispose();peer?.close();releaseWake();for(const url of urls)URL.revokeObjectURL(url);worker?.terminate()},{once:true});

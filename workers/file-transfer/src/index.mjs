@@ -1,4 +1,4 @@
-import {DurableObject} from 'cloudflare:workers';
+import {DurableObject,WorkerEntrypoint} from 'cloudflare:workers';
 import {HTML,CSS,JS} from './assets.mjs';
 import {dropRoute,dropOwnerOrigin} from './drop.mjs';
 export {DropSession} from './drop.mjs';
@@ -7,6 +7,16 @@ const ID=/^[A-Za-z0-9_-]{22}$/,TOKEN=/^[A-Za-z0-9_-]{43}$/,HASH=/^[a-f0-9]{64}$/
 const encoder=new TextEncoder();
 const hash=async text=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',encoder.encode(text)))].map(v=>v.toString(16).padStart(2,'0')).join('');
 const random=()=>btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32)))).replaceAll('+','-').replaceAll('/','_').replaceAll('=','');
+// Bound first-party demo service only. The issuer credential never reaches a PC.
+export class DemoDropIssuer extends WorkerEntrypoint {
+ async create(value){
+  if(!value||Object.keys(value).sort().join(',')!=='claim_hash,id,owner_hash'||!ID.test(value.id)||!HASH.test(value.owner_hash)||!HASH.test(value.claim_hash))throw Error('invalid_drop_request');
+  const body=JSON.stringify({owner_hash:value.owner_hash,claim_hash:value.claim_hash});
+  const response=await dropRoute(new Request(this.env.PUBLIC_ORIGIN+'/transfer/drop/api/'+value.id,{method:'POST',headers:{Authorization:'Bearer '+this.env.ISSUER_TOKEN,'Content-Type':'application/json','Content-Length':String(body.length)},body}),this.env);
+  if(response.status!==201){await response.body?.cancel();throw Error('drop_unavailable')}
+  return response.json();
+ }
+}
 function same(a,b){if(typeof a!=='string'||typeof b!=='string'||a.length!==b.length)return false;let mismatch=0;for(let i=0;i<a.length;i++)mismatch|=a.charCodeAt(i)^b.charCodeAt(i);return mismatch===0}
 function bearer(request){const value=request.headers.get('Authorization')||'';return value.startsWith('Bearer ')?value.slice(7):''}
 function reply(code,value={},extra={}){return new Response(JSON.stringify(value),{status:code,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff',...extra}})}

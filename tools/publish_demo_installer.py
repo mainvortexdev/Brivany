@@ -21,7 +21,10 @@ def digest(file):
     return h.hexdigest()
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('installer',type=Path);args=parser.parse_args();file=args.installer.resolve();ops=operations();proof=file.parent/'private-audit.json'
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('installer',type=Path);parser.add_argument('--keep-link',action='store_true',help='Update the installer while preserving the already shared ticket and expiry.');args=parser.parse_args();file=args.installer.resolve();ops=operations();proof=file.parent/'private-audit.json'
+    protector=WindowsDPAPIProtector();private=FOLDER/'download.dpapi'
+    link=json.loads(protector.unprotect(private.read_bytes())) if args.keep_link else {'ticket':secrets.token_urlsafe(32),'expiresAt':min(ops['expires_at'],int((time.time()+13*86400)*1000))}
+    if link['expiresAt']<=int(time.time()*1000):raise ValueError('The existing private download link has expired.')
     audit=json.loads(proof.read_text(encoding='utf-8'));sha=digest(file)
     if audit.get('installer_sha256')!=sha or audit.get('provider_secrets_found')!=0 or audit.get('forbidden_paths_found')!=0 or audit.get('edition')!='private-jon-demo':raise ValueError('A matching private package audit is required.')
     started=call(ops,'/admin/release/start',{'name':file.name,'size':file.stat().st_size,'sha256':sha});size=started['part_bytes'];already=set(started['uploaded_parts'])
@@ -35,8 +38,6 @@ def main():
                 value=json.loads(response.read(4096))
                 if value.get('accepted') is not True:raise ValueError('The upload part was not accepted.')
             print(json.dumps({'part':part,'uploaded_bytes':min(part*size,file.stat().st_size),'total_bytes':file.stat().st_size}),flush=True)
-    protector=WindowsDPAPIProtector();private=FOLDER/'download.dpapi'
-    link={'ticket':secrets.token_urlsafe(32),'expiresAt':min(ops['expires_at'],int((time.time()+13*86400)*1000))}
     private.write_bytes(protector.protect(json.dumps(link).encode()))
     published=call(ops,'/admin/release/complete',link);url=ORIGIN+'/download?ticket='+link['ticket']
     request=Request(url,method='HEAD',headers={'User-Agent':'Brivany-Desktop/0.2.1'})

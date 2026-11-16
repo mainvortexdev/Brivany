@@ -498,7 +498,7 @@ class WorkspacePhoneBridge:
     def _queue_phone_paths(self, paths):
         """Called by the owned OLE target, never accepts a path from the web."""
         from .workspace_files import FileShelf,MAX_FILES
-        if not isinstance(paths,list) or not 1<=len(paths)<=MAX_FILES:raise ValueError('Elige entre uno y ocho archivos.')
+        if not isinstance(paths,list) or not 1<=len(paths)<=MAX_FILES:raise ValueError('Elige entre uno y 1.000 archivos.')
         transfer=self._file_transfer();identifier=transfer.snapshot().get('session',{}).get('id')
         shelf=FileShelf()
         try:
@@ -568,7 +568,8 @@ class WorkspacePhoneBridge:
 
     def workspace_phone_enqueue(self,session,identifiers):
         self._trusted()
-        if not isinstance(identifiers,list) or not 1<=len(identifiers)<=8 or any(not isinstance(value,str) for value in identifiers):raise ValueError('Elige entre uno y ocho archivos.')
+        from .workspace_files import MAX_FILES
+        if not isinstance(identifiers,list) or not 1<=len(identifiers)<=MAX_FILES or any(not isinstance(value,str) for value in identifiers):raise ValueError('Elige entre uno y 1.000 archivos.')
         shelf=self._file_shelf()
         with shelf.lock:return self._file_transfer().enqueue(session,[dict(shelf.get(value)) for value in identifiers])
 

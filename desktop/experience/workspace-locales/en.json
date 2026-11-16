@@ -470,5 +470,13 @@
   "Preparando recepción…": "Preparing to receive…",
   "Enviar": "Send",
   "{count} archivos en cola": "{count} files queued",
-  "Seleccionar {name}": "Select {name}"
+  "Seleccionar {name}": "Select {name}",
+  "Hasta 20 GB": "Up to 20 GB",
+  "Transferencia cifrada · Hasta 1.000 archivos · 20 GB por envío": "Encrypted transfer · Up to 1,000 files · 20 GB per batch",
+  "Elige un archivo válido de hasta 20 GB.": "Choose a valid file up to 20 GB.",
+  "El archivo admite hasta 20 GB.": "The file supports up to 20 GB.",
+  "Elige hasta 1.000 archivos; 20 GB en total.": "Choose up to 1,000 files; 20 GB in total.",
+  "La bandeja admite 1.000 archivos.": "The tray supports 1,000 files.",
+  "{name}: supera 20 GB.": "{name}: exceeds 20 GB.",
+  "Recibir {count} archivos": "Receive {count} files"
 }

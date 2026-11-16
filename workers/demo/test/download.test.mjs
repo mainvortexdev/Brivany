@@ -15,6 +15,12 @@ test('workerd/R2: private multipart download checks the ticket, exact length, ra
   const url='https://demo.invalid/download?ticket='+'t'.repeat(43),response=await mf.dispatchFetch(url);assert.equal(response.status,200);assert.deepEqual(Buffer.from(await response.arrayBuffer()),bytes);assert.equal(response.headers.get('X-Brivany-SHA256'),sha256);
   const head=await mf.dispatchFetch(url,{method:'HEAD'});assert.equal(head.headers.get('Content-Length'),String(bytes.length));assert.equal((await head.arrayBuffer()).byteLength,0);
   const range=await mf.dispatchFetch(url,{headers:{Range:'bytes=4-12'}});assert.equal(range.status,206);assert.deepEqual(Buffer.from(await range.arrayBuffer()),bytes.subarray(4,13));
-  assert.equal((await mf.dispatchFetch(url+'x')).status,403);await send('/admin/revoke',{});assert.equal((await mf.dispatchFetch(url)).status,403);
+  assert.equal((await mf.dispatchFetch(url+'x')).status,403);
+  const updated=Buffer.from('Updated synthetic installer'),newHash=createHash('sha256').update(updated).digest('hex');
+  assert.equal((await send('/admin/release/start',{name:'Brivany-Jon-Demo-Setup-0.0.1-x64.exe',size:updated.length,sha256:newHash})).status,200);
+  assert.equal((await mf.dispatchFetch('https://demo.invalid/admin/release/part?part=1',{method:'POST',headers:{Authorization:'Bearer admin','Content-Type':'application/octet-stream','Content-Length':String(updated.length)},body:updated})).status,200);
+  assert.equal((await send('/admin/release/complete',{ticket:'t'.repeat(43),expiresAt:Date.now()+3600000})).status,200);
+  const sameLink=await mf.dispatchFetch(url);assert.equal(sameLink.status,200);assert.deepEqual(Buffer.from(await sameLink.arrayBuffer()),updated);assert.equal(sameLink.headers.get('X-Brivany-SHA256'),newHash);
+  await send('/admin/revoke',{});assert.equal((await mf.dispatchFetch(url)).status,403);
  }finally{await mf.dispose()}
 });

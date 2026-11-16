@@ -1,6 +1,6 @@
 /* Disk-backed receiving for Safari/Chromium. No whole-file ArrayBuffer or Blob assembly. */
 'use strict';
-const MAX=1024**3,BLOCK=256*1024;let directory;const files=new Map();
+const MAX=20_000_000_000,BLOCK=256*1024;let directory;const files=new Map();
 async function root(){
  if(directory)return directory;directory=await (await navigator.storage.getDirectory()).getDirectoryHandle('brivany-drop-v2',{create:true});
  if(directory.entries)for await(const [name,entry] of directory.entries()){
@@ -12,7 +12,7 @@ self.onmessage=async event=>{
  const {request,op,id}=event.data;try{
   if(!/^[a-f0-9]{32}$/.test(id||''))throw Error('Archivo no válido.');let item=files.get(id),value;
   if(op==='open'){
-   const size=event.data.size;if(!Number.isSafeInteger(size)||size<0||size>MAX)throw Error('El archivo admite hasta 1 GB.');
+   const size=event.data.size;if(!Number.isSafeInteger(size)||size<0||size>MAX)throw Error('El archivo admite hasta 20 GB.');
    if(item){value={offset:item.offset};return self.postMessage({request,value})}
    // Safari may expose OPFS without estimate(). Estimation is advisory and must
    // never prevent an otherwise writable file from being received.

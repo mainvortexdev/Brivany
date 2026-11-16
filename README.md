@@ -8,7 +8,7 @@ Una aplicación de escritorio para conversar con Melodi, trabajar con agentes y 
 
 ## Evaluación privada del equipo de Jon
 
-La edición **Brivany Jon Demo 0.2.1** se facilita mediante un enlace privado con
+La edición **Brivany Jon Demo 0.2.2** se facilita mediante un enlace privado con
 caducidad. Incluye una cuenta de demostración y acceso temporal a Meta, Cartesia
 y Deepgram a través del servidor de Brivany. **No contiene sus claves API.** El
 presupuesto compartido de la evaluación es de **5 USD**, con reservas
@@ -132,3 +132,6 @@ Instala FFmpeg y ffprobe en el `PATH`. El instalador de esta versión tampoco in
 ## Licencia
 
 El código original de Brivany se publica bajo la [licencia MIT](LICENSE). Las dependencias, tipografías y recursos de terceros conservan sus licencias y atribuciones. No publiques `.env`, tokens, perfiles personales ni grabaciones al compartir tu instalación.
+
+
+La transferencia de archivos de la versión 0.2.2 permite seleccionar hasta **1.000 archivos y 20 GB en total por envío** (20.000.000.000 bytes). En el iPhone, abre el enlace del QR en Safari, elige los archivos y pulsa Enviar o arrástralos al borde. En el PC, confirma una vez «Recibir N archivos»; se guardan en Descargas/Brivany. Mantén Safari y Brivany abiertos durante el envío. La cuenta demo autoriza el QR desde el servidor, sin copiar claves al ordenador.

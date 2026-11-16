@@ -1,6 +1,6 @@
 import {DurableObject} from 'cloudflare:workers';
 import {DROP_HTML,DROP_CSS,DROP_JS,DROP_EDGE,DROP_LOCALE,DROP_PEER,DROP_STORAGE} from './assets.mjs';
-const PREFIX='/transfer/drop',ID=/^[A-Za-z0-9_-]{22}$/,TOKEN=/^[A-Za-z0-9_-]{43}$/,HASH=/^[a-f0-9]{64}$/,COOKIE='__Host-brivany-drop',INVITE=600000,LIFETIME=21600000,MAX_PACKET=256*1024+8192;
+const PREFIX='/transfer/drop',ID=/^[A-Za-z0-9_-]{22}$/,TOKEN=/^[A-Za-z0-9_-]{43}$/,HASH=/^[a-f0-9]{64}$/,COOKIE='__Host-brivany-drop',INVITE=600000,LIFETIME=86400000,MAX_PACKET=256*1024+8192;
 const enc=new TextEncoder(),hash=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',enc.encode(value))),v=>v.toString(16).padStart(2,'0')).join('');
 const random=()=>btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32)))).replaceAll('+','-').replaceAll('/','_').replaceAll('=','');
 const same=(a,b)=>{if(typeof a!=='string'||typeof b!=='string'||a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i);return d===0};
@@ -11,7 +11,7 @@ export async function dropRoute(request,env){
  const url=new URL(request.url),assets=new Map([[PREFIX+'/',[DROP_HTML,'text/html; charset=utf-8']],[PREFIX+'/phone.js',[DROP_JS,'text/javascript; charset=utf-8']],[PREFIX+'/edge.js',[DROP_EDGE,'text/javascript; charset=utf-8']],[PREFIX+'/phone.css',[DROP_CSS,'text/css; charset=utf-8']],[PREFIX+'/locales.js',[DROP_LOCALE,'text/javascript; charset=utf-8']],[PREFIX+'/peer.js',[DROP_PEER,'text/javascript; charset=utf-8']],[PREFIX+'/storage-worker.js',[DROP_STORAGE,'text/javascript; charset=utf-8']]]);
  if(request.method==='GET'&&url.pathname===PREFIX)return new Response(null,{status:308,headers:{Location:PREFIX+'/'}});
  if(request.method==='GET'&&assets.has(url.pathname)){const [body,type]=assets.get(url.pathname);return new Response(body,{headers:{'Content-Type':type}})}
- if(request.method==='GET'&&url.pathname===PREFIX+'/health')return reply(200,{ready:!!env.ISSUER_TOKEN,protocol:2,max_file_bytes:1024**3,bidirectional:true,invite_seconds:600,session_seconds:21600});
+ if(request.method==='GET'&&url.pathname===PREFIX+'/health')return reply(200,{ready:!!env.ISSUER_TOKEN,protocol:2,max_file_bytes:20_000_000_000,max_files:1000,max_total_bytes:20_000_000_000,bidirectional:true,invite_seconds:600,session_seconds:86400});
  const match=url.pathname.match(/^\/transfer\/drop\/api\/([A-Za-z0-9_-]{22})(?:\/(claim|socket))?$/);if(!match)return reply(404);
  if(request.method==='POST'&&!match[2]){if(!same(bearer(request),env.ISSUER_TOKEN))return reply(403);if(env.UPLOAD_LIMIT&&!((await env.UPLOAD_LIMIT.limit({key:'desktop-drop-issuer'})).success))return reply(429)}
  return env.DROPS.get(env.DROPS.idFromName(match[1])).fetch(request);
@@ -37,7 +37,7 @@ export class DropSession extends DurableObject {
    if(request.headers.get('Origin')!==this.env.PUBLIC_ORIGIN||!TOKEN.test(token))return reply(403);
    const digest=await hash(token),grant=random(),grantHash=await hash(grant);
    const accepted=await this.ctx.storage.transaction(async storage=>{const row=await storage.get('session');if(!row||row.expires<=Date.now()||!same(row.claim,digest))return false;meta={...row,claim:null,grant:grantHash,expires:Date.now()+LIFETIME};await storage.put('session',meta);return true});
-   if(!accepted)return reply(403);await this.ctx.storage.setAlarm(meta.expires);for(const socket of this.ctx.getWebSockets()){const attachment=socket.deserializeAttachment();if(attachment){attachment.expires=meta.expires;socket.serializeAttachment(attachment)}}return reply(200,{protocol:2,expires:meta.expires,max_file_bytes:1024**3},{'Set-Cookie':COOKIE+'='+id+'.'+grant+'; Path=/; Secure; HttpOnly; SameSite=Strict; Max-Age=21600'});
+   if(!accepted)return reply(403);await this.ctx.storage.setAlarm(meta.expires);for(const socket of this.ctx.getWebSockets()){const attachment=socket.deserializeAttachment();if(attachment){attachment.expires=meta.expires;socket.serializeAttachment(attachment)}}return reply(200,{protocol:2,expires:meta.expires,max_file_bytes:20_000_000_000,max_files:1000,max_total_bytes:20_000_000_000},{'Set-Cookie':COOKIE+'='+id+'.'+grant+'; Path=/; Secure; HttpOnly; SameSite=Strict; Max-Age=86400'});
   }
   const cookie=(request.headers.get('Cookie')||'').split(';').map(v=>v.trim()).find(v=>v.startsWith(COOKIE+'='))?.slice(COOKIE.length+1).split('.')||[];
   const receiver=cookie[0]===id&&TOKEN.test(cookie[1]||'')&&same(await hash(cookie[1]),meta.grant);

@@ -13,9 +13,9 @@ from uuid import uuid4
 
 from .scripts import post_script
 
-MAX_FILES = 8
-MAX_FILE_BYTES = 1024 * 1024 * 1024
-MAX_TOTAL_BYTES = 4 * MAX_FILE_BYTES
+MAX_FILES = 1000
+MAX_FILE_BYTES = 20_000_000_000
+MAX_TOTAL_BYTES = MAX_FILE_BYTES
 INLINE_BYTES = 8 * 1024 * 1024
 BLOCK_BYTES = 256 * 1024
 ALLOWED = {'.txt', '.md', '.csv', '.json', '.log', '.yaml', '.yml', '.xml',
@@ -109,11 +109,11 @@ class FileShelf:
                 or Path(name).suffix.lower() not in ALLOWED):
             raise ValueError('Usa un documento, imagen, audio o video compatible; no ejecutables.')
         if type(size) is not int or not 0 <= size <= MAX_FILE_BYTES:
-            raise ValueError('Cada archivo admite hasta 1 GiB.')
+            raise ValueError('Cada archivo admite hasta 20 GB.')
         if len(self.items) + len(self.uploads) >= MAX_FILES:
-            raise ValueError('La bandeja admite hasta ocho archivos. Quita uno para continuar.')
+            raise ValueError('La bandeja admite hasta 1.000 archivos. Quita uno para continuar.')
         if sum(item['size'] for item in (*self.items.values(),*self.uploads.values())) + size > MAX_TOTAL_BYTES:
-            raise ValueError('La bandeja admite hasta 4 GiB en total.')
+            raise ValueError('La bandeja admite hasta 20 GB en total.')
 
     def add_path(self, selected):
         with self.lock:

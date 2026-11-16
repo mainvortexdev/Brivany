@@ -18,7 +18,7 @@ class DemoError(ValueError):pass
 
 class DemoHTTP:
     def call(self,path,body=None,token=None):
-        if path not in {'/v1/activate','/v1/account','/v1/telnyx/connect','/v1/telnyx/status','/v1/calls'} and not re.fullmatch(r'/v1/calls/[a-f0-9-]{36}(?:/cancel)?',path):raise DemoError('Solicitud de demostración no válida.')
+        if path not in {'/v1/activate','/v1/account','/v1/transfers','/v1/telnyx/connect','/v1/telnyx/status','/v1/calls'} and not re.fullmatch(r'/v1/calls/[a-f0-9-]{36}(?:/cancel)?',path):raise DemoError('Solicitud de demostración no válida.')
         headers={'Content-Type':'application/json','Accept':'application/json','User-Agent':'Brivany-Desktop/0.2.1','Cache-Control':'no-store'}
         if token:headers['Authorization']='Bearer '+token
         request=Request(DEMO_ORIGIN+path,data=None if body is None else json.dumps(body).encode(),headers=headers,method='GET' if body is None else 'POST')

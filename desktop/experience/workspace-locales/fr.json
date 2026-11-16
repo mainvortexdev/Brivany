@@ -470,5 +470,13 @@
   "Preparando recepción…": "Préparation de la réception…",
   "Enviar": "Envoyer",
   "{count} archivos en cola": "{count} fichiers en attente",
-  "Seleccionar {name}": "Sélectionner {name}"
+  "Seleccionar {name}": "Sélectionner {name}",
+  "Hasta 20 GB": "Jusqu’à 20 Go",
+  "Transferencia cifrada · Hasta 1.000 archivos · 20 GB por envío": "Transfert chiffré · Jusqu’à 1 000 fichiers · 20 Go par envoi",
+  "Elige un archivo válido de hasta 20 GB.": "Choisissez un fichier valide de 20 Go maximum.",
+  "El archivo admite hasta 20 GB.": "Le fichier accepte jusqu’à 20 Go.",
+  "Elige hasta 1.000 archivos; 20 GB en total.": "Choisissez jusqu’à 1 000 fichiers ; 20 Go au total.",
+  "La bandeja admite 1.000 archivos.": "Le plateau accepte 1 000 fichiers.",
+  "{name}: supera 20 GB.": "{name} : dépasse 20 Go.",
+  "Recibir {count} archivos": "Recevoir {count} fichiers"
 }

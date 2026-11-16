@@ -195,7 +195,7 @@ class NativeDropEdge:
         try:
             if not event.Data.GetDataPresent(self.formats.FileDrop,False):return []
             paths=list(event.Data.GetData(self.formats.FileDrop,False))
-            return [str(path) for path in paths] if 1<=len(paths)<=8 else []
+            return [str(path) for path in paths] if 1<=len(paths)<=1000 else []
         except Exception:return []
 
     def _enter(self,sender,event):

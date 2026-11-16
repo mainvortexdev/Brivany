@@ -1,5 +1,13 @@
 # 17. Bitácora local y evidencias
 
+16 de noviembre, transferencia ampliada a 1.000 archivos y 20 GB por lote,
+con selección móvil acumulada, una confirmación por lote, límites coherentes
+y lectura por bloques. QR de la demo autorizado por cuenta en servidor, sin
+credencial global en el instalador privado 0.2.2. Pasan el lote sintético de
+150 archivos, límites de 64 bits y aceptación del instalador en perfil separado.
+No se acredita un iPhone físico ni el envío completo de 20 GB.
+[Implementación, pruebas y consumo](transferencias-20gb-20261116.md).
+
 16 de noviembre, edición privada Jon Demo 0.2.1. Cuenta con presupuesto compartido
 de 5 USD en servidor, claves nuevas de Meta/Cartesia/Deepgram cifradas, activación
 por equipo y revocación. Instalador con invitación limitada, backend verificado y

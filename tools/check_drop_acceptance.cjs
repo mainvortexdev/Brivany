@@ -16,7 +16,22 @@ const {DropPeer,failures}=window.BrivanyDropPeer,meta={id:'a'.repeat(32),name:'R
  let aborted=false;const resumed=new DropPeer({id:'a'.repeat(22),key:'A'.repeat(43),role:'phone',accept:async()=>({offset:0,abort:async()=>{aborted=true}})});resumed.send=async()=>{throw Error('connection interrupted')};resumed.pending=meta;await resumed.requestAcceptance(meta);assert.equal(resumed.rx.meta.id,meta.id);assert.equal(aborted,false);resumed.close();checks.push('accepted sink survives reply interruption');
  const preview=new DropPeer({id:'a'.repeat(22),key:'A'.repeat(43),role:'phone'});await preview.handle({type:'sdp',description:{type:'offer',sdp:'synthetic SDP'}},new Uint8Array(),'relay');assert.equal(preview.rtcDisabled,true);assert.equal(preview.closed,false);preview.close();checks.push('throwing WebRTC constructor degrades to relay');
  const edges=[],packets=[],edgePeer=new DropPeer({id:'a'.repeat(22),key:'A'.repeat(43),role:'phone',onedge:value=>edges.push(value)});edgePeer.peerPresent=true;edgePeer.send=async value=>packets.push(value);
- edgePeer.preview(true,2,'right');edgePeer.preview(true,2,'right');edgePeer.preview(true,9,'right');edgePeer.preview('true',2,'right');edgePeer.preview(false,0,'right');assert.equal(packets.length,2);assert.equal(packets[0].count,2);
- await edgePeer.handle(packets[0],new Uint8Array(),'relay');await edgePeer.handle({...packets[0],count:500},new Uint8Array(),'relay');await edgePeer.handle({...packets[0],edge:'command'},new Uint8Array(),'relay');await edgePeer.handle(packets[0],new Uint8Array([1]),'relay');assert.equal(edges.length,1);assert.equal(edges[0].edge,'right');edgePeer.close();checks.push('bounded, deduplicated edge previews reject malformed control messages');
+ edgePeer.preview(true,2,'right');edgePeer.preview(true,2,'right');edgePeer.preview(true,1001,'right');edgePeer.preview('true',2,'right');edgePeer.preview(false,0,'right');assert.equal(packets.length,2);assert.equal(packets[0].count,2);
+ await edgePeer.handle(packets[0],new Uint8Array(),'relay');await edgePeer.handle({...packets[0],count:1001},new Uint8Array(),'relay');await edgePeer.handle({...packets[0],edge:'command'},new Uint8Array(),'relay');await edgePeer.handle(packets[0],new Uint8Array([1]),'relay');assert.equal(edges.length,1);assert.equal(edges[0].edge,'right');edgePeer.close();checks.push('bounded, deduplicated edge previews reject malformed control messages');
+ const {MAX,MAX_FILES,metaOK}=window.BrivanyDropPeer;
+ assert.equal(MAX,20_000_000_000);assert.equal(MAX_FILES,1000);assert(metaOK({...meta,size:MAX}));assert(!metaOK({...meta,size:MAX+1}));
+ const batchPeer=new DropPeer({id:'b'.repeat(22),key:'A'.repeat(43),role:'desktop',accept:async()=>({offset:0,write:async()=>{},finish:async()=>({saved:true}),abort:async()=>{}})});batchPeer.send=async()=>{};
+ const b={id:'b'.repeat(32),count:150,total:150};
+ for(let index=1;index<=150;index++){
+  const file={id:index.toString(16).padStart(32,'0'),name:index+'.txt',size:1,batch:{...b,index}};
+  await batchPeer.handle({type:'file',file},new Uint8Array(),'relay');await new Promise(resolve=>setImmediate(resolve));assert.equal(batchPeer.rx.meta.batch.index,index);
+  const bytes=new Uint8Array([index%256]),sha256=window.BrivanyDropPeer.hex(await webcrypto.subtle.digest('SHA-256',bytes));await batchPeer.handle({type:'block',id:file.id,offset:0,sha256},bytes,'relay');await batchPeer.handle({type:'finish',id:file.id},new Uint8Array(),'relay');
+ }
+ assert.equal(batchPeer.incomingBatch,null);assert.equal(batchPeer.completed.size,150);checks.push('150 verified encrypted-protocol files preserve batch order and exact aggregate size');
+ const start={...meta,size:1,batch:{...b,index:1}};batchPeer.checkBatch(start);
+ for(const batch of [{...b,index:3},{...b,index:1,total:MAX+1},{...b,index:1,count:1001},{...b,index:1,id:'c'.repeat(32)}])assert.throws(()=>{if(!metaOK({...start,batch}))throw Error('invalid');batchPeer.checkBatch({...start,batch})});
+ batchPeer.incomingBatch=null;
+ let observed;const offset=2**32+1024,data=new Uint8Array([7,8,9]);batchPeer.rx={meta:{...meta,size:MAX},offset,sink:{write:async position=>{observed=position},abort:async()=>{}},started:performance.now(),lastProgress:0};
+ await batchPeer.handle({type:'block',id:meta.id,offset,sha256:window.BrivanyDropPeer.hex(await webcrypto.subtle.digest('SHA-256',data))},data,'relay');assert.equal(observed,offset);assert.equal(batchPeer.rx.offset,offset+3);batchPeer.close();checks.push('20 GB metadata limits; offsets above 4 GiB remain exact; modified or oversized batches rejected');
  const result={passed:true,checks,personal_files:0,external_calls:0};const folder=path.join(__dirname,'../tmp/drop-acceptance');fs.mkdirSync(folder,{recursive:true});fs.writeFileSync(path.join(folder,'report.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));
 })().catch(error=>{console.error(error);process.exitCode=1});
